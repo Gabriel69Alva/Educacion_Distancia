@@ -1,0 +1,370 @@
+<html>
+  <head> </head>
+
+  <body>
+    <button id="bTerminad" onclick="validarRespuestas()">
+      Validar actividad
+    </button>
+    <a class="custom-button" href="./par.html">reinicio</a>
+
+    <canvas
+      id="myCanvas"
+      width="700"
+      height="500"
+      style="border: 1px solid black"
+    >
+    </canvas>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"
+      integrity="sha512-HkRNCiaZYxQAkHpLFYI90ObSzL0vaIXL8Xe3bM51vhdYI79RDFMLTAsmVH1xVPREmTlUWexgrQMk+c3RBTsLGw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <!--Libreria de alertas-->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script>
+      let arrayOpcionesCorrectas = [
+        { valor1: "1", valor2: "4" },
+        { valor1: "2", valor2: "3" },
+        { valor1: "3", valor2: "2" },
+        { valor1: "1", valor2: "4" },
+        { valor1: "2", valor2: "3" },
+        { valor1: "3", valor2: "2" },
+      ];
+
+      const arrayOpcionesBasura = ["5", "9"];
+
+      let arrayRespuestas = [];
+
+      function validarCirculo(x, y, h, k) {
+        if (Math.sqrt(Math.pow(x - h, 2) + Math.pow(y - k, 2)) <= 20) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      (function () {
+        var canvas = (this.__canvas = new fabric.Canvas(
+          "myCanvas",
+          { backgroundColor: "#F1F1F1" },
+          { selection: false }
+        ));
+        fabric.Object.prototype.originX = fabric.Object.prototype.originY =
+          "center";
+        fabric.Object.prototype.noScaleCache = true;
+
+        //function makeTriangle(left, top, text, line1, line2, line3, line4) {
+        function makeTriangle(left, top, text, line) {
+          let c = new fabric.Triangle({
+            name: text,
+            top: top,
+            left: left,
+            width: 10,
+            height: 20,
+            fill: "#3D78FE",
+            angle: 90,
+          });
+          c.hasControls = c.hasBorders = false;
+
+          c.line = line;
+
+          return c;
+        }
+
+        //function makeTextIzq(left, top, text, line1, line2, line3, line4)
+        function makeTextIzq(left, top, text, line) {
+          /* construye los números de la izquierda del diagrama */
+          let c = new fabric.Text(text, {
+            name: text,
+            fontSize: 20,
+            top: top,
+            left: left - 20,
+            hasBorders: false,
+            hasControls: false,
+            selectable: false,
+          });
+
+          c.hasControls = c.hasBorders = false;
+
+          c.line = line;
+
+          return c;
+        }
+        /* construye los números de la derecha del diagrama */
+
+        function makeTextDerecha(left, top, text) {
+          let c = new fabric.Text(text, {
+            name: text,
+            fontSize: 20,
+            top: top,
+            left: left,
+          });
+          c.hasControls = c.hasBorders = false;
+          return c;
+        }
+
+        function makeLine(coords) {
+          return new fabric.Line(coords, {
+            fill: "pink",
+            stroke: "#3D78FE",
+            strokeWidth: 2,
+            selectable: false,
+            evented: false,
+          });
+        }
+
+        //Se crean los círculos o elipses que representan el dominio y codominio de la función
+        const circle1 = new fabric.Circle({
+          //name: circulo1, //id nombre de la figura
+          radius: 100,
+          fill: "grey",
+          left: 200,
+          top: 175,
+          stroke: "black",
+          opacity: 0.3,
+          strokeWidth: 3,
+          scaleX: 0.7,
+          lockMovementY: true,
+          lockMovementX: true,
+          hasBorders: false,
+          hasControls: false,
+          selectable: false, // no se pueden seleccionar
+        });
+
+        const circle2 = new fabric.Circle({
+          //name: circulo1, //id nombre de la figura
+          radius: 100,
+          fill: "grey",
+          left: 450,
+          top: 175,
+          stroke: "black",
+          opacity: 0.3,
+          strokeWidth: 3,
+          scaleX: 0.7,
+          // flipX: true,
+          lockMovementY: true,
+          lockMovementX: true,
+          hasBorders: false,
+          hasControls: false,
+          selectable: false, // no se pueden seleccionar
+        });
+
+        /* se manda a llamar a la función hacer linea mediante las coordenadas del punto inicial y final */
+        let line1 = makeLine([220, 100, 410, 100]);
+        let line2 = makeLine([220, 150, 410, 150]);
+        let line3 = makeLine([220, 200, 410, 200]);
+        let line4 = makeLine([220, 250, 410, 250]);
+        let line5 = makeLine([190, 175, 410, 175]);
+        let line6 = makeLine([190, 225, 410, 225]);
+
+        /* se manda a llamar a la función hacer textos derechos */
+        let textDerecho1 = makeTextDerecha(450, 100, "4");
+        let textDerecho2 = makeTextDerecha(450, 150, "3");
+        let textDerecho3 = makeTextDerecha(450, 200, "2");
+
+        let c1 = makeTriangle(line1.get("x2"), line1.get("y2"), "-1", line1);
+        let c2 = makeTriangle(line2.get("x2"), line2.get("y2"), "1", line2);
+        let c3 = makeTriangle(line3.get("x2"), line3.get("y2"), "-2", line3);
+        let c4 = makeTriangle(line4.get("x2"), line4.get("y2"), "2", line4);
+        let c5 = makeTriangle(line5.get("x2"), line5.get("y2"), "-3", line5);
+        let c6 = makeTriangle(line6.get("x2"), line6.get("y2"), "3", line6);
+
+        //Se agregan al canvas los círculos achatados, líneas y textos derechos.
+        canvas.selection = false;
+        canvas.add(
+          circle1,
+          circle2,
+          line1,
+          line2,
+          line3,
+          line4,
+          line5,
+          line6,
+          textDerecho1,
+          textDerecho2,
+          textDerecho3
+        );
+
+        // console.log("linea 1: ", line1.get('x1'));
+
+        // Se agregan al canvas los textos izquierdos y los triángulos
+
+        canvas.add(
+          makeTextIzq(line1.get("x1"), line1.get("y1"), "-1", line1),
+          makeTriangle(line1.get("x2"), line1.get("y2"), "-1", line1),
+
+          makeTextIzq(line2.get("x1"), line2.get("y1"), "1", line2),
+          makeTriangle(line2.get("x2"), line2.get("y2"), "1", line2),
+
+          makeTextIzq(line3.get("x1"), line3.get("y1"), "-2", line3),
+          makeTriangle(line3.get("x2"), line3.get("y2"), "-2", line3),
+
+          makeTextIzq(line4.get("x1"), line4.get("y1"), "2", line4),
+          makeTriangle(line4.get("x2"), line4.get("y2"), "2", line4),
+
+          makeTextIzq(line5.get("x1"), line5.get("y1"), "-3", line5),
+          makeTriangle(line5.get("x2"), line5.get("y2"), "-3", line5),
+
+          makeTextIzq(line6.get("x1"), line6.get("y1"), "3", line6),
+          makeTriangle(line6.get("x2"), line6.get("y2"), "3", line6)
+        );
+
+        canvas.on("object:moving", function (e) {
+          var p = e.target;
+          fijaAnguloCordenadasMouse(p);
+
+          p.line && p.line.set({ x2: p.left, y2: p.top });
+          arrayRespuestas = removeArray(
+            arrayRespuestas,
+            p.name,
+            textDerecho1.name
+          );
+          if (
+            validarCirculo(p.left, p.top, textDerecho1.left, textDerecho1.top)
+          ) {
+            console.log("entro puntero al circulo: ");
+            console.log(p.line);
+            console.log(
+              "Estamos probando el texto Derecho1 : " +
+                p.name +
+                " --> " +
+                textDerecho1.name
+            );
+            //console.log(p);
+            console.log(
+              "coordenada de TextDerecho1:" +
+                "(" +
+                textDerecho1.left +
+                " , " +
+                textDerecho1.top +
+                ")"
+            );
+            console.log(
+              "coordenadas del Mouse:" + "(" + p.left + " , " + p.top + ")"
+            );
+            console.log("entro respuesta 1: ", arrayRespuestas);
+            arrayRespuestas.push({ valor1: p.name, valor2: textDerecho1.name });
+            //text1.set('fill', '#BCBCBC')
+            textDerecho1.set("fill", "#BCBCBC");
+          } else {
+            textDerecho1.set("fill", "#393939");
+          }
+          arrayRespuestas = removeArray(
+            arrayRespuestas,
+            p.name,
+            textDerecho2.name
+          );
+          if (
+            validarCirculo(p.left, p.top, textDerecho2.left, textDerecho2.top)
+          ) {
+            console.log("entro respuesta 2: ", arrayRespuestas);
+
+            arrayRespuestas.push({ valor1: p.name, valor2: textDerecho2.name });
+            textDerecho2.set("fill", "#BCBCBC");
+          } else {
+            textDerecho2.set("fill", "#393939");
+          }
+          arrayRespuestas = removeArray(
+            arrayRespuestas,
+            p.name,
+            textDerecho3.name
+          );
+          if (
+            validarCirculo(p.left, p.top, textDerecho3.left, textDerecho3.top)
+          ) {
+            console.log("entro respuesta 3: ", arrayRespuestas);
+            arrayRespuestas.push({ valor1: p.name, valor2: textDerecho3.name });
+            textDerecho3.set("fill", "#BCBCBC");
+          } else {
+            textDerecho3.set("fill", "#393939");
+          }
+
+          canvas.renderAll();
+        });
+
+        canvas.on("selection:created", function (e) {
+          console.log("selection:created: ", e);
+        });
+      })();
+
+      function fijaAnguloCordenadasMouse(objeto) {
+        console.log("move: ", objeto);
+
+        let angulo;
+
+        if (objeto.line) {
+          angulo =
+            (180 / 3.1416) *
+            Math.atan(
+              (objeto.line.get("y1") - objeto.top) /
+                (objeto.line.get("x1") - objeto.left)
+            );
+
+          if (objeto.line.get("x1") < objeto.left) {
+            angulo = angulo + 90;
+          } else {
+            angulo = angulo + 270;
+          }
+        }
+
+        objeto.set("angle", angulo);
+      }
+
+      function validarRespuestas() {
+        let resultado = [];
+
+        let data = arrayRespuestas;
+        const grupos = new Map(); // { valor2 ⇒ [valor1Num, …] }
+
+        // 1. Agrupar los valor1 por su valor2
+        for (const obj of data) {
+          const y = obj.valor2;
+          const x = Number(obj.valor1);
+          if (!grupos.has(y)) grupos.set(y, []);
+          grupos.get(y).push(x);
+        }
+
+        // 2. Para cada grupo buscar pares (+x, -x)
+        for (const lista of grupos.values()) {
+          const set = new Set(lista); // Para búsquedas O(1)
+          for (const x of [...set]) {
+            // Spread para iterar de forma segura
+            if (x !== 0 && set.has(-x)) {
+              console.log("Encontrado par: ", x, -x);
+              resultado.push(true);
+
+              // Opcional: eliminar para no contarlos dos veces
+              set.delete(x);
+              set.delete(-x);
+            }
+          }
+        }
+        console.log("resultado: ", resultado);
+
+        if (resultado.length === 3) {
+          swal({
+            title: "Exito.",
+            text: "Respuesta correcta",
+            icon: "success",
+          });
+        } else {
+          swal({
+            title: "Error.",
+            text: "Respuesta incorrecta",
+            icon: "error",
+          });
+        }
+      }
+
+      function removeArray(data, valor1, valor2) {
+        return data.filter(
+          (item) => item.valor1 !== valor1 || item.valor2 !== valor2
+        );
+      }
+    </script>
+  </body>
+</html>
