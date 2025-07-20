@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog De Matemáticas</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=PT+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+ <!--JSXgraph -->
+ <link
+ rel="stylesheet"
+ type="text/css"
+ href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css"
+/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script>
+
+
+</head>
+
+<body>
+
+    <header class="header">
+
+
+        <section class="header-transparencia">
+
+            <div class="contenedor">
+
+                <div class="barra">
+                    <a class="logo" href="negativo.html">
+                        <h1 class="logo__nombre no-margin centrar-texto">Blog<span
+                                class="logo__bold">DeMatemáticas</span>
+                        </h1>
+                    </a>
+
+                    <nav class="navegacion">
+                       
+                        <a href="negativo.html" class="navegacion__enlace">Desafios</a>
+                        
+                    </nav>
+                </div>
+            </div>
+
+            <div class="header__texto ">
+                <h2 class="no-margin">"Cálculo Diferencial e Integral I"</h2>
+               
+                </div>
+
+        </section>
+    </header>
+
+    <div class="contenedor contenido-principal">
+
+
+        <main class="blog">
+
+
+            <article class="entrada ">
+
+
+
+                <h3> Actividad 5. Intervalos de una función </h3>
+
+                <p class="no-margin cortartext">
+                    <p> \( \text{Sea} \) \(f:\left[ a,b \right]\to \mathrm{R} \) \( \text{una función continua en} \) \( \left[ a,b \right] \) 
+                        \( \text{y derivable en } \) \( \left( a,b \right). \) 
+                        \( \text{Entonces, existe un} \) \( \ c \in (a,b) \) \( \text{tal que} \)
+                        \( f'(c)= \frac{f(b)-f(a)}{b-a}. \) 
+                    </p>
+                </p>
+
+                <p class="no-margin cortartext"> 
+
+                    \( \text{El propósito de este ejercicio es que puedas interpretar de manera geométrica el TVM.} \)
+                
+                </p>
+
+               
+                <p> <b>Mueve los deslizadores D y E para formar un intervalo cerrado. Posteriormente, mueve el deslizador omega para encontrar un punto en el intervalo que formaste que cumpla con el TVM.  las respuestas a las casillas vacías de tal modo que la implicación se cumpla.</b></p>
+
+                <br>
+                <section class="contenedor2 ">
+
+                    <!--   <hr>   -->
+
+                    <h3 class="centrar-texto">Intervalos en donde la función es negativa</h3>
+
+                    <div id="box" style="width: 700px; height: 700px;">
+                    </div>
+
+                    <br>
+
+                    
+
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script>
+                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script src="js/negativo.js"></script>
+
+
+
+                    <div class="button-container">
+
+                        <button class="modern-button modern-button:hover" onclick="validar()">Validar</button>
+
+                        <a class="modern-button modern-button:hover modern-button-a" href="./negativo.html"><span>Reinicio</span> </a>
+
+                    </div>
+
+                </section>
+
+                <br>
+                <a href="#" class="boton boton--primario">Criterio de la primera derivada</a>
+
+                <h4> Actividad 6. Aplicación del TVM</h4>
+
+                <p class="no-margin cortartext">
+                    <p> \( \text{Sea} \) \(f:\left[ a,b \right]\to \mathrm{R} \) \( \text{una función continua en} \) \( \left[ a,b \right] \) 
+                        \( \text{y derivable en } \) \( \left( a,b \right). \) 
+                        \( \text{Entonces, existe un} \) \( \ c \in (a,b) \) \( \text{tal que} \)
+                        \( f'(c)= \frac{f(b)-f(a)}{b-a}. \) 
+                    </p>
+                </p>
+
+                <p>Una patrulla de caminos acaba de detener a un coche deportivo que corría en un autopista en línea recta. El policía argumenta que el conductor recorrió \( s(t) \) kilómetros en \( t \) horas. Como la función de posición \( s(t) \) es diferenciable
+                   en todo instante \( t, \) según el policía, y como el auto recorrió 271 kilómetros en 3 horas, según los tickets de las casetas. Entonces hubo un instante en el que el conductor rebazó el límite de velocidad permitido (90 km/h) y por tanto debe ser multado. ¿Tiene razón el policía?</p>
+
+               
+
+
+            </article>
+
+
+        </main>
+
+        <aside class="sidebar">
+            <h3>Teorema del valor medio</h3>
+
+            <ul class="cursos no-padding">
+                <li class="widget-curso">
+                    <h4 class="no-margin">Comentarios</h4>
+
+                    <p class="widget-curso__label">\( \text{El TVM es una consecuencia} \) \( \text{inmediata del teorema de Rolle,} \)
+                        \( \text{el cual a su vez es una consecuencia}\) 
+                        \( \text{del teorema de Weierstass y la } \) 
+                        \( \text{Proposición 1.} \)
+                        <span class="widget-curso__info"></span>
+                    </p>
+
+
+                    <p class="widget-curso__label"> </p>
+
+                    <p class="widget-curso__label"> Teorema (Weierstrass)
+                        <span class="widget-curso__info">  \( \text{Sea} \) \(f:\left[ a,b \right]\to \mathrm{R} \) \( \text{una función continua
+                            en } \)
+                            \( [ a,b], \) \( \text{entonces} \) \(f\)
+                            \( \text{alcanza su máximo y su mínimo en} \) \( [a,b].\) 
+                        </span>
+                    </p>
+                        
+                    <p class="widget-curso__label">Proposición 1.
+                        <span class="widget-curso__info"> \( \text{Sea} \) \(f:\left[ a,b \right]\to \mathrm{R} \) 
+                            \( \text{y} \) \( \ p \in (a,b). \) \( \text{Si} \) \( f \) \( \text{alcanza un valor máximo local} \)
+                            \( \text{(o mínimo local) en} \) \( p \) \( \text{y} \)  \( f'(p) \) \( \text{existe, entonces} \) \( f'(p)=0. \) 
+                        </span>
+                    </p>
+
+                    <br>
+
+                 
+                </li>
+
+               
+            </ul>
+        </aside>
+
+
+    </div>
+
+    <footer class="footer">
+        <div class="contenedor">
+            <div class="barra">
+               
+
+                <nav class="navegacion">
+                    
+                </nav>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/modernizr.js"></script>
+
+    
+    <script
+        type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath:  [['$','$'],['\\(','\\)']]}});</script>
+
+    <script src="js/jquery.2.2.4.js"></script>
+
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+</body>
+
+</html>
