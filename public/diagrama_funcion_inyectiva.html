@@ -1,0 +1,223 @@
+<html>
+
+
+
+<head>
+
+</head>
+
+<body>
+
+    <button id="bTerminad" onclick="validarRespuests()">Validar actividad</button>
+    <a class="custom-button" href="./funcion_inyectiva.html">reinicio</a>
+
+
+    <canvas id="myCanvas" width="1000" height="1000" style="border:1px solid black;">
+    </canvas>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"
+        integrity="sha512-HkRNCiaZYxQAkHpLFYI90ObSzL0vaIXL8Xe3bM51vhdYI79RDFMLTAsmVH1xVPREmTlUWexgrQMk+c3RBTsLGw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!--Libreria de alertas-->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script>
+
+        let arrayRespuestas = [];
+
+        function validarCirculo(x, y, puntoX, puntoY) {
+            if (Math.sqrt(Math.pow((x - puntoX), 2) + Math.pow((y - puntoY), 2)) <= 20) {
+                return true
+            } else {
+                return false
+            }
+        }
+
+        (function () {
+            var canvas = this.__canvas = new fabric.Canvas('myCanvas', { selection: false });
+            fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
+
+            function makeTringle(left, top, text, line) {
+                let c = new fabric.Triangle({ name: text, top: top, left: left, width: 20, height: 20, fill: 'blue', angle: 90 })
+                c.hasControls = c.hasBorders = false;
+
+                c.line = line;
+
+                return c;
+            }
+            function makeText(left, top, text, line) {
+    
+                let c = new fabric.Text(text, { name: text, fontSize: 30, top: top, left: left - 10, hasBorders: false, hasControls: false, selectable: false });
+
+                c.hasControls = c.hasBorders = false;
+
+                c.line = line;
+               
+                return c;
+            }
+            function makeTextMove(left, top, text, disabled) {
+                let c = new fabric.Text(text, { name: text, fontSize: 30, top: top, left: left, hasBorders: false, hasControls: false, selectable: disabled });
+                c.hasControls = c.hasBorders = false;
+                return c;
+            }
+
+            function makeLine(coords) {
+                return new fabric.Line(coords, {
+                    fill: 'red',
+                    stroke: 'red',
+                    strokeWidth: 5,
+                    selectable: false,
+                    evented: false,
+                });
+            }
+
+            let line1 = makeLine([100, 100, 400, 100]);
+            let line2 = makeLine([100, 150, 400, 150]);
+            let line3 = makeLine([100, 200, 400, 200]);
+            let line4 = makeLine([100, 250, 400, 250]);
+
+
+            let text1 = makeTextMove(430, 100, '20', false)
+            let text2 = makeTextMove(430, 150, '10', false)
+            let text3 = makeTextMove(430, 200, '15', false)
+            let text4 = makeTextMove(430, 250, '25', false)
+
+            canvas.add(line1, line2, line3, line4, text1, text2, text3, text4);
+
+            canvas.add(
+                makeText(line1.get('x1'), line1.get('y1'), '1', line1),
+                makeTringle(line1.get('x2'), line1.get('y2'), '1', line1),
+
+
+                makeText(line2.get('x1'), line2.get('y1'), '2', line2),
+                makeTringle(line2.get('x2'), line2.get('y2'), '2', line2),
+
+                makeText(line3.get('x1'), line3.get('y1'), '3', line3),
+                makeTringle(line3.get('x2'), line3.get('y2'), '3', line3),
+
+                makeText(line4.get('x1'), line4.get('y1'), '4', line4),
+                makeTringle(line4.get('x2'), line4.get('y2'), '4', line4),
+
+            );
+
+            canvas.on('object:moving', function (e) {
+                var p = e.target;
+                getCordenadasMouse(e.target);
+
+                p.line && p.line.set({ 'x2': p.left, 'y2': p.top });
+
+                if (validarCirculo(p.left, p.top, text1.left, text1.top)) {
+
+                    console.log("entro valores 1: ", p.name, text1.name)
+                    console.log("entro respuesta 1: ", arrayRespuestas)
+                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text1.name)
+                    arrayRespuestas.push({ valor1: p.name, valor2: text1.name });
+                    text1.set('fill', '#BCBCBC')
+
+                } else {
+                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text1.name)
+                    text1.set('fill', '#393939')
+                }
+
+                if (validarCirculo(p.left, p.top, text2.left, text2.top)) {
+                    console.log("entro respuesta 2: ", arrayRespuestas)
+                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text2.name)
+                    arrayRespuestas.push({ valor1: p.name, valor2: text2.name });
+                    text2.set('fill', 'pink')
+                } else {
+                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text2.name)
+                    text2.set('fill', 'green')
+                }
+
+                if (validarCirculo(p.left, p.top, text3.left, text3.top)) {
+                    console.log("entro respuesta 3: ", arrayRespuestas)
+                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text3.name)
+                    arrayRespuestas.push({ valor1: p.name, valor2: text3.name });
+                    text3.set('fill', '#BCBCBC')
+
+                } else {
+                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text3.name)
+                    text3.set('fill', '#393939')
+
+                }
+                if (validarCirculo(p.left, p.top, text4.left, text4.top)) {
+                    console.log("entro respuesta 4: ", arrayRespuestas)
+                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text4.name)
+                    arrayRespuestas.push({ valor1: p.name, valor2: text4.name });
+                    text4.set('fill', '#BCBCBC')
+
+                } else {
+                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text4.name)
+                    text4.set('fill', '#393939')
+                }
+
+                canvas.renderAll();
+            });
+
+        })();
+
+
+        function getCordenadasMouse(objeto) {
+            console.log("move: ", objeto)
+
+            let angulo;
+
+            if (objeto.line) {
+                angulo = (180 / 3.1416) * Math.atan((objeto.line.get('y1') - objeto.top) / (objeto.line.get('x1') - objeto.left)) + 90;
+            }
+            
+            objeto.set('angle', angulo);
+        }
+
+        function validarRespuests() {
+
+            let error = [];
+
+            if (arrayRespuestas.length === 4) {
+
+                arrayRespuestas.map(item => {
+                    arrayRespuestas.map(item2 => {
+                        if (item.valor1 !== item2.valor1) {
+                            if (item.valor2 === item2.valor2) {
+                                error.push(item.valor2);
+                            }
+                        }
+
+                    })
+                })
+
+                console.log("error: ", error)
+
+                if (error.length > 0) {
+                    swal({
+                        title: "Error.",
+                        text: "Respuesta incorrecta",
+                        icon: "error"
+                    });
+                } else {
+
+                    swal({
+                        title: "Exito.",
+                        text: "Respuesta correcta",
+                        icon: "success"
+                    });
+                }
+            } else {
+                swal({
+                    title: "Error.",
+                    text: "Debes de mover las 4 flechas",
+                    icon: "error"
+                });
+            }
+
+        }
+
+        function removeArray(data, valor1, valor2) {
+            return data.filter(item => item.valor1 !== valor1 || item.valor2 !== valor2)
+        }
+
+    </script>
+
+</body>
+
+</html>
