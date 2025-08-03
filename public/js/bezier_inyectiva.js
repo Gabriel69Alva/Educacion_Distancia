@@ -1,3 +1,6 @@
+// Array global para almacenar y eliminar los puntos resaltados
+let highlightedPoints = [];
+
 // Asegura que el DOM esté completamente cargado antes de inicializar JXG.JSXGraph
 document.addEventListener('DOMContentLoaded', function () {
     // Configuración del renderizador JXG.JSXGraph
@@ -65,72 +68,94 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     /**
+     * Resalta los puntos problemáticos en el gráfico.
+     * @param {Array<Object>} points - Un array de objetos {x, y} de los puntos a resaltar.
+     */
+    const highlightProblemPoints = (points) => {
+        // Eliminar puntos resaltados de la ejecución anterior
+        highlightedPoints.forEach(point => brd.removeObject(point));
+        highlightedPoints = [];
+
+        points.forEach(pt => {
+            const newPoint = brd.create('point', [pt.x, pt.y], {
+                name: '', // No mostrar nombre
+                color: 'yellow',
+                size: 6,
+                face: 'o',
+                fixed: true, // No permitir arrastrar
+                highlight: false // No resaltar al pasar el mouse
+            });
+            highlightedPoints.push(newPoint);
+        });
+        brd.update(); // Forzar la actualización del tablero para mostrar los puntos
+    };
+
+    /**
      * Función principal para validar si la curva es una función y, si lo es,
      * si es inyectiva.
-     * Una función es inyectiva si cada valor Y en el rango corresponde a un
-     * único valor X.
-     * Una curva es una función si cada valor X en el dominio corresponde a
-     * un único valor Y.
      */
     window.validarCurva = function () {
         console.log("Validación de curva: Iniciando...");
+        const muestrasT = 10000;
+        const tolerancia = 0.01;
 
-        const muestrasT = 10000; // Número de muestras a lo largo de la curva
-        const yToPointMap = {}; // Mapa para la validación de inyectividad
-        const xToPointMap = {}; // Mapa para la validación de la función
-        let isFunction = true;
-        let isNonInjective = false;
-        let nonFunctionPoints = null;
-        let nonInjectivePoints = null;
-        const tolerancia = 0.01; // Pequeña tolerancia para manejar errores de punto flotante
+        // Eliminar puntos resaltados de la ejecución anterior
+        highlightedPoints.forEach(point => brd.removeObject(point));
+        highlightedPoints = [];
 
         // --- 1. Validar si es una función (Prueba de la línea vertical) ---
+        const xToYValuesMap = {};
+        let nonFunctionPoints = null;
+
         for (let i = 0; i <= muestrasT; i++) {
             const t = i / muestrasT;
             const xActual = c.X(t);
             const yActual = c.Y(t);
-
             const xRedondeada = xActual.toFixed(3);
 
-            // Verifica si el valor X ya ha sido visto
-            if (xToPointMap[xRedondeada] !== undefined) {
-                const firstPoint = xToPointMap[xRedondeada];
-                // Si el valor Y es diferente para el mismo X, no es una función
-                if (Math.abs(firstPoint.y - yActual) > tolerancia) {
-                    isFunction = false;
-                    nonFunctionPoints = {
-                        first: firstPoint,
-                        second: { x: xActual, y: yActual }
-                    };
+            if (!xToYValuesMap[xRedondeada]) {
+                xToYValuesMap[xRedondeada] = [];
+            }
+            xToYValuesMap[xRedondeada].push({ x: xActual, y: yActual });
+        }
+
+        // Buscar el primer conjunto de puntos que fallan la prueba de la línea vertical
+        for (const x in xToYValuesMap) {
+            if (xToYValuesMap[x].length > 1) {
+                const points = xToYValuesMap[x];
+                // Encontrar los puntos con el y-mínimo y y-máximo
+                const minPoint = points.reduce((prev, curr) => (prev.y < curr.y ? prev : curr));
+                const maxPoint = points.reduce((prev, curr) => (prev.y > curr.y ? prev : curr));
+
+                // Verificar que los puntos son realmente distintos
+                if (Math.abs(minPoint.y - maxPoint.y) > tolerancia) {
+                    nonFunctionPoints = { first: minPoint, second: maxPoint };
                     break;
                 }
-            } else {
-                xToPointMap[xRedondeada] = { x: xActual, y: yActual };
             }
         }
 
-        // Si no es una función, muestra la alerta y termina.
-        if (!isFunction) {
-            const mensajeError = `La curva no representa una función. Se encontró al menos un par de puntos diferentes con la misma coordenada X:
+        // Si no es una función, muestra la alerta y resalta los puntos
+        if (nonFunctionPoints) {
+            highlightProblemPoints([nonFunctionPoints.first, nonFunctionPoints.second]);
+            const mensajeError = `La curva no representa una función. Se encontraron al menos dos puntos diferentes con la misma coordenada X:
                     \nPunto 1: (${nonFunctionPoints.first.x.toFixed(2)}, ${nonFunctionPoints.first.y.toFixed(2)})
                     \nPunto 2: (${nonFunctionPoints.second.x.toFixed(2)}, ${nonFunctionPoints.second.y.toFixed(2)})`;
 
-            try {
-                swal({
-                    title: "¡No es una Función!",
-                    text: mensajeError,
-                    icon: "error",
-                    button: "Entendido",
-                });
-            } catch (error) {
-                console.error("Error al mostrar SweetAlert de no función:", error);
-                alert("¡No es una Función! " + mensajeError);
-            }
+            swal({
+                title: "¡No es una Función!",
+                text: mensajeError,
+                icon: "error",
+                button: "Entendido",
+            });
             return; // Importante: salir de la función
         }
 
         // --- 2. Validar si es inyectiva (Prueba de la línea horizontal) ---
         // Se ejecuta solo si la curva es una función
+        const yToXValuesMap = {};
+        let nonInjectivePoints = null;
+
         for (let i = 0; i <= muestrasT; i++) {
             const t = i / muestrasT;
             const xActual = c.X(t);
@@ -138,51 +163,48 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const yRedondeada = yActual.toFixed(3);
 
-            if (yToPointMap[yRedondeada] !== undefined) {
-                const firstPoint = yToPointMap[yRedondeada];
-                // Condición de inyectividad: x1 != x2 y f(x1) = f(x2)
-                if (Math.abs(firstPoint.x - xActual) > tolerancia) {
-                    isNonInjective = true;
-                    nonInjectivePoints = {
-                        first: firstPoint,
-                        second: { x: xActual, y: yActual }
-                    };
+            if (!yToXValuesMap[yRedondeada]) {
+                yToXValuesMap[yRedondeada] = [];
+            }
+            yToXValuesMap[yRedondeada].push({ x: xActual, y: yActual });
+        }
+
+        // Buscar el primer conjunto de puntos que fallan la prueba de la línea horizontal
+        for (const y in yToXValuesMap) {
+            if (yToXValuesMap[y].length > 1) {
+                const points = yToXValuesMap[y];
+                // Encontrar los puntos con el x-mínimo y x-máximo
+                const minPoint = points.reduce((prev, curr) => (prev.x < curr.x ? prev : curr));
+                const maxPoint = points.reduce((prev, curr) => (prev.x > curr.x ? prev : curr));
+
+                // Verificar que los puntos son realmente distintos
+                if (Math.abs(minPoint.x - maxPoint.x) > tolerancia) {
+                    nonInjectivePoints = { first: minPoint, second: maxPoint };
                     break;
                 }
-            } else {
-                yToPointMap[yRedondeada] = { x: xActual, y: yActual };
             }
         }
 
-        // Mostrar el resultado de la validación
-        if (isNonInjective) {
+        // Mostrar el resultado de la validación de inyectividad
+        if (nonInjectivePoints) {
+            highlightProblemPoints([nonInjectivePoints.first, nonInjectivePoints.second]);
             const mensajeError = `La curva no es inyectiva. Se encontró al menos un par de puntos diferentes con la misma coordenada Y:
                     \nPunto 1: (${nonInjectivePoints.first.x.toFixed(2)}, ${nonInjectivePoints.first.y.toFixed(2)})
                     \nPunto 2: (${nonInjectivePoints.second.x.toFixed(2)}, ${nonInjectivePoints.second.y.toFixed(2)})`;
 
-            try {
-                swal({
-                    title: "¡No Inyectiva!",
-                    text: mensajeError,
-                    icon: "error",
-                    button: "Entendido",
-                });
-            } catch (error) {
-                console.error("Error al mostrar SweetAlert de no inyectiva:", error);
-                alert("¡No Inyectiva! " + mensajeError);
-            }
+            swal({
+                title: "¡No Inyectiva!",
+                text: mensajeError,
+                icon: "error",
+                button: "Entendido",
+            });
         } else {
-            try {
-                swal({
-                    title: "¡Éxito!",
-                    text: "La curva representa una función inyectiva.",
-                    icon: "success",
-                    button: "Entendido",
-                });
-            } catch (error) {
-                console.error("Error al mostrar SweetAlert de éxito:", error);
-                alert("¡Éxito! La curva es una función inyectiva.");
-            }
+            swal({
+                title: "¡Éxito!",
+                text: "La curva representa una función inyectiva.",
+                icon: "success",
+                button: "Entendido",
+            });
         }
     };
 
