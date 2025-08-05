@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const newPoint = brd.create('point', [pt.x, pt.y], {
                 name: '', // No mostrar nombre
                 color: 'yellow',
-                size: 6,
+                size: 4,
                 face: 'o',
                 fixed: true, // No permitir arrastrar
                 highlight: false // No resaltar al pasar el mouse
