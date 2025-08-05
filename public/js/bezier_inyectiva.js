@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 name: '', // No mostrar nombre
                 color: 'yellow',
                 size: 3,
+                strokeWidth: 3,
                 face: 'o',
                 fixed: true, // No permitir arrastrar
                 highlight: false // No resaltar al pasar el mouse
