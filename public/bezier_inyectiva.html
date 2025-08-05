@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Validación de Inyectividad con Curvas de Bezier</title>
+  <title>Validación de Función Inyectiva con Curvas de Bezier</title>
   <!-- Carga de JXG.JSXGraph CSS y JS -->
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraph.css" />
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraphcore.js"></script>
@@ -43,13 +43,20 @@
       /* Esquinas más redondeadas */
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
       /* Sombra más pronunciada */
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       /* Espacio debajo del tablero */
       overflow: hidden;
       /* Asegura que no haya desbordamiento */
     }
 
-    /* Estilos para el botón de validación */
+    /* Estilos para los botones de validación */
+    .button-container {
+      display: flex;
+      gap: 15px;
+      /* Espacio entre botones */
+      margin-top: 10px;
+    }
+
     button {
       padding: 14px 28px;
       font-size: 18px;
@@ -83,13 +90,30 @@
       /* Vuelve a su posición original */
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
+
+    /* Estilo específico para el botón de reinicio */
+    button.reset-button {
+      background-color: #e74c3c;
+      /* Rojo para reiniciar */
+    }
+
+    button.reset-button:hover {
+      background-color: #c0392b;
+      /* Rojo más oscuro al pasar el ratón */
+    }
   </style>
 </head>
 
 <body>
   <div id="jxgbox"></div>
+  <div class="button-container">
+    <button id="validateButton">Validar Función Inyectiva</button>
+    <button id="resetButton" class="reset-button">Reinicializar Escenario</button>
+  </div>
+
+  <div id="jxgbox"></div>
 
   <script src="js/bezier_inyectiva.js"></script>
-</body>
+
 
 </html>
