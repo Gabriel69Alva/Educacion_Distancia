@@ -1,203 +1,203 @@
-<html>
-
-
+<!DOCTYPE html>
+<html lang="es">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad de Relación de Elementos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            /* Un fondo suave */
+            padding: 20px;
+            box-sizing: border-box;
+            color: #333;
+        }
 
+        .main-container {
+            /* Mantiene flexbox para centrar sus contenidos */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        canvas {
+            border: 1px solid black;
+            /* Borde original */
+            background-color: transparent;
+            /* Sin fondo CSS */
+            border-radius: 0;
+            /* Sin esquinas redondeadas */
+            box-shadow: none;
+            /* Sin sombra */
+            display: block;
+            /* Necesario para margin: auto */
+            margin: 0 auto;
+            /* Centra el canvas horizontalmente */
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .modern-button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 700;
+            /* Fuente en negrita */
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            /* Transiciones suaves */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            color: white;
+            text-transform: uppercase;
+            /* Texto en mayúsculas */
+            letter-spacing: 0.5px;
+        }
+
+        .modern-button:hover {
+            transform: translateY(-5px);
+            /* Efecto de "levantar" */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .modern-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .validate-button {
+            background-color: #4CAF50;
+            /* Verde */
+        }
+
+        .validate-button:hover {
+            background-color: #45a049;
+        }
+
+        .reset-button {
+            background-color: #f44336;
+            /* Rojo */
+        }
+
+        .reset-button:hover {
+            background-color: #da190b;
+        }
+    </style>
 </head>
 
 <body>
-
-    <button id="bTerminad" onclick="validarRespuests()">Validar actividad</button>
-    <a class="custom-button" href="./funcion_inyectiva.html">reinicio</a>
-
-
-    <canvas id="myCanvas" width="1000" height="1000" style="border:1px solid black;">
-    </canvas>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"
-        integrity="sha512-HkRNCiaZYxQAkHpLFYI90ObSzL0vaIXL8Xe3bM51vhdYI79RDFMLTAsmVH1xVPREmTlUWexgrQMk+c3RBTsLGw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!--Libreria de alertas-->
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <div class="main-container">
+        <!-- Canvas con tamaño reducido -->
+        <canvas id="myCanvas" width="800" height="600"></canvas>
+        <div class="button-group">
+            <button id="validateBtn" class="modern-button validate-button">Validar actividad</button>
+            <button id="resetBtn" class="modern-button reset-button">Reiniciar</button>
+        </div>
+    </div>
 
     <script>
-
+        // Variables globales
         let arrayRespuestas = [];
+        let canvas; // Se inicializará una vez en DOMContentLoaded
+        let text1, text2, text3, text4; // Objetos de texto de destino, se asignarán en setupCanvasAndObjects
 
-        function validarCirculo(x, y, puntoX, puntoY) {
-            if (Math.sqrt(Math.pow((x - puntoX), 2) + Math.pow((y - puntoY), 2)) <= 20) {
-                return true
-            } else {
-                return false
-            }
+        // Funciones auxiliares para la creación de objetos Fabric.js
+        function makeTringle(left, top, text, line) {
+            // El ángulo inicial de 90 grados hace que apunte hacia la derecha.
+            // 'selectable: true' permite arrastrarlo.
+            // 'hasControls' y 'hasBorders' son false para una apariencia limpia.
+            let c = new fabric.Triangle({ name: text, top: top, left: left, width: 20, height: 20, fill: 'blue', angle: 90, selectable: true });
+            c.hasControls = c.hasBorders = false;
+            c.line = line; // Asocia la línea a la que pertenece este triángulo
+            return c;
         }
 
-        (function () {
-            var canvas = this.__canvas = new fabric.Canvas('myCanvas', { selection: false });
-            fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
+        function makeText(left, top, text, line) {
+            // Los textos de origen (1,2,3,4) no deben ser seleccionables/arrastrables.
+            let c = new fabric.Text(text, { name: text, fontSize: 30, top: top, left: left - 10, hasBorders: false, hasControls: false, selectable: false });
+            c.hasControls = c.hasBorders = false;
+            c.line = line; // Aunque no se usa para arrastrar, se mantiene por consistencia si se necesitara.
+            return c;
+        }
 
-            function makeTringle(left, top, text, line) {
-                let c = new fabric.Triangle({ name: text, top: top, left: left, width: 20, height: 20, fill: 'blue', angle: 90 })
-                c.hasControls = c.hasBorders = false;
+        function makeTextMove(left, top, text, disabled) {
+            // Los textos de destino (20,10,15,25) no deben ser seleccionables/arrastrables.
+            let c = new fabric.Text(text, { name: text, fontSize: 30, top: top, left: left, hasBorders: false, hasControls: false, selectable: disabled });
+            c.hasControls = c.hasBorders = false;
+            return c;
+        }
 
-                c.line = line;
-
-                return c;
-            }
-            function makeText(left, top, text, line) {
-    
-                let c = new fabric.Text(text, { name: text, fontSize: 30, top: top, left: left - 10, hasBorders: false, hasControls: false, selectable: false });
-
-                c.hasControls = c.hasBorders = false;
-
-                c.line = line;
-               
-                return c;
-            }
-            function makeTextMove(left, top, text, disabled) {
-                let c = new fabric.Text(text, { name: text, fontSize: 30, top: top, left: left, hasBorders: false, hasControls: false, selectable: disabled });
-                c.hasControls = c.hasBorders = false;
-                return c;
-            }
-
-            function makeLine(coords) {
-                return new fabric.Line(coords, {
-                    fill: 'red',
-                    stroke: 'red',
-                    strokeWidth: 5,
-                    selectable: false,
-                    evented: false,
-                });
-            }
-
-            let line1 = makeLine([100, 100, 400, 100]);
-            let line2 = makeLine([100, 150, 400, 150]);
-            let line3 = makeLine([100, 200, 400, 200]);
-            let line4 = makeLine([100, 250, 400, 250]);
-
-
-            let text1 = makeTextMove(430, 100, '20', false)
-            let text2 = makeTextMove(430, 150, '10', false)
-            let text3 = makeTextMove(430, 200, '15', false)
-            let text4 = makeTextMove(430, 250, '25', false)
-
-            canvas.add(line1, line2, line3, line4, text1, text2, text3, text4);
-
-            canvas.add(
-                makeText(line1.get('x1'), line1.get('y1'), '1', line1),
-                makeTringle(line1.get('x2'), line1.get('y2'), '1', line1),
-
-
-                makeText(line2.get('x1'), line2.get('y1'), '2', line2),
-                makeTringle(line2.get('x2'), line2.get('y2'), '2', line2),
-
-                makeText(line3.get('x1'), line3.get('y1'), '3', line3),
-                makeTringle(line3.get('x2'), line3.get('y2'), '3', line3),
-
-                makeText(line4.get('x1'), line4.get('y1'), '4', line4),
-                makeTringle(line4.get('x2'), line4.get('y2'), '4', line4),
-
-            );
-
-            canvas.on('object:moving', function (e) {
-                var p = e.target;
-                getCordenadasMouse(e.target);
-
-                p.line && p.line.set({ 'x2': p.left, 'y2': p.top });
-
-                if (validarCirculo(p.left, p.top, text1.left, text1.top)) {
-
-                    console.log("entro valores 1: ", p.name, text1.name)
-                    console.log("entro respuesta 1: ", arrayRespuestas)
-                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text1.name)
-                    arrayRespuestas.push({ valor1: p.name, valor2: text1.name });
-                    text1.set('fill', '#BCBCBC')
-
-                } else {
-                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text1.name)
-                    text1.set('fill', '#393939')
-                }
-
-                if (validarCirculo(p.left, p.top, text2.left, text2.top)) {
-                    console.log("entro respuesta 2: ", arrayRespuestas)
-                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text2.name)
-                    arrayRespuestas.push({ valor1: p.name, valor2: text2.name });
-                    text2.set('fill', 'pink')
-                } else {
-                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text2.name)
-                    text2.set('fill', 'green')
-                }
-
-                if (validarCirculo(p.left, p.top, text3.left, text3.top)) {
-                    console.log("entro respuesta 3: ", arrayRespuestas)
-                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text3.name)
-                    arrayRespuestas.push({ valor1: p.name, valor2: text3.name });
-                    text3.set('fill', '#BCBCBC')
-
-                } else {
-                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text3.name)
-                    text3.set('fill', '#393939')
-
-                }
-                if (validarCirculo(p.left, p.top, text4.left, text4.top)) {
-                    console.log("entro respuesta 4: ", arrayRespuestas)
-                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text4.name)
-                    arrayRespuestas.push({ valor1: p.name, valor2: text4.name });
-                    text4.set('fill', '#BCBCBC')
-
-                } else {
-                    arrayRespuestas = removeArray(arrayRespuestas, p.name, text4.name)
-                    text4.set('fill', '#393939')
-                }
-
-                canvas.renderAll();
+        function makeLine(coords) {
+            return new fabric.Line(coords, {
+                fill: 'red',
+                stroke: 'red',
+                strokeWidth: 5,
+                selectable: false, // Las líneas no son seleccionables
+                evented: false,    // Las líneas no disparan eventos de mouse
             });
+        }
 
-        })();
-
+        // Funciones auxiliares para la lógica
+        function validarCirculo(x, y, puntoX, puntoY) {
+            // Comprueba si un punto (x,y) está dentro de un círculo de radio 20 alrededor de (puntoX, puntoY)
+            return Math.sqrt(Math.pow((x - puntoX), 2) + Math.pow(y - puntoY, 2)) <= 20;
+        }
 
         function getCordenadasMouse(objeto) {
-            console.log("move: ", objeto)
-
-            let angulo;
-
-            if (objeto.line) {
-                angulo = (180 / 3.1416) * Math.atan((objeto.line.get('y1') - objeto.top) / (objeto.line.get('x1') - objeto.left)) + 90;
+            // Esta función se llama cuando un objeto se mueve.
+            // Solo aplica lógica de ángulo si el objeto NO es un triángulo (punta de flecha).
+            // Esto asegura que los triángulos (puntas de flecha) no giren al ser arrastrados.
+            if (objeto.type !== 'triangle') {
+                let angulo;
+                if (objeto.line) {
+                    angulo = (180 / Math.PI) * Math.atan2((objeto.line.get('y1') - objeto.top), (objeto.line.get('x1') - objeto.left)) + 90;
+                }
+                objeto.set('angle', angulo);
             }
-            
-            objeto.set('angle', angulo);
         }
 
         function validarRespuests() {
-
             let error = [];
 
             if (arrayRespuestas.length === 4) {
+                // Contar cuántas flechas apuntan a cada número de destino
+                const targetCounts = {};
+                arrayRespuestas.forEach(item => {
+                    targetCounts[item.valor2] = (targetCounts[item.valor2] || 0) + 1;
+                });
 
-                arrayRespuestas.map(item => {
-                    arrayRespuestas.map(item2 => {
-                        if (item.valor1 !== item2.valor1) {
-                            if (item.valor2 === item2.valor2) {
-                                error.push(item.valor2);
-                            }
-                        }
-
-                    })
-                })
-
-                console.log("error: ", error)
+                // Identificar si hay números de destino con más de una flecha
+                for (const target in targetCounts) {
+                    if (targetCounts[target] > 1) {
+                        error.push(target);
+                    }
+                }
 
                 if (error.length > 0) {
                     swal({
                         title: "Error.",
-                        text: "Respuesta incorrecta",
+                        text: `Respuesta incorrecta: Hay flechas apuntando al mismo número: ${error.join(', ')}.`,
                         icon: "error"
                     });
                 } else {
-
                     swal({
-                        title: "Exito.",
+                        title: "Éxito.",
                         text: "Respuesta correcta",
                         icon: "success"
                     });
@@ -209,15 +209,166 @@
                     icon: "error"
                 });
             }
-
         }
 
-        function removeArray(data, valor1, valor2) {
-            return data.filter(item => item.valor1 !== valor1 || item.valor2 !== valor2)
+        // Función para configurar el canvas de Fabric.js y añadir todos los objetos iniciales
+        function setupCanvasAndObjects() {
+            canvas.clear(); // Limpia los objetos existentes para un lienzo limpio
+            arrayRespuestas = []; // Limpia las respuestas actuales
+
+            // Define propiedades de las elipses
+            const sourceEllipseX = 200;
+            const targetEllipseX = 600;
+            const ellipseCenterY = 300;
+            const ellipseRx = 80; // Radio horizontal
+            const ellipseRy = 200; // Radio vertical (para que sea achatada y alta)
+
+            // Crear elipses
+            let sourceEllipse = new fabric.Ellipse({
+                left: sourceEllipseX,
+                top: ellipseCenterY,
+                rx: ellipseRx,
+                ry: ellipseRy,
+                fill: 'rgba(100,100,255,0.3)', // Relleno azul claro
+                stroke: 'blue',
+                strokeWidth: 2,
+                selectable: false,
+                evented: false
+            });
+
+            let targetEllipse = new fabric.Ellipse({
+                left: targetEllipseX,
+                top: ellipseCenterY,
+                rx: ellipseRx,
+                ry: ellipseRy,
+                fill: 'rgba(100,255,100,0.3)', // Relleno verde claro
+                stroke: 'green',
+                strokeWidth: 2,
+                selectable: false,
+                evented: false
+            });
+
+            canvas.add(sourceEllipse, targetEllipse);
+
+            // Posiciones para los números dentro de las elipses
+            // Distribuir los números verticalmente dentro de la elipse
+            const numYPositions = [
+                ellipseCenterY - ellipseRy + 50,    // Superior
+                ellipseCenterY - ellipseRy / 3,      // Medio superior
+                ellipseCenterY + ellipseRy / 3,      // Medio inferior
+                ellipseCenterY + ellipseRy - 50      // Inferior
+            ];
+
+            // Crear números de texto de destino (estos son objetivos estáticos)
+            // Asignar a variables globales para que el listener 'object:moving' pueda acceder a ellos
+            text1 = makeTextMove(targetEllipseX, numYPositions[0], '20', false);
+            text2 = makeTextMove(targetEllipseX, numYPositions[1], '10', false);
+            text3 = makeTextMove(targetEllipseX, numYPositions[2], '15', false);
+            text4 = makeTextMove(targetEllipseX, numYPositions[3], '25', false);
+
+            canvas.add(text1, text2, text3, text4);
+
+            // Coordenada X de inicio para las líneas y triángulos (más a la derecha)
+            // Ajustado de +20 a +5 para acercar las flechas
+            const lineAndTriangleStartX = sourceEllipseX + ellipseRx + 0; // 5px a la derecha del borde de la elipse
+
+            // Crear números de texto de origen (estáticos)
+            let textNum1 = makeText(sourceEllipseX, numYPositions[0], '1', null);
+            let textNum2 = makeText(sourceEllipseX, numYPositions[1], '2', null);
+            let textNum3 = makeText(sourceEllipseX, numYPositions[2], '3', null);
+            let textNum4 = makeText(sourceEllipseX, numYPositions[3], '4', null);
+
+            // Crear líneas y triángulos arrastrables
+            // Las líneas comienzan desde la nueva 'lineAndTriangleStartX'
+            let line1 = makeLine([lineAndTriangleStartX, numYPositions[0], lineAndTriangleStartX, numYPositions[0]]);
+            let triangle1 = makeTringle(lineAndTriangleStartX, numYPositions[0], '1', line1);
+
+            let line2 = makeLine([lineAndTriangleStartX, numYPositions[1], lineAndTriangleStartX, numYPositions[1]]);
+            let triangle2 = makeTringle(lineAndTriangleStartX, numYPositions[1], '2', line2);
+
+            let line3 = makeLine([lineAndTriangleStartX, numYPositions[2], lineAndTriangleStartX, numYPositions[2]]);
+            let triangle3 = makeTringle(lineAndTriangleStartX, numYPositions[2], '3', line3);
+
+            let line4 = makeLine([lineAndTriangleStartX, numYPositions[3], lineAndTriangleStartX, numYPositions[3]]);
+            let triangle4 = makeTringle(lineAndTriangleStartX, numYPositions[3], '4', line4);
+
+            canvas.add(textNum1, line1, triangle1, textNum2, line2, triangle2, textNum3, line3, triangle3, textNum4, line4, triangle4);
+
+            canvas.renderAll(); // Renderizar después de añadir todos los nuevos objetos
         }
 
+        // Función para reiniciar el escenario
+        function resetScenario() {
+            setupCanvasAndObjects(); // Re-configura todos los objetos
+        }
+
+        // Listener para cuando el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', function () {
+            try {
+                // Inicializar canvas una vez
+                canvas = new fabric.Canvas('myCanvas', { selection: false });
+                fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
+
+                // Configuración inicial del canvas y los objetos
+                setupCanvasAndObjects();
+
+                // Adjuntar listener object:moving una sola vez al canvas
+                canvas.on('object:moving', function (e) {
+                    var p = e.target; // El objeto que se está moviendo (será un triángulo)
+                    getCordenadasMouse(e.target); // Asegura que el triángulo no rote
+
+                    if (p.line) {
+                        // Actualiza el punto final de la línea para que siga al triángulo
+                        p.line.set({ 'x2': p.left, 'y2': p.top });
+                    }
+
+                    // Reiniciar colores de los textos de destino a sus valores por defecto
+                    // Accediendo a las variables globales text1-text4 que fueron re-asignadas en setupCanvasAndObjects
+                    text1.set('fill', '#393939'); // Color por defecto para 20, 15, 25
+                    text2.set('fill', 'green');  // Color por defecto para 10
+                    text3.set('fill', '#393939');
+                    text4.set('fill', '#393939');
+
+                    // Filtrar respuestas para el objeto que se está moviendo actualmente
+                    // Esto elimina cualquier asociación previa del triángulo que se está moviendo
+                    arrayRespuestas = arrayRespuestas.filter(item => item.valor1 !== p.name);
+
+                    // Comprobar solapamiento y actualizar arrayRespuestas y colores de texto de destino
+                    if (validarCirculo(p.left, p.top, text1.left, text1.top)) {
+                        arrayRespuestas.push({ valor1: p.name, valor2: text1.name });
+                        text1.set('fill', '#BCBCBC'); // Color de resaltado
+                    }
+                    if (validarCirculo(p.left, p.top, text2.left, text2.top)) {
+                        arrayRespuestas.push({ valor1: p.name, valor2: text2.name });
+                        text2.set('fill', 'pink'); // Color de resaltado
+                    }
+                    if (validarCirculo(p.left, p.top, text3.left, text3.top)) {
+                        arrayRespuestas.push({ valor1: p.name, valor2: text3.name });
+                        text3.set('fill', '#BCBCBC'); // Color de resaltado
+                    }
+                    if (validarCirculo(p.left, p.top, text4.left, text4.top)) {
+                        arrayRespuestas.push({ valor1: p.name, valor2: text4.name });
+                        text4.set('fill', '#BCBCBC'); // Color de resaltado
+                    }
+
+                    canvas.renderAll(); // Volver a renderizar el canvas para mostrar los cambios
+                });
+
+                // Adjuntar listeners de eventos a los botones
+                document.getElementById('validateBtn').addEventListener('click', validarRespuests);
+                document.getElementById('resetBtn').addEventListener('click', resetScenario);
+
+            } catch (e) {
+                console.error("Error durante la inicialización del escenario:", e);
+                swal({
+                    title: "Error al cargar el escenario",
+                    text: "Hubo un problema al inicializar la actividad. Por favor, inténtalo de nuevo. Detalles: " + e.message,
+                    icon: "error",
+                    button: "Entendido",
+                });
+            }
+        });
     </script>
-
 </body>
 
 </html>
