@@ -122,7 +122,7 @@
             // El ángulo inicial de 90 grados hace que apunte hacia la derecha.
             // 'selectable: true' permite arrastrarlo.
             // 'hasControls' y 'hasBorders' son false para una apariencia limpia.
-            let c = new fabric.Triangle({ name: text, top: top, left: left, width: 20, height: 20, fill: 'blue', angle: 90, selectable: true });
+            let c = new fabric.Triangle({ name: text, top: top, left: left, width: 15, height: 15, fill: 'blue', angle: 90, selectable: true });
             c.hasControls = c.hasBorders = false;
             c.line = line; // Asocia la línea a la que pertenece este triángulo
             return c;
@@ -269,8 +269,8 @@
             canvas.add(text1, text2, text3, text4);
 
             // Coordenada X de inicio para las líneas y triángulos (más a la derecha)
-            // Ajustado de +20 a +5 para acercar las flechas
-            const lineAndTriangleStartX = sourceEllipseX + ellipseRx + 0; // 5px a la derecha del borde de la elipse
+        
+            const lineAndTriangleStartX = sourceEllipseX + ellipseRx + 40; // 4px a la derecha del borde de la elipse
 
             // Crear números de texto de origen (estáticos)
             let textNum1 = makeText(sourceEllipseX, numYPositions[0], '1', null);
