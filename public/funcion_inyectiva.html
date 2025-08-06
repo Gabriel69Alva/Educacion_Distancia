@@ -121,7 +121,7 @@
         function makeTringle(left, top, text, line) {
             // Ángulo inicial de 90 grados para que apunte hacia la derecha.
             // 'selectable: true' permite arrastrarlo.
-            let c = new fabric.Triangle({ name: text, top: top, left: left, width: 13, height: 15, fill: 'blue', angle: 90, selectable: true });
+            let c = new fabric.Triangle({ name: text, top: top, left: left, width: 13, height: 15, fill: 'gray', angle: 90, selectable: true });
             c.hasControls = c.hasBorders = false;
             c.line = line; // Asocia la línea a la que pertenece este triángulo
             return c;
@@ -144,8 +144,8 @@
 
         function makeLine(coords) {
             return new fabric.Line(coords, {
-                fill: 'blue',
-                stroke: 'blue',
+                fill: 'gray',
+                stroke: 'gray',
                 strokeWidth: 3,
                 selectable: false, // Las líneas no son seleccionables
                 evented: false,    // Las líneas no disparan eventos de mouse
@@ -241,8 +241,8 @@
                 top: ellipseCenterY,
                 rx: ellipseRx,
                 ry: ellipseRy,
-                fill: 'rgba(100,100,255,0.3)', // Relleno azul claro
-                stroke: 'blue',
+                fill: 'lightblue', // Relleno azul claro
+                stroke: '#208FD3',
                 strokeWidth: 2,
                 selectable: false,
                 evented: false
