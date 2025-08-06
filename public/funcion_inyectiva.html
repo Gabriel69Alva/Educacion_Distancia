@@ -119,10 +119,9 @@
 
         // Funciones auxiliares para la creación de objetos Fabric.js
         function makeTringle(left, top, text, line) {
-            // El ángulo inicial de 90 grados hace que apunte hacia la derecha.
+            // Ángulo inicial de 90 grados para que apunte hacia la derecha.
             // 'selectable: true' permite arrastrarlo.
-            // 'hasControls' y 'hasBorders' son false para una apariencia limpia.
-            let c = new fabric.Triangle({ name: text, top: top, left: left, width: 15, height: 15, fill: 'blue', angle: 90, selectable: true });
+            let c = new fabric.Triangle({ name: text, top: top, left: left, width: 13, height: 15, fill: 'blue', angle: 90, selectable: true });
             c.hasControls = c.hasBorders = false;
             c.line = line; // Asocia la línea a la que pertenece este triángulo
             return c;
@@ -145,9 +144,9 @@
 
         function makeLine(coords) {
             return new fabric.Line(coords, {
-                fill: 'red',
-                stroke: 'red',
-                strokeWidth: 5,
+                fill: 'blue',
+                stroke: 'blue',
+                strokeWidth: 3,
                 selectable: false, // Las líneas no son seleccionables
                 evented: false,    // Las líneas no disparan eventos de mouse
             });
@@ -161,14 +160,27 @@
 
         function getCordenadasMouse(objeto) {
             // Esta función se llama cuando un objeto se mueve.
-            // Solo aplica lógica de ángulo si el objeto NO es un triángulo (punta de flecha).
-            // Esto asegura que los triángulos (puntas de flecha) no giren al ser arrastrados.
-            if (objeto.type !== 'triangle') {
-                let angulo;
-                if (objeto.line) {
-                    angulo = (180 / Math.PI) * Math.atan2((objeto.line.get('y1') - objeto.top), (objeto.line.get('x1') - objeto.left)) + 90;
-                }
-                objeto.set('angle', angulo);
+            // Aplica la lógica de ángulo al triángulo para que gire con la línea.
+            if (objeto.type === 'triangle' && objeto.line) {
+                const startX = objeto.line.get('x1');
+                const startY = objeto.line.get('y1');
+                const endX = objeto.left;
+                const endY = objeto.top;
+
+                // Calcula el ángulo de la línea usando Math.atan2 (en radianes)
+                // Math.atan2(deltaY, deltaX) devuelve el ángulo desde el eje X positivo (hacia la derecha).
+                const angleRadians = Math.atan2(endY - startY, endX - startX);
+
+                // Convierte radianes a grados
+                let angleDegrees = angleRadians * (180 / Math.PI);
+
+                // Ajusta el ángulo. Si el triángulo apunta a 90 grados (derecha) por defecto,
+                // entonces el ángulo de la línea es directamente el ángulo de rotación necesario.
+                // Fabric.js rota en sentido horario desde la posición de 0 grados (arriba).
+                // Si la línea apunta a 0 grados (derecha), el triángulo debe estar a 90 grados.
+                // Si la línea apunta a 90 grados (abajo), el triángulo debe estar a 180 grados.
+                // La fórmula `angleDegrees + 90` logra esto.
+                objeto.set('angle', angleDegrees + 90);
             }
         }
 
@@ -268,9 +280,8 @@
 
             canvas.add(text1, text2, text3, text4);
 
-            // Coordenada X de inicio para las líneas y triángulos (más a la derecha)
-        
-            const lineAndTriangleStartX = sourceEllipseX + ellipseRx + 40; // 4px a la derecha del borde de la elipse
+            // Coordenada X de inicio para las líneas y triángulos (más a la derecha de los números de origen)
+            const lineAndTriangleStartX = sourceEllipseX + ellipseRx + 40; // 40px a la derecha del borde de la elipse
 
             // Crear números de texto de origen (estáticos)
             let textNum1 = makeText(sourceEllipseX, numYPositions[0], '1', null);
@@ -315,7 +326,7 @@
                 // Adjuntar listener object:moving una sola vez al canvas
                 canvas.on('object:moving', function (e) {
                     var p = e.target; // El objeto que se está moviendo (será un triángulo)
-                    getCordenadasMouse(e.target); // Asegura que el triángulo no rote
+                    getCordenadasMouse(e.target); // Asegura que el triángulo rote con la línea
 
                     if (p.line) {
                         // Actualiza el punto final de la línea para que siga al triángulo
