@@ -105,13 +105,41 @@
 </head>
 
 <body>
+  <div class="main-container">
+    <p class="user-prompt">\(\text{Crea una función suprayectiva de}\) \([-3,3]\) a \([-4,4]\)</p>
+    <div id="jxgbox"></div>
+
+    <div class="button-container">
+    <button id="validateButton">Validar Función Suprayectiva</button>
+    <button id="resetButton" class="reset-button">Reinicializar Escenario</button>
+  </div>
+    
+    <p class="help-message">\(\text{Pista: Puedes arrastrar los puntos de control verdes y los extremos del intervalopara modificar la curva.} \)
+   </p>
+  </div>
+
+    <script src="js/bezier_suprayectiva.js"></script>
+
+     <script
+        type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath:  [['$','$'],['\\(','\\)']]}});</script>
+
+    <script src="js/jquery.2.2.4.js"></script>
+
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+
+</body>
+<!--  
+<body>
   <div id="jxgbox"></div>
   <div class="button-container">
     <button id="validateButton">Validar Función Suprayectiva</button>
     <button id="resetButton" class="reset-button">Reinicializar Escenario</button>
   </div>
+</body>  -->
 
-  <script src="js/bezier_suprayectiva.js"></script>
+
 
 
 </html>
