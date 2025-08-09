@@ -1,145 +1,252 @@
-:root{
-  --bg: #f7f8f9; /* fondo general muy claro */
-  --card: #f2f4f6; /* fondo de la tarjeta de instrucciones (gris muy suave) */
-  --muted: #6b7280; /* texto secundario */
-  --accent: #4f46e5; /* color de acento */
+:root {
+  --bg: #f7f8f9;
+  /* fondo general muy claro */
+  --card: #f2f4f6;
+  /* fondo de la tarjeta de instrucciones (gris muy suave) */
+  --muted: #6b7280;
+  /* texto secundario */
+  --accent: #4f46e5;
+  /* color de acento */
   --radius: 14px;
   --max-w: 980px;
   --gap: 20px;
-  --shadow: 0 6px 20px rgba(16,24,40,0.06);
+  --shadow: 0 6px 20px rgba(16, 24, 40, 0.06);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
-html,body{
-  height:100%;
-  margin:0;
-  background:var(--bg);
-  color:#0f172a;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.page{
-  min-height:100vh;
-  display:flex;
-  align-items:flex-start;
-  justify-content:center;
-  padding:48px 20px;
+.page {
+  min-height: 110vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 20px;
 }
 
-.interactive-wrapper{
-  width:100%;
-  max-width:var(--max-w);
-  display:grid;
-  grid-template-rows:auto 1fr auto;
-  gap:var(--gap);
+.interactive-wrapper {
+  width: 100%;
+  max-width: var(--max-w);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--gap);
 }
 
 /* Instrucciones: rectángulo moderno */
-.instructions{
-  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(242,244,246,1));
-  border:1px solid rgba(15,23,42,0.04);
-  box-shadow:var(--shadow);
-  border-radius:var(--radius);
-  padding:22px 24px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  align-items:flex-start;
+.instructions {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(242, 244, 246, 1));
+  border: 1px solid rgba(15, 23, 42, 0.04);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
 }
 
-.instructions .title{
-  display:flex;
-  align-items:center;
-  gap:12px;
+.instructions .title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.instructions h2{
-  margin:0;
-  font-size:18px;
+.instructions h2 {
+  margin: 0;
+  font-size: 18px;
   letter-spacing: -0.2px;
 }
 
-.instructions p{
-  margin:0;
-  color:var(--muted);
-  line-height:1.45;
+.instructions p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
 }
 
 /* Opcional: lista de pasos dentro de instrucciones */
-.steps{
-  margin-top:6px;
-  padding-left:16px;
-  color:var(--muted);
+.steps {
+  margin-top: 6px;
+  padding-left: 16px;
+  color: var(--muted);
 }
 
 /* Stage: área del escenario */
-.stage{
-  background:linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-  border-radius:12px;
-  border:1px solid rgba(16,24,40,0.04);
-  min-height:320px; /* tamaño base del escenario */
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  overflow:hidden;
-  padding:18px;
-  box-shadow: 0 10px 30px rgba(15,23,42,0.04);
+.stage {
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(16, 24, 40, 0.04);
+  margin: 0 auto;
+  min-height: 700px;
+  /* tamaño base del escenario */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 18px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
 }
 
 /* Contenido placeholder dentro del escenario (el desarrollador reemplaza con su interacción) */
-.stage .placeholder{
-  width:100%;
-  height:100%;
-  max-height:560px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border:2px dashed rgba(99,102,241,0.14);
-  border-radius:10px;
-  background: repeating-linear-gradient(45deg, rgba(99,102,241,0.02) 0 8px, transparent 8px 16px);
-  color:var(--muted);
-  text-align:center;
-  padding:28px;
-  box-sizing:border-box;
+.stage .placeholder {
+  width: 100%;
+  height: 100%;
+  max-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed rgba(99, 102, 241, 0.14);
+  border-radius: 10px;
+  background: repeating-linear-gradient(45deg, rgba(99, 102, 241, 0.02) 0 8px, transparent 8px 16px);
+  color: var(--muted);
+  text-align: center;
+  padding: 28px;
+  box-sizing: border-box;
+}
+
+/* Estilos para el contenedor del tablero JXG.JSXGraph */
+#jxgbox {
+  width: 90vw;
+  /* Ancho responsivo */
+  max-width: 700px;
+  /* Ancho máximo para pantallas grandes */
+  height: 40vh;
+  /* Altura responsiva */
+  min-height: 300px;
+  /* Altura mínima */
+  background-color: #fff;
+  border-radius: 12px;
+  /* Esquinas más redondeadas */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  /* Sombra más pronunciada */
+  margin-bottom: 20px;
+  /* Espacio debajo del tablero */
+  overflow: hidden;
+  /* Asegura que no haya desbordamiento */
 }
 
 /* Caja de pistas */
-.hints{
-  background:transparent;
-  border-radius:10px;
-  padding:14px 18px;
-  border:1px dashed rgba(15,23,42,0.03);
-  color:var(--muted);
-  font-size:15px;
+.hints {
+  background: transparent;
+  border-radius: 10px;
+  padding: 0px 18px;
+  border: 1px dashed rgba(15, 23, 42, 0.03);
+  color: var(--muted);
+  font-size: 15px;
 }
 
-.hint-title{
-  font-weight:600;
-  color:#0f172a;
-  margin-bottom:8px;
-  font-size:14px;
+.hint-title {
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 8px;
+  font-size: 14px;
 }
 
 /* Boton pequeño opcional para mostrar/ocultar pistas (mejora UX)
    Se deja funcional si quieres añadir JS */
-.hint-toggle{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  background:transparent;
-  border:none;
-  color:var(--accent);
-  cursor:pointer;
-  font-weight:600;
-  padding:6px 8px;
-  border-radius:8px;
+.hint-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: 600;
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+/* Estilos generales para el cuerpo de la página */
+body {
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 107vh;
+  margin: 20px;
+  background-color: #f0f2f5;
+  /* Un fondo suave */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+
+/* Estilos para los botones de validación */
+.button-container {
+  display: flex;
+  gap: 35px;
+  align-items: center;
+  justify-content: center;
+  /* Espacio entre botones */
+  margin-top: 20px;
+}
+
+button {
+  padding: 14px 28px;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: #3498db;
+  /* Azul vibrante */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  /* Esquinas redondeadas */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  /* Sombra para el botón */
+  outline: none;
+  /* Elimina el contorno al hacer clic */
+}
+
+button:hover {
+  background-color: #2980b9;
+  /* Azul más oscuro al pasar el ratón */
+  transform: translateY(-3px);
+  /* Efecto de "levantar" */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
+
+button:active {
+  background-color: #2c3e50;
+  /* Azul muy oscuro al hacer clic */
+  transform: translateY(0);
+  /* Vuelve a su posición original */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo específico para el botón de reinicio */
+button.reset-button {
+  background-color: #e74c3c;
+  /* Rojo para reiniciar */
+}
+
+button.reset-button:hover {
+  background-color: #c0392b;
+  /* Rojo más oscuro al pasar el ratón */
 }
 
 /* Responsive */
-@media (max-width:720px){
-  .page{padding:28px 14px}
-  .instructions{padding:16px}
-  .stage{min-height:220px}
+@media (max-width:720px) {
+  .page {
+    padding: 28px 14px
+  }
+
+  .instructions {
+    padding: 16px
+  }
+
+  .stage {
+    min-height: 220px
+  }
 }
