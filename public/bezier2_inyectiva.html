@@ -34,7 +34,12 @@
 
         <!-- Sección: Instrucciones -->
         <section class="instructions" aria-labelledby="instr-title">
+            <div class="question-card">
+                <h2>1. Utiliza el siguiente escenario para formar la gráfica de una función inyectiva.</h2>
+            </div>
+            <br/>
             <div class="title">
+                
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <rect x="2" y="2" width="20" height="20" rx="6" fill="#eef2ff"></rect>
                     <path d="M7 12h10M7 8h10M7 16h7" stroke="#4f46e5" stroke-width="1.5" stroke-linecap="round"
@@ -42,56 +47,51 @@
                 </svg>
                 <h2 id="instr-title">Instrucciones</h2>
             </div>
-            <p>Lee atentamente las instrucciones del escenario antes de interactuar. Todo lo que necesitas saber para
-                comenzar aparece aquí.</p>
+            <p>Lee atentamente las instrucciones del escenario antes de interactuar.</p>
 
             <ol class="steps">
                 <li>Observa el escenario y los elementos disponibles.</li>
-                <li>Utiliza las herramientas en pantalla para manipular el escenario.</li>
-                <li>Si quedas atascado, consulta las pistas al final.</li>
+                <li>Utiliza los puntos de control P y Q y los puntos G y H en pantalla para manipular la gráfica.</li>
+                <li>Presiona el botón validar cuando termines tu ejercicio y el botón reinicializar para intentar nuevamente.</li>
             </ol>
 
             <!-- Escenario interactivo -->
             <div class="stage" aria-label="Escenario interactivo">
                 <div class="placeholder" role="region" aria-live="polite">
-                    <!-- Reemplaza este contenido con tu canvas, iframe, o elementos interactivos -->
+                    <!-- Canvas, iframe, o elementos interactivos -->
                     <div>
                         <strong>Escenario interactivo</strong>
-                        <div id="jxgbox" style="margin-top:8px;color:var(--muted);font-size:14px;">Aquí va el canvas,
-                            juego o
-                            simulación.</div>
+                        <div id="jxgbox" style="margin-top:30px; color:var(--muted);font-size:14px;"> </div>
                             <div class="button-container">
-                            <button id="validateButton">Validar Función Inyectiva</button>
-                            <button id="resetButton" class="reset-button">Reinicializar Escenario</button>
+                                <button id="validateButton">Validar Función Inyectiva</button>
+                                <button id="resetButton" class="reset-button">Reinicializar Escenario</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div>
-                <h3>Pistas</h3>
-                 </ul>
-                <p>Las pistas aparecerán en la parte inferior de la pantalla.</p>
+                <!-- Botón visual -->
+                 <button class="hint-toggle" aria-expanded="true">Pistas</button>
+                 <br/>
                 
                 <ul class="hints">
                 
-                    <li>Prueba a mover los puntos de control de la curva.</li>
+                    <li>Prueba mover los puntos de control de la curva.</li>
                     <li>Observa cómo cambian las coordenadas en el gráfico.</li>
                     <li>Recuerda que una función es inyectiva si no hay dos puntos en el dominio que se mapeen al mismo
                         punto en el codominio.</li>
                
                 </ul>
-                <!-- Botón visual -->
-                 <button class="hint-toggle" aria-expanded="true">Mostrar/Ocultar</button>
+                
             </div>
 
-
         </section>
+        <script src="js/bezier_inyectiva.js"></script>
 
     </main>
-    <script src="js/bezier_inyectiva.js"></script>
-
+    
 </body>
-
 
 </html>
