@@ -52,8 +52,8 @@ document.addEventListener('DOMContentLoaded', function () {
         glider1 = brd.create('glider', [-3, 0, l1_left_guide], { size: 4, color: 'turquoise' });
         glider2 = brd.create('glider', [3, 0, l2_right_guide], { size: 4, color: 'orange' });
 
-        p5 = brd.create('point', [0, 0], { size: 3, color: 'green' });
-        p6 = brd.create('point', [0, 0], { size: 3, color: 'green' });
+        p5 = brd.create('point', [0, 0], { size: 3, color: 'green', face: 'square' });
+        p6 = brd.create('point', [0, 0], { size: 3, color: 'green', face: 'square' });
 
         p.push(glider1, p5, p6, glider2);
 

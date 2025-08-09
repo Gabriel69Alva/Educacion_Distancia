@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estructura general de los escenarios</title>
+    <!-- Carga de JXG.JSXGraph CSS y JS -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraph.css" />
+
+ <!-- Enlace a la fuente Inter para una mejor estética -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <!--<link rel="stylesheet" href="css/style.css">-->
+    <link rel="stylesheet" href="css/style_moder.css">
+    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraphcore.js"></script>
+    <!-- Carga de SweetAlert JS (¡Esta es la clave para las alertas!) -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    
+
+</head>
+
+<body>
+    <main class="page">
+
+        <!-- Sección: Instrucciones -->
+        <section class="instructions" aria-labelledby="instr-title">
+            <div class="title">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect x="2" y="2" width="20" height="20" rx="6" fill="#eef2ff"></rect>
+                    <path d="M7 12h10M7 8h10M7 16h7" stroke="#4f46e5" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <h2 id="instr-title">Instrucciones</h2>
+            </div>
+            <p>Lee atentamente las instrucciones del escenario antes de interactuar. Todo lo que necesitas saber para
+                comenzar aparece aquí.</p>
+
+            <ol class="steps">
+                <li>Observa el escenario y los elementos disponibles.</li>
+                <li>Utiliza las herramientas en pantalla para manipular el escenario.</li>
+                <li>Si quedas atascado, consulta las pistas al final.</li>
+            </ol>
+        </section>
+
+        <!-- Sección: Escenario interactivo -->
+        <section class="stage" aria-label="Escenario interactivo">
+            <div class="placeholder" role="region" aria-live="polite">
+                <!-- Reemplaza este contenido con tu canvas, iframe, o elementos interactivos -->
+                <div>
+                    <strong>Escenario interactivo</strong>
+                    <div style="margin-top:8px;color:var(--muted);font-size:14px;">Aquí va el canvas, juego o
+                        simulación.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección: Pistas -->
+        <aside class="hints" aria-labelledby="hints-title">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                <div>
+                    <div id="hints-title" class="hint-title">Pistas</div>
+                    <div class="hint-text">Si necesitas ayuda: prueba interactuar con el objeto más grande, o mira las
+                        opciones en la esquina superior derecha del escenario.</div>
+                </div>
+                <!-- Botón visual; puedes añadir funcionalidad con JS -->
+                <button class="hint-toggle" aria-expanded="true">Mostrar/Ocultar</button>
+            </div>
+        </aside>
+
+    </main>
+
+</body>
+
+</html>
