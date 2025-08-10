@@ -265,3 +265,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+const toggleButton = document.querySelector('.hint-toggle');
+  const hintsList = document.querySelector('.hints');
+
+  toggleButton.addEventListener('click', () => {
+    hintsList.classList.toggle('visible');
+    const isVisible = hintsList.classList.contains('visible');
+    toggleButton.setAttribute('aria-expanded', isVisible);
+  });
