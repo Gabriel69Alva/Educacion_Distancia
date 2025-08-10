@@ -70,6 +70,15 @@ document.addEventListener('DOMContentLoaded', function () {
         var l1_left_guide = brd.create('line', [p1_line_left, p2_line_left], { visible: false });
         var l2_right_guide = brd.create('line', [p3_line_right, p4_line_right], { visible: false });
 
+        //Creación de puntos para formar el intervalo de definición de la función
+        var p5_line = brd.create('point', [-3, 0], { name: 'E', face: 'square', visible: false });
+        var p6_line = brd.create('point', [3, 0], { name: 'F', face: 'square', visible: false });
+        // Crear líneas horizontales invisibles para los puntos E y F.
+        var l3_horizontal = brd.create('segment', [p5_line, p6_line], { color: 'lightblue', size: 15, strokeWidth: 5, layer: 0, visible: true });
+
+
+
+
         // Creación de los "gliders" (puntos que se deslizan sobre una línea)
         // Se inicializan con valores temporales, se moverán a posiciones aleatorias después.
         glider1 = brd.create('glider', [-3, 0, l1_left_guide], { name: 'G', size: 4, color: 'turquoise', fixed: false });
@@ -100,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Creación de la curva de Bezier
         curve = brd.create('curve', JXG.Math.Numerics.bezier(p), {
-            strokeColor: 'blue',
+            strokeColor: 'darkblue',
             strokeOpacity: 0.8, // Un poco más opaca
             strokeWidth: 3, // Ligeramente más gruesa para mejor visibilidad
             needsRegularUpdate: true // Asegura que la curva se actualice al mover los puntos

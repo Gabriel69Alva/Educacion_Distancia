@@ -2,109 +2,23 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Validación de Función Inyectiva con Curvas de Bezier</title>
-  <!-- Carga de JXG.JSXGraph CSS y JS -->
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraph.css" />
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraphcore.js"></script>
-  <!-- Carga de SweetAlert JS (¡Esta es la clave para las alertas!) -->
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-  <!-- Enlace a la fuente Inter para una mejor estética -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    /* Estilos generales para el cuerpo de la página */
-    body {
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      background-color: #f0f2f5;
-      /* Un fondo suave */
-      padding: 20px;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validación de Función Inyectiva con Curvas de Bezier</title>
+    <!-- Carga de JXG.JSXGraph CSS y JS -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraph.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraphcore.js"></script>
+    <!-- Carga de SweetAlert JS (¡Esta es la clave para las alertas!) -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <!-- Enlace a la fuente Inter para una mejor estética -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!--<link rel="stylesheet" href="css/style.css">-->
+    <link rel="stylesheet" href="css/style_moder.css">
 
-    /* Estilos para el contenedor del tablero JXG.JSXGraph */
-    #jxgbox {
-      width: 90vw;
-      /* Ancho responsivo */
-      max-width: 800px;
-      /* Ancho máximo para pantallas grandes */
-      height: 60vh;
-      /* Altura responsiva */
-      min-height: 300px;
-      /* Altura mínima */
-      background-color: #fff;
-      border-radius: 12px;
-      /* Esquinas más redondeadas */
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-      /* Sombra más pronunciada */
-      margin-bottom: 20px;
-      /* Espacio debajo del tablero */
-      overflow: hidden;
-      /* Asegura que no haya desbordamiento */
-    }
 
-    /* Estilos para los botones de validación */
-    .button-container {
-      display: flex;
-      gap: 15px;
-      /* Espacio entre botones */
-      margin-top: 10px;
-    }
-
-    button {
-      padding: 14px 28px;
-      font-size: 18px;
-      font-weight: 600;
-      background-color: #3498db;
-      /* Azul vibrante */
-      color: white;
-      border: none;
-      border-radius: 8px;
-      /* Esquinas redondeadas */
-      cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      /* Sombra para el botón */
-      outline: none;
-      /* Elimina el contorno al hacer clic */
-    }
-
-    button:hover {
-      background-color: #2980b9;
-      /* Azul más oscuro al pasar el ratón */
-      transform: translateY(-3px);
-      /* Efecto de "levantar" */
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
-    }
-
-    button:active {
-      background-color: #2c3e50;
-      /* Azul muy oscuro al hacer clic */
-      transform: translateY(0);
-      /* Vuelve a su posición original */
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-    /* Estilo específico para el botón de reinicio */
-    button.reset-button {
-      background-color: #e74c3c;
-      /* Rojo para reiniciar */
-    }
-
-    button.reset-button:hover {
-      background-color: #c0392b;
-      /* Rojo más oscuro al pasar el ratón */
-    }
-  </style>
 </head>
 
-<body>
+<!--<body>
   <div id="jxgbox"></div>
   <div class="button-container">
     <button id="validateButton">Validar Función Inyectiva</button>
@@ -113,5 +27,84 @@
 
   <script src="js/bezier_inyectiva.js"></script>
 
+</body> -->
+
+<body>
+    <main class="page">
+        
+        <!-- Sección: Instrucciones -->
+        <section class="instructions" aria-labelledby="instr-title">
+            <div class="question-card title">
+                <h1>Actividad 1. <span>Utiliza el siguiente escenario para formar la gráfica de una función inyectiva en el intervalo \([-3, 3]\)</span> </h1>
+                <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 24 24" fill="none"
+                    stroke="#5856d6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+                    <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+                    <path d="M3 6l0 13" />
+                    <path d="M12 6l0 13" />
+                    <path d="M21 6l0 13" />
+                </svg>
+            </div>
+            <br />
+            <div class="title">
+
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect x="2" y="2" width="20" height="20" rx="6" fill="#eef2ff"></rect>
+                    <path d="M7 12h10M7 8h10M7 16h7" stroke="#4f46e5" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <h2 id="instr-title">Instrucciones</h2>
+            </div>
+            <p>Lee atentamente las instrucciones del escenario antes de interactuar.</p>
+
+            <ol class="steps">
+                <li>Observa el escenario y los elementos disponibles.</li>
+                <li>Utiliza los puntos de control P y Q y los puntos G y H en pantalla para manipular la gráfica.</li>
+                <li>Presiona el botón validar cuando termines tu ejercicio y el botón reinicializar para intentar
+                    nuevamente.</li>
+            </ol>
+
+            <!-- Escenario interactivo -->
+            <div class="stage" aria-label="Escenario interactivo">
+                <div class="placeholder" role="region" aria-live="polite">
+                    <!-- Canvas, iframe, o elementos interactivos -->
+                    <div>
+                        <strong>Escenario interactivo</strong>
+                        <div id="jxgbox" style="margin-top:30px; color:var(--muted);font-size:14px;"> </div>
+                        <div class="button-container">
+                            <button id="validateButton">Validar Función Inyectiva</button>
+                            <button id="resetButton" class="reset-button">Reinicializar Escenario</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <div>
+                <!-- Botón visual -->
+                <button class="hint-toggle" aria-expanded="False">Pistas</button>
+                <br />
+
+                <ul class="hints">
+
+                    <li>Prueba mover los puntos de control de la curva.</li>
+                    <li>Observa cómo cambian las coordenadas en el gráfico.</li>
+                    <li>Recuerda que una función es inyectiva si no hay dos puntos en el dominio que se mapeen al mismo
+                        punto en el codominio.</li>
+
+                </ul>
+
+            </div>
+
+        </section>
+        <script src="js/bezier_inyectiva.js"></script>
+        <script
+        type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath:  [['$','$'],['\\(','\\)']]}});</script>
+        <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+    </main>
+
+</body>
 
 </html>
