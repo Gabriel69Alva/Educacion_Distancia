@@ -1,3 +1,7 @@
+// Variables del juego
+let lives = 3;
+let score = 0;
+
 // Array global para almacenar y eliminar los puntos resaltados
 let highlightedPoints = [];
 // Variable global para almacenar la curva
@@ -84,6 +88,47 @@ function curvaY(t) {
            3 * (1 - t) * Math.pow(t, 2) * p6.Y() +
            Math.pow(t, 3) * glider2.Y();
 }
+
+function loseLife() {
+    if (lives > 0) {
+        const lifeEl = document.getElementById(`life${lives}`);
+        lifeEl.classList.add('blink');
+        setTimeout(() => {
+            lifeEl.classList.remove('blink');
+            lifeEl.classList.add('fall');
+        }, 400);
+
+        lives--;
+        if (lives === 0) {
+            swal({
+                title: "¡Juego terminado!",
+                text: "Te has quedado sin tréboles.",
+                icon: "error",
+                button: "Reiniciar"
+            }).then(() => {
+                location.reload();
+            });
+        }
+    }
+}
+
+function winPoint() {
+    score++;
+    document.getElementById('score').textContent = score;
+    if (score === 3) {
+        swal({
+            title: "¡Ganaste!",
+            text: "Completaste las 3 funciones inyectivas.",
+            icon: "success",
+            button: "Jugar de nuevo"
+        }).then(() => {
+            location.reload();
+        });
+    } else {
+        setRandomInitialPositions();
+    }
+}
+
 
 
 // Asegura que el DOM esté completamente cargado antes de inicializar JXG.JSXGraph
@@ -245,6 +290,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     icon: "error",
                     button: "Entendido",
                 });
+                loseLife();
                 return; // Importante: salir de la función
             }
 
@@ -295,6 +341,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     icon: "error",
                     button: "Entendido",
                 });
+                loseLife();
             } else {
                 swal({
                     title: "¡Éxito!",
@@ -302,6 +349,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     icon: "success",
                     button: "Entendido",
                 });
+                winPoint();
+
             }
         };
 

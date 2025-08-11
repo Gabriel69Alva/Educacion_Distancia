@@ -13,7 +13,7 @@
     <!-- Enlace a la fuente Inter para una mejor estética -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <!--<link rel="stylesheet" href="css/style.css">-->
-    <link rel="stylesheet" href="css/style_moder.css">
+    <link rel="stylesheet" href="css/inye.css">
 
 
 </head>
@@ -32,10 +32,10 @@
 <body>
     <main class="page">
 
-        <!-- Sección: Instrucciones -->
-        <section class="instructions" aria-labelledby="instr-title">
-            <div class="question-card title">
-                <h1>Actividad 1. <span>Utiliza el siguiente escenario para formar la gráfica de una función inyectiva en
+        <!-- Sección: Principal -->
+        <section>
+            <div class="question-card">
+                <h1>Actividad 1. <span>Utiliza el escenario para formar la gráfica de una función inyectiva en
                         el intervalo \([-3, 3]\)</span> </h1>
                 <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 24 24" fill="none"
                     stroke="#5856d6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -47,38 +47,40 @@
                 </svg>
             </div>
             <br />
-            <div class="title">
+            <!-- Bloque instrucciones y cabecera del juego -->
+            <div class="game-header">
 
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <rect x="2" y="2" width="20" height="20" rx="6" fill="#eef2ff"></rect>
-                    <path d="M7 12h10M7 8h10M7 16h7" stroke="#4f46e5" stroke-width="1.5" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                </svg>
-                <h2 id="instr-title">Instrucciones</h2>
+                <div class="instructions-container">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <rect x="2" y="2" width="15" height="15" rx="6" fill="#eef2ff"></rect>
+                        <path d="M7 12h10M7 8h10M7 16h7" stroke="#4f46e5" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    <h3 id="instr-title">Instrucciones</h3>
 
-                <div class="game-header">
-                    <div id="lives-container">
-                        <img src="trebol.png" class="life" id="life1">
-                        <img src="trebol.png" class="life" id="life2">
-                        <img src="trebol.png" class="life" id="life3">
-                    </div>
-                    <div id="score-container">
-                        Funciones inyectivas correctas: <span id="score">0</span>/3
-                    </div>
+                    <ol class="steps">
+                        <li>Observa el escenario y los elementos disponibles.</li>
+                        <li>Utiliza los puntos de control P y Q y los puntos G y H en pantalla para manipular la
+                            gráfica.</li>
+                        <li>Presiona el botón validar cuando termines tu ejercicio y el botón reinicializar para
+                            intentar nuevamente.</li>
+                    </ol>
                 </div>
 
-                <div id="box" class="stage"></div>
-
+                <!-- Bloque vidas y score -->
+                <div class="status-container">
+                    <div id="lives-container">
+                        <img src="img/trebol1.png" class="life" id="life1">
+                        <img src="img/trebol2.png" class="life" id="life2">
+                        <img src="img/trebol3.png" class="life" id="life3">
+                    </div>
+                    <p id="score-text">
+                        Funciones inyectivas correctas: <span id="score">0</span>/3
+                    </p>
+                </div>
 
             </div>
-            <p>Lee atentamente las instrucciones del escenario antes de interactuar.</p>
-
-            <ol class="steps">
-                <li>Observa el escenario y los elementos disponibles.</li>
-                <li>Utiliza los puntos de control P y Q y los puntos G y H en pantalla para manipular la gráfica.</li>
-                <li>Presiona el botón validar cuando termines tu ejercicio y el botón reinicializar para intentar
-                    nuevamente.</li>
-            </ol>
+            
 
             <!-- Escenario interactivo -->
             <div class="stage" aria-label="Escenario interactivo">

@@ -79,7 +79,7 @@ body {
   align-items: flex-start;
 }
 
-.instructions .title {
+.instructions .title{
   display: flex;
   align-items: center;
   gap: 12px;
