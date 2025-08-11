@@ -14,77 +14,29 @@ function getRandomCoord(min, max) {
 
 // Función para generar y aplicar posiciones iniciales aleatorias
 function setRandomInitialPositions() {
-    let esInyectiva = true;
-    let intentos = 0;
+    // Generar posiciones aleatorias para los gliders
+    const randomGlider1Y = getRandomCoord(-4, 4);
+    const randomGlider2Y = getRandomCoord(-4, 4);
 
-    do {
-        intentos++;
+    // Generar posiciones aleatorias para los puntos de control P y Q
+    const randomP5X = getRandomCoord(-2.5, -0.5);
+    const randomP5Y = getRandomCoord(-4, 4);
+    const randomP6X = getRandomCoord(0.5, 2.5);
+    const randomP6Y = getRandomCoord(-4, 4);
 
-        // Generar posiciones aleatorias para los gliders
-        const randomGlider1Y = getRandomCoord(-4, 4);
-        const randomGlider2Y = getRandomCoord(-4, 4);
+    // Mover los puntos a las nuevas posiciones aleatorias
+    glider1.moveTo([-3, randomGlider1Y]);
+    glider2.moveTo([3, randomGlider2Y]);
+    p5.moveTo([randomP5X, randomP5Y]);
+    p6.moveTo([randomP6X, randomP6Y]);
 
-        // Forzar "panza": P5 alto, P6 bajo (o viceversa)
-        const randomP5X = getRandomCoord(-2.5, -0.5);
-        const randomP6X = getRandomCoord(0.5, 2.5);
-        const p5Alto = Math.random() < 0.5;
-
-        const randomP5Y = p5Alto ? getRandomCoord(1.5, 4) : getRandomCoord(-4, -1.5);
-        const randomP6Y = p5Alto ? getRandomCoord(-4, -1.5) : getRandomCoord(1.5, 4);
-
-        // Mover los puntos a las nuevas posiciones
-        glider1.moveTo([-3, randomGlider1Y]);
-        glider2.moveTo([3, randomGlider2Y]);
-        p5.moveTo([randomP5X, randomP5Y]);
-        p6.moveTo([randomP6X, randomP6Y]);
-
-        brd.update();
-
-        // Comprobar si sigue siendo inyectiva
-        esInyectiva = verificarInyectividad();
-
-    } while (esInyectiva && intentos < 50); // límite de intentos por seguridad
-
-    // Limpiar puntos resaltados de validaciones anteriores
+    // Limpiar cualquier punto resaltado de una validación anterior
     highlightedPoints.forEach(point => brd.removeObject(point));
     highlightedPoints = [];
+
+    // Asegurarse de que la curva se actualice después de mover los puntos
+    brd.update();
 }
-
-// Verificación de inyectividad
-function verificarInyectividad() {
-    const muestras = 100;
-    let valoresY = new Map();
-
-    for (let i = 0; i <= muestras; i++) {
-        let t = i / muestras;
-        let x = curvaX(t);
-        let y = curvaY(t);
-
-        let yKey = y.toFixed(2);
-
-        if (valoresY.has(yKey)) {
-            return false; // no es inyectiva
-        }
-        valoresY.set(yKey, x);
-    }
-    return true; // sí es inyectiva
-}
-
-// Bezier cúbica
-function curvaX(t) {
-    return Math.pow(1 - t, 3) * glider1.X() +
-           3 * Math.pow(1 - t, 2) * t * p5.X() +
-           3 * (1 - t) * Math.pow(t, 2) * p6.X() +
-           Math.pow(t, 3) * glider2.X();
-}
-
-function curvaY(t) {
-    return Math.pow(1 - t, 3) * glider1.Y() +
-           3 * Math.pow(1 - t, 2) * t * p5.Y() +
-           3 * (1 - t) * Math.pow(t, 2) * p6.Y() +
-           Math.pow(t, 3) * glider2.Y();
-}
-
 
 // Asegura que el DOM esté completamente cargado antes de inicializar JXG.JSXGraph
 document.addEventListener('DOMContentLoaded', function () {
@@ -290,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 \nPunto 2: (${nonInjectivePoints.second.x.toFixed(2)}, ${nonInjectivePoints.second.y.toFixed(2)})`;
 
                 swal({
-                    title: "¡La gráfica no representa a una función inyectiva!",
+                    title: "¡No Inyectiva!",
                     text: mensajeError,
                     icon: "error",
                     button: "Entendido",
