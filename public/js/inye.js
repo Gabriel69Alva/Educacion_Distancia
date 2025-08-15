@@ -10,7 +10,6 @@ let curve;
 let brd;
 // Puntos de control para acceso global en la validación
 let glider1, glider2, p5, p6;
-let frozen = false; //Indica el estado del escenario
 
 // Función para obtener una coordenada aleatoria dentro de un rango
 function getRandomCoord(min, max) {
@@ -91,33 +90,49 @@ function curvaY(t) {
 }
 
 function loseLife() {
+    
     if (lives > 0) {
         const lifeEl = document.getElementById(`life${lives}`);
         lifeEl.classList.add('blink');
         setTimeout(() => {
             lifeEl.classList.remove('blink');
             lifeEl.classList.add('fall');
-        }, 400);
+        }, 1000);
 
         lives--;
+
+        swal({
+            title: "¡La función no es inyectiva! ¡Haz perdido una vida!",
+            text: "Te quedan " + lives + " tréboles.",
+            icon: "error",
+            button: "Entendido"
+        })
+
         if (lives === 0) {
-            freezeBoard(); // <-- Congelar también al quedarse sin vidas
             swal({
-                title: "¡No es una función inyectiva!",
-                text: "Te has quedado sin tréboles. ¡El Juego ha terminado!",
+                title: "¡Juego terminado!",
+                text: "Te has quedado sin tréboles.",
                 icon: "error",
                 button: "Reiniciar"
-
-            })
-                .then(() => {
-                    location.reload();
-                });
+            }).then(() => {
+                location.reload();
+            });
         }
     }
+
 
 }
 
 function winPoint() {
+    if (score < 3) {
+        // Aquí puedes agregar lógica para manejar el caso en que el jugador gana un punto pero no ha alcanzado 3 puntos aún.
+        swal({
+            title: "¡Función inyectiva!",
+            text: "Has ganado una función inyectiva, pero aún necesitas " + (2 - score) + " para ganar.",
+            icon: "info",
+            button: "Entendido"
+        });
+    }
     score++;
     document.getElementById('score').textContent = score;
     if (score === 3) {
@@ -133,61 +148,6 @@ function winPoint() {
         setRandomInitialPositions();
     }
 }
-
-// Seleccionaremos elementos del DOM después de crear el board
-
-function freezeBoard(reason) {
-    frozen = true;
-    const pts = [glider1, glider2, p5, p6];
-    pts.forEach(pt => {
-        try { pt && pt.setAttribute({ fixed: true, highlight: false }); } catch (e) { }
-    });
-    try { curve && curve.setAttribute({ fixed: true }); } catch (e) { }
-
-    // Desactivar pan/zoom por seguridad (si existen las opciones)
-    try {
-        if (brd && brd.options) {
-            brd.options.pan = brd.options.pan || {};
-            brd.options.pan.enabled = false;
-            // Asegurar modo sin interacciones de pan activas
-            if (typeof JXG !== 'undefined' && JXG.Board) brd.mode = JXG.Board.BOARD_MODE_NONE;
-        }
-    } catch (e) { console.warn(e); }
-
-    const overlay = document.getElementById('freezeOverlay');
-    const reasonEl = document.getElementById('freezeReason');
-    if (overlay) {
-        reasonEl && (reasonEl.textContent = reason || '');
-        overlay.style.display = 'flex';
-        overlay.setAttribute('aria-hidden', 'false');
-    }
-}
-
-function resetBoard() {
-    frozen = false;
-    const pts = [glider1, glider2, p5, p6];
-    pts.forEach(pt => {
-        try { pt && pt.setAttribute({ fixed: false, highlight: true }); } catch (e) { }
-    });
-    try { curve && curve.setAttribute({ fixed: false }); } catch (e) { }
-
-    // Restaurar pan (si antes estaba disponible)
-    try {
-        if (brd && brd.options && brd.options.pan) brd.options.pan.enabled = true;
-    } catch (e) { console.warn(e); }
-
-    const overlay = document.getElementById('freezeOverlay');
-    const reasonEl = document.getElementById('freezeReason');
-    if (overlay) {
-        overlay.style.display = 'none';
-        overlay.setAttribute('aria-hidden', 'true');
-        reasonEl && (reasonEl.textContent = '');
-    }
-
-    // Nuevas posiciones aleatorias
-    setRandomInitialPositions();
-}
-
 
 // Asegura que el DOM esté completamente cargado antes de inicializar JXG.JSXGraph
 document.addEventListener('DOMContentLoaded', function () {
@@ -224,8 +184,8 @@ document.addEventListener('DOMContentLoaded', function () {
         //Creación de puntos para formar el intervalo de definición de la función
         var p5_line = brd.create('point', [-3, 0], { name: 'E', face: 'square', visible: false });
         var p6_line = brd.create('point', [3, 0], { name: 'F', face: 'square', visible: false });
-        // Crea el intervalo de definición de la función con extremos E y F.
-        var l3_horizontal = brd.create('segment', [p5_line, p6_line], { color: 'lightblue', size: 15, strokeWidth: 5, layer: 0, visible: true });
+        // Crear líneas horizontales invisibles para los puntos E y F.
+        var l3_horizontal = brd.create('segment', [p5_line, p6_line], { color: 'lightblue', size: 15, strokeWidth: 5, fixed: true, layer: 0, visible: true });
 
 
 
@@ -283,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     strokeWidth: 3,
                     face: 'o',
                     fixed: true, // No permitir arrastrar
-                    highlight: true // No resaltar al pasar el mouse
+                    highlight: false // No resaltar al pasar el mouse
                 });
                 highlightedPoints.push(newPoint);
             });
@@ -349,6 +309,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     button: "Entendido",
                 });
                 loseLife();
+                // Bloquear interacciones inmediatamente
                 return; // Importante: salir de la función
             }
 
@@ -400,9 +361,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     button: "Entendido",
                 });
                 loseLife();
+               
             } else {
                 swal({
-                    title: "¡Genial!",
+                    title: "¡Éxito!",
                     text: "La curva representa una función inyectiva.",
                     icon: "success",
                     button: "Entendido",
@@ -415,8 +377,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Asocia las funciones a los botones
         document.getElementById('validateButton').onclick = window.validarCurva;
         document.getElementById('resetButton').onclick = setRandomInitialPositions;
-        // Botón reset
-        document.getElementById('resetButton').onclick = resetBoard;
 
         // Reanuda las actualizaciones del tablero y establece la posición inicial aleatoria
         brd.unsuspendUpdate();

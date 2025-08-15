@@ -35,7 +35,7 @@
         <!-- Sección: Principal -->
         <section>
             <div class="question-card">
-                <h1>Actividad 1. <span>Utiliza el escenario para formar la gráfica de tres funciones inyectivas en
+                <h1>Actividad 1. <span>Utiliza el escenario para formar la gráfica de una función inyectiva en
                         el intervalo \([-3, 3]\)</span> </h1>
                 <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 24 24" fill="none"
                     stroke="#5856d6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -50,6 +50,7 @@
             <!-- Bloque instrucciones y cabecera del juego -->
             <div class="game-header">
 
+                <!-- Instrucciones -->
                 <div class="instructions-container">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <rect x="2" y="2" width="15" height="15" rx="6" fill="#eef2ff"></rect>
@@ -57,26 +58,29 @@
                             stroke-linejoin="round" />
                     </svg>
                     <h3 id="instr-title">Instrucciones</h3>
-
-                    <ol class="steps lista">
+                    <ol class="steps">
                         <li>Observa el escenario y los elementos disponibles.</li>
-                        <li>Utiliza los puntos de control P y Q y los puntos G y H en pantalla para manipular la
-                            gráfica.</li>
-                        <li>Presiona el botón validar cuando termines tu ejercicio y el botón reinicializar para
-                            intentar nuevamente.</li>
+                        <li>Utiliza los puntos de control P y Q y los puntos G y H para manipular la gráfica.</li>
+                        <li>Presiona el botón validar cuando termines y el botón reinicializar para intentar
+                            nuevamente.</li>
                     </ol>
                 </div>
+                <!-- Pistas -->
+                <div class="instructions-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                        stroke="#ffcc00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7" />
+                        <path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3" />
+                        <path d="M9.7 17l4.6 0" />
+                    </svg>
+                    <h3 id="hint-title">Pistas</h3>
+                    <ul class="steps">
+                        <li>Prueba mover los puntos de control de la curva.</li>
+                        <li>Observa cómo cambian las coordenadas en el gráfico.</li>
+                        <li>Recuerda: una función es inyectiva si no hay dos puntos en el dominio que se mapeen al mismo
+                            en el codominio.</li>
+                    </ul>
 
-                <!-- Bloque vidas y score -->
-                <div class="status-container">
-                    <div id="lives-container">
-                        <img src="img/trebol1.png" class="life" id="life1">
-                        <img src="img/trebol2.png" class="life" id="life2">
-                        <img src="img/trebol3.png" class="life" id="life3">
-                    </div>
-                    <p id="score-text">
-                        Funciones inyectivas correctas: <span id="score">0</span>/3
-                    </p>
                 </div>
 
             </div>
@@ -84,45 +88,33 @@
             <!-- Escenario interactivo -->
             <div class="stage" aria-label="Escenario interactivo">
                 <div class="placeholder" role="region" aria-live="polite">
-                    <strong>Escenario interactivo</strong>
+                    <!-- Canvas, iframe, o elementos interactivos -->
+                    <div>
 
-                    <!-- Contenedor relativo que engloba el canvas y el overlay -->
-                    <div class="jxg-container"
-                        style="position:relative; width:100%; max-width:760px; height:520px; margin-top:30px;">
-                        <div id="jxgbox" style="width:100%; height:100%;"></div>
-
-                        <!-- Overlay que se muestra al congelar el escenario -->
-                        <div id="freezeOverlay" class="freeze-overlay" aria-hidden="true" role="region"
-                            aria-live="assertive">
-                            <div>
-                                <div id="freezeTitle">Escenario congelado</div>
-                                <div id="freezeReason" style="font-size:0.8rem; color:#333; margin-top:8px;"></div>
+                        <!-- <strong>Escenario interactivo</strong> -->
+                        <div class="status-container">
+                            <div id="lives-container">
+                                <img src="img/treb1.png" class="life" id="life1">
+                                <img src="img/treb2.png" class="life" id="life2">
+                                <img src="img/treb3.png" class="life" id="life3">
                             </div>
+                            <p id="score-text">Funciones inyectivas correctas: <span id="score">0</span>/3</p>
+                        </div>
+                        <div id="jxgbox" style="margin-top:30px; color:var(--muted);font-size:14px;"> </div>
+                        <div class="button-container">
+                            <button id="validateButton">Validar Función Inyectiva</button>
+                            <button id="resetButton" class="reset-button">Reinicializar Escenario</button>
                         </div>
                     </div>
-
-                    <!-- Botones (fuera del contenedor del canvas para que no los tape el overlay) -->
-                    <div class="button-container" style="margin-top:12px;">
-                        <button id="validateButton">Validar Función Inyectiva</button>
-                        <button id="resetButton" class="reset-button">Reinicializar Escenario</button>
-                    </div>
-
                 </div>
+            </div>
             </div>
 
             <div>
                 <!-- Botón visual -->
-                <button class="hint-toggle" aria-expanded="False">Pistas</button>
-                <br />
 
-                <ul class="hints">
+                <!--  <button class="hint-toggle" aria-expanded="False">Cuestionario</button> -->
 
-                    <li>Prueba mover los puntos de control de la curva.</li>
-                    <li>Observa cómo cambian las coordenadas en el gráfico.</li>
-                    <li>Recuerda que una función es inyectiva si no hay dos puntos en el dominio que se mapeen al mismo
-                        punto en el codominio.</li>
-
-                </ul>
 
             </div>
 
