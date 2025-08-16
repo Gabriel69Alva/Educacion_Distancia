@@ -103,13 +103,14 @@ body {
 .status-container {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 10px;
 }
 
 #lives-container {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 7px;
+    margin-bottom: 12px;
 }
 
 .life {
@@ -185,15 +186,15 @@ span {
     border-radius: 12px;
     border: 1px solid rgba(16, 24, 40, 0.04);
     margin: 0 auto;
-    min-height: 700px;
+    min-height: 750px;
     /* tamaño base del escenario */
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     overflow: hidden;
-    padding: 18px;
-    margin-bottom: 17px;
+    padding: 10px;   /*las líneas de la cuadrícula no deben tocar los bordes laterales */
+    margin-bottom: 50px;
     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
 }
 
@@ -201,7 +202,7 @@ span {
 .stage .placeholder {
     width: 100%;
     height: 100%;
-    max-height: 700px;
+    max-height: 800px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -210,17 +211,17 @@ span {
     background: repeating-linear-gradient(45deg, rgba(99, 102, 241, 0.02) 0 8px, transparent 8px 16px);
     color: var(--muted);
     text-align: center;
-    padding: 50px;
+    padding: 80px; /* espacio interno para que el texto no toque los bordes */
     box-sizing: border-box;
 }
 
 /* Estilos para el contenedor del tablero JXG.JSXGraph */
 #jxgbox {
-    width: 90vw;
+    width: 100vw;
     /* Ancho responsivo */
-    max-width: 700px;
+    max-width: 800px;
     /* Ancho máximo para pantallas grandes */
-    height: 40vh;
+    height: 50vh;
     /* Altura responsiva */
     min-height: 300px;
     /* Altura mínima */
@@ -230,6 +231,7 @@ span {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     /* Sombra más pronunciada */
     margin-bottom: 30px;
+    margin-top: 0px;
     /* Espacio debajo del tablero */
     padding: 0px;
     overflow: hidden;
@@ -308,7 +310,7 @@ body {
     align-items: center;
     justify-content: center;
     /* Espacio entre botones */
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 button {

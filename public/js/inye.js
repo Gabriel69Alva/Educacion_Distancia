@@ -49,9 +49,17 @@ function setRandomInitialPositions() {
 
     } while (esInyectiva && intentos < 50); // límite de intentos por seguridad
 
+    // Habilita la capacidad de arrastrar los puntos de nuevo
+    glider1.setAttribute({ fixed: false });
+    glider2.setAttribute({ fixed: false });
+    p5.setAttribute({ fixed: false });
+    p6.setAttribute({ fixed: false });
+
     // Limpiar puntos resaltados de validaciones anteriores
     highlightedPoints.forEach(point => brd.removeObject(point));
     highlightedPoints = [];
+    brd.unsuspendUpdate();
+
 }
 
 // Verificación de inyectividad
@@ -90,28 +98,21 @@ function curvaY(t) {
 }
 
 function loseLife() {
-    
+
     if (lives > 0) {
         const lifeEl = document.getElementById(`life${lives}`);
         lifeEl.classList.add('blink');
         setTimeout(() => {
             lifeEl.classList.remove('blink');
             lifeEl.classList.add('fall');
-        }, 1000);
+        }, 1800);
 
         lives--;
-
-        swal({
-            title: "¡La función no es inyectiva! ¡Haz perdido una vida!",
-            text: "Te quedan " + lives + " tréboles.",
-            icon: "error",
-            button: "Entendido"
-        })
 
         if (lives === 0) {
             swal({
                 title: "¡Juego terminado!",
-                text: "Te has quedado sin tréboles.",
+                text: "Te has quedado sin tréboles de la suerte.",
                 icon: "error",
                 button: "Reiniciar"
             }).then(() => {
@@ -160,7 +161,18 @@ document.addEventListener('DOMContentLoaded', function () {
             // Bounding box simétrico para centrar los ejes
             boundingbox: [-5, 5, 5, -5], // [left, top, right, bottom]
             keepaspectratio: true,
-            axis: true,
+            axis: {
+                ticks: {
+                    majorHeight: -1, // Muestra las marcas de división
+                    insertTicks: true, // Asegura que las marcas se dibujen
+                    drawLabels: true, // Asegura que los números se dibujen
+                    label: {
+                        offset: [-10, -10] // Posicionamiento de las etiquetas
+                    },
+                    majorHeight: -1, // Longitud de la marca de división mayor
+                    minorHeight: 0 // Longitud de la marca de división menor
+                }
+            },
             grid: true, // Añadir una cuadrícula para mejor visualización
             showinfobox: true // Deshabilita el infobox con las coordenadas del mouse
         });
@@ -255,9 +267,17 @@ document.addEventListener('DOMContentLoaded', function () {
          * si es inyectiva.
          */
         window.validarCurva = function () {
+            brd.suspendUpdate();  // congela el tablero
+            // Deshabilita la capacidad de arrastrar los puntos de control
+            glider1.setAttribute({ fixed: true });
+            glider2.setAttribute({ fixed: true });
+            p5.setAttribute({ fixed: true });
+            p6.setAttribute({ fixed: true });
+
             console.log("Validación de curva: Iniciando...");
             const muestrasT = 10000;
             const tolerancia = 0.01;
+
 
             // Eliminar puntos resaltados de la ejecución anterior
             highlightedPoints.forEach(point => brd.removeObject(point));
@@ -298,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Si no es una función, muestra la alerta y resalta los puntos
             if (nonFunctionPoints) {
                 highlightProblemPoints([nonFunctionPoints.first, nonFunctionPoints.second]);
-                const mensajeError = `La curva no representa una función. Se encontraron al menos dos puntos diferentes con la misma coordenada X:
+                const mensajeError = `Se encontraron al menos dos puntos diferentes con la misma coordenada en X. Haz perdido un trébol de la suerte. Te quedan ${lives - 1} tréboles.
                                 \nPunto 1: (${nonFunctionPoints.first.x.toFixed(2)}, ${nonFunctionPoints.first.y.toFixed(2)})
                                 \nPunto 2: (${nonFunctionPoints.second.x.toFixed(2)}, ${nonFunctionPoints.second.y.toFixed(2)})`;
 
@@ -308,8 +328,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     icon: "error",
                     button: "Entendido",
                 });
+
                 loseLife();
-                // Bloquear interacciones inmediatamente
+
                 return; // Importante: salir de la función
             }
 
@@ -350,9 +371,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Mostrar el resultado de la validación de inyectividad
             if (nonInjectivePoints) {
                 highlightProblemPoints([nonInjectivePoints.first, nonInjectivePoints.second]);
-                const mensajeError = `La curva no es inyectiva. Se encontró al menos un par de puntos diferentes con la misma coordenada Y:
+                const mensajeError = `Se encontraron al menos un par de puntos diferentes con la misma coordenada Y:
                                 \nPunto 1: (${nonInjectivePoints.first.x.toFixed(2)}, ${nonInjectivePoints.first.y.toFixed(2)})
-                                \nPunto 2: (${nonInjectivePoints.second.x.toFixed(2)}, ${nonInjectivePoints.second.y.toFixed(2)})`;
+                                \nPunto 2: (${nonInjectivePoints.second.x.toFixed(2)}, ${nonInjectivePoints.second.y.toFixed(2)})
+                                \nHaz perdido un trébol de la suerte. Te quedan ${lives - 1} tréboles.`;
 
                 swal({
                     title: "¡La gráfica no representa a una función inyectiva!",
@@ -361,10 +383,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     button: "Entendido",
                 });
                 loseLife();
-               
+
             } else {
                 swal({
-                    title: "¡Éxito!",
+                    title: "¡Genial!",
                     text: "La curva representa una función inyectiva.",
                     icon: "success",
                     button: "Entendido",
