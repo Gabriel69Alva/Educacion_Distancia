@@ -47,7 +47,7 @@ function setRandomInitialPositions() {
         // Comprobar si sigue siendo inyectiva
         esInyectiva = verificarInyectividad();
 
-    } while (esInyectiva && intentos < 50); // límite de intentos por seguridad
+    } while (esInyectiva && intentos < 3); // límite de intentos por seguridad
 
     // Habilita la capacidad de arrastrar los puntos de nuevo
     glider1.setAttribute({ fixed: false });
@@ -110,13 +110,13 @@ function loseLife() {
         lives--;
 
         if (lives === 0) {
+            document.getElementById('validateButton').disabled = true;
+            document.getElementById('resetButton').disabled = true;
             swal({
-                title: "¡Juego terminado!",
+                title: "¡Juego terminado! Debes estudiar más",
                 text: "Te has quedado sin tréboles de la suerte.",
                 icon: "error",
-                button: "Reiniciar"
-            }).then(() => {
-                location.reload();
+                button: "Entendido"
             });
         }
     }
@@ -129,7 +129,7 @@ function winPoint() {
         // Aquí puedes agregar lógica para manejar el caso en que el jugador gana un punto pero no ha alcanzado 3 puntos aún.
         swal({
             title: "¡Función inyectiva!",
-            text: "Has ganado una función inyectiva, pero aún necesitas " + (2 - score) + " para ganar.",
+            text: "Has ganado una función inyectiva, necesitas " + (2 - score) + " para ganar.",
             icon: "info",
             button: "Entendido"
         });
@@ -137,14 +137,15 @@ function winPoint() {
     score++;
     document.getElementById('score').textContent = score;
     if (score === 3) {
+        document.getElementById('validateButton').disabled = true;
+        document.getElementById('resetButton').disabled = true;
         swal({
             title: "¡Ganaste!",
             text: "Completaste las 3 funciones inyectivas.",
             icon: "success",
-            button: "Jugar de nuevo"
-        }).then(() => {
-            location.reload();
+            button: "Cuestionario"
         });
+        // Aquí puedes redirigir al usuario a un cuestionario o a otra página
     } else {
         setRandomInitialPositions();
     }
@@ -204,12 +205,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Creación de los "gliders" (puntos que se deslizan sobre una línea)
         // Se inicializan con valores temporales, se moverán a posiciones aleatorias después.
-        glider1 = brd.create('glider', [-3, 0, l1_left_guide], { name: 'G', size: 4, color: 'turquoise', fixed: false });
-        glider2 = brd.create('glider', [3, 0, l2_right_guide], { name: 'H', size: 4, color: 'orange', fixed: false }); // Diferente color para distinguirlo
+        glider1 = brd.create('glider', [-3, 0, l1_left_guide], { name: 'G', size: 3, color: 'blue', fixed: false });
+        glider2 = brd.create('glider', [3, 0, l2_right_guide], { name: 'H', size: 3, color: 'blue', fixed: false }); // Diferente color para distinguirlo
 
         // Creación de puntos de control internos (puntos P y Q)
-        p5 = brd.create('point', [0, 0], { name: 'P', trace: false, size: 3, color: 'green', face: '[]', fixed: false });
-        p6 = brd.create('point', [0, 0], { name: 'Q', trace: false, size: 3, color: 'green', face: '[]', fixed: false });
+        p5 = brd.create('point', [0, 0], { name: 'P', trace: false, size: 3, color: 'purple', face: '[]', fixed: false });
+        p6 = brd.create('point', [0, 0], { name: 'Q', trace: false, size: 3, color: 'purple', face: '[]', fixed: false });
 
         // Añade los puntos al arreglo 'p' en el orden correcto para la curva de Bezier
         p.push(glider1);
@@ -372,8 +373,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if (nonInjectivePoints) {
                 highlightProblemPoints([nonInjectivePoints.first, nonInjectivePoints.second]);
                 const mensajeError = `Se encontraron al menos un par de puntos diferentes con la misma coordenada Y:
-                                \nPunto 1: (${nonInjectivePoints.first.x.toFixed(2)}, ${nonInjectivePoints.first.y.toFixed(2)})
-                                \nPunto 2: (${nonInjectivePoints.second.x.toFixed(2)}, ${nonInjectivePoints.second.y.toFixed(2)})
+                                \nPunto 1: (${nonInjectivePoints.first.x.toFixed(2)}, ${nonInjectivePoints.first.y.toFixed(1)})
+                                \nPunto 2: (${nonInjectivePoints.second.x.toFixed(2)}, ${nonInjectivePoints.second.y.toFixed(1)})
                                 \nHaz perdido un trébol de la suerte. Te quedan ${lives - 1} tréboles.`;
 
                 swal({
@@ -422,3 +423,5 @@ toggleButton.addEventListener('click', () => {
     const isVisible = hintsList.classList.contains('visible');
     toggleButton.setAttribute('aria-expanded', isVisible);
 });
+
+
