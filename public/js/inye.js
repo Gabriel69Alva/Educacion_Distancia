@@ -150,6 +150,8 @@ function winPoint() {
             text: "Completaste las 3 funciones inyectivas.",
             icon: "success",
             button: "Cuestionario"
+        }).then(() => {
+            funcionModal();
         });
         // Aquí puedes redirigir al usuario a un cuestionario o a otra página
     } else {
@@ -414,15 +416,15 @@ document.addEventListener('DOMContentLoaded', function () {
         brd.unsuspendUpdate();
         setRandomInitialPositions(); // Establecer la posición inicial aleatoria al cargar
     } catch (e) {
-            console.error("Error durante la inicialización de JXG.JSXGraph:", e);
-            swal({
-                title: "Error al cargar la gráfica",
-                text: "Hubo un problema al inicializar el escenario. Por favor, inténtalo de nuevo. Detalles: " + e.message,
-                icon: "error",
-                button: "Entendido",
-            });
-        }
-    });
+        console.error("Error durante la inicialización de JXG.JSXGraph:", e);
+        swal({
+            title: "Error al cargar la gráfica",
+            text: "Hubo un problema al inicializar el escenario. Por favor, inténtalo de nuevo. Detalles: " + e.message,
+            icon: "error",
+            button: "Entendido",
+        });
+    }
+});
 
 const toggleButton = document.querySelector('.hint-toggle');
 const hintsList = document.querySelector('.hints');
@@ -432,5 +434,59 @@ toggleButton.addEventListener('click', () => {
     const isVisible = hintsList.classList.contains('visible');
     toggleButton.setAttribute('aria-expanded', isVisible);
 });
+
+function funcionModal() {
+  // 1) Cargar el HTML del cuestionario
+  $("<div>").load("./cuestionarios/cuestionario.html", function (_resp, status) {
+    if (status === "error") {
+      swal("Error", "No se pudo cargar el contenido HTML.", "error");
+      return;
+    }
+
+    // 2) Inyectar el HTML en un contenedor real que pasaremos a swal
+    const cont = document.createElement('div');
+    cont.innerHTML = $(this).html();
+
+    // 3) Abrir el modal con SweetAlert clásico (usa 'content')
+    swal({
+      title: "Cuestionario",
+      content: cont, // <- OJO: SweetAlert clásico usa 'content', NO 'html'
+      buttons: true
+    });
+
+    // 4) Esperar a que el modal inserte su DOM (clásico no tiene didOpen)
+    requestAnimationFrame(() => {
+      // .swal-content es la raíz real del contenido en swal clásico
+      const root = document.querySelector('.swal-content');
+
+      // 5) Cargar primero JSConfetti, luego dinamico.js
+      $.getScript('https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js')
+        .done(() => {
+          // Bust de caché para dinamico.js si vas iterando:
+          $.getScript('./js/dinamico.js?v=' + Date.now())
+            .done(() => {
+              if (typeof window.initCuestionario === 'function') {
+                // 6) Arrancar el cuestionario DENTRO del modal
+                window.initCuestionario(root);
+              } else {
+                console.warn('initCuestionario no encontrado en dinamico.js');
+                swal("Aviso", "No se encontró initCuestionario en dinamico.js", "warning");
+              }
+            })
+            .fail((_jq, _st, ex) => {
+              console.error('Error cargando dinamico.js', ex);
+              swal("Error", "No se pudo cargar dinamico.js", "error");
+            });
+        })
+        .fail((_jq, _st, ex) => {
+          console.error('Error cargando JSConfetti', ex);
+          swal("Error", "No se pudo cargar JSConfetti", "error");
+        });
+    });
+  });
+}
+
+
+
 
 

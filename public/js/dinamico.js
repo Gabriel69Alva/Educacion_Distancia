@@ -1,155 +1,236 @@
-// Variables para el estado del cuestionario
-let currentQuestionIndex = 0;
-let selectedOption = null;
+// dinamico.js (SweetAlert clásico)
 
-// Instancia de JS-Confetti
-const jsConfetti = new JSConfetti();
+// EXPONE init para que funcionModal la llame tras cargar el HTML
+window.initCuestionario = function (root) {
+    if (!root) return;
 
-// Array de preguntas y respuestas. Usa notación LaTeX para las expresiones matemáticas.
-const quizQuestions = [
-    {
-        question: "1. ¿Cuál de las siguientes es una función inyectiva?",
-        options: [
-            "A) $f(x) = x^2$",
+    // ======== ESTADO (igual patrón) ========
+    let currentQuestionIndex = 0;
+    let selectedOption = null;
+
+    // Instancia de confetti (asegúrate de cargar js-confetti antes)
+    const jsConfetti = new JSConfetti();
+
+    // ======== PREGUNTAS (igual patrón) ========
+    const quizQuestions = [
+        {
+            question: "1. ¿Cuál de las siguientes es una función inyectiva?",
+            options: [
+                "A) $f(x) = x^2$",
+                "B) $f(x) = |x|$",
+                "C) $f(x) = x^3$"
+            ],
+            correctAnswer: 2
+        },
+        {
+            question: "2. La prueba de la línea horizontal se usa para determinar si una función es:",
+            options: [
+               "A) $f(x) = x^2$",
             "B) $f(x) = |x|$",
             "C) $f(x) = x^3$"
-        ],
-        correctAnswer: 2
-    },
-    {
-        question: "2. La prueba de la línea horizontal se usa para determinar si una función es:",
-        options: [
-            "A) Surayectiva",
-            "B) Inyectiva",
-            "C) Biyectiva"
-        ],
-        correctAnswer: 1
-    },
-    {
-        question: "3. Si $f(a) = f(b)$ implica que $a = b$, la función es:",
-        options: [
-            "A) Inyectiva",
-            "B) Par",
-            "C) Impar"
-        ],
-        correctAnswer: 0
-    }
-];
+            ],
+            correctAnswer: 1
+        },
+        {
+            question: "3. Si $f(a) = f(b)$ implica que $a = b$, la función es:",
+            options: [
+              "A) $f(x) = x^2$",
+            "B) $f(x) = |x|$",
+            "C) $f(x) = x^3$"
+            ],
+            correctAnswer: 0
+        }
+    ];
 
-// Referencias a los elementos del DOM
-const questionText = document.getElementById('question-text');
-const optionsContainer = document.getElementById('options-container');
-const validateButton = document.getElementById('validate-quiz-button');
-const nextButton = document.getElementById('next-question-button');
-const optionButtons = document.querySelectorAll('.option-button');
+    // ======== REFERENCIAS AL DOM (DENTRO DEL MODAL) ========
+    let questionText = root.querySelector('#question-text');
+    let optionsContainer = root.querySelector('#options-container');
+    let validateButton = root.querySelector('#validate-quiz-button');
+    let nextButton = root.querySelector('#next-question-button');
+    let optionButtons = root.querySelectorAll('.option-button');
+    let feedback = root.querySelector('#quiz-feedback');
 
-// Función para cargar una pregunta en la interfaz
-function loadQuestion() {
-    // Si no hay más preguntas, se muestra un mensaje final
-    if (currentQuestionIndex >= quizQuestions.length) {
-        showFinalMessage();
-        return;
+
+    // Si tu HTML no trae área de feedback, la creamos al vuelo
+    if (!feedback) {
+        const quizContainer = root.querySelector('#quiz-container') || root;
+        feedback = document.createElement('div');
+        feedback.id = 'quiz-feedback';
+        quizContainer.appendChild(feedback);
     }
 
-    const questionData = quizQuestions[currentQuestionIndex];
-    questionText.textContent = questionData.question;
-
-    // Reinicia el estado de los botones
-    optionButtons.forEach((button, index) => {
-        button.innerHTML = questionData.options[index];
-        button.classList.remove('selected', 'correct', 'incorrect');
-        button.disabled = false; // Asegura que los botones estén habilitados
-    });
-
-    // Reinicia el estado de los botones de control
-    validateButton.disabled = true;
-    nextButton.style.display = 'none';
-    selectedOption = null;
-
-    // Vuelve a procesar las expresiones LaTeX
-    if (window.MathJax) {
-        window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, "quiz-container"]);
+    // ======== UTILIDAD: TIPOGRAFÍA MATHJAX ========
+    function typesetMath() {
+        if (window.MathJax && window.MathJax.Hub) {
+            // MathJax v2
+            window.MathJax.Hub.Queue(
+                ["Typeset", window.MathJax.Hub, root],
+                function () { reloadQuizStyles(root); }
+            );
+        } else if (window.MathJax && window.MathJax.typesetPromise) {
+            // MathJax v3
+            window.MathJax.typesetPromise([root])
+                .then(() => reloadQuizStyles(root))
+                .catch(err => console.error(err));
+        } else {
+            // Si no hay MathJax, aplica estilos igual (no hace daño)
+            reloadQuizStyles(root);
+        }
     }
-}
 
-// Función para manejar la selección de una opción
-function selectOption(event) {
-    if (event.target.classList.contains('option-button')) {
+    // ======== CARGAR PREGUNTA (igual patrón) ========
+    function loadQuestion() {
+
+        if (currentQuestionIndex >= quizQuestions.length) {
+            showFinalMessage();
+            return;
+
+        }
+
+        const questionData = quizQuestions[currentQuestionIndex];
+        questionText.textContent = questionData.question;
+
+        // Pintar opciones
+        optionButtons.forEach((button, index) => {
+            button.innerHTML = questionData.options[index] ?? '';
+            button.classList.remove('selected', 'correct', 'incorrect');
+            button.disabled = false;
+            button.dataset.option = index; // asegura data-option
+        });
+
+        // Reset controles y feedback
+        validateButton.disabled = true;
+        nextButton.style.display = 'none';
+        validateButton.style.display = 'inline-block';
+        selectedOption = null;
+
+        if (feedback) {
+            feedback.textContent = '';
+            feedback.className = 'feedback'; // limpia estilos previos
+        }
+
+        // Procesar LaTeX
+        typesetMath();
+    }
+
+    // ======== SELECCIONAR OPCIÓN (igual patrón) ========
+    function selectOption(event) {
+        const target = event.target.closest('.option-button');
+        if (!target) return;
+
         optionButtons.forEach(btn => btn.classList.remove('selected'));
-        event.target.classList.add('selected');
-        selectedOption = parseInt(event.target.dataset.option);
+        target.classList.add('selected');
+        selectedOption = parseInt(target.dataset.option, 10);
         validateButton.disabled = false;
     }
-}
 
-// Función para validar la respuesta seleccionada
-function validateAnswer() {
-    if (selectedOption === null) return;
+    // ======== VALIDAR RESPUESTA (mismo flujo, sin abrir otro swal) ========
+    function validateAnswer() {
+        if (selectedOption === null) return;
 
-    const questionData = quizQuestions[currentQuestionIndex];
-    const correctOptionIndex = questionData.correctAnswer;
-    
-    // Deshabilitar todos los botones de opciones para evitar cambios
-    optionButtons.forEach(button => button.disabled = true);
-    validateButton.disabled = true;
+        const questionData = quizQuestions[currentQuestionIndex];
+        const correctOptionIndex = questionData.correctAnswer;
 
-    if (selectedOption === correctOptionIndex) {
-        optionButtons[selectedOption].classList.add('correct');
-        // Lanzar la animación de confeti 🎉
-        jsConfetti.addConfetti({
-            confettiRadius: 6,
-            confettiNumber: 500,
-        });
+        optionButtons.forEach(button => button.disabled = true);
+        validateButton.disabled = true;
 
-        swal.fire({
-            title: "¡Respuesta correcta!",
-            text: "¡Excelente! Has respondido bien.",
-            icon: "success",
-            confirmButtonText: "Siguiente"
-        }).then(() => {
+        if (selectedOption === correctOptionIndex) {
+            optionButtons[selectedOption].classList.add('correct');
+            jsConfetti.addConfetti({ confettiRadius: 6, confettiNumber: 500 });
+
+            // Feedback EN EL MISMO MODAL, no abrimos otro swal
+            if (feedback) {
+                feedback.textContent = "¡Respuesta correcta! ¡Excelente!";
+                feedback.className = 'feedback success';
+            }
+
             nextButton.style.display = 'inline-block';
             validateButton.style.display = 'none';
-        });
-    } else {
-        optionButtons[selectedOption].classList.add('incorrect');
-        optionButtons[correctOptionIndex].classList.add('correct');
 
-        swal.fire({
-            title: "Respuesta incorrecta",
-            text: "¡Sigue intentándolo! La respuesta correcta ha sido marcada en verde.",
-            icon: "error",
-            confirmButtonText: "Entendido"
-        }).then(() => {
+        } else {
+            optionButtons[selectedOption].classList.add('incorrect');
+            optionButtons[correctOptionIndex].classList.add('correct');
+
+            if (feedback) {
+                feedback.textContent = "Respuesta incorrecta. La correcta ha sido marcada en verde.";
+                feedback.className = 'feedback error';
+            }
+
             nextButton.style.display = 'inline-block';
             validateButton.style.display = 'none';
-        });
+        }
     }
-}
 
-// Función para avanzar a la siguiente pregunta
-function nextQuestion() {
-    currentQuestionIndex++;
-    validateButton.style.display = 'inline-block';
+    // ======== SIGUIENTE PREGUNTA (igual patrón) ========
+    function nextQuestion() {
+        currentQuestionIndex++;
+        loadQuestion();
+    }
+
+    // ======== FINAL DEL CUESTIONARIO ========
+    function showFinalMessage() {
+        // Si quieres cerrar el modal aquí:
+        // swal("¡Cuestionario completado!", "¡Has respondido todas las preguntas!", "success");
+
+        // ...o mostrar el final dentro del mismo modal:
+        if (questionText) questionText.textContent = "¡Cuestionario completado!";
+        if (optionsContainer) optionsContainer.innerHTML = "";
+        if (validateButton) validateButton.style.display = 'none';
+        if (nextButton) nextButton.style.display = 'none';
+        if (feedback) {
+            feedback.textContent = "¡Has respondido todas las preguntas!";
+            feedback.className = 'feedback success';
+        }
+
+        // Botón para cerrar (opcional)
+        let closeBtn = root.querySelector('#finish-quiz-button');
+        if (!closeBtn) {
+            closeBtn = document.createElement('button');
+            closeBtn.id = 'finish-quiz-button';
+            closeBtn.textContent = 'Cerrar';
+            closeBtn.type = 'button';
+            closeBtn.style.marginTop = '12px';
+            (root.querySelector('#quiz-container') || root).appendChild(closeBtn);
+            closeBtn.addEventListener('click', () => swal.close());
+        }
+    }
+
+    // ======== ENLACES (igual patrón, idempotentes) ========
+    if (optionsContainer && !optionsContainer.dataset.bound) {
+        optionsContainer.dataset.bound = '1';
+        optionsContainer.addEventListener('click', selectOption);
+    }
+    if (validateButton && !validateButton.dataset.bound) {
+        validateButton.dataset.bound = '1';
+        validateButton.addEventListener('click', validateAnswer);
+    }
+    if (nextButton && !nextButton.dataset.bound) {
+        nextButton.dataset.bound = '1';
+        nextButton.addEventListener('click', nextQuestion);
+    }
+
+    // ======== INICIO ========
     loadQuestion();
+
+};
+function reloadQuizStyles(root) {
+    const container = root.querySelector('#quiz-container') || root;
+
+    // Elimina el <style> anterior (si existía) para forzar re-aplicación
+    const STYLE_ID = 'quiz-math-style';
+    const old = container.querySelector('#' + STYLE_ID);
+    if (old) old.remove();
+
+    // Crea e inserta el nuevo <style>
+    const s = document.createElement('style');
+    s.id = STYLE_ID;
+    s.textContent = `
+    #quiz-container .MathJax,
+    #quiz-container .MathJax *,
+    #quiz-container mjx-container,
+    #quiz-container mjx-container * {
+      color: #000 !important;
+    }
+  `;
+    container.appendChild(s);
 }
-
-// Mensaje final cuando se completa el cuestionario
-function showFinalMessage() {
-    swal.fire({
-        title: "¡Cuestionario completado!",
-        text: "¡Has respondido todas las preguntas correctamente!",
-        icon: "success",
-        confirmButtonText: "Finalizar"
-    }).then(() => {
-        // Puedes agregar aquí la lógica para, por ejemplo, redirigir a otra página
-        // o mostrar un mensaje final.
-    });
-}
-
-// Asignar los eventos a los botones
-optionsContainer.addEventListener('click', selectOption);
-validateButton.addEventListener('click', validateAnswer);
-nextButton.addEventListener('click', nextQuestion);
-
-// Inicia el cuestionario al cargar la página
-window.onload = loadQuestion;
