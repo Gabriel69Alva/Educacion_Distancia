@@ -25,18 +25,18 @@ window.initCuestionario = function (root) {
         {
             question: "2. La prueba de la línea horizontal se usa para determinar si una función es:",
             options: [
-               "A) $f(x) = x^2$",
-            "B) $f(x) = |x|$",
-            "C) $f(x) = x^3$"
+                "A) $\\text{Creciente}$",
+                "B) $\\text{Inyectiva}$",
+                "C) $\\text{Suprayectiva}$"
             ],
             correctAnswer: 1
         },
         {
             question: "3. Si $f(a) = f(b)$ implica que $a = b$, la función es:",
             options: [
-              "A) $f(x) = x^2$",
-            "B) $f(x) = |x|$",
-            "C) $f(x) = x^3$"
+                "A) $\\text{Inyectiva}$",
+                "B) $\\text{Par}$",
+                "C) $\\text{Impar}$"
             ],
             correctAnswer: 0
         }

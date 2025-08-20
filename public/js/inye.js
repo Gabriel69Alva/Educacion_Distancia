@@ -6,8 +6,6 @@ let score = 0;
 let currentQuestionIndex = 0;
 let selectedOption = null;
 
-
-
 // Array global para almacenar y eliminar los puntos resaltados
 let highlightedPoints = [];
 // Variable global para almacenar la curva

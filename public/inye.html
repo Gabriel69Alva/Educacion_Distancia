@@ -46,7 +46,7 @@
     />
     <!--<link rel="stylesheet" href="css/style.css">-->
     <link rel="stylesheet" href="css/inye.css" />
-<script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
     <script src="./js/jquery.2.2.4.js"></script>
   </head>
 
@@ -58,8 +58,8 @@
           <h1>
             Actividad 1.
             <span
-              >Utiliza el escenario para formar la gráfica de una función
-              inyectiva en el intervalo \([-3, 3]\)</span
+              >Utiliza el escenario para formar la gráfica de tres funciones
+              inyectivas en el intervalo \([-3, 3]\)</span
             >
           </h1>
           <svg
@@ -110,20 +110,19 @@
             </svg>
             <h3 id="instr-title">Instrucciones</h3>
             <ol class="steps">
-              <li>Debes formar 3 funciones inyectivas diferentes.</li>
-              <li>
-                Observa cuidadosamente los elementos que aparecen en el
-                escenario.
-              </li>
-              <li>
-                Utiliza los puntos G, H y los puntos de control P y Q para
-                manipular la gráfica.
-              </li>
+              <li>Utiliza los puntos G, H, P y Q para
+                manipular la gráfica</li>
               <li>
                 Presiona el botón "Validar función" cuando termines de mover la
-                gráfica o el botón "Nueva función" para un nuevo intento.
+                gráfica.
               </li>
-              <li>Tienes solo 3 oportunidades.</li>
+              <li>
+                Presiona el botón "Nueva función" para un nuevo intento.
+              </li>
+              <li>
+                Tienes solo 3 oportunidades.
+              </li>
+              <li>Cuando formes 3 funciones inyectivas, aparecerá el botón "Cuestionario", presiónalo y completa el cuestionario.</li>
             </ol>
           </div>
           <!-- Pistas -->
@@ -157,10 +156,10 @@
 
             <h3 id="hint-title">Estrategia</h3>
             <ul class="steps">
-              <li>Prueba mover los puntos de control de la curva.</li>
-              <li>Observa cómo cambian las coordenadas en el gráfico.</li>
+              <li>Observa cómo cambia la gráfica al mover los puntos de control G, H, P y Q de la curva.</li>
+              <li>Los puntos P y Q te ayudarán a hacer un trazo más fino.</li>
               <li>
-                Recuerda: una función es inyectiva si no hay dos puntos en el
+                Recuerda que una función es inyectiva si no hay dos puntos en el
                 dominio que se mapeen al mismo en el codominio.
               </li>
             </ul>
@@ -184,10 +183,8 @@
                 </div>
               </div>
 
-              <div
-                id="jxgbox"
-                style="margin-top: 30px; color: var(--muted); font-size: 14px"
-              ></div>
+              <div id="jxgbox" style="width: 900px; height: 700px; margin: 30px auto; /* <-- centra horizontal */ color: var(--muted); font-size: 14px;"></div>
+
 
               <div class="button-container">
                 <button id="validateButton">Validar función</button>

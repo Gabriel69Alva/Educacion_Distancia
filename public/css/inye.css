@@ -61,10 +61,16 @@ body {
     padding: 4px 8px;
     border-radius: 6px;
     transition: background-color 0.3s ease;
+    cursor: pointer;
 }
 
 .instructions-container:hover {
-    background-color: #eef2ff;
+    background-color: #f3f5f7;
+    min-width: 250px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    
 }
 
 /* La lista oculta inicialmente */
@@ -82,7 +88,7 @@ body {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     z-index: 10;
     font-size: 14px;
-    color: #333;
+    color: black;
 }
 /*
 .lista {
@@ -96,6 +102,9 @@ body {
 .instructions-container:hover .steps {
     display: block;
     margin-left: 50px;
+    background: #f4f5f7;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
 }
 
 
@@ -146,7 +155,7 @@ body {
 }
 
 .question-card:hover {
-    background: #eaf4ff;
+    background:  #f4f5f7;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     transform: translateY(-3px);
 }
@@ -202,7 +211,7 @@ span {
 .stage .placeholder {
     width: 100%;
     height: 100%;
-    max-height: 800px;
+    max-height: 900px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -219,16 +228,16 @@ span {
 #jxgbox {
     width: 100vw;
     /* Ancho responsivo */
-    max-width: 800px;
+    max-width: 700px;
     /* Ancho máximo para pantallas grandes */
-    height: 50vh;
+    height: 30vh;
     /* Altura responsiva */
     min-height: 300px;
     /* Altura mínima */
     background-color: #fff;
     border-radius: 12px;
     /* Esquinas más redondeadas */
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.50);
     /* Sombra más pronunciada */
     margin-bottom: 30px;
     margin-top: 0px;
