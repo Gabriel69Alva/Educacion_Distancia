@@ -1,83 +1,150 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Validación de Función Inyectiva con Curvas de Bezier</title>
     <!-- Carga de JXG.JSXGraph CSS y JS -->
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraph.css" />
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraphcore.js"></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraph.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraphcore.js"
+    ></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script>
+
+     <!--MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async=""
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath:  [['$','$'],['\\(','\\)']]}});
+    </script>
+
+
+
     <!-- Carga de SweetAlert JS (¡Esta es la clave para las alertas!) -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <!--<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>--->
+
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.min.js"></script>
+
     <!-- Enlace a la fuente Inter para una mejor estética -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
     <!--<link rel="stylesheet" href="css/style.css">-->
-    <link rel="stylesheet" href="css/inye.css">
+    <link rel="stylesheet" href="css/inye.css" />
+  </head>
 
-
-</head>
-
-<!--<body>
-  <div id="jxgbox"></div>
-  <div class="button-container">
-    <button id="validateButton">Validar Función Inyectiva</button>
-    <button id="resetButton" class="reset-button">Reinicializar Escenario</button>
-  </div>
-
-  <script src="js/bezier_inyectiva.js"></script>
-
-</body> -->
-
-<body>
+  <body>
     <main class="page">
-
-        <!-- Sección: Principal -->
-        <section>
-            <div class="question-card">
-                <h1>Actividad 1. <span>Utiliza el escenario para formar la gráfica de una función inyectiva en
-                        el intervalo \([-3, 3]\)</span> </h1>
-                <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 24 24" fill="none"
-                    stroke="#5856d6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-                    <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
-                    <path d="M3 6l0 13" />
-                    <path d="M12 6l0 13" />
-                    <path d="M21 6l0 13" />
-                </svg>
-            </div>
-            <br />
-            <!-- Bloque instrucciones y cabecera del juego -->
-            <div class="game-header">
-
-                <!-- Instrucciones -->
-                <div class="instructions-container">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <rect x="2" y="2" width="15" height="15" rx="6" fill="#eef2ff"></rect>
-                        <path d="M7 12h10M7 8h10M7 16h7" stroke="#4f46e5" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                    <h3 id="instr-title">Instrucciones</h3>
-                    <ol class="steps">
-                        <li>Debes formar 3 funciones inyectivas diferentes.</li>
-                        <li>Observa cuidadosamente los elementos que aparecen en el escenario.</li>
-                        <li>Utiliza los puntos G, H y los puntos de control P y Q para manipular la gráfica.</li>
-                        <li>Presiona el botón "Validar función" cuando termines de mover la gráfica o el botón "Nueva
-                            función" para un nuevo intento. </li>
-                        <li>Tienes solo 3 oportunidades.</li>
-                    </ol>
-                </div>
-                <!-- Pistas -->
-                <div class="instructions-container">
-
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
-                        stroke="#5856d6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path
-                            d="M8 16l-1.447 .724a1 1 0 0 0 -.553 .894v2.382h12v-2.382a1 1 0 0 0 -.553 -.894l-1.447 -.724h-8z" />
-                        <path
-                            d="M9 3l1 3l-3.491 2.148a1 1 0 0 0 .524 1.852h2.967l-2.073 6h7.961l.112 -5c0 -3 -1.09 -5.983 -4 -7c-1.94 -.678 -2.94 -1.011 -3 -1z" />
-                    </svg>
-                    <!--    
+      <!-- Sección: Principal -->
+      <section>
+        <div class="question-card">
+          <h1>
+            Actividad 1.
+            <span
+              >Utiliza el escenario para formar la gráfica de una función
+              inyectiva en el intervalo \([-3, 3]\)</span
+            >
+          </h1>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="45"
+            height="45"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#5856d6"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+            <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+            <path d="M3 6l0 13" />
+            <path d="M12 6l0 13" />
+            <path d="M21 6l0 13" />
+          </svg>
+        </div>
+        <br />
+        <!-- Bloque instrucciones y cabecera del juego -->
+        <div class="game-header">
+          <!-- Instrucciones -->
+          <div class="instructions-container">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <rect
+                x="2"
+                y="2"
+                width="15"
+                height="15"
+                rx="6"
+                fill="#eef2ff"
+              ></rect>
+              <path
+                d="M7 12h10M7 8h10M7 16h7"
+                stroke="#4f46e5"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <h3 id="instr-title">Instrucciones</h3>
+            <ol class="steps">
+              <li>Debes formar 3 funciones inyectivas diferentes.</li>
+              <li>
+                Observa cuidadosamente los elementos que aparecen en el
+                escenario.
+              </li>
+              <li>
+                Utiliza los puntos G, H y los puntos de control P y Q para
+                manipular la gráfica.
+              </li>
+              <li>
+                Presiona el botón "Validar función" cuando termines de mover la
+                gráfica o el botón "Nueva función" para un nuevo intento.
+              </li>
+              <li>Tienes solo 3 oportunidades.</li>
+            </ol>
+          </div>
+          <!-- Pistas -->
+          <div class="instructions-container">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="40"
+              height="40"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#5856d6"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M8 16l-1.447 .724a1 1 0 0 0 -.553 .894v2.382h12v-2.382a1 1 0 0 0 -.553 -.894l-1.447 -.724h-8z"
+              />
+              <path
+                d="M9 3l1 3l-3.491 2.148a1 1 0 0 0 .524 1.852h2.967l-2.073 6h7.961l.112 -5c0 -3 -1.09 -5.983 -4 -7c-1.94 -.678 -2.94 -1.011 -3 -1z"
+              />
+            </svg>
+            <!--    
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
                         stroke="#ffcc00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7" />
@@ -86,117 +153,97 @@
                     </svg>
                     -->
 
-                    <h3 id="hint-title">Estrategia</h3>
-                    <ul class="steps">
-                        <li>Prueba mover los puntos de control de la curva.</li>
-                        <li>Observa cómo cambian las coordenadas en el gráfico.</li>
-                        <li>Recuerda: una función es inyectiva si no hay dos puntos en el dominio que se mapeen al mismo
-                            en el codominio.</li>
-                    </ul>
+            <h3 id="hint-title">Estrategia</h3>
+            <ul class="steps">
+              <li>Prueba mover los puntos de control de la curva.</li>
+              <li>Observa cómo cambian las coordenadas en el gráfico.</li>
+              <li>
+                Recuerda: una función es inyectiva si no hay dos puntos en el
+                dominio que se mapeen al mismo en el codominio.
+              </li>
+            </ul>
+          </div>
+        </div>
 
-                </div>
-
-            </div>
-
-            <!-- Escenario interactivo -->
-            <div class="stage" aria-label="Escenario interactivo">
-                <div class="placeholder" role="region" aria-live="polite">
-                    <!-- Canvas, iframe, o elementos interactivos -->
-                    <div>
-
-                        <!-- <strong>Escenario interactivo</strong> -->
-                        <div class="status-container">
-                            <div id="lives-container">
-                                <img src="img/clover1.png" class="life" id="life1">
-                                <img src="img/clover2.png" class="life" id="life2">
-                                <img src="img/clover3.png" class="life" id="life3">
-                                <p id="score-text">Funciones inyectivas correctas: <span id="score">0</span>/3</p>
-                            </div>
-
-                        </div>
-
-                        <div id="jxgbox" style="margin-top:30px; color:var(--muted);font-size:14px;"> </div>
-
-                        <div class="button-container">
-                            <button id="validateButton">Validar función</button>
-                            <button id="resetButton" class="reset-button">Nueva función</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        <!-- Escenario interactivo -->
+        <div class="stage" aria-label="Escenario interactivo">
+          <div class="placeholder" role="region" aria-live="polite">
+            <!-- Canvas, iframe, o elementos interactivos -->
             <div>
-                <!-- Botón visual -->
+              <!-- <strong>Escenario interactivo</strong> -->
+              <div class="status-container">
+                <div id="lives-container">
+                  <img src="img/clover1.png" class="life" id="life1" />
+                  <img src="img/clover2.png" class="life" id="life2" />
+                  <img src="img/clover3.png" class="life" id="life3" />
+                  <p id="score-text">
+                    Funciones inyectivas correctas: <span id="score">0</span>/3
+                  </p>
+                </div>
+              </div>
 
-                <!--  <button class="hint-toggle" aria-expanded="False">Cuestionario</button> -->
+              <div
+                id="jxgbox"
+                style="margin-top: 30px; color: var(--muted); font-size: 14px"
+              ></div>
 
-
+              <div class="button-container">
+                <button id="validateButton">Validar función</button>
+                <button id="resetButton" class="reset-button">
+                  Nueva función
+                </button>
+              </div>
             </div>
+          </div>
+        </div>
 
-        </section>
-        <!-- Fin del escenario interactivo. Comienza sección de cuestionario interactivo-->
+        <!-- Cuestionario interactivo -->
 
-        <section>
-            <hr class="section-divider">
+        <article class="quiz-container">
+          <div>
+            <h3 class="centrar-texto">Cuestionario sobre funciones inyectivas</h3>
+            <form id="formMultipleDinamicoA"> </form>
+          </div>
 
-            <div id="quiz-container" style="display: none;">
-                <h2>Cuestionario sobre Funciones</h2>
+          <div class="button-container">
+            <button data-pregunta="1" onclick="preguntaSiguenteA(this)"
+                class="modern-button modern-button:hover">Siguiente</button>
+            <button class="modern-button modern-button:hover" onclick="validarFormA()"> Validar </button>
 
-                <div class="quiz-box">
-                    <p id="question-text"></p>
+          </div>
+        </article>
 
-                    <div id="options-container" class="options-grid">
-                        <button class="option-button" data-option="0"></button>
-                        <button class="option-button" data-option="1"></button>
-                        <button class="option-button" data-option="2"></button>
-                    </div>
-                </div>
-
-                <div class="quiz-controls">
-                    <button id="validate-quiz-button" class="btn btn-primary" disabled>Validar Respuesta</button>
-                    <button id="next-question-button" class="btn btn-secondary" style="display: none;">Siguiente
-                        Pregunta</button>
-                </div>
-            </div>
-
-        </section>
-
-        <section>
-            <hr class="section-divider">
-
-            <div id="quiz-container" style="display: none;">
-                <h2>Cuestionario sobre Funciones</h2>
-
-                <div class="quiz-box">
-                    <p id="question-text"></p>
-
-                    <div id="options-container" class="options-grid">
-                        <button class="option-button" data-option="0"></button>
-                        <button class="option-button" data-option="1"></button>
-                        <button class="option-button" data-option="2"></button>
-                    </div>
-                </div>
-
-                <div class="quiz-controls">
-                    <button id="validate-quiz-button" class="btn btn-primary" disabled>Validar Respuesta</button>
-                    <button id="next-question-button" class="btn btn-secondary" style="display: none;">Siguiente
-                        Pregunta</button>
-                </div>
-            </div>
-        </section>
-
-
-        <script src="js/inye.js"></script>
-        <script
-            type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath:  [['$','$'],['\\(','\\)']]}});</script>
-        <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-
-        <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.min.js"></script>
-
-
+        <!-- Termina cuestionario interactivo -->
+      </section>
     </main>
 
-</body>
+     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
+      integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <!--MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async=""
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath:  [['$','$'],['\\(','\\)']]}});
+    </script>
+
+
+      <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.min.js"></script>
+      <script src="js/inye.js"></script>
+      <script src="js/dinamicoSencillo.js"></script>
+    </main>
+  </body>
 </html>

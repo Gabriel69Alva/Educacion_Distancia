@@ -2,6 +2,12 @@
 let lives = 3;
 let score = 0;
 
+// Variable para el estado del cuestionario
+let currentQuestionIndex = 0;
+let selectedOption = null;
+
+
+
 // Array global para almacenar y eliminar los puntos resaltados
 let highlightedPoints = [];
 // Variable global para almacenar la curva
@@ -397,6 +403,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         };
 
+
+
+
         // Asocia las funciones a los botones
         document.getElementById('validateButton').onclick = window.validarCurva;
         document.getElementById('resetButton').onclick = setRandomInitialPositions;
@@ -405,15 +414,15 @@ document.addEventListener('DOMContentLoaded', function () {
         brd.unsuspendUpdate();
         setRandomInitialPositions(); // Establecer la posición inicial aleatoria al cargar
     } catch (e) {
-        console.error("Error durante la inicialización de JXG.JSXGraph:", e);
-        swal({
-            title: "Error al cargar la gráfica",
-            text: "Hubo un problema al inicializar el escenario. Por favor, inténtalo de nuevo. Detalles: " + e.message,
-            icon: "error",
-            button: "Entendido",
-        });
-    }
-});
+            console.error("Error durante la inicialización de JXG.JSXGraph:", e);
+            swal({
+                title: "Error al cargar la gráfica",
+                text: "Hubo un problema al inicializar el escenario. Por favor, inténtalo de nuevo. Detalles: " + e.message,
+                icon: "error",
+                button: "Entendido",
+            });
+        }
+    });
 
 const toggleButton = document.querySelector('.hint-toggle');
 const hintsList = document.querySelector('.hints');

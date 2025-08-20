@@ -47,11 +47,19 @@ function setRandomInitialPositions() {
         // Comprobar si sigue siendo inyectiva
         esInyectiva = verificarInyectividad();
 
-    } while (esInyectiva && intentos < 50); // límite de intentos por seguridad
+    } while (esInyectiva && intentos < 3); // límite de intentos por seguridad
+
+    // Habilita la capacidad de arrastrar los puntos de nuevo
+    glider1.setAttribute({ fixed: false });
+    glider2.setAttribute({ fixed: false });
+    p5.setAttribute({ fixed: false });
+    p6.setAttribute({ fixed: false });
 
     // Limpiar puntos resaltados de validaciones anteriores
     highlightedPoints.forEach(point => brd.removeObject(point));
     highlightedPoints = [];
+    brd.unsuspendUpdate();
+
 }
 
 // Verificación de inyectividad
@@ -77,59 +85,71 @@ function verificarInyectividad() {
 // Bezier cúbica
 function curvaX(t) {
     return Math.pow(1 - t, 3) * glider1.X() +
-           3 * Math.pow(1 - t, 2) * t * p5.X() +
-           3 * (1 - t) * Math.pow(t, 2) * p6.X() +
-           Math.pow(t, 3) * glider2.X();
+        3 * Math.pow(1 - t, 2) * t * p5.X() +
+        3 * (1 - t) * Math.pow(t, 2) * p6.X() +
+        Math.pow(t, 3) * glider2.X();
 }
 
 function curvaY(t) {
     return Math.pow(1 - t, 3) * glider1.Y() +
-           3 * Math.pow(1 - t, 2) * t * p5.Y() +
-           3 * (1 - t) * Math.pow(t, 2) * p6.Y() +
-           Math.pow(t, 3) * glider2.Y();
+        3 * Math.pow(1 - t, 2) * t * p5.Y() +
+        3 * (1 - t) * Math.pow(t, 2) * p6.Y() +
+        Math.pow(t, 3) * glider2.Y();
 }
 
 function loseLife() {
+
     if (lives > 0) {
         const lifeEl = document.getElementById(`life${lives}`);
         lifeEl.classList.add('blink');
         setTimeout(() => {
             lifeEl.classList.remove('blink');
             lifeEl.classList.add('fall');
-        }, 400);
+        }, 1800);
 
         lives--;
+
         if (lives === 0) {
+            document.getElementById('validateButton').disabled = true;
+            document.getElementById('resetButton').disabled = true;
             swal({
-                title: "¡Juego terminado!",
-                text: "Te has quedado sin tréboles.",
+                title: "¡Juego terminado! Debes estudiar más",
+                text: "Te has quedado sin tréboles de la suerte.",
                 icon: "error",
-                button: "Reiniciar"
-            }).then(() => {
-                location.reload();
+                button: "Entendido"
             });
         }
     }
+
+
 }
 
 function winPoint() {
+    if (score < 3) {
+        // Aquí puedes agregar lógica para manejar el caso en que el jugador gana un punto pero no ha alcanzado 3 puntos aún.
+        swal({
+            title: "¡Función inyectiva!",
+            text: "Has ganado una función inyectiva, necesitas " + (2 - score) + " para ganar.",
+            icon: "info",
+            button: "Entendido"
+        });
+    }
     score++;
     document.getElementById('score').textContent = score;
     if (score === 3) {
+        document.getElementById('validateButton').disabled = true;
+        document.getElementById('resetButton').disabled = true;
         swal({
             title: "¡Ganaste!",
             text: "Completaste las 3 funciones inyectivas.",
             icon: "success",
-            button: "Jugar de nuevo"
-        }).then(() => {
-            location.reload();
+            button: "Cuestionario"
         });
+        // Aquí puedes redirigir al usuario a un cuestionario o a otra página
     } else {
         setRandomInitialPositions();
     }
 }
-
-
 
 // Asegura que el DOM esté completamente cargado antes de inicializar JXG.JSXGraph
 document.addEventListener('DOMContentLoaded', function () {
@@ -142,7 +162,18 @@ document.addEventListener('DOMContentLoaded', function () {
             // Bounding box simétrico para centrar los ejes
             boundingbox: [-5, 5, 5, -5], // [left, top, right, bottom]
             keepaspectratio: true,
-            axis: true,
+            axis: {
+                ticks: {
+                    majorHeight: -1, // Muestra las marcas de división
+                    insertTicks: true, // Asegura que las marcas se dibujen
+                    drawLabels: true, // Asegura que los números se dibujen
+                    label: {
+                        offset: [-10, -10] // Posicionamiento de las etiquetas
+                    },
+                    majorHeight: -1, // Longitud de la marca de división mayor
+                    minorHeight: 0 // Longitud de la marca de división menor
+                }
+            },
             grid: true, // Añadir una cuadrícula para mejor visualización
             showinfobox: true // Deshabilita el infobox con las coordenadas del mouse
         });
@@ -174,12 +205,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Creación de los "gliders" (puntos que se deslizan sobre una línea)
         // Se inicializan con valores temporales, se moverán a posiciones aleatorias después.
-        glider1 = brd.create('glider', [-3, 0, l1_left_guide], { name: 'G', size: 4, color: 'turquoise', fixed: false });
-        glider2 = brd.create('glider', [3, 0, l2_right_guide], { name: 'H', size: 4, color: 'orange', fixed: false }); // Diferente color para distinguirlo
+        glider1 = brd.create('glider', [-3, 0, l1_left_guide], { name: 'G', size: 3, color: 'blue', fixed: false });
+        glider2 = brd.create('glider', [3, 0, l2_right_guide], { name: 'H', size: 3, color: 'blue', fixed: false }); // Diferente color para distinguirlo
 
         // Creación de puntos de control internos (puntos P y Q)
-        p5 = brd.create('point', [0, 0], { name: 'P', trace: false, size: 3, color: 'green', face: '[]', fixed: false });
-        p6 = brd.create('point', [0, 0], { name: 'Q', trace: false, size: 3, color: 'green', face: '[]', fixed: false });
+        p5 = brd.create('point', [0, 0], { name: 'P', trace: false, size: 3, color: 'purple', face: '[]', fixed: false });
+        p6 = brd.create('point', [0, 0], { name: 'Q', trace: false, size: 3, color: 'purple', face: '[]', fixed: false });
 
         // Añade los puntos al arreglo 'p' en el orden correcto para la curva de Bezier
         p.push(glider1);
@@ -237,9 +268,17 @@ document.addEventListener('DOMContentLoaded', function () {
          * si es inyectiva.
          */
         window.validarCurva = function () {
+            brd.suspendUpdate();  // congela el tablero
+            // Deshabilita la capacidad de arrastrar los puntos de control
+            glider1.setAttribute({ fixed: true });
+            glider2.setAttribute({ fixed: true });
+            p5.setAttribute({ fixed: true });
+            p6.setAttribute({ fixed: true });
+
             console.log("Validación de curva: Iniciando...");
             const muestrasT = 10000;
             const tolerancia = 0.01;
+
 
             // Eliminar puntos resaltados de la ejecución anterior
             highlightedPoints.forEach(point => brd.removeObject(point));
@@ -280,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Si no es una función, muestra la alerta y resalta los puntos
             if (nonFunctionPoints) {
                 highlightProblemPoints([nonFunctionPoints.first, nonFunctionPoints.second]);
-                const mensajeError = `La curva no representa una función. Se encontraron al menos dos puntos diferentes con la misma coordenada X:
+                const mensajeError = `Se encontraron al menos dos puntos diferentes con la misma coordenada en X. Haz perdido un trébol de la suerte. Te quedan ${lives - 1} tréboles.
                                 \nPunto 1: (${nonFunctionPoints.first.x.toFixed(2)}, ${nonFunctionPoints.first.y.toFixed(2)})
                                 \nPunto 2: (${nonFunctionPoints.second.x.toFixed(2)}, ${nonFunctionPoints.second.y.toFixed(2)})`;
 
@@ -290,7 +329,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     icon: "error",
                     button: "Entendido",
                 });
+
                 loseLife();
+
                 return; // Importante: salir de la función
             }
 
@@ -331,9 +372,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Mostrar el resultado de la validación de inyectividad
             if (nonInjectivePoints) {
                 highlightProblemPoints([nonInjectivePoints.first, nonInjectivePoints.second]);
-                const mensajeError = `La curva no es inyectiva. Se encontró al menos un par de puntos diferentes con la misma coordenada Y:
-                                \nPunto 1: (${nonInjectivePoints.first.x.toFixed(2)}, ${nonInjectivePoints.first.y.toFixed(2)})
-                                \nPunto 2: (${nonInjectivePoints.second.x.toFixed(2)}, ${nonInjectivePoints.second.y.toFixed(2)})`;
+                const mensajeError = `Se encontraron al menos un par de puntos diferentes con la misma coordenada Y:
+                                \nPunto 1: (${nonInjectivePoints.first.x.toFixed(2)}, ${nonInjectivePoints.first.y.toFixed(1)})
+                                \nPunto 2: (${nonInjectivePoints.second.x.toFixed(2)}, ${nonInjectivePoints.second.y.toFixed(1)})
+                                \nHaz perdido un trébol de la suerte. Te quedan ${lives - 1} tréboles.`;
 
                 swal({
                     title: "¡La gráfica no representa a una función inyectiva!",
@@ -342,9 +384,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     button: "Entendido",
                 });
                 loseLife();
+
             } else {
                 swal({
-                    title: "¡Éxito!",
+                    title: "¡Genial!",
                     text: "La curva representa una función inyectiva.",
                     icon: "success",
                     button: "Entendido",
@@ -373,10 +416,10 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 const toggleButton = document.querySelector('.hint-toggle');
-  const hintsList = document.querySelector('.hints');
+const hintsList = document.querySelector('.hints');
 
-  toggleButton.addEventListener('click', () => {
+toggleButton.addEventListener('click', () => {
     hintsList.classList.toggle('visible');
     const isVisible = hintsList.classList.contains('visible');
     toggleButton.setAttribute('aria-expanded', isVisible);
-  });
+});

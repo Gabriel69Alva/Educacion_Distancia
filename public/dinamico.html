@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario Dinámico</title>
+    <link rel="stylesheet" href="css/dinamico.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.min.js"></script>
+    <script type="text/javascript" async
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <h2 class="quiz-title">Cuestionario sobre Funciones</h2>
+
+        <div class="quiz-box">
+            <p id="question-text" class="question-text"></p>
+            
+            <div id="options-container" class="options-grid">
+                <button class="option-button" data-option="0"></button>
+                <button class="option-button" data-option="1"></button>
+                <button class="option-button" data-option="2"></button>
+            </div>
+        </div>
+
+        <div class="quiz-controls">
+            <button id="validate-quiz-button" class="btn btn-primary" disabled>Validar Respuesta</button>
+            <button id="next-question-button" class="btn btn-secondary" style="display: none;">Siguiente Pregunta</button>
+        </div>
+    </div>
+
+    <script src="js/dinamico.js"></script>
+</body>
+</html>

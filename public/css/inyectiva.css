@@ -43,8 +43,9 @@ body {
 
 .game-header {
     display: flex;
-    justify-content: space-between; /* Instrucciones a la izq, vidas/score a la der */
+    justify-content: left; /* Instrucciones a la izq, vidas/score a la der */
     align-items: center;
+    gap: 400px;
     padding: 8px 16px;
     transition: all 0.3s ease;
     cursor: pointer;
@@ -102,12 +103,14 @@ body {
 .status-container {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 10px;
 }
 
 #lives-container {
     display: flex;
-    gap: 4px;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 12px;
 }
 
 .life {
@@ -183,15 +186,15 @@ span {
     border-radius: 12px;
     border: 1px solid rgba(16, 24, 40, 0.04);
     margin: 0 auto;
-    min-height: 700px;
+    min-height: 750px;
     /* tamaño base del escenario */
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     overflow: hidden;
-    padding: 18px;
-    margin-bottom: 17px;
+    padding: 10px;   /*las líneas de la cuadrícula no deben tocar los bordes laterales */
+    margin-bottom: 50px;
     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
 }
 
@@ -199,7 +202,7 @@ span {
 .stage .placeholder {
     width: 100%;
     height: 100%;
-    max-height: 700px;
+    max-height: 800px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -208,17 +211,17 @@ span {
     background: repeating-linear-gradient(45deg, rgba(99, 102, 241, 0.02) 0 8px, transparent 8px 16px);
     color: var(--muted);
     text-align: center;
-    padding: 50px;
+    padding: 80px; /* espacio interno para que el texto no toque los bordes */
     box-sizing: border-box;
 }
 
 /* Estilos para el contenedor del tablero JXG.JSXGraph */
 #jxgbox {
-    width: 90vw;
+    width: 100vw;
     /* Ancho responsivo */
-    max-width: 700px;
+    max-width: 800px;
     /* Ancho máximo para pantallas grandes */
-    height: 40vh;
+    height: 50vh;
     /* Altura responsiva */
     min-height: 300px;
     /* Altura mínima */
@@ -228,6 +231,7 @@ span {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     /* Sombra más pronunciada */
     margin-bottom: 30px;
+    margin-top: 0px;
     /* Espacio debajo del tablero */
     padding: 0px;
     overflow: hidden;
@@ -279,6 +283,7 @@ span {
     font-weight: 600;
     padding: 6px 8px;
     border-radius: 8px;
+
 }
 
 
@@ -305,7 +310,7 @@ body {
     align-items: center;
     justify-content: center;
     /* Espacio entre botones */
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 button {
@@ -320,14 +325,14 @@ button {
     /* Esquinas redondeadas */
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(37, 112, 225, 0.2);
     /* Sombra para el botón */
     outline: none;
     /* Elimina el contorno al hacer clic */
 }
 
 button:hover {
-    background-color: #2980b9;
+    background-color: rgb(52, 181, 246);
     /* Azul más oscuro al pasar el ratón */
     transform: translateY(-3px);
     /* Efecto de "levantar" */
@@ -335,7 +340,7 @@ button:hover {
 }
 
 button:active {
-    background-color: #2c3e50;
+    background-color: #266cf7;
     /* Azul muy oscuro al hacer clic */
     transform: translateY(0);
     /* Vuelve a su posición original */
@@ -344,12 +349,12 @@ button:active {
 
 /* Estilo específico para el botón de reinicio */
 button.reset-button {
-    background-color: #e74c3c;
+    background-color: #e52d2d;
     /* Rojo para reiniciar */
 }
 
 button.reset-button:hover {
-    background-color: #c0392b;
+    background-color: #f4270c;
     /* Rojo más oscuro al pasar el ratón */
 }
 
@@ -390,4 +395,3 @@ button.reset-button:hover {
         opacity: 0;
     }
 }
-
