@@ -26,7 +26,7 @@ body {
 }
 
 .page {
-    min-height: 107vh;
+    min-height: 103vh;
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -45,6 +45,7 @@ body {
     display: flex;
     justify-content: left; /* Instrucciones a la izq, vidas/score a la der */
     align-items: center;
+    margin-top: 0px;
     gap: 400px;
     padding: 8px 16px;
     transition: all 0.3s ease;
@@ -358,12 +359,12 @@ button:active {
 
 /* Estilo específico para el botón de reinicio */
 button.reset-button {
-    background-color: #e52d2d;
+    background-color: hsl(0, 87%, 61%);
     /* Rojo para reiniciar */
 }
 
 button.reset-button:hover {
-    background-color: #f4270c;
+    background-color: #ef3b23;
     /* Rojo más oscuro al pasar el ratón */
 }
 
