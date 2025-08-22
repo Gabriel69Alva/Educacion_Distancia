@@ -167,6 +167,9 @@ document.addEventListener('DOMContentLoaded', function () {
         brd = JXG.JSXGraph.initBoard('jxgbox', {
             // Bounding box simétrico para centrar los ejes
             boundingbox: [-5, 5, 5, -5], // [left, top, right, bottom]
+            pan: {
+                enabled: false // 🔒 Desactiva arrastre del tablero
+            },
             keepaspectratio: true,
             axis: {
                 ticks: {
@@ -182,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             grid: true, // Añadir una cuadrícula para mejor visualización
             showinfobox: true, // Deshabilita el infobox con las coordenadas del mouse
-            fixed: true // Fija el tablero para evitar arrastre accidental para celulares
+            showCopyright: false
 
         });
 
