@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var p5_line = brd.create('point', [-3, 0], { name: 'E', face: 'square', visible: false });
         var p6_line = brd.create('point', [3, 0], { name: 'F', face: 'square', visible: false });
         // Crear líneas horizontales invisibles para los puntos E y F.
-        var l3_horizontal = brd.create('segment', [p5_line, p6_line], { color: 'purple', size: 15, strokeWidth: 5, fixed: true, layer: 0, visible: true });
+        var l3_horizontal = brd.create('segment', [p5_line, p6_line], { color: '#76da2aff', size: 15, strokeWidth: 5, fixed: true, layer: 0, visible: true });
 
 
 
@@ -217,8 +217,8 @@ document.addEventListener('DOMContentLoaded', function () {
         glider2 = brd.create('glider', [3, 0, l2_right_guide], { name: 'H', size: 3, color: 'blue', fixed: false }); // Diferente color para distinguirlo
 
         // Creación de puntos de control internos (puntos P y Q)
-        p5 = brd.create('point', [0, 0], { name: 'P', trace: false, size: 3, color: 'orange', face: '[]', fixed: false });
-        p6 = brd.create('point', [0, 0], { name: 'Q', trace: false, size: 3, color: 'orange', face: '[]', fixed: false });
+        p5 = brd.create('point', [0, 0], { name: 'P', trace: false, size: 3.5, color: 'purple', face: '[]', fixed: false });
+        p6 = brd.create('point', [0, 0], { name: 'Q', trace: false, size: 3.5, color: 'purple', face: '[]', fixed: false });
 
         // Añade los puntos al arreglo 'p' en el orden correcto para la curva de Bezier
         p.push(glider1);
