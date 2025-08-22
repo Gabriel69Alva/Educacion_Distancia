@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var p5_line = brd.create('point', [-3, 0], { name: 'E', face: 'square', visible: false });
         var p6_line = brd.create('point', [3, 0], { name: 'F', face: 'square', visible: false });
         // Crear líneas horizontales invisibles para los puntos E y F.
-        var l3_horizontal = brd.create('segment', [p5_line, p6_line], { color: '#76da2aff', size: 15, strokeWidth: 5, fixed: true, layer: 0, visible: true });
+        var l3_horizontal = brd.create('segment', [p5_line, p6_line], { color: '#016fbdff', size: 15, strokeWidth: 5, fixed: true, layer: 0, visible: true });
 
 
 
