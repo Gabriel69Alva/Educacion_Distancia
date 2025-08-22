@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             grid: true, // Añadir una cuadrícula para mejor visualización
             showinfobox: true, // Deshabilita el infobox con las coordenadas del mouse
-            fixed: true // Fija el tablero para evitar arrastre accidental
+            fixed: true // Fija el tablero para evitar arrastre accidental para celulares
 
         });
 
