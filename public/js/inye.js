@@ -181,7 +181,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
             grid: true, // Añadir una cuadrícula para mejor visualización
-            showinfobox: true // Deshabilita el infobox con las coordenadas del mouse
+            showinfobox: true, // Deshabilita el infobox con las coordenadas del mouse
+            fixed: true // Fija el tablero para evitar arrastre accidental
+
         });
 
         // Arreglo para almacenar los puntos de control de la curva de Bezier
