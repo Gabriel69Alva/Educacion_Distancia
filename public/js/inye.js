@@ -221,9 +221,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Creación de puntos de control internos (puntos P y Q)
         p5 = brd.create('point', [0, 0], { name: 'P', trace: false, size: 4.5, color: 'purple', face: '[]', highlight: true, fixed: false });
-        p5.catchRadius = 30; // área táctil de 30px para capturar el toque
+        p5.catchRadius = 50; // área táctil de 30px para capturar el toque
         p6 = brd.create('point', [0, 0], { name: 'Q', trace: false, size: 4.5, color: 'purple', face: '[]', highlight: true, fixed: false });
-        p6.catchRadius = 30; // área táctil de 30px para capturar el toque
+        p6.catchRadius = 50; // área táctil de 30px para capturar el toque
 
 
         // Añade los puntos al arreglo 'p' en el orden correcto para la curva de Bezier
