@@ -2,6 +2,17 @@
 let lives = 3;
 let score = 0;
 
+// Detección de móvil/tablet
+const esMovil = /Mobi|Android/i.test(navigator.userAgent);
+
+// Ajustes según dispositivo
+const puntoSize = esMovil ? 8 : 5;
+const puntoCatchRadius = esMovil ? 30 : 10;
+const puntoHighlightSize = esMovil ? 12 : 8; // más grande al tocar
+const puntoHighlightColor = 'orange';       // color de resaltado
+
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
 // Variable para el estado del cuestionario
 let currentQuestionIndex = 0;
 let selectedOption = null;
@@ -13,7 +24,7 @@ let curve;
 // Referencia al tablero JXG.JSXGraph
 let brd;
 // Puntos de control para acceso global en la validación
-let glider1, glider2, p5, p6;
+let g1, g2, p5, p6;
 
 // Función para obtener una coordenada aleatoria dentro de un rango
 function getRandomCoord(min, max) {
@@ -41,8 +52,8 @@ function setRandomInitialPositions() {
         const randomP6Y = p5Alto ? getRandomCoord(-4, -1.5) : getRandomCoord(1.5, 4);
 
         // Mover los puntos a las nuevas posiciones
-        glider1.moveTo([-3, randomGlider1Y]);
-        glider2.moveTo([3, randomGlider2Y]);
+        g1.moveTo([-3, randomGlider1Y]);
+        g2.moveTo([3, randomGlider2Y]);
         p5.moveTo([randomP5X, randomP5Y]);
         p6.moveTo([randomP6X, randomP6Y]);
 
@@ -54,8 +65,8 @@ function setRandomInitialPositions() {
     } while (esInyectiva && intentos < 3); // límite de intentos por seguridad
 
     // Habilita la capacidad de arrastrar los puntos de nuevo
-    glider1.setAttribute({ fixed: false });
-    glider2.setAttribute({ fixed: false });
+    g1.setAttribute({ fixed: false });
+    g2.setAttribute({ fixed: false });
     p5.setAttribute({ fixed: false });
     p6.setAttribute({ fixed: false });
 
@@ -64,6 +75,47 @@ function setRandomInitialPositions() {
     highlightedPoints = [];
     brd.unsuspendUpdate();
 
+}
+// Función para vibrar (si el dispositivo lo soporta)
+function vibrar(ms) {
+    if (navigator.vibrate) {
+        navigator.vibrate(ms);
+    }
+}
+
+// Función para crear puntos de control con efecto de resaltado y vibración
+function ampliarPunto(pControl) {
+    let z = pControl;
+    z.catchRadius = puntoCatchRadius;
+
+    // Guardamos estilo original
+    z.normalColor = color;
+    z.normalSize = puntoSize;
+
+    // Al tocar o pasar el mouse
+    z.on('over', () => {
+        z.setAttribute({
+            size: puntoHighlightSize,
+            color: puntoHighlightColor
+        });
+        brd.update();
+
+        // Vibración breve en móvil
+        if (esMovil) {
+            vibrar(50);
+        }
+    });
+
+    // Al soltar
+    z.on('out', () => {
+        z.setAttribute({
+            size: pControl.normalSize,
+            color: pControl.normalColor
+        });
+        brd.update();
+    });
+
+    return z;
 }
 
 // Verificación de inyectividad
@@ -88,17 +140,17 @@ function verificarInyectividad() {
 
 // Bezier cúbica
 function curvaX(t) {
-    return Math.pow(1 - t, 3) * glider1.X() +
+    return Math.pow(1 - t, 3) * g1.X() +
         3 * Math.pow(1 - t, 2) * t * p5.X() +
         3 * (1 - t) * Math.pow(t, 2) * p6.X() +
-        Math.pow(t, 3) * glider2.X();
+        Math.pow(t, 3) * g2.X();
 }
 
 function curvaY(t) {
-    return Math.pow(1 - t, 3) * glider1.Y() +
+    return Math.pow(1 - t, 3) * g1.Y() +
         3 * Math.pow(1 - t, 2) * t * p5.Y() +
         3 * (1 - t) * Math.pow(t, 2) * p6.Y() +
-        Math.pow(t, 3) * glider2.Y();
+        Math.pow(t, 3) * g2.Y();
 }
 
 function loseLife() {
@@ -166,11 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Inicialización del tablero JXG.JSXGraph
         brd = JXG.JSXGraph.initBoard('jxgbox', {
             // Bounding box simétrico para centrar los ejes
-            boundingbox: [-5, 5, 5, -5], // [left, top, right, bottom]
-            pan: {
-                enabled: false // 🔒 Desactiva arrastre del tablero
-            },
-            keepaspectratio: true,
+            boundingbox: [-6, 6, 6, -6], // [left, top, right, bottom]
             axis: {
                 ticks: {
                     majorHeight: -1, // Muestra las marcas de división
@@ -184,6 +232,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
             grid: true, // Añadir una cuadrícula para mejor visualización
+            pan: {
+                enabled: false // 🔒 Desactiva arrastre del tablero
+            },
+            zoom: { enable: false },
+            keepaspectratio: true,
             showinfobox: true, // Deshabilita el infobox con las coordenadas del mouse
             showCopyright: false
 
@@ -212,30 +265,28 @@ document.addEventListener('DOMContentLoaded', function () {
         var l3_horizontal = brd.create('segment', [p5_line, p6_line], { color: '#6fbff9ff', size: 15, strokeWidth: 5, fixed: true, layer: 0, visible: true });
 
 
+
+
         // Creación de los "gliders" (puntos que se deslizan sobre una línea)
-        // Se inicializan con valores temporales, se moverán a posiciones aleatorias después.
-        glider1 = brd.create('glider', [-3, 0, l1_left_guide], { name: 'G', size: 4, color: 'blue', highlight: true, fixed: false });
-        glider1.catchRadius = 30; // área táctil de 30px para capturar el toque
-        glider2 = brd.create('glider', [3, 0, l2_right_guide], { name: 'H', size: 4, color: 'blue', highlight: true, fixed: false }); // Diferente color para distinguirlo
-        glider2.catchRadius = 30; // área táctil de 30px para capturar el toque
+        //Se inicializan con valores temporales, se moverán a posiciones aleatorias después.
+        g1 = brd.create('glider', [-3, 0, l1_left_guide], { name: 'G', size: 3, color: 'blue', fixed: false });
+        g2 = brd.create('glider', [3, 0, l2_right_guide], { name: 'H', size: 3, color: 'blue', fixed: false }); // Diferente color para distinguirlo
 
         // Creación de puntos de control internos (puntos P y Q)
-        p5 = brd.create('point', [0, 0], { name: 'P', trace: false, size: 4.5, color: 'purple', face: '[]', highlight: true, fixed: false });
-        p5.catchRadius = 30; // área táctil de 30px para capturar el toque
-        p6 = brd.create('point', [0, 0], { name: 'Q', trace: false, size: 4.5, color: 'purple', face: '[]', highlight: true, fixed: false });
-        p6.catchRadius = 30; // área táctil de 30px para capturar el toque
+        p5 = brd.create('point', [0, 0], { name: 'P', trace: false, size: 3.5, color: 'purple', face: '[]', fixed: false });
+        p6 = brd.create('point', [0, 0], { name: 'Q', trace: false, size: 3.5, color: 'purple', face: '[]', fixed: false });
 
-
+       
         // Añade los puntos al arreglo 'p' en el orden correcto para la curva de Bezier
-        p.push(glider1);
+        p.push(g1);
         p.push(p5);
         p.push(p6);
-        p.push(glider2);
+        p.push(g2);
 
         // Corrige automáticamente los valores Y de los puntos de control
         // para que permanezcan dentro del rango [-4, 4]
         brd.on('update', () => {
-            [glider1, glider2, p5, p6].forEach(pt => {
+            [g1, g2, p5, p6].forEach(pt => {
                 let y = pt.Y();
                 if (y > 4) {
                     pt.moveTo([pt.X(), 4]);
@@ -252,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
             strokeWidth: 3, // Ligeramente más gruesa para mejor visibilidad
             needsRegularUpdate: true // Asegura que la curva se actualice al mover los puntos
         });
-        
+
         /**
          * Resalta los puntos problemáticos en el gráfico.
          * @param {Array<Object>} points - Un array de objetos {x, y} de los puntos a resaltar.
@@ -284,8 +335,8 @@ document.addEventListener('DOMContentLoaded', function () {
         window.validarCurva = function () {
             brd.suspendUpdate();  // congela el tablero
             // Deshabilita la capacidad de arrastrar los puntos de control
-            glider1.setAttribute({ fixed: true });
-            glider2.setAttribute({ fixed: true });
+            g1.setAttribute({ fixed: true });
+            g2.setAttribute({ fixed: true });
             p5.setAttribute({ fixed: true });
             p6.setAttribute({ fixed: true });
 
@@ -442,57 +493,52 @@ toggleButton.addEventListener('click', () => {
 });
 
 function funcionModal() {
-  // 1) Cargar el HTML del cuestionario
-  $("<div>").load("./cuestionarios/cuestionario.html", function (_resp, status) {
-    if (status === "error") {
-      swal("Error", "No se pudo cargar el contenido HTML.", "error");
-      return;
-    }
+    // 1) Cargar el HTML del cuestionario
+    $("<div>").load("./cuestionarios/cuestionario.html", function (_resp, status) {
+        if (status === "error") {
+            swal("Error", "No se pudo cargar el contenido HTML.", "error");
+            return;
+        }
 
-    // 2) Inyectar el HTML en un contenedor real que pasaremos a swal
-    const cont = document.createElement('div');
-    cont.innerHTML = $(this).html();
+        // 2) Inyectar el HTML en un contenedor real que pasaremos a swal
+        const cont = document.createElement('div');
+        cont.innerHTML = $(this).html();
 
-    // 3) Abrir el modal con SweetAlert clásico (usa 'content')
-    swal({
-      title: "Cuestionario",
-      content: cont, // <- OJO: SweetAlert clásico usa 'content', NO 'html'
-      buttons: true
-    });
+        // 3) Abrir el modal con SweetAlert clásico (usa 'content')
+        swal({
+            title: "Cuestionario",
+            content: cont, // <- OJO: SweetAlert clásico usa 'content', NO 'html'
+            buttons: true
+        });
 
-    // 4) Esperar a que el modal inserte su DOM (clásico no tiene didOpen)
-    requestAnimationFrame(() => {
-      // .swal-content es la raíz real del contenido en swal clásico
-      const root = document.querySelector('.swal-content');
+        // 4) Esperar a que el modal inserte su DOM (clásico no tiene didOpen)
+        requestAnimationFrame(() => {
+            // .swal-content es la raíz real del contenido en swal clásico
+            const root = document.querySelector('.swal-content');
 
-      // 5) Cargar primero JSConfetti, luego dinamico.js
-      $.getScript('https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js')
-        .done(() => {
-          // Bust de caché para dinamico.js si vas iterando:
-          $.getScript('./js/dinamico.js?v=' + Date.now())
-            .done(() => {
-              if (typeof window.initCuestionario === 'function') {
-                // 6) Arrancar el cuestionario DENTRO del modal
-                window.initCuestionario(root);
-              } else {
-                console.warn('initCuestionario no encontrado en dinamico.js');
-                swal("Aviso", "No se encontró initCuestionario en dinamico.js", "warning");
-              }
-            })
-            .fail((_jq, _st, ex) => {
-              console.error('Error cargando dinamico.js', ex);
-              swal("Error", "No se pudo cargar dinamico.js", "error");
-            });
-        })
-        .fail((_jq, _st, ex) => {
-          console.error('Error cargando JSConfetti', ex);
-          swal("Error", "No se pudo cargar JSConfetti", "error");
+            // 5) Cargar primero JSConfetti, luego dinamico.js
+            $.getScript('https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js')
+                .done(() => {
+                    // Bust de caché para dinamico.js si vas iterando:
+                    $.getScript('./js/dinamico.js?v=' + Date.now())
+                        .done(() => {
+                            if (typeof window.initCuestionario === 'function') {
+                                // 6) Arrancar el cuestionario DENTRO del modal
+                                window.initCuestionario(root);
+                            } else {
+                                console.warn('initCuestionario no encontrado en dinamico.js');
+                                swal("Aviso", "No se encontró initCuestionario en dinamico.js", "warning");
+                            }
+                        })
+                        .fail((_jq, _st, ex) => {
+                            console.error('Error cargando dinamico.js', ex);
+                            swal("Error", "No se pudo cargar dinamico.js", "error");
+                        });
+                })
+                .fail((_jq, _st, ex) => {
+                    console.error('Error cargando JSConfetti', ex);
+                    swal("Error", "No se pudo cargar JSConfetti", "error");
+                });
         });
     });
-  });
 }
-
-
-
-
-
