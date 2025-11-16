@@ -156,8 +156,8 @@ function winPoint() {
     if (score < 3) {
         // Aquí puedes agregar lógica para manejar el caso en que el jugador gana un punto pero no ha alcanzado 3 puntos aún.
         swal({
-            title: "¡Función inyectiva!",
-            text: "Has ganado una función inyectiva, necesitas " + (2 - score) + " para ganar.",
+            title: "¡Función continua!",
+            text: "Has ganado una función continua, necesitas " + (2 - score) + " para ganar.",
             icon: "info",
             button: "Entendido"
         });
@@ -169,15 +169,13 @@ function winPoint() {
         document.getElementById('resetButton').disabled = true;
         swal({
             title: "¡Ganaste!",
-            text: "Completaste las 3 funciones inyectivas.",
+            text: "Completaste las 3 funciones continuas.",
             icon: "success",
             button: "Cuestionario"
         }).then(() => {
             funcionModal();
         });
         // Aquí puedes redirigir al usuario a un cuestionario o a otra página
-    } else {
-        setRandomInitialPositions();
     }
 }
 
@@ -372,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function () {
             brd.update(); // Forzar la actualización del tablero para mostrar los puntos
         };
 
-        
+
 
         const highlightProblemPoints2 = (points) => {
             // Eliminar puntos resaltados de la ejecución anterior
@@ -394,7 +392,7 @@ document.addEventListener('DOMContentLoaded', function () {
             brd.update(); // Forzar la actualización del tablero para mostrar los puntos
         };
 
-        
+
 
         /**
          * Función principal para validar si la curva es una función y, si lo es,
@@ -522,9 +520,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 return; // Importante: salir de la función
             }
 
-            function approxEqual(a, b, tolerance = 0.03) {
+            function approxEqual(a, b, tolerance = 0.04) {
                 return Math.abs(a - b) < tolerance;
             }
+            
             // --- 2. Validar si es inyectiva (Prueba de la línea horizontal) ---
             // Se ejecuta solo si la curva es una función
             if (((glider1.Y() < 0 && glider4.Y() > 0) || (glider1.Y() > 0 && glider4.Y() < 0)) && (approxEqual(glider2.Y(), glider3.Y()) && approxEqual(glider3.Y(), glider5.Y())) && (approxEqual(glider1.Y(), glider6.Y()) && approxEqual(glider4.Y(), glider7.Y()))) {
@@ -535,16 +534,37 @@ document.addEventListener('DOMContentLoaded', function () {
                     button: "Entendido",
                 });
             } else {
-                swal({
-                    title: "!Error!",
-                    text: "La funcion no es continua",
-                    icon: "error",
-                    button: "Entendido",
-                });
+                if (((glider1.Y() < 0 && glider4.Y() < 0) || (glider1.Y() > 0 && glider4.Y() > 0))) {
+
+                    swal({
+                        title: "!Error!",
+                        text: "No hay cambio de signo en los extremos del intervalo",
+                        icon: "error",
+                        button: "Entendido",
+                    });
+                    loseLife();
+                    return;
+
+
+                }
+                if ((!approxEqual(glider2.Y(), glider3.Y()) || !approxEqual(glider3.Y(), glider5.Y())) || (!approxEqual(glider1.Y(), glider6.Y()) || !approxEqual(glider4.Y(), glider7.Y()))) {
+
+                    swal({
+                        title: "!Error!",
+                        text: "La funcion no es continua",
+                        icon: "error",
+                        button: "Entendido",
+                    });
+                    loseLife();
+                    return;
+
+
+                }
+
             }
 
 
-            //winPoint();
+            winPoint();
 
         };
 
