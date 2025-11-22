@@ -288,12 +288,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 const yPositive = point.y; // Esto es f(xTest)
 
                 // Evitar el punto central x=0 para la comparación f(x) = f(-x)
-                if (Math.abs(xTest) < 0.4) continue;
+                if (Math.abs(xTest) < 0.1) continue;
 
-                const yNegative = getYAtSpecificX(-xTest, sampledCurvePoints, 0.4); // Buscar f(-xTest)
+                const yNegative = getYAtSpecificX(-xTest, sampledCurvePoints, 0.1); // Buscar f(-xTest)
 
                 // Si se encontró f(-xTest) y los valores no son iguales (dentro de la tolerancia)
-                if (yNegative !== null && Math.abs(yPositive - yNegative) > 0.4) {
+                if (yNegative !== null && Math.abs(yPositive - yNegative) > 0.1) {
                     isEvenFunction = false;
                     break;
                 }
@@ -340,8 +340,8 @@ document.addEventListener('DOMContentLoaded', function () {
             p6.setAttribute({ fixed: true });
 
             console.log("Validación de curva: Iniciando...");
-            const toleranciaFuncion = 0.4; // Tolerancia estricta para la prueba de la función
-            const toleranciaParidad = 0.4; // Tolerancia para la paridad (redondeo a 1 decimal)
+            const toleranciaFuncion = 0.1; // Tolerancia estricta para la prueba de la función
+            const toleranciaParidad = 0.1; // Tolerancia para la paridad (redondeo a 1 decimal)
 
             // Limpia elementos de validación anteriores (puntos amarillos)
             highlightedPoints.forEach(point => brd.removeObject(point));
@@ -406,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const yPositive = point.y; // Esto es f(xTest)
 
                 // Evitar el punto central x=0 para la comparación f(x) = f(-x)
-                if (Math.abs(xTest) < 0.001) continue;
+                if (Math.abs(xTest) < 0.01) continue;
 
                 const yNegative = getYAtSpecificX(-xTest, sampledCurvePoints, 0.05); // Buscar f(-xTest)
 
