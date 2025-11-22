@@ -23,22 +23,22 @@ window.initCuestionario = function (root) {
             correctAnswer: 1
         },
         {
-            question: "2. La prueba de la línea horizontal se usa para determinar si una función es:",
+            question: "2. Una función es simétrica respecto:",
             options: [
-                "A) $\\text{Creciente}$",
-                "B) $\\text{Inyectiva}$",
-                "C) $\\text{Suprayectiva}$"
+                "A) $\\text{Al origen}$",
+                "B) $\\text{Al eje X}$",
+                "C) $\\text{Al eje Y}$"
             ],
-            correctAnswer: 1
+            correctAnswer: 2
         },
         {
-            question: "3. Si $f(a) = f(b)$ implica que $a = b$, la función es:",
+            question: "3. Si $f(a) = f(-a)$ implica que la función es:",
             options: [
                 "A) $\\text{Inyectiva}$",
                 "B) $\\text{Par}$",
                 "C) $\\text{Impar}$"
             ],
-            correctAnswer: 0
+            correctAnswer: 1
         }
     ];
 
