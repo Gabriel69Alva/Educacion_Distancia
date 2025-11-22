@@ -65,7 +65,7 @@ function winPoint() {
         document.getElementById('resetButton').disabled = true;
         swal({
             title: "¡Ganaste!",
-            text: "Completaste las 3 funciones par.",
+            text: "Completaste tres funciones pares.",
             icon: "success",
             button: "Cuestionario"
         }).then(() => {
@@ -318,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     size: 6,
                     face: 'o',
                     fixed: true, // No permitir arrastrar
-                    highlight: false // No resaltar al pasar el mouse
+                    highlight: true // No resaltar al pasar el mouse
                 });
                 highlightedPoints.push(newPoint);
             });
