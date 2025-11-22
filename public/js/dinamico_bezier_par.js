@@ -23,7 +23,7 @@ window.initCuestionario = function (root) {
             correctAnswer: 1
         },
         {
-            question: "2. Una función es simétrica respecto:",
+            question: "2. Una función par es simétrica respecto:",
             options: [
                 "A) $\\text{Al origen}$",
                 "B) $\\text{Al eje X}$",
