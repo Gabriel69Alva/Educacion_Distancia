@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Negatividad de Funciones con Bezier</title>
+    
+    <!-- MathJax para reconocimiento de texto matemático -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'],['\\(','\\)']]}});
+    </script>
+    
+    <!-- Carga de JXG.JSXGraph CSS y JS -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraph.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraphcore.js"></script>
+    
+    <!-- Carga de SweetAlert JS (para las alertas) -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <!-- Carga de Tailwind CSS para el diseño moderno e industrial -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Carga de Confetti JS (Async en el head para la carga más rápida) -->
+    <script async src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.min.js"></script>
+    
+    <!-- Configuración de Tailwind para usar la fuente Inter y un tema gris/industrial -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#3498db',
+                        'success-green': '#27ae60',
+                        'danger-red': '#e74c3c',
+                        'background-dark': '#2c3e50',
+                        'surface-light': '#ecf0f1',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Enlace a la fuente Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Estilos generales para el cuerpo de la página (Industrial/Gris) */
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5; /* Fondo más claro */
+            padding: 20px;
+            box-sizing: border-box;
+            color: #333;
+        }
+
+        /* Contenedor del título y la racha */
+        .header-container {
+            width: 90vw;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        /* Ajuste para dispositivos grandes */
+        @media (min-width: 640px) {
+            .header-container {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        /* Estilos para el texto de la pregunta y la racha */
+        .question-style {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #34495e; /* Azul oscuro */
+            padding: 12px 18px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        #streak-display {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #27ae60;
+            background-color: #e8f6f3;
+            padding: 8px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            min-width: 120px;
+            text-align: center;
+        }
+
+        /* Estilos para el contenedor del tablero JXG.JSXGraph */
+        #jxgbox {
+            width: 90vw;
+            max-width: 800px;
+            height: 60vh;
+            min-height: 350px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            margin-bottom: 25px;
+            overflow: hidden;
+            border: 1px solid #bdc3c7; /* Borde sutil */
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            width: 90vw;
+            max-width: 800px;
+            justify-content: center;
+        }
+
+        .modern-button {
+            padding: 12px 25px;
+            font-weight: 700;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            outline: none;
+            border: none;
+        }
+        
+        .modern-button:disabled {
+            background-color: #bdc3c7; /* Color gris */
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <h1 class="text-3xl font-bold text-gray-700 mb-6">Analizador de Negatividad de Funciones</h1>
+    
+    <div class="header-container">
+        <div id="question-text" class="question-style">Cargando desafío...</div>
+        <div id="streak-display">Racha: 0</div>
+    </div>
+    
+    <div id="jxgbox"></div>
+    
+    <div class="button-group">
+        <button id="validate-button" class="modern-button bg-primary-blue hover:bg-blue-600 shadow-lg transition duration-200">
+            Validar Intento
+        </button>
+        <button id="next-button" class="modern-button bg-success-green hover:bg-green-600 shadow-lg transition duration-200" disabled>
+            Siguiente Desafío
+        </button>
+    </div>
+
+    <script type="module">
+        // --- Configuraciones de Firebase (Mandatorio) ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Variables globales de Firebase
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        let app, db, auth;
+        let isAuthReady = false;
+
+        if (firebaseConfig) {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            // 1. Manejo de Autenticación
+            async function authenticate() {
+                try {
+                    if (initialAuthToken) {
+                        await signInWithCustomToken(auth, initialAuthToken);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch (error) {
+                    console.error("Error during Firebase authentication:", error);
+                    await signInAnonymously(auth); // Fallback
+                }
+            }
+
+            // 2. Listener de estado de autenticación
+            onAuthStateChanged(auth, (user) => {
+                isAuthReady = true;
+                if (user) {
+                    console.log("User authenticated:", user.uid);
+                } else {
+                    console.log("User signed out or anonymously signed in.");
+                }
+                // Una vez que la autenticación está lista, iniciamos la lógica del juego.
+                startGameLogic();
+            });
+
+            authenticate();
+        } else {
+            // Si Firebase no está configurado, iniciar la lógica de inmediato.
+            console.warn("Firebase configuration not found. Running game without persistence.");
+            startGameLogic();
+        }
+
+        // ---------------------------------------------------------------------
+        // --- LÓGICA DEL JUEGO (ENVUELTA EN UNA FUNCIÓN PARA ESPERAR AUTENTICACIÓN) ---
+        // ---------------------------------------------------------------------
+
+        function startGameLogic() {
+            // --- Configuración Global ---
+            const DOMAIN_MIN = -3;
+            const DOMAIN_MAX = 3;
+            const Y_BOUND = 4.5;
+            const CONGRATULATIONS_STREAK = 3; 
+
+            // --- Variables de Estado ---
+            let jsConfetti;
+            let correctStreak = 0; 
+            let challengeCounter = 0; // Contador de desafíos
+            let currentChallenge = null;
+            
+            // --- Elementos DOM ---
+            const streakDisplay = document.getElementById('streak-display');
+            const validateButton = document.getElementById('validate-button');
+            const nextButton = document.getElementById('next-button');
+
+            // --- Configuraciones del Gráfico/Juego ---
+            const TOLERANCE_VALIDATION = 0.2; // Tolerancia para la coincidencia de intervalos
+            const TOLERANCE_FUNCTION = 0.01; // Tolerancia para la prueba de la línea vertical
+            const SAMPLES = 10000;           // Número de muestras para las validaciones
+            
+            // --- Variables JXG.JSXGraph ---
+            let brd;
+            let c; // Curva de Bezier
+            let p = []; // Puntos de control (Glider1, P5, P6, Glider2)
+            let highlightedPoints = []; 
+            let negativeIntervalLines = []; 
+            let rootPoints = []; 
+
+            // --- Confeti y Utilidades ---
+            
+            const initializeConfetti = () => {
+                if (typeof JSConfetti !== 'undefined') {
+                    jsConfetti = new JSConfetti();
+                } else {
+                    jsConfetti = { 
+                        addConfetti: () => Promise.resolve(console.warn("Confeti: La librería JSConfetti no está disponible.")) 
+                    };
+                }
+            };
+            setTimeout(initializeConfetti, 500); 
+            
+            const updateStreakDisplay = () => {
+                streakDisplay.textContent = `Racha: ${correctStreak}`;
+                if (correctStreak >= CONGRATULATIONS_STREAK) {
+                    streakDisplay.classList.add('text-pink-600', 'animate-pulse');
+                } else {
+                    streakDisplay.classList.remove('text-pink-600', 'animate-pulse');
+                }
+            };
+            
+            const getRandomNumber = (min, max) => Math.random() * (max - min) + min;
+
+            /**
+             * @function roundToHalf
+             * @description Redondea un número al múltiplo de 0.5 más cercano.
+             */
+            const roundToHalf = (num) => Math.round(num * 2) / 2;
+            
+            /**
+             * @function generateRandomChallenge
+             * @description Genera un desafío con un máximo de un intervalo, y límites múltiplos de 0.5.
+             */
+            const generateRandomChallenge = () => {
+                let intervals = [];
+                // 40% de 0 intervalos, 60% de 1 intervalo
+                const numIntervals = Math.random() < 0.4 ? 0 : 1; 
+                
+                if (numIntervals === 0) {
+                    return { target: "Ninguno", intervals: [] };
+                }
+
+                // Generar un único intervalo
+                const MIN_LENGTH = 1.0;
+                const MAX_LENGTH = 4.0;
+
+                let length = getRandomNumber(MIN_LENGTH, MAX_LENGTH);
+                let startCandidate = getRandomNumber(DOMAIN_MIN, DOMAIN_MAX - length);
+                let endCandidate = startCandidate + length;
+
+                // Redondear al múltiplo de 0.5 más cercano
+                let start = roundToHalf(startCandidate);
+                let end = roundToHalf(endCandidate);
+
+                // Asegurar que el intervalo final cumpla las condiciones (Longitud mínima, orden)
+                if (start >= end || (end - start) < MIN_LENGTH / 2) {
+                    // Si el intervalo es inválido después del redondeo, intentar de nuevo o default a Ninguno
+                    // Usamos un pequeño bucle para evitar la recursión simple
+                    let attempts = 0;
+                    while ((start >= end || (end - start) < MIN_LENGTH / 2) && attempts < 5) {
+                         length = getRandomNumber(MIN_LENGTH, MAX_LENGTH);
+                         startCandidate = getRandomNumber(DOMAIN_MIN, DOMAIN_MAX - length);
+                         endCandidate = startCandidate + length;
+                         
+                         start = roundToHalf(startCandidate);
+                         end = roundToHalf(endCandidate);
+                         attempts++;
+                    }
+                    if (attempts >= 5) {
+                       return { target: "Ninguno", intervals: [] }; 
+                    }
+                }
+                
+                // Asegurarse de que no esté fuera de los límites del dominio por el redondeo
+                start = Math.max(DOMAIN_MIN, start);
+                end = Math.min(DOMAIN_MAX, end);
+                
+                // Volver a verificar la longitud mínima después del ajuste de límites
+                 if (start >= end || (end - start) < MIN_LENGTH / 2) {
+                     return { target: "Ninguno", intervals: [] };
+                 }
+
+                intervals.push([start, end]);
+                
+                // Formatear el resultado para MathJax
+                const targetString = `\\( (${start}, ${end}) \\)`;
+
+                return { 
+                    target: targetString, 
+                    intervals: intervals 
+                };
+            };
+            
+            const clearVisualizations = () => {
+                highlightedPoints.forEach(point => brd.removeObject(point));
+                highlightedPoints = [];
+                negativeIntervalLines.forEach(line => brd.removeObject(line));
+                negativeIntervalLines = [];
+                rootPoints.forEach(point => brd.removeObject(point));
+                rootPoints = [];
+                brd.update();
+            };
+            
+            /**
+             * @function setRandomCurve
+             * @description Mueve los puntos de control a posiciones aleatorias.
+             */
+            const setRandomCurve = () => {
+                if (!p || p.length < 4) return;
+                
+                // Generar coordenadas Y aleatorias dentro del rango [-Y_BOUND, Y_BOUND]
+                const randomY = () => getRandomNumber(-Y_BOUND, Y_BOUND);
+
+                // Puntos de inicio/fin (Gliders con X fijos)
+                p[0].moveTo([p[0].X(), randomY()]);
+                p[3].moveTo([p[3].X(), randomY()]);
+                
+                // Puntos de control intermedios (P1 y P2) con X e Y aleatorias
+                p[1].moveTo([getRandomNumber(DOMAIN_MIN + 0.5, 0), randomY()]); // P1 en la mitad izquierda
+                p[2].moveTo([getRandomNumber(0, DOMAIN_MAX - 0.5), randomY()]); // P2 en la mitad derecha
+            };
+
+
+            const drawNegativeIntervals = (intervals) => {
+                negativeIntervalLines.forEach(line => brd.removeObject(line));
+                negativeIntervalLines = [];
+
+                if (intervals.length > 0) {
+                    intervals.forEach(interval => {
+                        const start = interval.start;
+                        const end = interval.end;
+
+                        if (typeof start === 'number' && typeof end === 'number') {
+                            const segment = brd.create('segment', [[start, 0], [end, 0]], {
+                                strokeColor: '#27ae60', // Verde para el éxito
+                                strokeWidth: 5,
+                                highlight: false,
+                                fixed: true,
+                                layer: 0 
+                            });
+                            negativeIntervalLines.push(segment);
+                        }
+                    });
+                }
+                brd.update();
+            };
+
+            const drawRootPoints = (roots) => {
+                rootPoints.forEach(point => brd.removeObject(point));
+                rootPoints = [];
+
+                roots.forEach(x => {
+                    const newPoint = brd.create('point', [x, 0], {
+                        name: '',
+                        color: '#f39c12', 
+                        size: 4,
+                        face: 'o',
+                        fixed: true,
+                        highlight: false,
+                        layer: 5 
+                    });
+                    rootPoints.push(newPoint);
+                });
+                brd.update();
+            };
+
+            // --- Lógica del Juego ---
+
+            const nextChallenge = () => {
+                if (correctStreak === CONGRATULATIONS_STREAK) return;
+
+                challengeCounter++;
+                currentChallenge = generateRandomChallenge();
+                
+                const questionElement = document.getElementById('question-text');
+                questionElement.innerHTML = `Desafío ${challengeCounter}: Dibuja una función \\(f(x)\\) que sea negativa (es decir, \\(f(x) < 0\\)) en el intervalo: ${currentChallenge.target}`;
+                
+                if (window.MathJax) {
+                    MathJax.typesetPromise([questionElement]);
+                }
+
+                nextButton.disabled = true;
+                validateButton.disabled = false;
+
+                clearVisualizations();
+                setRandomCurve(); // Nueva curva aleatoria
+            };
+
+            const validarCurva = () => {
+                if (!currentChallenge) return;
+
+                clearVisualizations();
+                
+                validateButton.disabled = true;
+
+                // --- 1. Validar si es una función (Prueba de la línea vertical) ---
+                const xToYValuesMap = {};
+                let nonFunctionPoints = null;
+
+                for (let i = 0; i <= SAMPLES; i++) {
+                    const t = i / SAMPLES;
+                    const xActual = c.X(t);
+                    const yActual = c.Y(t);
+                    const xRedondeada = xActual.toFixed(3);
+
+                    if (!xToYValuesMap[xRedondeada]) {
+                        xToYValuesMap[xRedondeada] = [];
+                    }
+                    xToYValuesMap[xRedondeada].push({ x: xActual, y: yActual });
+                }
+
+                for (const x in xToYValuesMap) {
+                    if (xToYValuesMap[x].length > 1) {
+                        const points = xToYValuesMap[x];
+                        const minY = points.reduce((min, p) => p.y < min.y ? p : min, points[0]);
+                        const maxY = points.reduce((max, p) => p.y > max.y ? p : max, points[0]);
+
+                        if (Math.abs(minY.y - maxY.y) > TOLERANCE_FUNCTION) {
+                            nonFunctionPoints = { first: minY, second: maxY };
+                            break;
+                        }
+                    }
+                }
+
+                if (nonFunctionPoints) {
+                    const pointsToHighlight = [nonFunctionPoints.first, nonFunctionPoints.second];
+                    pointsToHighlight.forEach(pt => {
+                        const newPoint = brd.create('point', [pt.x, pt.y], { name: '', color: 'red', size: 6, face: 'o', fixed: true, highlight: false, layer: 10 });
+                        highlightedPoints.push(newPoint);
+                    });
+                    brd.update();
+
+                    correctStreak = 0;
+                    updateStreakDisplay();
+                    nextButton.disabled = false; 
+                    
+                    swal({
+                        title: "¡Error de Función!",
+                        text: "El trazo no representa una función válida (Falla la prueba de la línea vertical). Cada valor de X debe tener solo un valor de Y.",
+                        icon: "warning",
+                    });
+                    return;
+                }
+
+                // --- 2. Encontrar intervalos negativos de la curva del estudiante ---
+                const negativeIntervals = [];
+                const roots = [];
+                let currentIntervalStart = null;
+
+                const startX = c.X(0);
+                let lastY = c.Y(0);
+
+                if (lastY < 0) {
+                    currentIntervalStart = startX;
+                }
+
+                for (let i = 1; i <= SAMPLES; i++) {
+                    const t = i / SAMPLES;
+                    const x = c.X(t);
+                    const y = c.Y(t);
+                    const prevX = c.X((i - 1) / SAMPLES);
+
+                    if (y < 0 && lastY >= 0) {
+                        const zeroCrossingX = prevX - (lastY / (y - lastY)) * (x - prevX);
+                        currentIntervalStart = zeroCrossingX;
+                        roots.push(zeroCrossingX);
+                    }
+                    else if (y >= 0 && lastY < 0 && currentIntervalStart !== null) {
+                        const zeroCrossingX = prevX - (lastY / (y - lastY)) * (x - prevX);
+                        negativeIntervals.push({ start: currentIntervalStart, end: zeroCrossingX });
+                        roots.push(zeroCrossingX);
+                        currentIntervalStart = null;
+                    }
+                    lastY = y;
+                }
+
+                if (currentIntervalStart !== null) {
+                    const finalX = c.X(1);
+                    negativeIntervals.push({ start: currentIntervalStart, end: finalX });
+                }
+
+                drawNegativeIntervals(negativeIntervals);
+                drawRootPoints(roots);
+
+                // --- 3. Validación de Intervalo Único y Coincidencia ---
+                
+                const targetIsNone = currentChallenge.intervals.length === 0;
+                const foundIntervalsCount = negativeIntervals.length;
+
+                if (targetIsNone) {
+                    if (foundIntervalsCount === 0) {
+                        handleSuccess(false);
+                    } else {
+                        handleFailure();
+                    }
+                    return;
+                }
+
+                // Si el desafío REQUIERE un intervalo, solo aceptamos EXACTAMENTE UNO.
+                if (foundIntervalsCount !== 1) {
+                    // Rechazar si hay 0 intervalos o si hay una unión (2 o más intervalos encontrados)
+                    handleFailure(true, foundIntervalsCount);
+                    return;
+                }
+
+                // Si se encontró exactamente 1, comparamos con el objetivo.
+                const found = negativeIntervals[0];
+                const target = currentChallenge.intervals[0];
+                
+                let intervalsMatch = (
+                    Math.abs(found.start - target[0]) < TOLERANCE_VALIDATION &&
+                    Math.abs(found.end - target[1]) < TOLERANCE_VALIDATION
+                );
+
+
+                // --- 4. Mostrar Resultado y Flujo del Juego ---
+                if (intervalsMatch) {
+                    handleSuccess(true);
+                } else {
+                    handleFailure(false);
+                }
+            };
+
+            // --- Funciones de Flujo de Juego y Alerta ---
+            const handleSuccess = (isInterval) => {
+                correctStreak++;
+                updateStreakDisplay();
+                
+                nextButton.disabled = false;
+                validateButton.disabled = true;
+
+                if (correctStreak === CONGRATULATIONS_STREAK) {
+                    // Lógica de FIN DEL JUEGO
+                    const finalSwal = () => swal({
+                        title: "¡JUEGO TERMINADO! ¡RACHA DE 3!",
+                        text: "¡Has completado 3 desafíos correctamente! Demostraste un gran dominio del análisis de funciones.",
+                        icon: "success",
+                    });
+
+                    if (jsConfetti && typeof jsConfetti.addConfetti === 'function') {
+                         jsConfetti.addConfetti({ emojis: ['🎉', '✨', '🎈', '✅', '🧠'] }).then(finalSwal);
+                    } else {
+                        finalSwal();
+                    }
+                    document.getElementById('question-text').textContent = "¡Juego Terminado! ¡Felicidades!";
+                    streakDisplay.classList.add('bg-yellow-400', 'text-gray-800');
+
+                } else {
+                    // Lógica de CONTINUAR JUEGO (racha < 3)
+                    swal({
+                        title: "¡CORRECTO! 🎉",
+                        text: isInterval ? 
+                            `La curva cumple el desafío. Es negativa en el intervalo: ${currentChallenge.target.replace(/\\\(|\\\)/g, '')}.` :
+                            `¡Correcto! La función no es negativa en el dominio.`,
+                        icon: "success",
+                    });
+                }
+            };
+
+            const handleFailure = (isUnionFail, foundCount) => {
+                correctStreak = 0;
+                updateStreakDisplay();
+                
+                nextButton.disabled = false; 
+                validateButton.disabled = true;
+
+                let title = "¡Incorrecto! 🙁";
+                let text = "";
+
+                if (isUnionFail) {
+                    title = "¡Error de Múltiples Intervalos! ⚠️";
+                    text = `El desafío requería un solo intervalo, pero tu curva tiene ${foundCount} zonas negativas. ¡Solo se permiten intervalos simples!`;
+                } else {
+                    let foundMsg = "La función nunca es negativa.";
+                    if (negativeIntervals.length > 0) {
+                        const foundIntervals = negativeIntervals.map(i => 
+                            `(${i.start.toFixed(2)}, ${i.end.toFixed(2)})`
+                        ).join(" U "); 
+                        foundMsg = `Es negativa en: ${foundIntervals}.`;
+                    }
+                    text = `Objetivo: ${currentChallenge.target.replace(/\\\(|\\\)/g, '')}\nResultado de tu curva: ${foundMsg}`;
+                }
+                
+                swal({ title, text, icon: "error" });
+            };
+
+
+            // --- Inicialización JXG.JSXGraph y Eventos ---
+            JXG.Options.renderer = "canvas";
+
+            brd = JXG.JSXGraph.initBoard('jxgbox', {
+                boundingbox: [-5, 5, 5, -5],
+                keepaspectratio: true,
+                axis: true,
+                grid: true,
+                defaultAxes: {
+                    x: { name: 'x', strokeColor: '#5e7188', ticks: { strokeColor: '#bdc3c7', majorHeight: -1 } },
+                    y: { name: 'f(x)', strokeColor: '#5e7188', ticks: { strokeColor: '#bdc3c7', majorHeight: -1 } }
+                },
+                defaultGrid: { 
+                    strokeColor: '#ecf0f1', 
+                    opacity: 0.5,
+                    majorHeight: -1,
+                    gridX: 0.5, // Cuadrícula cada 0.5
+                    gridY: 0.5
+                }
+            });
+
+            brd.suspendUpdate();
+
+            // Puntos de referencia y líneas verticales para el dominio [DOMAIN_MIN, DOMAIN_MAX]
+            var p1 = brd.create('point', [DOMAIN_MIN, 2], { name: '', visible: false });
+            var p2 = brd.create('point', [DOMAIN_MIN, 4], { name: '', visible: false });
+            var p3 = brd.create('point', [DOMAIN_MAX, 2], { name: '', visible: false });
+            var p4 = brd.create('point', [DOMAIN_MAX, 4], { name: '', visible: false });
+
+            var l1 = brd.create('line', [p1, p2], { visible: false });
+            var l2 = brd.create('line', [p3, p4], { visible: false });
+
+            // Puntos de control (Gliders y Puntos Libres)
+            var glider1 = brd.create('glider', [DOMAIN_MIN, 1, l1], { name: 'Inicio', size: 4, color: '#2c3e50', fixed: false, showInfobox: true });
+            var glider2 = brd.create('glider', [DOMAIN_MAX, 1, l2], { name: 'Fin', size: 4, color: '#2c3e50', fixed: false, showInfobox: true });
+            var p5 = brd.create('point', [-1.5, 2], { name: 'Control 1', trace: false, size: 3, color: '#3498db', face: '[]', fixed: false, showInfobox: true });
+            var p6 = brd.create('point', [0.75, 2], { name: 'Control 2', trace: false, size: 3, color: '#3498db', face: '[]', fixed: false, showInfobox: true });
+
+            p.push(glider1, p5, p6, glider2);
+
+            brd.on('update', () => {
+                [glider1, glider2, p5, p6].forEach(pt => {
+                    let y = pt.Y();
+                    if (y > Y_BOUND) {
+                        pt.moveTo([pt.X(), Y_BOUND]);
+                    } else if (y < -Y_BOUND) {
+                        pt.moveTo([pt.X(), -Y_BOUND]);
+                    }
+                });
+                clearVisualizations();
+                
+                if (nextButton.disabled) {
+                    validateButton.disabled = false;
+                }
+            });
+
+            // Creación de la curva de Bezier
+            c = brd.create('curve', JXG.Math.Numerics.bezier(p), {
+                strokeColor: '#2c3e50', 
+                strokeOpacity: 0.9,
+                strokeWidth: 3,
+                needsRegularUpdate: true
+            });
+
+            brd.unsuspendUpdate();
+
+            // Conexión de botones
+            validateButton.onclick = validarCurva;
+            nextButton.onclick = nextChallenge;
+            
+            // Iniciar el juego
+            updateStreakDisplay();
+            nextChallenge();
+        }
+    </script>
+</body>
+</html>

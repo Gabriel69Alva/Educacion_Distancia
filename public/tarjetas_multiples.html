@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interactivo Multitarjeta</title>
+    
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <!-- Carga de Confetti JS -->
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.min.js"></script>
+
+    <!-- Configuración de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Open Sans', 'sans-serif'],
+                        serif: ['PT Sans', 'serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <!-- Enlace a las fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
+
+    <!-- MathJax v3 Setup -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        // Configuración para MathJax 3: Define los delimitadores inline
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+
+    <style>
+        /* Estilos generales */
+        body {
+            min-height: 100vh;
+        }
+
+        /* Estilos para las tarjetas 3D en la cuadrícula */
+        .card-container-grid {
+            width: 100%;
+            height: 100%;
+            perspective: 1000px; /* Para el efecto 3D */
+            /* Se aplica a cada contenedor individual de la tarjeta */
+        }
+        
+        /* Aseguramos que la cuadrícula se adapte a diferentes tamaños de pantalla */
+        #quiz-grid {
+            grid-template-columns: repeat(1, minmax(0, 1fr)); /* Móvil: 1 columna */
+        }
+
+        @media (min-width: 640px) { /* sm */
+            #quiz-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (min-width: 1024px) { /* lg */
+            #quiz-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        /* Card (Ajuste de altura para mejor visualización en grid) */
+        .card {
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            position: relative;
+            border-radius: 1rem;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
+            margin-bottom: 20px;
+        }
+
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between; 
+            padding: 1.5rem;
+            border-radius: inherit;
+        }
+
+        .card-front {
+            background-color: #34495e; /* surface-light */
+            color: #ecf0f1;
+            text-align: center;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background-color: #34495e;
+            color: white;
+            text-align: center;
+        }
+        
+        /* Colores para el reverso de la tarjeta */
+        .card-back.correct {
+            background-color: #27ae60; /* Success Green */
+        }
+
+        .card-back.incorrect {
+            background-color: #e74c3c; /* Danger Red */
+        }
+        
+        .answer-option {
+            background-color: #2c3e50; /* Primary button background */
+            color: #ecf0f1;
+            padding: 8px 12px; 
+            margin: 6px 0; 
+            width: 100%;
+            text-align: left;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .answer-option:hover {
+            background-color: #3a536c;
+            transform: translateY(-1px);
+        }
+
+        .answer-option.selected {
+            border: 3px solid #f39c12; /* Yellow border for selection */
+            background-color: #3a536c;
+        }
+
+        /* Estilo para los iconos de resultado */
+        .result-icon .lucide-icon {
+            width: 50px;
+            height: 50px;
+        }
+
+        /* Estilo para los elementos de MathJax dentro de las tarjetas */
+        .MathJax {
+            margin: 0.5em 0 !important;
+        }
+
+    </style>
+</head>
+
+<body class="bg-gray-800 antialiased flex justify-center py-8 px-4">
+
+    <div id="app" class="w-full max-w-6xl flex flex-col items-center">
+
+        <!-- Título principal -->
+        <h1 class="text-3xl font-extrabold text-yellow-400 mb-6">Quiz de Funciones (Vista de Cuadrícula)</h1>
+
+        <!-- Marcador y Estado del Juego -->
+        <div id="game-info" class="mb-8 p-4 bg-gray-700 rounded-xl shadow-lg w-full max-w-2xl flex justify-between items-center text-gray-200">
+            <div id="attempts-display" class="flex items-center text-lg font-bold">
+                Intentos Restantes: <span class="ml-2 text-xl text-red-400">3</span>
+            </div>
+            <div id="score-display" class="text-lg font-semibold">
+                Puntuación: <span class="text-xl text-green-400">0</span> / <span id="total-q"></span>
+            </div>
+        </div>
+
+        <!-- Contenedor de la Cuadrícula de Tarjetas -->
+        <div id="quiz-grid" class="grid gap-6 w-full">
+            <!-- Las tarjetas se insertarán aquí con JS -->
+        </div>
+        
+        <!-- Mensaje de Fin del Juego (Oculto inicialmente) -->
+        <div id="game-over-message" class="mt-8 p-6 bg-gray-700 rounded-xl shadow-xl w-full text-center hidden">
+            <p id="final-status" class="text-3xl font-extrabold mb-3"></p>
+            <p id="score-summary" class="text-xl text-gray-200">Has finalizado el quiz.</p>
+            <button class="mt-4 px-6 py-2 bg-yellow-400 text-gray-900 font-bold rounded-full hover:bg-yellow-300" onclick="restartGame()">
+                Reiniciar Juego
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // Inicialización de la librería de íconos Lucide
+        lucide.createIcons();
+
+        // Inicialización del Confetti
+        let jsConfetti;
+        if (typeof JSConfetti !== 'undefined') {
+            jsConfetti = new JSConfetti();
+        }
+
+        // -----------------------------------------------------------
+        // 1. DATOS DEL QUIZ
+        // -----------------------------------------------------------
+
+        const quizData = [
+            {
+                id: 0,
+                question: "Una función es par si:",
+                options: ["A) $f(x)=f(x+c)$", "B) $f(x)=-f(-x)$", "C) $f(x)=f(-x)$", "D) $-f(x)=f(x)$"],
+                correctAnswer: "C) $f(x)=f(-x)$",
+                explanation: "Ser par significa que la función satisface la igualdad $f(x)=f(-x)$ para cualquier valor de $x$. Es decir, es simétrica con respecto al eje Y."
+            },
+            {
+                id: 1,
+                question: "¿Qué propiedad cumplen las funciones impares?",
+                options: ["A) $f(x)=f(-x)$", "B) $f(x)=-f(-x)$", "C) $-f(x)=f(x)$", "D) $f(x)=f(x+c)$"],
+                correctAnswer: "B) $f(x)=-f(-x)$",
+                explanation: "Ser impar significa que la función satisface la igualdad $f(x)=-f(-x)$ para cualquier valor de $x$. Es decir, es simétrica con respecto al origen."
+            },
+            {
+                id: 2,
+                question: "Una función $f(x)$ es inyectiva si:",
+                options: ["A) $f(a) \\neq f(b)$ entonces $a \\neq b$", "B) $f(a)=f(b)$ entonces $a=b$", "C) $a=b$, entonces $f(a)=f(b)$", "D) $f$ es impar"],
+                correctAnswer: "B) $f(a)=f(b)$ entonces $a=b$",
+                explanation: "Una función es inyectiva si la imagen de cualquier elemento de su dominio es única. La forma equivalente es: Si $f(a)=f(b)$, entonces $a=b$."
+            },
+            {
+                id: 3,
+                question: "Una función es superyectiva si:",
+                options: ["A) $f(a) \\neq f(b)$ entonces $a \\neq b$", "B) $f(a)=f(b)$ entonces $a=b$", "C) para todo $y$ en el contradominio, existe un $x$ en el dominio tal que $f(x)=y$", "D) $f$ es par"],
+                correctAnswer: "C) para todo $y$ en el contradominio, existe un $x$ en el dominio tal que $f(x)=y$",
+                explanation: "Una función suprayectiva (o sobreyectiva) no tiene elementos sueltos en el contradominio."
+            },
+            {
+                id: 4,
+                question: "Una función se dice biyectiva si:",
+                options: ["A) es par e impar a la vez", "B) es impar e inyectiva", "C) es creciente e impar", "D) es inyectiva y suprayectiva"],
+                correctAnswer: "D) es inyectiva y suprayectiva",
+                explanation: "Una función es biyectiva si es inyectiva y suprayectiva a la vez."
+            },
+            {
+                id: 5, // Pregunta 6
+                question: "¿Cuál es una condición necesaria para que una función tenga inversa?",
+                options: ["A) que sea inyectiva", "B) que sea par", "C) que sea impar", "D) que sea biyectiva"],
+                correctAnswer: "D) que sea biyectiva",
+                explanation: "Para que una función $f$ tenga una inversa $f^{-1}$, debe ser biyectiva (tanto inyectiva como suprayectiva). Si solo fuera inyectiva, la inversa podría no estar definida para todos los elementos del codominio. Si solo fuera suprayectiva, la inversa no sería una función (tendría múltiples salidas)."
+            }
+        ];
+
+        // -----------------------------------------------------------
+        // 2. VARIABLES GLOBALES DE ESTADO
+        // -----------------------------------------------------------
+
+        let attemptsRemaining = 3; 
+        let totalScore = 0;
+        let answeredQuestions = 0;
+        let isGameDisabled = false;
+        
+        // Estado de cada tarjeta: true si está volteada, false si no.
+        const cardFlippedState = new Array(quizData.length).fill(false);
+
+        // -----------------------------------------------------------
+        // 3. REFERENCIAS DEL DOM
+        // -----------------------------------------------------------
+
+        const quizGrid = document.getElementById('quiz-grid');
+        const attemptsDisplay = document.querySelector('#attempts-display span');
+        const scoreDisplay = document.querySelector('#score-display span');
+        const totalQDisplay = document.getElementById('total-q');
+        const gameOverMessage = document.getElementById('game-over-message');
+        const finalStatus = document.getElementById('final-status');
+        const scoreSummary = document.getElementById('score-summary');
+
+        // Inicializar el número total de preguntas
+        totalQDisplay.textContent = quizData.length;
+
+        // -----------------------------------------------------------
+        // 4. FUNCIONES PRINCIPALES
+        // -----------------------------------------------------------
+
+        /**
+         * Dibuja todas las tarjetas del quiz en la cuadrícula.
+         */
+        function renderQuizGrid() {
+            quizGrid.innerHTML = '';
+            const cardElements = [];
+
+            quizData.forEach((q, index) => {
+                const cardContainer = document.createElement('div');
+                cardContainer.id = `card-container-${q.id}`;
+                cardContainer.className = 'card-container-grid';
+
+                const cardElement = document.createElement('div');
+                cardElement.id = `quiz-card-${q.id}`;
+                cardElement.className = 'card';
+                
+                // Frente de la Tarjeta (Pregunta y Opciones)
+                const cardFront = document.createElement('div');
+                cardFront.id = `card-front-${q.id}`;
+                cardFront.className = 'card-face card-front';
+                
+                // Título de la pregunta (Ajuste: se añade min-h-24 para igualar la altura de todas las preguntas)
+                const questionTitle = document.createElement('h3');
+                // min-h-[96px] garantiza que el contenedor de la pregunta tenga una altura mínima consistente.
+                questionTitle.className = 'text-lg font-bold mb-2 text-gray-100 flex items-center justify-center min-h-[96px]'; 
+                questionTitle.innerHTML = `P${index + 1}: ${q.question}`;
+
+                // Contenedor de opciones (Ajuste: margen superior a mt-2)
+                const optionsDiv = document.createElement('div');
+                optionsDiv.id = `options-container-${q.id}`;
+                optionsDiv.className = 'w-full flex flex-col items-start mt-2'; 
+
+                q.options.forEach(option => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.innerHTML = option;
+                    optionDiv.className = 'answer-option';
+                    optionDiv.onclick = () => handleAnswerClick(q.id, option, q, optionDiv);
+                    optionsDiv.appendChild(optionDiv);
+                });
+
+                cardFront.appendChild(questionTitle);
+                cardFront.appendChild(optionsDiv);
+
+
+                // Reverso de la Tarjeta (Resultado y Explicación)
+                const cardBack = document.createElement('div');
+                cardBack.id = `card-back-${q.id}`;
+                cardBack.className = 'card-face card-back';
+                cardBack.innerHTML = `
+                    <div id="result-icon-container-${q.id}" class="result-icon mb-3"></div>
+                    <p id="result-message-${q.id}" class="text-2xl font-extrabold mb-2 text-white"></p>
+                    <div class="text-explanation text-xs text-left w-full text-gray-100">
+                        <p class="font-bold mb-1">Explicación:</p>
+                        <p id="explanation-text-${q.id}">${q.explanation}</p>
+                        <p class="mt-2 text-sm font-semibold">Respuesta Correcta: <span id="correct-answer-text-${q.id}" class="font-bold">${q.correctAnswer}</span></p>
+                    </div>
+                `;
+
+                cardElement.appendChild(cardFront);
+                cardElement.appendChild(cardBack);
+                cardContainer.appendChild(cardElement);
+                quizGrid.appendChild(cardContainer);
+                cardElements.push(cardContainer); // Para MathJax
+            });
+
+            // FIX: Pedir a MathJax que procese todo el contenido nuevo de las tarjetas
+            if (window.MathJax) {
+                // typesetPromise acepta un array de elementos a procesar
+                MathJax.typesetPromise(cardElements).catch(err => console.error("MathJax typesetting error in renderQuizGrid:", err));
+            }
+        }
+
+        /**
+         * Maneja el clic en una opción de respuesta.
+         * @param {number} questionId - El ID de la pregunta.
+         * @param {string} selectedOption - La opción seleccionada.
+         * @param {Object} qData - Los datos de la pregunta.
+         * @param {HTMLElement} selectedDiv - El div de la opción seleccionada.
+         */
+        function handleAnswerClick(questionId, selectedOption, qData, selectedDiv) {
+            // Si la tarjeta ya fue volteada o el juego está deshabilitado, ignorar el clic
+            if (cardFlippedState[questionId] || isGameDisabled) return;
+
+            // Deshabilitar clics en todas las opciones de ESTA tarjeta
+            const optionsContainer = document.getElementById(`options-container-${questionId}`);
+            Array.from(optionsContainer.children).forEach(div => {
+                div.style.pointerEvents = 'none';
+            });
+            
+            // Marcar la opción seleccionada
+            selectedDiv.classList.add('selected');
+
+            const isCorrect = selectedOption === qData.correctAnswer;
+            
+            // La tarjeta está oficialmente respondida
+            cardFlippedState[questionId] = true;
+            answeredQuestions++;
+
+            // 1. Manejo de Intentos y Puntuación
+            if (!isCorrect) {
+                attemptsRemaining--;
+                attemptsDisplay.textContent = attemptsRemaining;
+            } else {
+                totalScore++; // Sumar puntaje si es correcto
+                scoreDisplay.textContent = totalScore;
+            }
+            
+            // 2. Girar la tarjeta (animación 3D)
+            setTimeout(() => {
+                flipCard(questionId, isCorrect, qData);
+            }, 300);
+
+            // 3. Verificar Fin del Juego
+            if (attemptsRemaining <= 0 || answeredQuestions >= quizData.length) {
+                isGameDisabled = true;
+                setTimeout(endGame, 1500); 
+            }
+        }
+
+        /**
+         * Gira la tarjeta y muestra el resultado en el reverso.
+         * @param {number} questionId - El ID de la pregunta.
+         * @param {boolean} isCorrect - Indica si la respuesta fue correcta.
+         * @param {Object} qData - Los datos de la pregunta.
+         */
+        function flipCard(questionId, isCorrect, qData) {
+            const cardElement = document.getElementById(`quiz-card-${questionId}`);
+            const cardBack = document.getElementById(`card-back-${questionId}`);
+            const resultIconContainer = document.getElementById(`result-icon-container-${questionId}`);
+            const resultMessage = document.getElementById(`result-message-${questionId}`);
+            const explanationText = document.getElementById(`explanation-text-${questionId}`);
+            const correctAnswerText = document.getElementById(`correct-answer-text-${questionId}`);
+            
+            cardElement.classList.add('is-flipped');
+
+            // Limpiar iconos anteriores
+            resultIconContainer.innerHTML = '';
+
+            // 1. Establecer el color y el icono
+            if (isCorrect) {
+                cardBack.classList.add('correct');
+                cardBack.classList.remove('incorrect');
+                resultIconContainer.innerHTML = '<i data-lucide="check-circle" class="lucide-icon text-white"></i>';
+                resultMessage.textContent = '¡Correcta!';
+                
+                // El confeti individual ha sido deshabilitado.
+            } else {
+                cardBack.classList.add('incorrect');
+                cardBack.classList.remove('correct');
+                resultIconContainer.innerHTML = '<i data-lucide="x-circle" class="lucide-icon text-white"></i>';
+                resultMessage.textContent = '¡Incorrecta!';
+            }
+
+            // Crear los iconos si no existen (necesario después de modificar innerHTML)
+            lucide.createIcons();
+
+            // 2. Asegurar que el reverso tiene el contenido actualizado (necesario si se usa innerHTML en el renderizado inicial)
+            correctAnswerText.innerHTML = qData.correctAnswer;
+            explanationText.innerHTML = qData.explanation;
+
+            // FIX: Pedir a MathJax que procese el contenido del reverso de la tarjeta.
+            if (window.MathJax) {
+                MathJax.typesetPromise([cardBack]).catch(err => console.error("MathJax typesetting error in flipCard back:", err));
+            }
+        }
+
+        /**
+         * Finaliza el juego y muestra el resultado final.
+         */
+        function endGame() {
+            isGameDisabled = true;
+            quizGrid.style.display = 'none';
+            document.getElementById('game-info').style.display = 'none';
+            gameOverMessage.classList.remove('hidden');
+
+            const totalQuestions = quizData.length;
+            const perfectScore = totalScore === totalQuestions;
+            
+            // LOG DE DEPURACIÓN: Comprobar el estado de la puntuación al final
+            console.log(`[DEBUG] Juego finalizado. Puntuación: ${totalScore} / ${totalQuestions}. ¿Perfecto?: ${perfectScore}`);
+
+            if (perfectScore) {
+                // Gana el juego con puntuación perfecta
+                finalStatus.textContent = '¡PERFECTO! ¡Puntuación Máxima!';
+                finalStatus.classList.add('text-green-400');
+                finalStatus.classList.remove('text-red-400');
+                scoreSummary.textContent = `Puntuación Final: ${totalScore} de ${totalQuestions} correctas. ¡Un logro increíble!`;
+
+                // ** REGLA DE CELEBRACIÓN: Confeti solo con puntuación perfecta **
+                if (jsConfetti) {
+                    console.log("[DEBUG] Activando celebración con Confeti.");
+                    jsConfetti.addConfetti({
+                        confettiColors: ['#f39c12', '#2ecc71', '#3498db', '#ecf0f1'],
+                        confettiRadius: 6,
+                        confettiNumber: 500,
+                    });
+                    jsConfetti.addConfetti({ emojis: ['✨', '💯', '🏆', '🎉'] });
+                }
+
+            } else if (attemptsRemaining > 0) {
+                // El juego terminó por completar todas las preguntas, pero con errores
+                finalStatus.textContent = '¡Juego Completado!';
+                finalStatus.classList.add('text-yellow-400');
+                finalStatus.classList.remove('text-red-400', 'text-green-400');
+                scoreSummary.textContent = `Puntuación Final: ${totalScore} de ${totalQuestions} correctas. ¡Sigue practicando!`;
+
+            } else {
+                // El juego terminó por falta de intentos (0 intentos restantes)
+                finalStatus.textContent = '¡Juego Deshabilitado!';
+                finalStatus.classList.add('text-red-400');
+                finalStatus.classList.remove('text-green-400', 'text-yellow-400');
+                scoreSummary.textContent = `Puntuación Final: ${totalScore} de ${totalQuestions}. El juego se detuvo por exceder el límite de 3 respuestas incorrectas.`;
+            }
+        }
+
+        /**
+         * Reinicia el estado del juego.
+         */
+        function restartGame() {
+            attemptsRemaining = 3;
+            totalScore = 0;
+            answeredQuestions = 0;
+            isGameDisabled = false;
+            cardFlippedState.fill(false); // Resetear el estado de volteo de todas las tarjetas
+
+            quizGrid.style.display = 'grid';
+            document.getElementById('game-info').style.display = 'flex';
+            attemptsDisplay.textContent = attemptsRemaining;
+            scoreDisplay.textContent = totalScore;
+            gameOverMessage.classList.add('hidden');
+
+            // Volver a renderizar todas las tarjetas
+            renderQuizGrid();
+        }
+
+        // -----------------------------------------------------------
+        // 5. INICIALIZACIÓN
+        // -----------------------------------------------------------
+
+        // Cargar todas las tarjetas al cargar la página
+        window.onload = renderQuizGrid;
+    </script>
+</body>
+</html>
