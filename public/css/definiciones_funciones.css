@@ -1,0 +1,109 @@
+    /* Configuración de fuentes y tema de color industrial */
+        :root {
+            --color-primary: #374151; /* Gris Oscuro (industrial) */
+            --color-secondary: #6B7280; /* Gris Medio */
+            --color-text: #E5E7EB; /* Gris Claro para texto */
+            --color-correct: #10B981; /* Verde esmeralda para Correcto */
+            --color-incorrect: #EF4444; /* Rojo para Incorrecto */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-primary);
+            color: var(--color-text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Contenedor de la Tarjeta (para el efecto 3D) */
+        .card-container {
+            perspective: 1000px; /* Profundidad de la perspectiva 3D */
+            height: 450px; /* Altura fija para el contenedor */
+            width: 100%;
+            max-width: 450px;
+        }
+
+        /* La tarjeta en sí (parte que rota) */
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s; /* Velocidad de la animación de giro */
+        }
+
+        /* Estado girado */
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* El frente y el reverso de la tarjeta */
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden; /* Oculta la cara trasera al estar de frente */
+            border-radius: 12px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: var(--color-secondary);
+        }
+
+        /* Reverso de la tarjeta */
+        .card-face.card-back {
+            transform: rotateY(180deg); /* La cara trasera comienza girada */
+            background-color: var(--color-secondary);
+        }
+
+        /* Estilos de respuesta (opciones) */
+        .answer-option {
+            background-color: var(--color-primary);
+            color: var(--color-text);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .answer-option:hover {
+            background-color: #4B5563; /* Gris un poco más claro al pasar el ratón */
+            transform: translateY(-1px);
+        }
+
+        /* Estilos para estado Correcto / Incorrecto */
+        .card-back.correct {
+            background-color: var(--color-correct);
+        }
+        .card-back.incorrect {
+            background-color: var(--color-incorrect);
+        }
+        .card-back.correct .text-explanation,
+        .card-back.incorrect .text-explanation {
+            background-color: rgba(0, 0, 0, 0.15); /* Fondo semitransparente para la explicación */
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+
+        /* Icono de resultado grande */
+        .result-icon {
+            font-size: 8rem;
+            line-height: 1;
+        }
+
+        /* Estilo para opción seleccionada (temporalmente, luego se pinta el reverso) */
+        .answer-option.selected {
+            opacity: 0.7;
+        }
+
+        /* Animación de Tache/Check (lucide) */
+        .lucide-icon {
+            stroke-width: 4px; /* Iconos más gruesos */
+        }
