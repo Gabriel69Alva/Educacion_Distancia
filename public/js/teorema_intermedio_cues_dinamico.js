@@ -254,39 +254,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Creación de los "gliders" (puntos que se deslizan sobre una línea)
         // Se inicializan con valores temporales, se moverán a posiciones aleatorias después.
-        glider1 = brd.create('glider', [-3, 0, l1_left_guide], { name: 'G', size: 4, color: 'white', highlight: true, fixed: false });
+        glider1 = brd.create('glider', [-3, 0, l1_left_guide], { name: 'G', size: 4, color: 'lightgrey', highlight: true, fixed: false });
         glider1.catchRadius = 30; // área táctil de 30px para capturar el toque
-        glider2 = brd.create('glider', [0, 0, l2_right_guide], { name: 'H', size: 4, color: 'white', highlight: true, fixed: false }); // Diferente color para distinguirlo
+        glider2 = brd.create('glider', [0, 0, l2_right_guide], { name: 'H', size: 4, color: 'lightgrey', highlight: true, fixed: false }); // Diferente color para distinguirlo
         glider2.catchRadius = 30; // área táctil de 30px para capturar el toque
 
-        glider3 = brd.create('glider', [3, 0, l2_left_guide], { name: 'J', size: 4, color: 'blue', highlight: true, fixed: false }); // Diferente color para distinguirlo
+        glider3 = brd.create('glider', [3, 0, l2_left_guide], { name: 'J', size: 4, color: 'lightgrey', highlight: true, fixed: false }); // Diferente color para distinguirlo
         glider3.catchRadius = 30; // área táctil de 30px para capturar el toque
 
-        glider4 = brd.create('glider', [3, 0, l3_right_guide], { name: 'I', size: 4, color: 'blue', highlight: true, fixed: false }); // Diferente color para distinguirlo
+        glider4 = brd.create('glider', [3, 0, l3_right_guide], { name: 'I', size: 4, color: 'lightgrey', highlight: true, fixed: false }); // Diferente color para distinguirlo
         glider4.catchRadius = 30; // área táctil de 30px para capturar el toque
 
-        glider5 = brd.create('glider', [0, 0, l2_right_guide], { name: 'k', size: 4, color: 'purple', highlight: true, fixed: false }); // Diferente color para distinguirlo
+        glider5 = brd.create('glider', [0, 0, l2_right_guide], { name: 'k', size: 4, color: 'blue', highlight: true, fixed: false }); // Diferente color para distinguirlo
         glider5.catchRadius = 30; // área táctil de 30px para capturar el toque
 
 
-        glider6 = brd.create('glider', [-3, 0, l1_left_guide], { name: 'k', size: 4, color: 'purple', highlight: true, fixed: false }); // Diferente color para distinguirlo
+        glider6 = brd.create('glider', [-3, 0, l1_left_guide], { name: 'k', size: 4, color: 'blue', highlight: true, fixed: false }); // Diferente color para distinguirlo
         glider6.catchRadius = 30; // área táctil de 30px para capturar el toque
 
-        glider7 = brd.create('glider', [3, 0, l3_right_guide], { name: 'k', size: 4, color: 'purple', highlight: true, fixed: false }); // Diferente color para distinguirlo
+        glider7 = brd.create('glider', [3, 0, l3_right_guide], { name: 'k', size: 4, color: 'blue', highlight: true, fixed: false }); // Diferente color para distinguirlo
         glider7.catchRadius = 30; // área táctil de 30px para capturar el toque
 
 
         // Creación de puntos de control internos (puntos P y Q)
-        p5 = brd.create('point', [-3, 0], { name: 'P', trace: false, size: 4.5, color: 'purple', face: '[]', highlight: true, fixed: false });
+        p5 = brd.create('point', [-3, 0], { name: 'P', trace: false, size: 4.5, color: 'grey', face: '[]', highlight: true, fixed: false });
         p5.catchRadius = 30; // área táctil de 30px para capturar el toque
-        p6 = brd.create('point', [0, 0], { name: 'Q', trace: false, size: 4.5, color: 'purple', face: '[]', highlight: true, fixed: false });
+        p6 = brd.create('point', [0, 0], { name: 'Q', trace: false, size: 4.5, color: 'grey', face: '[]', highlight: true, fixed: false });
         p6.catchRadius = 30; // área táctil de 30px para capturar el toque
 
 
         // Creación de puntos de control internos (puntos P y Q)
-        p7 = brd.create('point', [3, 0], { name: 'R', trace: false, size: 4.5, color: 'purple', face: '[]', highlight: true, fixed: false });
+        p7 = brd.create('point', [3, 0], { name: 'R', trace: false, size: 4.5, color: 'grey', face: '[]', highlight: true, fixed: false });
         p7.catchRadius = 30; // área táctil de 30px para capturar el toque
-        p8 = brd.create('point', [8, 0], { name: 'T', trace: false, size: 4.5, color: 'purple', face: '[]', highlight: true, fixed: false });
+        p8 = brd.create('point', [8, 0], { name: 'T', trace: false, size: 4.5, color: 'grey', face: '[]', highlight: true, fixed: false });
         p8.catchRadius = 30; // área táctil de 30px para capturar el toque
 
 
