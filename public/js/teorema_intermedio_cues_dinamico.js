@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Creación de puntos de control internos (puntos P y Q)
         p7 = brd.create('point', [3, 0], { name: 'R', trace: false, size: 4.5, color: 'grey', face: '[]', highlight: true, fixed: false, visible: false, visible: false });
         p7.catchRadius = 30; // área táctil de 30px para capturar el toque
-        p8 = brd.create('point', [8, 0], { name: 'T', trace: false, size: 4.5, color: 'grey', face: '[]', highlight: true, fixed: false, visible: false });
+        p8 = brd.create('point', [8, 0], { name: 'T', trace: false, size: 4.5, color: 'red', face: '[]', highlight: true, fixed: false, visible: false });
         p8.catchRadius = 30; // área táctil de 30px para capturar el toque
 
 
