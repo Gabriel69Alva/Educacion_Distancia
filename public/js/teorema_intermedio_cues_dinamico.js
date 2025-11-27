@@ -254,9 +254,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Creación de los "gliders" (puntos que se deslizan sobre una línea)
         // Se inicializan con valores temporales, se moverán a posiciones aleatorias después.
-        glider1 = brd.create('glider', [-3, 0, l1_left_guide], { name: 'G', size: 4, color: 'blue', highlight: true, fixed: false });
+        glider1 = brd.create('glider', [-3, 0, l1_left_guide], { name: 'G', size: 4, color: 'white', highlight: true, fixed: false });
         glider1.catchRadius = 30; // área táctil de 30px para capturar el toque
-        glider2 = brd.create('glider', [0, 0, l2_right_guide], { name: 'H', size: 4, color: 'blue', highlight: true, fixed: false }); // Diferente color para distinguirlo
+        glider2 = brd.create('glider', [0, 0, l2_right_guide], { name: 'H', size: 4, color: 'white', highlight: true, fixed: false }); // Diferente color para distinguirlo
         glider2.catchRadius = 30; // área táctil de 30px para capturar el toque
 
         glider3 = brd.create('glider', [3, 0, l2_left_guide], { name: 'J', size: 4, color: 'blue', highlight: true, fixed: false }); // Diferente color para distinguirlo
