@@ -25,7 +25,7 @@ window.initCuestionario = function (root) {
         {
             question: "2. ¿Cuál de las siguientes es una hipótesis del teorema del valor intermedio?",
             options: [
-                "A) $\\text{Existe un punto $c$ tal que $f(c)=0$}$",
+                "A) $\\text{Existe un punto} $c$ $\\text{tal que} $f(c)=0$}$",
                 "B) $\\text{La función es continua en un intervalo cualquiera}$",
                 "C) $\\text{La función está definida en un intervalo cerrado y acotado}$"
             ],
