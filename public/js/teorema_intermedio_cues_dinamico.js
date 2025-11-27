@@ -265,14 +265,14 @@ document.addEventListener('DOMContentLoaded', function () {
         glider4 = brd.create('glider', [3, 0, l3_right_guide], { name: 'I', size: 4, color: 'lightgrey', highlight: true, fixed: false }); // Diferente color para distinguirlo
         glider4.catchRadius = 30; // área táctil de 30px para capturar el toque
 
-        glider5 = brd.create('glider', [0, 0, l2_right_guide], { name: 'k', size: 4, color: 'blue', highlight: true, fixed: false }); // Diferente color para distinguirlo
+        glider5 = brd.create('glider', [0, 0, l2_right_guide], { name: ' ', size: 4, color: 'blue', highlight: true, fixed: false }); // Diferente color para distinguirlo
         glider5.catchRadius = 30; // área táctil de 30px para capturar el toque
 
 
-        glider6 = brd.create('glider', [-3, 0, l1_left_guide], { name: 'k', size: 4, color: 'blue', highlight: true, fixed: false }); // Diferente color para distinguirlo
+        glider6 = brd.create('glider', [-3, 0, l1_left_guide], { name: '', size: 4, color: 'blue', highlight: true, fixed: false }); // Diferente color para distinguirlo
         glider6.catchRadius = 30; // área táctil de 30px para capturar el toque
 
-        glider7 = brd.create('glider', [3, 0, l3_right_guide], { name: 'k', size: 4, color: 'blue', highlight: true, fixed: false }); // Diferente color para distinguirlo
+        glider7 = brd.create('glider', [3, 0, l3_right_guide], { name: '', size: 4, color: 'blue', highlight: true, fixed: false }); // Diferente color para distinguirlo
         glider7.catchRadius = 30; // área táctil de 30px para capturar el toque
 
 
