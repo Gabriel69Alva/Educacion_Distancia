@@ -14,7 +14,7 @@ window.initCuestionario = function (root) {
     // ======== PREGUNTAS (igual patrón) ========
     const quizQuestions = [
         {
-            question: "1. ¿Cuál de las siguientes es una funcion continua?",
+            question: "1. ¿Cuál de las siguientes es una funcion continua en el intervalo $[-3, 3]$?",
             options: [
                 "A) $f(x) = x^2$",
                 "B) $f(x) = \\frac{1}{x}$",
@@ -23,22 +23,22 @@ window.initCuestionario = function (root) {
             correctAnswer: 0
         },
         {
-            question: "2. La prueba de la línea horizontal se usa para determinar si una función es:",
+            question: "2. ¿Cuál de las siguientes es una hipótesis del teorema del valor intermedio?",
             options: [
-                "A) $\\text{Creciente}$",
-                "B) $\\text{Inyectiva}$",
-                "C) $\\text{Suprayectiva}$"
+                "A) $\\text{Existe un punto $c$ tal que $f(c)=0$}$",
+                "B) $\\text{La función es continua en un intervalo cualquiera}$",
+                "C) $\\text{La función está definida en un intervalo cerrado y acotado}$"
             ],
-            correctAnswer: 1
+            correctAnswer: 2
         },
         {
-            question: "3. Si $f(a) = f(b)$ implica que $a = b$, la función es:",
+            question: "3. ¿Si alguna de las hipótesis del teorema del valor intermedio no se cumple, entonces una función no puede cruzar el eje X?",
             options: [
-                "A) $\\text{Inyectiva}$",
-                "B) $\\text{Par}$",
-                "C) $\\text{Impar}$"
+                "A) $\\text{Cierto}$",
+                "B) $\\text{Falso}$",
+                "C) $\\text{No aplica}$"
             ],
-            correctAnswer: 0
+            correctAnswer: 1
         }
     ];
 
