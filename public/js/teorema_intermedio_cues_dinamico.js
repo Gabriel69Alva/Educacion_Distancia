@@ -157,8 +157,8 @@ function winPoint() {
     if (score < 3) {
         // Aquí puedes agregar lógica para manejar el caso en que el jugador gana un punto pero no ha alcanzado 3 puntos aún.
         swal({
-            title: "¡Función continua!",
-            text: "Has ganado una función continua, necesitas " + (2 - score) + " para ganar.",
+            title: "¡Función que cumple con el teorema del valor intermedio!",
+            text: "Has ganado una función que cumple con el TVI, necesitas " + (2 - score) + " para ganar.",
             icon: "info",
             button: "Entendido"
         });
@@ -170,7 +170,7 @@ function winPoint() {
         document.getElementById('resetButton').disabled = true;
         swal({
             title: "¡Ganaste!",
-            text: "Completaste las 3 funciones continuas.",
+            text: "Completaste tres funciones que cumplen con el TVI.",
             icon: "success",
             button: "Cuestionario"
         }).then(() => {
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             points.forEach(pt => {
                 if (pt.y === 0) {
-                    const newPoint = brd.create('point', [pt.x, pt.y], {
+                    const newPoint = brd.create('point', [pt.x, 0], {
                         name: '', // No mostrar nombre
                         color: 'yellow',
                         size: 3,
@@ -371,7 +371,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
 
-
+        /*
         const highlightProblemPoints2 = (points) => {
             // Eliminar puntos resaltados de la ejecución anterior
             highlightedPoints2.forEach(point => brd.removeObject(point));
@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', function () {
             brd.update(); // Forzar la actualización del tablero para mostrar los puntos
         };
 
-
+        */
 
         /**
          * Función principal para validar si la curva es una función y, si lo es,
