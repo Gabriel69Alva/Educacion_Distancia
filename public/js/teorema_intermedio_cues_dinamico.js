@@ -67,7 +67,7 @@ function setRandomInitialPositions() {
         brd.update();
 
         // Comprobar si sigue siendo inyectiva
-        esInyectiva = verificarInyectividad();
+        //esInyectiva = verificarInyectividad();
 
     } while (esInyectiva && intentos < 3); // límite de intentos por seguridad
 
@@ -91,6 +91,7 @@ function setRandomInitialPositions() {
 
 }
 
+/*
 // Verificación de inyectividad
 function verificarInyectividad() {
     const muestras = 100;
@@ -110,6 +111,9 @@ function verificarInyectividad() {
     }
     return true; // sí es inyectiva
 }
+
+*/
+
 
 // Bezier cúbica
 function curvaX(t) {
@@ -394,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         */
 
-        /**
+        /*
          * Función principal para validar si la curva es una función y, si lo es,
          * si es inyectiva.
          */
@@ -503,6 +507,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 return; // Importante: salir de la función
             }
 
+            /*
+
             if (nonFunctionPoints2) {
                 highlightProblemPoints2([nonFunctionPoints2.first, nonFunctionPoints2.second]);
                 const mensajeError = `Se encontraron al menos dos puntos diferentes con la misma coordenada en X. Haz perdido un trébol de la suerte. Te quedan ${lives - 1} tréboles.
@@ -519,18 +525,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 loseLife();
 
                 return; // Importante: salir de la función
-            }
+            } 
+            
+            */
+
 
             function approxEqual(a, b, tolerance = 0.04) {
                 return Math.abs(a - b) < tolerance;
             }
             
-            // --- 2. Validar si es inyectiva (Prueba de la línea horizontal) ---
+            // --- 2. Validar si la función cumple con las hipótesis del TVI ---
             // Se ejecuta solo si la curva es una función
             if (((glider1.Y() < 0 && glider4.Y() > 0) || (glider1.Y() > 0 && glider4.Y() < 0)) && (approxEqual(glider2.Y(), glider3.Y()) && approxEqual(glider3.Y(), glider5.Y())) && (approxEqual(glider1.Y(), glider6.Y()) && approxEqual(glider4.Y(), glider7.Y()))) {
                 swal({
                     title: "!exito!",
-                    text: "La funcion si es continua",
+                    text: "La funcion cumple con las hipótesis del TVI",
                     icon: "success",
                     button: "Entendido",
                 });
@@ -563,14 +572,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
             }
-
-
             winPoint();
-
         };
-
-
-
 
         // Asocia las funciones a los botones
         document.getElementById('validateButton').onclick = window.validarCurva;
