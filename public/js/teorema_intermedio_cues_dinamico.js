@@ -544,7 +544,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     button: "Entendido",
                 });
             } else {
-                if (((glider1.Y() < 0 && glider4.Y() < 0) || (glider1.Y() > 0 && glider4.Y() > 0))) {
+                if (((glider6.Y() < 0 && glider7.Y() < 0) || (glider6.Y() > 0 && glider7.Y() > 0))) {
 
                     swal({
                         title: "!Error!",
