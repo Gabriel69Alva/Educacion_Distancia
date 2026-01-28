@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario FC UNAM 2026-2</title>
+    <style>
+        :root {
+            --unam-blue: #003b5c;
+            --unam-gold: #fdbb30;
+            --holiday-red: #ff4d4d;
+            --exam-purple: #9b59b6;
+            --bg-color: #f0f2f5;
+        }
+
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg-color); margin: 0; padding: 20px; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { color: var(--unam-blue); margin-bottom: 5px; }
+        p { color: #555; }
+
+        .calendar-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 25px; 
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .month { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid var(--unam-gold); }
+        .month-title { text-align: center; font-weight: bold; color: var(--unam-blue); margin-bottom: 15px; font-size: 1.2em; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        .day-name { text-align: center; font-size: 0.75em; font-weight: bold; color: #888; padding-bottom: 5px; }
+        
+        .day { 
+            aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            border: 1px solid #f0f0f0; cursor: pointer; border-radius: 6px; transition: 0.3s; font-size: 0.95em; position: relative;
+        }
+        .day:hover { background-color: #fff9e6; transform: scale(1.05); z-index: 2; border-color: var(--unam-gold); }
+        .empty { border: none; cursor: default; }
+        .empty:hover { transform: none; background: none; }
+
+        /* Estilos Especiales */
+        .holiday { background-color: var(--holiday-red) !important; color: white; font-weight: bold; }
+        .exams { background-color: #f3e5f5; border: 1px dashed var(--exam-purple); color: var(--exam-purple); font-weight: bold; }
+        .start-end { border: 2px solid var(--unam-blue); font-weight: bold; color: var(--unam-blue); }
+        
+        /* Indicador de nota */
+        .has-note::after { 
+            content: ''; position: absolute; top: 4px; right: 4px; 
+            width: 8px; height: 8px; background: var(--unam-gold); border-radius: 50%; 
+        }
+
+        /* Modal */
+        #modalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; backdrop-filter: blur(2px); }
+        #noteModal { 
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: white; padding: 25px; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            z-index: 1000; width: 350px;
+        }
+        #modalDate { color: var(--unam-blue); margin-top: 0; border-bottom: 2px solid var(--unam-gold); padding-bottom: 5px; }
+        textarea { width: 100%; height: 150px; margin-top: 15px; border-radius: 8px; border: 1px solid #ddd; padding: 10px; font-family: inherit; resize: none; box-sizing: border-box; }
+        .btn-save { background: var(--unam-blue); color: white; border: none; padding: 12px; width: 100%; cursor: pointer; border-radius: 8px; margin-top: 15px; font-weight: bold; font-size: 1em; }
+        .btn-save:hover { background: #002a42; }
+
+        .legend { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; font-size: 0.85em; }
+        .box { width: 15px; height: 15px; margin-right: 5px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>CIENCIAS UNAM - Semestre 2026-2</h1>
+        <p>Inicio: 3 de Feb | Fin: 29 de May | Exámenes: 1 al 12 de Jun</p>
+    </header>
+
+    <div class="legend">
+        <div class="legend-item"><div class="box holiday"></div> Asueto / Vacaciones</div>
+        <div class="legend-item"><div class="box exams" style="background: #f3e5f5; border: 1px solid var(--exam-purple)"></div> Periodo de Exámenes</div>
+        <div class="legend-item"><div class="box" style="border: 2px solid var(--unam-blue)"></div> Inicio/Fin de Cursos</div>
+        <div class="legend-item"><div class="box" style="background: var(--unam-gold)"></div> Tiene Nota</div>
+    </div>
+    
+    <div class="calendar-container" id="calendar"></div>
+
+    <div id="modalOverlay"></div>
+    <div id="noteModal">
+        <h3 id="modalDate">Día</h3>
+        <textarea id="noteText" placeholder="Ej: Entrega de tarea de Cuántica, Examen de Álgebra..."></textarea>
+        <button class="btn-save" onclick="saveNote()">Guardar en mi Bitácora</button>
+    </div>
+
+    <script>
+        // Configuración de fechas importantes 2026-2
+        const holidays = [
+            "2026-03-16", // Benito Juárez
+            "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", // Semana Santa
+            "2026-05-01", // Día del Trabajo
+            "2026-05-10", // Día de las Madres
+            "2026-05-15"  // Día del Maestro
+        ];
+
+        const examDays = [
+            "2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04", "2026-06-05",
+            "2026-06-08", "2026-06-09", "2026-06-10", "2026-06-11", "2026-06-12"
+        ];
+
+        const specialDates = {
+            "2026-02-03": "Inicio de Clases",
+            "2026-05-29": "Fin de Cursos"
+        };
+
+        const monthsData = [
+            { name: "Febrero 2026", days: 28, start: 0, monthNum: 2 },
+            { name: "Marzo 2026", days: 31, start: 0, monthNum: 3 },
+            { name: "Abril 2026", days: 30, start: 3, monthNum: 4 },
+            { name: "Mayo 2026", days: 31, start: 5, monthNum: 5 },
+            { name: "Junio 2026 (Exámenes)", days: 30, start: 1, monthNum: 6 }
+        ];
+
+        let selectedDate = "";
+        const calendarEl = document.getElementById('calendar');
+        const modal = document.getElementById('noteModal');
+        const overlay = document.getElementById('modalOverlay');
+        const noteText = document.getElementById('noteText');
+        const modalDateHeader = document.getElementById('modalDate');
+
+        function initCalendar() {
+            monthsData.forEach((m) => {
+                let monthDiv = document.createElement('div');
+                monthDiv.className = 'month';
+                monthDiv.innerHTML = `<div class="month-title">${m.name}</div>`;
+                
+                let grid = document.createElement('div');
+                grid.className = 'grid';
+                
+                ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"].forEach(d => {
+                    grid.innerHTML += `<div class="day-name">${d}</div>`;
+                });
+
+                for (let i = 0; i < m.start; i++) {
+                    grid.innerHTML += `<div class="day empty"></div>`;
+                }
+
+                for (let d = 1; d <= m.days; d++) {
+                    let dateStr = `2026-${String(m.monthNum).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                    
+                    let classes = ['day'];
+                    if (holidays.includes(dateStr)) classes.push('holiday');
+                    if (examDays.includes(dateStr)) classes.push('exams');
+                    if (specialDates[dateStr]) classes.push('start-end');
+                    if (localStorage.getItem(dateStr)) classes.push('has-note');
+                    
+                    let dayEl = document.createElement('div');
+                    dayEl.className = classes.join(' ');
+                    dayEl.innerHTML = `<span>${d}</span>`;
+                    
+                    // Solo permitir notas en días del semestre y exámenes
+                    dayEl.onclick = () => openNote(dateStr);
+                    grid.appendChild(dayEl);
+                }
+                
+                monthDiv.appendChild(grid);
+                calendarEl.appendChild(monthDiv);
+            });
+        }
+
+        function openNote(date) {
+            selectedDate = date;
+            const displayDate = new Date(date + "T00:00:00").toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            modalDateHeader.innerText = displayDate;
+            noteText.value = localStorage.getItem(date) || "";
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
+            noteText.focus();
+        }
+
+        function saveNote() {
+            if (noteText.value.trim() === "") {
+                localStorage.removeItem(selectedDate);
+            } else {
+                localStorage.setItem(selectedDate, noteText.value);
+            }
+            modal.style.display = 'none';
+            overlay.style.display = 'none';
+            
+            // Refrescar solo visualmente los indicadores de nota
+            document.querySelectorAll('.day').forEach(el => el.classList.remove('has-note'));
+            location.reload(); 
+        }
+
+        overlay.onclick = () => {
+            modal.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+
+        initCalendar();
+    </script>
+</body>
+</html>
