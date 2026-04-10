@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/stylesCuestionario.css">
+    <title>Cuestionario móvil</title>
+</head>
+
+<body>
+ 
+    <h1 class="title-center"> Actividad Leyes de Morgan </h1>
+  
+
+    <h1> $$ \text{Leyes de Morgan} $$ </h1>
+
+    <p> Las leyes de De Morgan son dos postulados sobre la interacción entre los conjuntos. Estas leyes registran
+        antecedentes en Aristóteles y en William de Ockham. Augustus De Morgan vivió entre 1806 y 1871 y fue el primero
+        en incluir las leyes que postuló en la estructura formal de la lógica matemática.</p>
+    <h4>Actividad</h4>
+    <p>En la siguiente actividad se muestran los pasos de manera desordenada de la demostración de la primera ley de Morgan. ¿Puedes ponerla en orden? </p>
+
+    <h3>$$(A \cup B)^c= A^c \cap B^c$$     <!-- Con doble signo de dolar centra el texto, con un sólo signo de dollar lo pone en la izquierda  -->
+    </h3>
+    <h4>Demostración</h4>
+    <h4> Procederemos por contenciones</h4>
+
+    <p> $ \left( \subseteq \\ \right) $ </p>
+    <p> $ \text{Sea} x\in \left( A\cup B \right)^{c}. \text{De manera que,} \ x\notin  A\cup B. \  \text{Así,} \ x\notin A \ \text{y} \ x\notin B. $  </p>
+    <p> $ \text{Luego,} \ x\in A^{c}  \ \text{y} \ \ x\in B^{c}. \text{Por lo tanto,} \ x\in A^{c} \cap B^{c}. $ </p>
+    <br>
+    <h4> Demuestra la otra contención ordenando de manera correcta las expresiones del interactivo</h4>
+    <p> $ \left( \subseteq \\ \right) $ </p>
+         
+        
+    <hr>
+    <ul id="list">
+
+    </ul>
+    <br>
+
+    <button class="btn" onclick="verificarLista()">Verificar </button>
+
+    <a class="reinicio" href="./cuestionario1.html">Reinicio</a>
+
+
+    <!-- Libreria mover listas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"
+        integrity="sha512-Eezs+g9Lq4TCCq0wae01s9PuNWzHYoCMkE97e2qdkYthpI0pzC3UGB03lgEHn2XM85hDOUF6qgqqszs+iXU4UA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!--Libreria de alertas-->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
+    <script src="./js2/jquery.2.2.4.js"></script>
+
+
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath:  [['$','$'],['\\(','\\)']]}});</script>
+
+
+    <script>
+
+        let arrayForm = [
+            { 'id': '1', 'value': '(1) Sea $ x \\in A^c \\cap B^c$   ' },
+            { 'id': '2', 'value': '(2) Es decir, $ x \\in A^c$  y $x \\in B^c$ ' },
+            { 'id': '3', 'value': '(3) Así, \( x \) \\notin A $ y $x \\notin B$ ' },
+            { 'id': '4', 'value': '(4) De manera que $x \\notin A \\cup B$' },
+            { 'id': '5', 'value': '(5) Por lo tanto, $x \\in (A \\cup B)^c$' }
+        
+        ];
+        arrayForm = _.shuffle(arrayForm);
+        function htmlForm() {
+            let datahtml = ''
+            arrayForm.map(item => {
+                datahtml = datahtml + '<li data-id="' + item.id + '">' + item.value + '</li>';
+            })
+            $('#list').html(datahtml);
+        
+        }
+
+        htmlForm();
+
+        let arrayOpcionesCorrectas = ['1', '2', '3', '4', '5'];
+
+
+        let arrayErrores = [];
+        let arrayVerdaderos = [];
+
+
+        let multiDragDemo = document.getElementById('list');
+
+
+        function verificarLista() {
+            //let array_list = Array.from($('#list'))
+            let lista = $('#list').children();
+            console.log(lista)
+            arrayVerdaderos = [];
+
+            for (let index = 0; index < arrayOpcionesCorrectas.length; index++) {
+                const respuesta = arrayOpcionesCorrectas[index];
+                const evaluarLista = lista[index]
+
+                let valorDataId = parseFloat($(evaluarLista).data('id'))
+                console.log("respuesta: ", respuesta)
+                console.log("evaluarLista: ", valorDataId)
+
+
+                if (parseFloat(respuesta) === valorDataId) {
+                    arrayVerdaderos.push(respuesta);
+                }
+
+            }
+
+            console.log('arrayVerdaderos: ', arrayVerdaderos)
+            console.log('arrayOpcionesCorrectas: ', arrayOpcionesCorrectas)
+            if (arrayVerdaderos.length === arrayOpcionesCorrectas.length) {
+                swal({
+                    title: "Exito.",
+                    text: "Respuesta correcta",
+                    icon: "success"
+                });
+            } else {
+                swal({
+                    title: "Error.",
+                    text: "Respuesta incorrecta",
+                    icon: "error"
+                });
+            }
+
+        }
+
+        let move = new Sortable(multiDragDemo, {
+            multiDrag: true, // Enable multi-drag
+            selectedClass: 'selected', // The class applied to the selected items
+            fallbackTolerance: 3, // So that we can select items on mobile
+            animation: 150,
+
+        });
+
+    </script>
+
+   
+
+
+</body>
+
+</html>
