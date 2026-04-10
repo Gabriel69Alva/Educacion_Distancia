@@ -1,0 +1,62 @@
+/* Restablecemos márgenes y rellenos por defecto */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Estilo general del cuerpo */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #ece5e5;
+  }
+  
+  /* Sección de banner */
+  .banner {
+    /* Reemplaza la ruta con la de tu imagen de fondo */
+    background-image: url("ruta-de-la-imagen.jpg");
+    background-size: cover;
+    background-position: center;
+    color: #0e61cf;
+    text-align: center;
+    padding: 60px 0;
+  }
+  
+  .banner h1 {
+    font-size: 3rem;
+    margin: 0;
+  }
+  
+  /* Contenido principal */
+  .content {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+  
+  .content h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  /* Lista de enlaces */
+  .links {
+    list-style: none; /* elimina viñetas */
+  }
+  
+  .links li {
+    margin: 10px 0;
+  }
+  
+  .links a {
+    color: #007BFF;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: bold;
+  }
+  
+  .links a:hover {
+    text-decoration: underline;
+  }
+  
