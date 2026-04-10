@@ -1,239 +1,159 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Proyecto Educación a Distancia</title>
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/11.2.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/11.2.0/firebase-auth-compat.js"></script>
-    <script
-      defer
-      src="/__/firebase/11.2.0/firebase-database-compat.js"
-    ></script>
-    <script
-      defer
-      src="/__/firebase/11.2.0/firebase-firestore-compat.js"
-    ></script>
-    <script
-      defer
-      src="/__/firebase/11.2.0/firebase-functions-compat.js"
-    ></script>
-    <script
-      defer
-      src="/__/firebase/11.2.0/firebase-messaging-compat.js"
-    ></script>
-    <script defer src="/__/firebase/11.2.0/firebase-storage-compat.js"></script>
-    <script
-      defer
-      src="/__/firebase/11.2.0/firebase-analytics-compat.js"
-    ></script>
-    <script
-      defer
-      src="/__/firebase/11.2.0/firebase-remote-config-compat.js"
-    ></script>
-    <script
-      defer
-      src="/__/firebase/11.2.0/firebase-performance-compat.js"
-    ></script>
-    <!-- 
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Proyecto Educación a Distancia</title>
+  <!-- update the version number as needed -->
+  <script defer src="/__/firebase/11.2.0/firebase-app-compat.js"></script>
+  <!-- include only the Firebase features as you need -->
+  <script defer src="/__/firebase/11.2.0/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/11.2.0/firebase-database-compat.js"></script>
+  <script defer src="/__/firebase/11.2.0/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/11.2.0/firebase-functions-compat.js"></script>
+  <script defer src="/__/firebase/11.2.0/firebase-messaging-compat.js"></script>
+  <script defer src="/__/firebase/11.2.0/firebase-storage-compat.js"></script>
+  <script defer src="/__/firebase/11.2.0/firebase-analytics-compat.js"></script>
+  <script defer src="/__/firebase/11.2.0/firebase-remote-config-compat.js"></script>
+  <script defer src="/__/firebase/11.2.0/firebase-performance-compat.js"></script>
+  <!-- 
       initialize the SDK after all desired features are loaded, set useEmulator to false
       to avoid connecting the SDK to running emulators.
     -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+  <script defer src="/__/firebase/init.js?useEmulator=true"></script>
 
   <link rel="stylesheet" href="./stilos.css">
   <link rel="stylesheet" href="./css/style.css">
-  </head>
-  <body>
-    <header class="banner">
-      <h1>Cálculo Diferencial e Integral I</h1>
-      <h3>Proyecto de escenarios interactivos para apoyar el aprendeizaje a distancia</h3>
-      <h2>Universidad Nacional Autónoma de México, UNAM</h2>
-      <p>Gabriel Herrera y David Meza</p>
-      <p>07/08/2025</p>
-    </header>
+</head>
 
-    <main class="content">
-      <h3>Escenarios Interactivos</h3>
-      <ul class="links">
-        <li>
-          <a
-            href="./bezier_creciente.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+<body>
+  <header class="banner">
+    <h1>Cálculo Diferencial e Integral I</h1>
+    <h3>Proyecto de escenarios interactivos para apoyar el aprendeizaje a distancia</h3>
+    <h2>Universidad Nacional Autónoma de México, UNAM</h2>
+    <p>Gabriel Herrera y David Meza</p>
+    <p>07/08/2025</p>
+  </header>
+
+  <main class="content">
+    <h3>Escenarios Interactivos</h3>
+    <ul class="links">
+      <li>
+        <a href="./bezier_creciente.html" target="_blank" rel="noopener noreferrer">
           1. Gráfica de una función creciente
-          </a>
-        </li>
+        </a>
+      </li>
 
-        <li>
-          <a
-            href="./bezier_impar.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      <li>
+        <a href="./bezier_impar.html" target="_blank" rel="noopener noreferrer">
           2. Gráfica de una función impar
-          </a>
-        </li>
+        </a>
+      </li>
 
-        <li>
-          <a
-            href="./inye.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      <li>
+        <a href="./inye.html" target="_blank" rel="noopener noreferrer">
           3. Gráfica de una función inyectiva
-          </a>
-        </li>
+        </a>
+      </li>
 
-         <li>
-          <a
-            href="./bezier_par.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      <li>
+        <a href="./bezier_par.html" target="_blank" rel="noopener noreferrer">
           4. Gráfica de una función par
-          </a>
-        </li>
+        </a>
+      </li>
 
-        <li>
-          <a
-            href="./bezier_suprayectiva.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      <li>
+        <a href="./bezier_suprayectiva.html" target="_blank" rel="noopener noreferrer">
           5. Gráfica de una función suprayectiva
-          </a>
-        </li>
+        </a>
+      </li>
 
-        <li>
-          <a
-            href="./par.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      <li>
+        <a href="./par.html" target="_blank" rel="noopener noreferrer">
           6. Diagrama de una función par
-          </a>
-        </li>
+        </a>
+      </li>
 
-        <li>
-          <a
-            href="./creciente.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      <li>
+        <a href="./creciente.html" target="_blank" rel="noopener noreferrer">
           7. Diagrama de una función creciente
-          </a>
-        </li>
+        </a>
+      </li>
 
-        <li>
-          <a
-            href="./funcion_inyectiva.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      <li>
+        <a href="./funcion_inyectiva.html" target="_blank" rel="noopener noreferrer">
           8. Diagrama de una función inyectiva
-          </a>
-        </li>
+        </a>
+      </li>
 
-        <li>
-          <a
-            href="./funcion_sobre.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      <li>
+        <a href="./funcion_sobre.html" target="_blank" rel="noopener noreferrer">
           9. Diagrama de una función suprayectiva
-          </a>
-        </li>
+        </a>
+      </li>
 
-         <li>
-          <a
-            href="./bezier_negativa.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      <li>
+        <a href="./bezier_negativa.html" target="_blank" rel="noopener noreferrer">
           10. Intervalos donde la función es negativa
-          </a>
-        </li>
+        </a>
+      </li>
 
-         <li>
-          <a
-            href="./negativa.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      <li>
+        <a href="./negativa.html" target="_blank" rel="noopener noreferrer">
           11. Intervalos donde la función es negativa con deslizadores
-          </a>
-        </li>
-        <li>
-          <a
-            href="./bezier_par_juego_cues_dinamico.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+        </a>
+      </li>
+      <li>
+        <a href="./bezier_par_juego_cues_dinamico.html" target="_blank" rel="noopener noreferrer">
           12. Función Par con Cuestionario
-          </a>
-        </li>
+        </a>
+      </li>
 
-        <li>
-          <a
-            href="./teorema_intermedio_cues_dinamico.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      <li>
+        <a href="./teorema_intermedio_cues_dinamico.html" target="_blank" rel="noopener noreferrer">
           13. teorema del valor intermedio
-          </a>
-        </li>
+        </a>
+      </li>
 
-         <li>
-          <a
-            href="./negatividad.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      <li>
+        <a href="./negatividad.html" target="_blank" rel="noopener noreferrer">
           14. Función Negativa gamificado
-          </a>
-        </li>
+        </a>
+      </li>
 
-         <li>
-          <a
-            href="./definiciones_funciones.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      <li>
+        <a href="./definiciones_funciones.html" target="_blank" rel="noopener noreferrer">
           15. Cuestionario diseño industrial
-          </a>
-        </li>
+        </a>
+      </li>
 
-        <li>
-          <a
-            href="./tarjetas_multiples.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      <li>
+        <a href="./tarjetas_multiples.html" target="_blank" rel="noopener noreferrer">
           15. Cuestionario tarjetas multiples
-          </a>
-        </li>
+        </a>
+      </li>
 
-        <li>
-          <a
-            href="./calendario.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      <li>
+        <a href="./calendario.html" target="_blank" rel="noopener noreferrer">
           16. Calendario Ciencias
-          </a>
-        </li>
+        </a>
+      </li>
 
-      </ul>
-    </main>
+      <li>
+        <a href="./limite_deslizador.html" target="_blank" rel="noopener noreferrer">
+          17. Límite de una función con deslizadores
+        </a>
+      </li>
 
-    <footer class="footer">
-      <p>
-        &copy; 2025 <a href="">Proyecto de educación a distancia</a>
-      </p>
+
+    </ul>
+  </main>
+
+  <footer class="footer">
+    <p>
+      &copy; 2025 <a href="">Proyecto de educación a distancia</a>
+    </p>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const loadEl = document.querySelector("#load");
@@ -275,5 +195,6 @@
         }
       });
     </script>
-  </body>
+</body>
+
 </html>
