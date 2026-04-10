@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/cuestionarioMovil.css">
+    <title>Cuestionario Dos columnas</title>
+</head>
+
+<body>
+
+    <h1 class="title-center"> Actividad Leyes de Morgan </h1>
+
+
+    <h1> Leyes de Morgan </h1>
+
+    <p> Las leyes de De Morgan son dos postulados sobre la interacción entre los conjuntos. Estas leyes registran
+        antecedentes en Aristóteles y en William de Ockham. Augustus De Morgan vivió entre 1806 y 1871 y fue el primero
+        en incluir las leyes que postuló en la estructura formal de la lógica matemática.</p>
+    <h4>Actividad</h4>
+    <p>En la siguiente seccion se muestra la demostración de la primera ley de Morgan. ¿Puedes ponerla en oreden? </p>
+
+    <p>$(A \cup B)^c= A^c \cap B^c$
+    </p>
+    <h4>Demostración</h4>
+    <hr>
+    <div class="custom-card">
+       
+        <ul class="uno" id="list2">
+           <li>pregunta 1</li>
+           <li>pregunta 2</li>
+           <li>pregunta 3</li>
+           <li>pregunta 4</li>
+           <li>pregunta 5</li>
+        </ul>
+
+        <ul class="dos" id="list">
+ 
+        </ul>
+    </div>
+   
+    <br>
+
+    <button class="btn" onclick="verificarLista()">Verificar </button>
+
+    <a href="./cuestionario3.html">Reinincio</a>
+
+
+    <!-- Libreria mover listas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"
+        integrity="sha512-Eezs+g9Lq4TCCq0wae01s9PuNWzHYoCMkE97e2qdkYthpI0pzC3UGB03lgEHn2XM85hDOUF6qgqqszs+iXU4UA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!--Libreria de alertas-->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
+    <script src="./js2/jquery.2.2.4.js"></script>
+
+
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script
+        type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath:  [['$','$'],['\\(','\\)']]}});</script>
+
+
+    <script>
+
+        let arrayForm = [
+            { 'disabled': false, 'id': '1', 'value': "(1) Sea x un elemento arbitrario del conjunto universal $U$. Entonces: $x \\in (A \\cup B)^c \\Leftrightarrow x \\notin (A \\cup B)$" },
+            { 'disabled': false, 'id': '2', 'value': '(2) $\\Leftrightarrow (x \\in A^c) \\land (x \\in B^c) $$x \\in (A^c \\cap B^c)$' },
+            { 'disabled': false, 'id': '3', 'value': '(3) $\\Leftrightarrow \\urcorner [x \\in (A \\cup B)]$$\\Leftrightarrow \\urcorner [(x \\in A) \\lor (x \\in B)] $' },
+            { 'disabled': false, 'id': '4', 'value': '(4) Y al ser x un elemento arbitrario de $U$. Entonces: $\\forall x [x \\in (A \\cup B^c) ]$$\\Leftrightarrow x \\in (A^c \\cap B^c)$Por lo que $(A \\cup B)^c= (A^c\\cap B^c)$' },
+            { 'disabled': false, 'id': '5', 'value': '(5) $\\urcorner (x \\in A) \\land \\urcorner (x \\in B)$$(x \\notin A) \\land (x \\notin B)$' }
+
+        ];
+        arrayForm = _.shuffle(arrayForm);
+        function htmlForm() {
+            let datahtml = ''
+            arrayForm.map(item => {
+                if (item.disabled) {
+                    datahtml = datahtml + '<li style="background: rgb(255, 58, 58)" class="filtered" data-id="' + item.id + '">' + item.value + '</li>';
+                } else {
+                    datahtml = datahtml + '<li data-id="' + item.id + '">' + item.value + '</li>';
+                }
+            })
+           
+           
+            $('#list').html(datahtml);
+
+        }
+
+        htmlForm();
+
+        let arrayOpcionesCorrectas = ['1', '2', '3', '4', '5'];
+
+
+        let arrayErrores = [];
+        let arrayVerdaderos = [];
+
+
+        let multiDragDemo = document.getElementById('list');
+
+
+        function verificarLista() {
+            //let array_list = Array.from($('#list'))
+            let lista = $('#list').children();
+            console.log(lista)
+            arrayVerdaderos = [];
+
+            for (let index = 0; index < arrayOpcionesCorrectas.length; index++) {
+                const respuesta = arrayOpcionesCorrectas[index];
+                const evaluarLista = lista[index]
+
+                let valorDataId = parseFloat($(evaluarLista).data('id'))
+                console.log("respuesta: ", respuesta)
+                console.log("evaluarLista: ", valorDataId)
+
+
+                if (parseFloat(respuesta) === valorDataId) {
+                    arrayVerdaderos.push(respuesta);
+                }
+
+            }
+
+            console.log('arrayVerdaderos: ', arrayVerdaderos)
+            console.log('arrayOpcionesCorrectas: ', arrayOpcionesCorrectas)
+            if (arrayVerdaderos.length === arrayOpcionesCorrectas.length) {
+                swal({
+                    title: "Exito.",
+                    text: "Respuesta correcta",
+                    icon: "success"
+                });
+            } else {
+                swal({
+                    title: "Error.",
+                    text: "Respuesta incorrecta",
+                    icon: "error"
+                });
+            }
+
+        }
+
+        let move = new Sortable(multiDragDemo, {
+            filter: '.filtered',
+            multiDrag: true, // Enable multi-drag
+            selectedClass: 'selected', // The class applied to the selected items
+            fallbackTolerance: 3, // So that we can select items on mobile
+            animation: 150,
+
+        });
+
+    </script>
+
+
+
+
+</body>
+
+</html>
