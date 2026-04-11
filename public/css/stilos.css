@@ -3,60 +3,82 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-  }
-  
-  /* Estilo general del cuerpo */
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #ece5e5;
-  }
-  
-  /* Sección de banner */
-  .banner {
-    /* Reemplaza la ruta con la de tu imagen de fondo */
-    background-image: url("ruta-de-la-imagen.jpg");
+}
+
+/* Estilo general del cuerpo */
+body {
+    /* Un gris muy oscuro casi negro para ese toque industrial */
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #1a1a1a; 
+    color: #e0e0e0; /* Blanco grisáceo para el texto */
+    line-height: 1.6;
+}
+
+/* Sección de banner */
+.banner {
+    /* Usamos un degradado lineal sobre la imagen para asegurar legibilidad */
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("ruta-de-la-imagen.jpg");
     background-size: cover;
     background-position: center;
-    color: #0e61cf;
+    background-attachment: fixed; /* Efecto Parallax sutil */
+    color: #ffffff;
     text-align: center;
-    padding: 60px 0;
-  }
-  
-  .banner h1 {
-    font-size: 3rem;
+    padding: 100px 20px;
+    border-bottom: 5px solid #0056b3; /* Acento azul industrial */
+}
+
+.banner h1 {
+    font-size: 3.5rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 800;
     margin: 0;
-  }
-  
-  /* Contenido principal */
-  .content {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-  }
-  
-  .content h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  /* Lista de enlaces */
-  .links {
-    list-style: none; /* elimina viñetas */
-  }
-  
-  .links li {
-    margin: 10px 0;
-  }
-  
-  .links a {
-    color: #007BFF;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Contenido principal */
+.content {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 40px;
+    background-color: #2d2d2d; /* Gris metalizado oscuro */
+    border: 1px solid #444;
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.content h2 {
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+    color: #00aaff; /* Azul vibrante para resaltar */
+    border-left: 5px solid #00aaff;
+    padding-left: 15px;
+    text-transform: uppercase;
+}
+
+/* Lista de enlaces */
+.links {
+    list-style: none;
+}
+
+.links li {
+    margin: 15px 0;
+    border-bottom: 1px solid #444; /* Líneas divisorias sutiles */
+    padding-bottom: 10px;
+}
+
+.links a {
+    color: #ffffff;
     text-decoration: none;
-    font-size: 1.1rem;
-    font-weight: bold;
-  }
-  
-  .links a:hover {
-    text-decoration: underline;
-  }
+    font-size: 1.2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.links a:hover {
+    color: #00aaff;
+    padding-left: 10px; /* Desplazamiento sutil al pasar el mouse */
+    text-decoration: none;
+}
   
