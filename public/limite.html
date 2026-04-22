@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sucesiones convergentes</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css">
+
+    <!--MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!--JSXgraph -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script>
+</head>
+
+<body>
+    <h1><b> Límite de una función</b></h1>
+
+    <p> En el siguiente interactivo debes proponer un valor pequeño entre 0 y 1 para tu vecindad de radio
+        Épsilon. </p>
+    <p>Posteriormente, realiza los cálculos correspondientes para mostrar una \( \delta \) que cumpla la definición de
+        límite.
+    </p>
+
+    <h4 class="text-left">Elige el valor del punto en donde quieres analizar el límite</h4>
+
+    <div>
+        <label for="inputPunto"> \(x= \) </label>
+       
+      <!--  <input onchange="creaPunto()" type="number" id="inputPunto" placeholder="Punto a analizar" > -->  
+
+      <input type="text" id="inputPunto" placeholder="Punto a analizar" />
+
+        <button onclick="validarPunto_x()">Validar el punto x</button>
+
+
+
+    </div>
+
+    <h4 class="text-left">Elige el valor del límite</h4>
+
+    <div>
+        <label for="inputLimite">Ingresa el límite de la función:</label>
+        <input type="number" id="inputLimite" value=" " min="0" max="8" step="0.1">
+        <button onclick="funcionLeerValor()">Validar</button>
+
+    </div>
+
+    <h4 class="text-left">Elige un valor para épsilon</h4>
+    <div>
+        <p> Dada, \( \varepsilon = \) <input onchange="changeEpsilon()" type="number" class="form-control w-50"
+                id="inputEpsilon" value=" " min="0" max="1" step="0.01">
+            Existe una vecindad de radio \( \delta \) talque para toda, \( x \in ( a,b )\) se satisface que,
+        </p>
+
+        <p> \( \vert \frac{n}{n+1}-1 \vert \lt \) <span id="epsilonChange1"> \( \varepsilon \) </span></p>
+
+        <label for="inputVerificaDelta">Sea \( \delta = \) </label>
+        <input type="number" id="inputVerificaDelta" value=" " min="0" max="2" step="0.01">
+
+        <br>
+        <br>
+        <button id="dibujadelta" onclick="delta()">Dibuja delta</button>
+        <br>
+        <br>
+
+    </div>
+
+    <div id="edvi" style="width:650px; height:400px;display:block;margin-left:auto;margin-right:auto;"> </div>
+
+
+
+    <div>
+        <!--  <button onclick="ejecutarSucesion()" (click)="expression">Ejecutar Sucesión</button>  -->
+        <br>
+        <button id="boton" onclick="reload()">Puntos Aleatorios</button>
+
+    </div>
+
+    <br>
+
+    <div>
+        <a class="custom-button" href="./limite.html">reinicio</a>
+    </div>
+
+
+
+    <script type="text/javascript" charset="UTF-8"
+        src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
+        integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script type="text/javascript" language="javascript" src="js/limite.js"></script>
+
+</body>
+
+</html>
