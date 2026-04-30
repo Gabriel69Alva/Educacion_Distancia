@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog De Matemáticas</title>
+  <link rel="stylesheet" href="../css/normalize.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=PT+Sans:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style2.css" />
+</head>
+
+<body>
+  <header class="header">
+    
+
+  </header>
+
+  <div class="contenedor contenido-principal">
+    <main class="blog">
+      <article class="entrada">
+        <br />
+        <h3 class="no-margin">Teorema del valor intermedio</h3>
+
+        <br />
+
+        <p class="no-margin cortartext">
+          \( \text{Identifica los elementos de la vecindad que contradicen la elección del supremo.} \)
+        </p>
+
+        <p>
+          <b>\( \text{Mueve el punto}\) \(\alpha\) \(\text{para ubicar el supremo del conjunto} \) \(A.\)
+            \(\text{Posteriormente mueve el deslizador para formar una vecindad alrededor del supremo,} \)
+            \(\text{la cual es generada por la ley de conservación del signo.}\)
+          </b>
+        </p>
+
+        <br />
+
+        <section class="contenedor2">
+          <!--   <hr>   -->
+
+          <h3 class="centrar-texto">Escenario interactivo</h3>
+
+          <div id="boxSupremoDerecha" style="width: 650px; height: 650px"></div>
+
+          <br />
+
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.18/dist/sweetalert2.all.min.js"></script>
+
+
+          <br />
+
+          <div class="button-container">
+            <button class="modern-button modern-button:hover" onclick="validarSupremoDerecha()">
+              Validar
+            </button>
+
+            <button class="modern-button modern-button:hover modern-button-a" onclick="location.reload();">
+              Reinicio
+            </button>
+          </div>
+        </section>
+
+        <br />
+        <p></p>
+
+      </article>
+      <br />
+    </main>
+
+    <aside class="sidebar">
+      <br />
+      
+      <h3>Un poco de teoría</h3>
+
+      <ul class="cursos no-padding">
+        <li class="widget-curso">
+          <h4 class="no-margin">Definición de supremo de un conjunto \( A \)</h4>
+          <p class="widget-curso__label">
+            Definición.
+            <span class="widget-curso__info">\(\text{Un número}\) \(\alpha\) \(\text{es el supremo de}\) \( A\)
+              \(\text{
+              si }\) \(\alpha \geq a , \ \forall a \in A.\) \(\text{Y si}\) \(\beta\) \(\text{es una cota superior
+              de}\)
+              \(A\) \(\text{entonces}\) \(\alpha \leq \beta.\)</span>
+          </p>
+
+          <p class="widget-curso__label">
+            En otras palabras:
+            <span class="widget-curso__info">\(\text{El supremo de un conjunto es} \)</span>
+            <span class="widget-curso__info">\(\text{la mínima cota superior de dicho conjunto.} \)</span>
+          </p>
+
+          <p class="widget-curso__label">
+            Una caracterización del supremo.
+            <span class="widget-curso__info">\(\text{Si}\) \(\alpha\) \(\text{es el supremo de}\) \( A,\) \(\text{
+              entonces para toda }\) \( \epsilon\gt 0\) \(\text{existe}\) \(a\in A\) \(\text{tal que}\)
+              \(\alpha-\epsilon \lt a.\)
+            </span>
+          </p>
+
+          <!--  <a href="entrada.html" class="boton boton--secundario">Más Información sobre nuestros cursos</a>  -->
+        </li>
+      </ul>
+      <div class="contentbutton">
+        <a href="#" class="modern-button">Consulta la teoría completa</a>
+      </div>
+    </aside>
+  </div>
+
+  <div class="contenedor contenido-principal">
+    <main class="blog">
+      <article class="entrada">
+        <h3 class="no-margin">Cuestionario 1.</h3>
+
+        <br />
+
+        <p class="no-margin cortartext">
+          \( \text{Este es un cuestionario dinámico de cuatro preguntas. Responde las preguntas para} \)
+          \( \text{identificar los elementos de la vecindad que contradicen la elección del supremo.} \)
+        </p>
+
+        <br />
+
+        <section class="contenedor2">
+          <!--   <hr>   -->
+
+          <h3 class="centrar-texto">Responde el cuestionario</h3>
+
+          <form id="formMultipleSupremoIzquierda"></form>
+
+          <br />
+
+          <div class="button-container">
+            <button id="btn-siguiente-SupremoIzquierda" data-pregunta="1"
+              onclick="preguntaSiguenteSupremoIzquierda(this)"
+              class="modern-button modern-button:hover">Siguiente</button>
+            <button id="btn-validar-SupremoIzquierda" class="modern-button modern-button:hover"
+              onclick="validarFormSupremoIzquierda()">
+              Validar
+            </button>
+          </div>
+        </section>
+
+        <br />
+        <p></p>
+      </article>
+      <br />
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="contenedor">
+      <div class="barra">
+        <a class="logo" href="#.html">
+          <h1 class="logo__nombre no-margin centrar-texto">
+            Blog<span class="logo__bold">DeMatemáticas</span>
+          </h1>
+        </a>
+
+
+      </div>
+    </div>
+  </footer>
+
+</body>
+<script src="js/modernizr.js"></script>
+
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath:  [['$','$'],['\\(','\\)']]}});
+    </script>
+
+<!-- <script src="js/jquery.2.2.4.js"></script> -->
+
+<script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+<script src="./js/eleccionSupremo.js"></script>
+<script src="./js/formMultipleEleccionSupremo.js"></script>
+
+</html>

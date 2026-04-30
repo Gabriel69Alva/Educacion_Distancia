@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog De Matemáticas</title>
+  <link rel="stylesheet" href="../css/normalize.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=PT+Sans:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style2.css" />
+</head>
+
+<header class="header">
+  <div class="header__texto">
+    <h2 class="no-margin">
+      "Entorno virtual interactivo para el aprendizaje de las matemáticas"
+    </h2>
+
+  </div>
+</header>
+
+<body>
+
+  <div class="contenedor contenido-principal">
+    <main class="blog">
+      <article class="entrada">
+        <h3 class="no-margin">Actividad 1. Puntos en donde la función es negativa </h3>
+        <br>
+        <p class="no-margin cortartext">
+          \( \text{El propósito de este ejercicio es que puedas identificar los puntos donde la función es negativa.} \)
+        </p>
+
+        <p>
+          \( \text{Haz clic en el escenario de tal modo que indiques puntos que pertenezcan a }\)  \(A=\{x|f(x) \lt 0\}. \) 
+        </p>
+
+        <section class="contenedor2">
+          <!--   <hr>   -->
+
+          <h3 class="centrar-texto">Intervalos de una función</h3>
+
+          <div id="hud-container" style="display: flex; justify-content: space-between; max-width: 600px; margin: 0 auto 10px auto; font-family: 'Open Sans', sans-serif;">
+            <div style="color: green; font-weight: bold; font-size: 1.8rem;">Aciertos: <span id="score">0</span>/3</div>
+            <div style="color: red; font-weight: bold; font-size: 1.8rem;">Errores: <span id="mistakes">0</span>/3</div>
+          </div>
+
+          <div id="box" style="width: 750px; height: 600px; background-color: rgb(23, 22, 22)"></div>
+          <br />
+          <div class="button-container">
+            <button class="modern-button modern-button:hover" onclick="validar()">
+              Validar
+            </button>
+            <button class="modern-button modern-button:hover modern-button-a" type="button"
+              onclick="reiniciarJuego()">
+              Reiniciar Juego
+            </button>
+          </div>
+        </section>
+
+      </article>
+    </main>
+
+  </div>
+
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script> -->
+  <script src="https://jsxgraph.org/distrib/jsxgraphcore.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.18/dist/sweetalert2.all.min.js"></script>
+  
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="js/abscisas.js"></script>
+
+
+  <script src="js/modernizr.js"></script>
+
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+  <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath:  [['$','$'],['\\(','\\)']]}});
+    </script>
+
+  <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+
+</html>
