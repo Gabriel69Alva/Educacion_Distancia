@@ -1,0 +1,16 @@
+.wrapper {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    grid-gap: 10px;
+    
+  }
+  .one {
+    background-color: rgb(255, 145, 0);
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .two {
+    background-color: rgb(26, 142, 142);
+    grid-column: 2;
+    grid-row: 1;
+  }

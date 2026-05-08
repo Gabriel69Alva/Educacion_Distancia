@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo de consumo de calorías</title>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
+    <link rel="stylesheet" href="./css/modelo_dieta.css">
+    <script type="text/javascript" charset="UTF-8"
+    src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+
+</head>
+
+<body>
+    <style>
+
+    </style>
+    <h1>Calcula tu peso en el tiempo</h1>
+
+    <div class="wrapper">
+        <div class="one">
+
+            <label for="calorias">Calorias</label>
+            <input id="calorias" type="text">
+            <br>
+            <label for="peso">Peso</label>
+            <input id="peso" type="text">
+            <br>
+            <label for="dias">Dias</label>
+            <input id="dias" type="text">
+            <br>
+
+            <br>
+            <button onclick="onCalcular()">Calcula tu peso</button>
+
+            <br>
+            <br>
+            <a class="modern-button modern-button:hover modern-button-a" href="./modelo_dieta.html"><span>Reinicio</span> </a>
+        
+
+        </div>
+        <div class="two">
+            <div id="box1" class="jxgbox" style="width:1100px; height:800px;"></div>
+        </div>
+
+    </div>
+
+    <script src="./js/dieta.js"> </script> </script>
+
+
+</body>
+
+</html>
