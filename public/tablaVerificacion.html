@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla de valores para verificar</title>
+    <link rel="stylesheet" href="./css/tabla.css">
+</head>
+
+<body>
+
+    <p> 1. Señala los axiomas de campo que son verdaderos</p>
+
+    <table id="tableGenerica" class="custom-table">
+
+    </table>
+    <button class="custom-reinicio" onclick="verificarValores()">Verificar</button>
+    <a class="custom-reinicio" href="./tablaVerificacion.html">reinincio</a>
+
+
+    <!--Libreria de alertas-->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script src="./js2/jquery.2.2.4.js"></script>
+    <script>
+
+        let opciones = [['Conmutativa', 'Tricotomía', 'Asociativa', 'Transitividad' ], ['Irreflexividad', 'Neutro aditivo', 'Axioma del supremo', 'Contrapositiva' ]];
+        let arrayOpcionesCorrectas = ['Conmutativa', 'Asociativa', 'Neutro aditivo'];
+        let arrayErrores = [];
+        let arrayVerdaderos = [];
+
+        
+        function verificarValores() {
+
+            arrayVerdaderos.map(item => {
+                $(item).css("background", 'green')
+            })
+            arrayErrores.map(item => {
+                $(item).css("background", 'red')
+            })
+
+            swal({
+                title: "Tu puntaje es:",
+                text: "Errorres: " + arrayErrores.length + ", Verdaderos: " + arrayVerdaderos.length,
+                icon: "info"
+            });
+
+        }
+
+
+        function validarElemento(elemnt) {
+            let value = $(elemnt).text();
+            $(elemnt).css("background", 'grey')
+            if (arrayOpcionesCorrectas.includes(value)) {
+                arrayVerdaderos.push(elemnt)
+            } else {
+                arrayErrores.push(elemnt)
+            }
+
+        }
+
+        function tablaOpciones() {
+            let tr = '';
+            opciones.map(item => {
+                let td = ''
+                console.log("item : ", item)
+                item.map(item2 => {
+                    td = td + '<td onclick="validarElemento(this)">' + item2 + '</td>'
+                    console.log("item2 : ", item2)
+                })
+                tr = tr + '<tr>' + td + '</tr>'
+
+            })
+            $('#tableGenerica').html(tr)
+        }
+        tablaOpciones()
+
+    </script>
+
+
+
+
+</body>
+
+</html>

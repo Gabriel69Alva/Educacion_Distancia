@@ -1,0 +1,26 @@
+table input {
+    width: 40px;
+    height: 40px;
+}
+
+
+.custom-table td {
+    background: rgb(216, 216, 216);
+    font-size: 20px;
+    padding: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
+    cursor: pointer;
+}
+.custom-table td:hover{
+    background: rgb(170, 170, 170);
+}
+.custom-reinicio{
+    position: relative;
+    top: 10px;
+    padding: 5px;
+    text-decoration: none;
+    border: solid 2px rgb(75, 75, 75);
+    border-radius: 5px;
+    padding-bottom: 8px;
+}
