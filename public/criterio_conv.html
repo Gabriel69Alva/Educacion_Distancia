@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caracterización del supremo</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css">
+    <!--MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script>
+
+</head>
+
+<body>
+
+    <h1><b> Actividad 1</b></h1>
+    <h1 class=""> Caracterización del supremo &nbsp;</h1>
+    <p class="">Con ayuda del siguiente interactivo muestra que el supremo del conjunto \( A=\left\{ \frac{n}{n+1} \right\} \) es 1.<br></p>
+    <p class="">Observa que, \( \lim_{n \to \infty } \frac{n}{n+1}=1.\) <br></p>
+    <div class="card-header"> En el interactivo debes proponer un valor pequeño entre 0 y 0.5 para tu vecindad de radio épsilon. Posteriormente, realiza los cálculos<br></div>
+    <div class="card-header"> correspondientes para mostrar que para cualquier \( \varepsilon>0 \),  se tiene que, entre \( l- \varepsilon \) y 1, siempre existen puntos del conjunto \(A\). <br></div>
+    <h3 class="text-left">Elige un valor para épsilon</h3>
+
+    <!--  <div>
+        <label for="inputEpsilon" class="col-2 col-form-label">\( \varepsilon : \)</label>
+        
+    </div>  -->
+   
+
+    <div>
+    <p>  Dada, \( \varepsilon = \)  <input onchange="changeEpsilon()"  
+         type="number" class="form-control w-50" id="inputEpsilon" min="0" max="0.5" step="0.01"> 
+         existe  \( N  \in  \mathrm{I}\!\mathrm{N}  \) tal que para   </p>
+
+	<p>  \( \ l   -    \)  <span id="epsilonChange1"> \( \varepsilon \) </span></p>  
+	
+
+	<label for="inputVerificaN">  \(n \gt \) </label>
+	
+	<input onchange="ejecutarN()"  type="number" id="inputVerificaN" min="1" max="50" step="1" >
+    </div>
+
+    <br>
+    <br>
+
+    <button onclick="ejecutarSucesion()" (click)="expression">Ejecutar Sucesión</button>
+
+    <div>
+        <!--  <button onclick="ejecutarSucesion()" (click)="expression">Ejecutar Sucesión</button>  -->
+        <br>
+        <button id="boton" onclick="reload()">Puntos Aleatorios</button>
+        <br>
+        <br>
+        <div id="coordenadas">(x,y)</div>
+        <br>
+
+    </div>
+
+    <br>
+
+    <a class="custom-button" href="./criterio_conv.html">reinicio</a>
+
+    <div id="edvi" style="width:650px; height:400px;display:block;margin-left:auto;margin-right:auto;"> </div>
+
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script type="text/javascript" language="javascript" src="./js/criterio_conv.js"></script>
+</body>
+
+</html>
+
