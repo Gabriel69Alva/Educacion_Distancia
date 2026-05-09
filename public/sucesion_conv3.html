@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sucesiones convergentes</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css">
+    <!--MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script>
+
+</head>
+
+<body>
+    <h1><b> Actividad sobre Convergencia 3. Demuestra mediante la definición de límite que:</b></h1>
+    <h1 class=""> Convergencia de sucesiones &nbsp;</h1>
+    <h3 class="">Con ayuda del siguiente interactivo muestra que, $$ \lim_{n \to \infty } \frac{(-1)^n}{n}= ? $$<br></h3>
+    <div class="card-header"> En el interactivo debes proponer un valor pequeño entre 0 y 1 para tu vecindad de radio
+        Épsilon. Posteriormente, realiza los cálculos<br></div>
+    <div class="card-header"> correspondientes para deducir el valor de N que cumpla la definición de límite. <br></div>
+    
+    <h4 class="text-left">Elige el valor del límite</h4>
+ 
+        <div>
+        <label for="inputNumber">Ingresa el límite de la sucesión:</label>
+        <input type="number" id="inputNumber">
+        <button onclick="funcionLeerValor()">Validar</button>
+    
+    </div>  
+
+    <h4 class="text-left">Elige un valor para épsilon</h4>
+    <div>
+        <p> Dada, \( \varepsilon = \) <input onchange="changeEpsilon()" type="number" class="form-control w-50"
+                id="inputEpsilon" value=" " min="0" max="1" step="0.01">
+            existe \( N \in \mathrm{I}\!\mathrm{N} \) talque para toda, \( n \gt N \) se satisface que, 
+        </p>
+
+        <p> \( \vert \frac{n}{n+1}-1 \vert \lt \) <span id="epsilonChange1"> \( \varepsilon \) </span></p>
+        <p> \( \vert \frac{-1}{n+1} \vert = \frac{1}{n+1} \lt \) <span id="epsilonChange2"> \( \varepsilon \) </span></p>
+
+        <label for="inputVerificaN"> \(n = \) </label>
+        <input  type="number" id="inputVerificaN" value=" " min="1" max="30" step="1">
+
+    </div>
+
+    <button onclick="ejecutarSucesion()" (click)="expression">Ejecutar Sucesión</button>
+    <button onclick="ejecutarValidacionN()" (click)="">Valida tus cálculos</button>
+
+    <!-- <button onclick="" (click)="">Limpiar</button>  --> 
+    <a class="custom-button" href="./sucesion_conv3.html" >reinicio</a> 
+
+    
+
+    <div id="edvi" style="width:650px; height:400px;display:block;margin-left:auto;margin-right:auto;"> </div>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
+        integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script type="text/javascript" language="javascript" src="./js/sucesion_conv3.js"></script>
+</body>
+
+</html>
