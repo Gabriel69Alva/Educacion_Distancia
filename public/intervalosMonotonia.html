@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intervalos de monotonía</title>
+</head>
+
+<body>
+    <div> 
+        <h1>Intervalos de monotonía</h1>
+        <h3>Instrucciones</h3>
+        <p>En esta actividad se te presentan dos regiones, cada una con dos puntos móviles. Tu tarea es ajustar los puntos móviles mediante los deslizadores para que se ajusten a las regiones en donde la función es decreciente.</p>
+        <p>La función que se muestra en el gráfico es \( f(x) = x^4 - x^2 \). El intervalo azul representa la función completa, mientras que las regiones rojas representan los intervalos de monotonía que debes identificar.</p>
+        <p>Una vez que hayas ajustado los puntos móviles a las posiciones correctas, haz clic en el botón "Validar" para verificar tu respuesta. Si has identificado correctamente los intervalos de monotonía, recibirás una confirmación. De lo contrario, se te indicará que tu selección no es correcta y podrás intentarlo nuevamente.</p>     
+    </div>
+    <div id="box" style="width: 800px; height: 800px;">
+    </div>
+    <button onclick="validar()">Validar</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+    <script>
+
+
+        let function1 = [-1.5, -0.7];
+        let function2 = [0.0, 0.7];
+
+
+        var board = JXG.JSXGraph.initBoard('box', { boundingbox: [-3, 3, 3, -3], axis: true });
+        var f = function (x) {
+            return (x * x * x * x) - (x * x);
+        };
+
+        var startLimt = -1.5; // Punto inicial
+        var endLimit = 1.5; // Punto final
+
+        var start = -1; // Punto inicial
+        var end = -0.5; // Punto final
+        var start1 = 0.7; // Punto inicial
+        var end1 = 1.1; // Punto final
+
+        var fModifiedLimit = function (x) {
+            if (x >= startLimt && x <= endLimit) {
+                return f(x);
+            } else {
+                return NaN; // Devolver NaN fuera del rango para que no se trace la curva
+            }
+        };
+
+
+        var fModified = function (x) {
+            if (x >= start && x <= end) {
+                return f(x);
+            } else {
+                return NaN; // Devolver NaN fuera del rango para que no se trace la curva
+            }
+        };
+
+        var fModified2 = function (x) {
+            if (x >= start1 && x <= end1) {
+                return f(x);
+            } else {
+                return NaN; // Devolver NaN fuera del rango para que no se trace la curva
+            }
+        };
+
+
+        var graph = board.create('functiongraph', [fModifiedLimit], { strokeColor: '#0000ff', strokeWidth: 3 });
+        var graph1 = board.create('functiongraph', [fModified], { strokeColor: 'rgb(255, 42, 42)', strokeWidth: 3 });
+        var graph2 = board.create('functiongraph', [fModified2], { strokeColor: 'rgb(255, 42, 42)', strokeWidth: 3 });
+
+        var s1 = board.create('slider', [[0, -1], [2, -1], [startLimt, start, endLimit]], {
+            name: 'A;'
+        });
+        var s2 = board.create('slider', [[0, -1.3], [2, -1.3], [startLimt, end, endLimit]], {
+            name: 'B;'
+        });
+        var s3 = board.create('slider', [[0, -1.6], [2, -1.6], [startLimt, start1, endLimit]], {
+            name: 'c;'
+        });
+        var s4 = board.create('slider', [[0, -1.9], [2, -1.9], [startLimt, end1, endLimit]], {
+            name: 'D;'
+        });
+        var p1 = board.create('point', [
+            function () { return s1.Value(); },
+            function () { return f(s1.Value()); }
+        ], { trace: false, size: 3 }
+        )
+        var p2 = board.create('point', [
+            function () { return s2.Value(); },
+            function () { return f(s2.Value()); }
+        ], { trace: false, size: 3 }
+        )
+        var p3 = board.create('point', [
+            function () { return s3.Value(); },
+            function () { return f(s3.Value()); }
+        ], { trace: false, size: 3, color: 'red' }
+        )
+        var p4 = board.create('point', [
+            function () { return s4.Value(); },
+            function () { return f(s4.Value()); }
+        ], { trace: false, size: 3, color: 'red' }
+        )
+
+
+        s1.on('drag', function () {
+            console.log("entra al evento slider x1P:", s1.Value());
+            start = s1.Value(); // Actualizar el valor de 'start' cuando se cambie el valor del slider
+            graph1.updateCurve();
+        });
+
+        s2.on('drag', function () {
+            console.log("entra al evento slider x1P:", s2.Value());
+            end = s2.Value(); // Actualizar el valor de 'start' cuando se cambie el valor del slider
+            graph1.updateCurve();
+        });
+        s3.on('drag', function () {
+            console.log("entra al evento slider x1P:", s3.Value());
+            start1 = s3.Value(); // Actualizar el valor de 'start' cuando se cambie el valor del slider
+            graph2.updateCurve();
+        });
+
+        s4.on('drag', function () {
+            console.log("entra al evento slider x1P:", s4.Value());
+            end1 = s4.Value(); // Actualizar el valor de 'start' cuando se cambie el valor del slider
+            graph2.updateCurve();
+        });
+
+
+
+        function disabledSlider(x1, x2) {
+            //let disabled = disabledSlider(s1.Value(), s2.Value())
+            //s1.setAttribute({ fixed: !disabled.s1 });
+            if (x1 <= x2) {
+                return { "s1": true, "s2": true }
+            } else {
+                return { "s1": false, "s2": true }
+            }
+        }
+
+        
+
+        /*
+        function validar() {
+
+            let p1x = parseFloat(p1.X().toFixed(1));
+            let p2x = parseFloat(p2.X().toFixed(1));
+            let p3x = parseFloat(p3.X().toFixed(1));
+            let p4x = parseFloat(p4.X().toFixed(1));
+            console.log('coordenadas P1: ', p1x, function1[0])
+            console.log('coordenadas P2: ', p2x, function1[1])
+            console.log('coordenadas P3: ', p3x, function2[0])
+            console.log('coordenadas P4: ', p4x, function2[1])
+
+            if (p1x === parseFloat(function1[0]) && p2x === parseFloat(function1[1]) && p3x === parseFloat(function2[0]) && p4x === parseFloat(function2[1])) {
+                swal({
+                    title: "Muy bien!",
+                    text: "La región de monotonía que elegiste es correcta",
+                    icon: "success"
+                });
+            } else {
+                swal({
+                    title: "Incorrecto!",
+                    text: "La función no es decreciente la región propuesta",
+                    icon: "error"
+                });
+            }
+        }
+        */
+        
+
+        function validar() {
+            let p1x = parseFloat(p1.X().toFixed(1));
+            let p2x = parseFloat(p2.X().toFixed(1));
+            let p3x = parseFloat(p3.X().toFixed(1));
+            let p4x = parseFloat(p4.X().toFixed(1));
+
+            let errorMargin = 0.03;
+
+            if (
+                Math.abs(p1x - parseFloat(function1[0])) <= errorMargin &&
+                Math.abs(p2x - parseFloat(function1[1])) <= errorMargin &&
+                Math.abs(p3x - parseFloat(function2[0])) <= errorMargin &&
+                Math.abs(p4x - parseFloat(function2[1])) <= errorMargin
+            ) {
+                swal({
+                    title: "Muy bien!",
+                    text: "La región de monotonía que elegiste es correcta",
+                    icon: "success"
+                });
+            } else {
+                swal({
+                    title: "Incorrecto!",
+                    text: "La función no es decreciente la región propuesta",
+                    icon: "error"
+                });
+            }
+        }
+
+
+
+
+    </script>
+
+</body>
+
+</html>
