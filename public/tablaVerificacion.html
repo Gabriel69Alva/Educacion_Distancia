@@ -98,9 +98,20 @@
 
         /* ================= ETAPA 3: DRAG & DROP ================= */
         .n3-section { background: var(--bg-light); padding: 30px; border-radius: 12px; margin-bottom: 30px; }
-        .drop-zone { display: inline-block; width: 180px; height: 35px; border-bottom: 2px solid var(--primary); vertical-align: middle; text-align: center; }
+        .drop-zone { display: inline-block; width: 180px; height: 35px; border-bottom: 2px solid var(--primary); vertical-align: middle; text-align: center; background: white; border-radius: 4px 4px 0 0;}
         .draggable-word { cursor: grab; font-weight: 600; background-color: var(--primary); color: white; border: none; }
         .draggable-word:active { cursor: grabbing; }
+        
+        /* Lista ordenable */
+        .sortable-item { 
+            background: #fff; border: 1px solid var(--border-color); 
+            padding: 15px; border-radius: 6px; cursor: grab; 
+            display: flex; align-items: center; gap: 15px; 
+            font-weight: 500; transition: background 0.2s;
+            margin-bottom: 10px;
+        }
+        .sortable-item:active { cursor: grabbing; }
+        .sortable-item.dragging { opacity: 0.4; background: #e2e8f0; }
 
         .score-val { font-size: 28px; font-weight: 700; color: var(--primary); }
     </style>
@@ -158,19 +169,45 @@
 
         <div id="level-3-container" class="hidden">
             <h1>Etapa 3: Rigor Formal</h1>
+            
             <div class="n3-section">
-                <h3>A. Demostración del Teorema</h3>
-                <p style="margin-bottom: 25px;">Demuestra que $a \cdot 0 = 0$. Arrastra los axiomas correctos:</p>
+                <h3>A. Completar la Demostración</h3>
+                <p style="margin-bottom: 25px; color: #64748b;">Demuestra que $a \cdot 0 = 0$. Arrastra los axiomas correctos:</p>
                 
-                <p>1. $a \cdot 0 = a \cdot (0 + 0)$ por el <span class="drop-zone" data-expected="neutro"></span>.</p>
-                <p>2. $a \cdot 0 = a \cdot 0 + a \cdot 0$ aplicando <span class="drop-zone" data-expected="distributividad"></span>.</p>
+                <p style="line-height: 2.2;">
+                    1. $a \cdot 0 = a \cdot (0 + 0)$ por el <span class="drop-zone" data-expected="neutro"></span>.<br>
+                    2. $a \cdot 0 = a \cdot 0 + a \cdot 0$ aplicando la propiedad de <span class="drop-zone" data-expected="distributividad"></span>.<br>
+                    3. Sumamos el <span class="drop-zone" data-expected="inverso"></span>, $-(a \cdot 0)$, en ambos lados para obtener $0 = a \cdot 0$.
+                </p>
                 
                 <div id="banco-palabras" style="margin-top:30px; display:flex; gap:15px; flex-wrap: wrap;">
                     <span class="axioma-item draggable-word" draggable="true" data-value="neutro">Neutro aditivo</span>
                     <span class="axioma-item draggable-word" draggable="true" data-value="distributividad">Distributividad</span>
+                    <span class="axioma-item draggable-word" draggable="true" data-value="inverso">Inverso aditivo</span>
                     <span class="axioma-item draggable-word" draggable="true" data-value="falso">Cerradura</span>
                 </div>
             </div>
+
+            <div class="n3-section">
+                <h3>B. Ordenación Lógica</h3>
+                <p style="margin-bottom: 20px; color: #64748b;">Ordena los pasos lógicos para demostrar que si $a > 0$ y $b > 0$, entonces $a \cdot b > 0$:</p>
+                
+                <div id="sortable-list" style="display: flex; flex-direction: column;">
+                    <div class="sortable-item" draggable="true" data-id="3">
+                        <i class="fa-solid fa-sort" style="color: var(--primary);"></i> Sabemos que $0 \cdot b = 0$ (Teorema previo)
+                    </div>
+                    <div class="sortable-item" draggable="true" data-id="1">
+                        <i class="fa-solid fa-sort" style="color: var(--primary);"></i> Hipótesis inicial: $a > 0$ y $b > 0$
+                    </div>
+                    <div class="sortable-item" draggable="true" data-id="4">
+                        <i class="fa-solid fa-sort" style="color: var(--primary);"></i> Por lo tanto, $a \cdot b > 0$ (Aplicando Transitividad)
+                    </div>
+                    <div class="sortable-item" draggable="true" data-id="2">
+                        <i class="fa-solid fa-sort" style="color: var(--primary);"></i> Multiplicamos la primera desigualdad por $b$: $a \cdot b > 0 \cdot b$
+                    </div>
+                </div>
+            </div>
+
             <button class="btn-general" onclick="evaluarEtapa3()">Evaluar Final</button>
         </div>
 
@@ -187,7 +224,7 @@
                 </div>
                 <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 120px; border: 1px solid var(--border-color);">
                     <p style="margin:0 0 10px 0; color: #64748b;">Etapa 3</p>
-                    <div class="score-val" id="res-n3">0/2</div>
+                    <div class="score-val" id="res-n3">0/4</div>
                 </div>
             </div>
             <button class="btn-general btn-restart" onclick="reiniciarActividad()">REINICIAR ESCENARIO</button>
@@ -215,9 +252,7 @@
 
         // Inicializar
         function init() {
-            // ==========================================
-            // FIX: Forzar limpieza de inputs contra la caché del navegador
-            // ==========================================
+            // Limpieza de inputs contra caché de navegadores
             document.querySelectorAll('input[type="radio"]').forEach(r => {
                 r.checked = false;
                 r.disabled = false;
@@ -242,7 +277,6 @@
         // Validación Etapa 1
         function verificarEtapa1() {
             let err = 0;
-            // Solo evaluar los items del nivel 1 (para no afectar los del nivel 3)
             document.querySelectorAll('#level-1-container .axioma-item').forEach(i => {
                 let isCorrect = i.dataset.cor === "true";
                 let isSelected = i.classList.contains('selected');
@@ -250,17 +284,16 @@
                 if (isCorrect && isSelected) {
                     i.classList.add('correct');
                 } else if (!isCorrect && isSelected) {
-                    i.classList.add('error'); // Seleccionó un distractor
+                    i.classList.add('error'); 
                     err++;
                 } else if (isCorrect && !isSelected) {
-                    i.classList.add('error'); // Le faltó seleccionar uno verdadero
+                    i.classList.add('error'); 
                     err++;
                 } else {
-                    i.style.opacity = '0.4'; // No era verdadero y no lo seleccionó (Bien)
+                    i.style.opacity = '0.4'; 
                 }
             });
             
-            // Calculo de aciertos (1 por tabla perfecta)
             aciertosN1 = err === 0 ? 2 : (err <= 2 ? 1 : 0); 
             
             if (err === 0) {
@@ -277,7 +310,6 @@
         function iniciarEtapa2() {
             document.getElementById('level-1-container').classList.add('hidden');
             document.getElementById('level-2-container').classList.remove('hidden');
-            // Forzar renderizado de MathJax por si estaba oculto
             if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         }
 
@@ -292,7 +324,6 @@
             const f = document.getElementById(`feedback-${preguntaActual}`);
             f.classList.remove('hidden'); 
             
-            // Deshabilitar inputs para no cambiar respuesta
             document.querySelectorAll(`input[name="q${preguntaActual}"]`).forEach(el => el.disabled = true);
 
             if(s.value === "correcta") {
@@ -329,41 +360,105 @@
             document.getElementById('btn-comprobar-quiz').classList.remove('hidden');
         }
 
-        // Lógica de Drag & Drop para la Etapa 3
-        let draggedItem = null;
+        // ==========================================
+        // Lógica de Drag & Drop para la Etapa 3 (A)
+        // ==========================================
+        let draggedWord = null;
 
         document.addEventListener("dragstart", e => { 
-            if(e.target.classList.contains('draggable-word')) draggedItem = e.target; 
+            if(e.target.classList.contains('draggable-word')) draggedWord = e.target; 
         });
 
         document.querySelectorAll('.drop-zone').forEach(zone => {
             zone.addEventListener('dragover', e => e.preventDefault());
             zone.addEventListener('drop', e => {
                 e.preventDefault();
-                // Si la zona ya tiene una palabra, regresarla al banco
                 if (zone.hasChildNodes()) {
                     document.getElementById('banco-palabras').appendChild(zone.firstChild);
                 }
-                // Soltar la nueva palabra
-                if (draggedItem && draggedItem.classList.contains('draggable-word')) {
-                    zone.appendChild(draggedItem);
+                if (draggedWord && draggedWord.classList.contains('draggable-word')) {
+                    zone.appendChild(draggedWord);
+                    draggedWord = null;
                 }
             });
         });
 
-        // Validación Etapa 3
+        // ==========================================
+        // Lógica de Sortable List para la Etapa 3 (B)
+        // ==========================================
+        const sortableList = document.getElementById('sortable-list');
+        let draggingListItem = null;
+
+        document.querySelectorAll('.sortable-item').forEach(item => {
+            item.addEventListener('dragstart', () => {
+                draggingListItem = item;
+                setTimeout(() => item.classList.add('dragging'), 0);
+            });
+            item.addEventListener('dragend', () => {
+                item.classList.remove('dragging');
+                draggingListItem = null;
+            });
+        });
+
+        sortableList.addEventListener('dragover', e => {
+            e.preventDefault();
+            // Evitar que las palabras del ejercicio A interfieran
+            if(!draggingListItem) return; 
+
+            const afterElement = getDragAfterElement(sortableList, e.clientY);
+            if (afterElement == null) {
+                sortableList.appendChild(draggingListItem);
+            } else {
+                sortableList.insertBefore(draggingListItem, afterElement);
+            }
+        });
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.sortable-item:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        // ==========================================
+        // Validación Final Etapa 3
+        // ==========================================
         function evaluarEtapa3() {
             let correctas = 0;
+            
+            // Evaluar Parte A (Palabras: 3 puntos posibles)
             document.querySelectorAll('.drop-zone').forEach(z => {
                 if (z.hasChildNodes() && z.firstChild.dataset.value === z.dataset.expected) {
                     correctas++; 
-                    z.style.borderColor = "var(--success)";
+                    z.style.borderBottomColor = "var(--success)";
                 } else { 
-                    z.style.borderColor = "var(--danger)"; 
+                    z.style.borderBottomColor = "var(--danger)"; 
                 }
             });
 
-            aciertosN3 = correctas; 
+            // Evaluar Parte B (Lista Ordenada: 1 punto global)
+            let orderCorrect = true;
+            const items = document.querySelectorAll('.sortable-item');
+            items.forEach((item, index) => {
+                if (parseInt(item.dataset.id) !== index + 1) {
+                    orderCorrect = false;
+                    item.style.borderColor = "var(--danger)";
+                    item.style.backgroundColor = "#fef2f2";
+                } else {
+                    item.style.borderColor = "var(--success)";
+                    item.style.backgroundColor = "#dcfce7";
+                }
+            });
+
+            if(orderCorrect) correctas++; // +1 punto si ordenaron todo bien.
+
+            aciertosN3 = correctas; // Máximo 4 puntos
 
             document.getElementById('level-3-container').classList.add('hidden');
             document.getElementById('resumen-final-container').classList.remove('hidden');
@@ -371,9 +466,9 @@
             // Imprimir resultados
             document.getElementById('res-n1').innerText = aciertosN1 + "/2";
             document.getElementById('res-n2').innerText = aciertosN2 + "/3";
-            document.getElementById('res-n3').innerText = aciertosN3 + "/2";
+            document.getElementById('res-n3').innerText = aciertosN3 + "/4";
             
-            confetti({ particleCount: 200, spread: 90, origin: { y: 0.5 } });
+            confetti({ particleCount: 300, spread: 120, origin: { y: 0.6 } });
         }
 
         // Reinicio
@@ -386,5 +481,3 @@
     </script>
 </body>
 </html>
-
-
