@@ -213,8 +213,16 @@
             { n: 'Irreflexividad', c: false }
         ];
 
-        // Inicializar tablas de Etapa 1
+        // Inicializar
         function init() {
+            // ==========================================
+            // FIX: Forzar limpieza de inputs contra la caché del navegador
+            // ==========================================
+            document.querySelectorAll('input[type="radio"]').forEach(r => {
+                r.checked = false;
+                r.disabled = false;
+            });
+
             const render = (id, data) => {
                 const g = document.getElementById(id);
                 // Mezcla aleatoria de opciones
@@ -378,3 +386,5 @@
     </script>
 </body>
 </html>
+
+
