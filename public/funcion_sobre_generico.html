@@ -57,7 +57,7 @@
             padding: 14px; background-color: var(--primary); color: white;
             border: none; border-radius: 30px; font-size: 16px; font-weight: 600;
             cursor: pointer; transition: 0.3s;
-            position: relative; z-index: 20; /* Asegurar que esté sobre el SVG */
+            position: relative; z-index: 20;
         }
         .btn-general:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .btn-restart { background-color: var(--warning); }
@@ -75,8 +75,8 @@
         #svg-canvas {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; /* Para no bloquear clicks en nodos */
-            z-index: 10; /* FIX: Subir capa para estar sobre los conjuntos */
+            pointer-events: none;
+            z-index: 10;
         }
 
         .set-box {
@@ -91,7 +91,7 @@
             align-items: center;
             gap: 20px;
             position: relative;
-            z-index: 2; /* Conjuntos abajo */
+            z-index: 2;
         }
         .set-title { font-weight: bold; color: var(--primary); margin-bottom: 10px; }
 
@@ -103,7 +103,7 @@
             display: flex; justify-content: center; align-items: center;
             font-weight: bold;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: relative; z-index: 5; /* Nodos sobre el conjunto, bajo el SVG */
+            position: relative; z-index: 5;
         }
 
         .domain-item { cursor: crosshair; }
@@ -144,16 +144,15 @@
         /* ================= ETAPA 3: RIGOR FORMAL ================= */
         .n3-section { background: var(--bg-light); padding: 30px; border-radius: 12px; margin-bottom: 30px; }
         
-        /* FIX: Ajuste de contenedores del párrafo para palabras 'gordas' */
         .formal-proof-p { line-height: 2.2; color: var(--text-dark); }
         .formal-proof-p .drop-zone { 
-            display: inline-flex; /* Flex para alinear tarjeta gorda */
+            display: inline-flex; 
             align-items: center; 
             justify-content: center;
             width: 170px; 
-            height: 45px; /* Altura aumentada para preservar grosor */
+            height: 45px; 
             border-bottom: 2px solid var(--primary); 
-            vertical-align: middle; /* Alineación con texto */
+            vertical-align: middle; 
             text-align: center; 
             background: white; 
             border-radius: 4px 4px 0 0;
@@ -262,8 +261,8 @@
                     <span class="axioma-item draggable-word" draggable="true" data-value="sobreyectivas">Sobreyectivas</span>
                     <span class="axioma-item draggable-word" draggable="true" data-value="imagen">Imagen (Rango)</span>
                     <span class="axioma-item draggable-word" draggable="true" data-value="no_siempre">NO siempre</span>
-                    <span class="axioma-item draggable-word" draggable="true" data-value="inyectivas" style="background-color: #64748b;">Inyectivas</span>
-                    <span class="axioma-item draggable-word" draggable="true" data-value="siempre" style="background-color: #64748b;">Siempre</span>
+                    <span class="axioma-item draggable-word" draggable="true" data-value="inyectivas">Inyectivas</span>
+                    <span class="axioma-item draggable-word" draggable="true" data-value="siempre">Siempre</span>
                 </div>
             </div>
 
@@ -304,7 +303,7 @@
         let startNode = null;
         let tempLine = null;
         const svg = document.getElementById('svg-canvas');
-        let connections = []; // Guarda objetos: { from: DOMElement, to: DOMElement, line: SVGElement }
+        let connections = [];
 
         function init() {
             document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
@@ -531,16 +530,15 @@
                 if (z.hasChildNodes() && z.firstChild.dataset.value === z.dataset.expected) {
                     correctas++; 
                     z.style.borderBottomColor = "var(--success)";
-                    z.style.backgroundColor = "#dcfce7"; // Feedback visual gordo
+                    z.style.backgroundColor = "#dcfce7"; 
                 } else { 
                     z.style.borderBottomColor = "var(--danger)"; 
-                    z.style.backgroundColor = "#fee2e2"; // Feedback visual gordo
+                    z.style.backgroundColor = "#fee2e2"; 
                 }
             });
 
-            aciertosN3 = correctas; // Máximo 3
+            aciertosN3 = correctas; 
             
-            // Pausa pedagógica: mostrar botón de finalizar
             document.getElementById('btn-evaluar-n3').classList.add('hidden');
             document.getElementById('btn-finalizar-actividad').classList.remove('hidden');
             swal("Evaluación completada", "Revisa tus respuestas marcadas en color antes de ver el resumen final.", "info");
@@ -563,6 +561,7 @@
     </script>
 </body>
 </html>
+
 
 
 
