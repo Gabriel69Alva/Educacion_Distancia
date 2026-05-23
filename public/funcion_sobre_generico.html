@@ -1,468 +1,549 @@
-<html>
-  <head> </head>
-
-  <body>
-    <button id="bTerminad" onclick="validarRespuestas()">
-      Validar actividad
-    </button>
-    <a class="custom-button" href="./funcion_sobre.html">reinicio</a>
-
-    <canvas
-      id="myCanvas"
-      width="700"
-      height="500"
-      style="border: 1px solid black"
-    >
-    </canvas>
-
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"
-      integrity="sha512-HkRNCiaZYxQAkHpLFYI90ObSzL0vaIXL8Xe3bM51vhdYI79RDFMLTAsmVH1xVPREmTlUWexgrQMk+c3RBTsLGw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-
-    <!--Libreria de alertas-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escenario 4: Funciones Sobreyectivas - Industrial</title>
+    
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'],['\\(','\\)']]}});
+    </script>
+
+    <style>
+        :root {
+            --primary: #004080;        /* Azul Industrial */
+            --primary-hover: #002d5a;
+            --success: #10b981;       /* Verde Éxito */
+            --danger: #ef4444;
+            --warning: #f59e0b;       /* Naranja Reinicio */
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: #fff;
+            padding: 45px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        h1 { color: var(--primary); font-family: 'Outfit', sans-serif; font-weight: 700; text-align: center; }
+        h2 { border-left: 8px solid var(--success); padding-left: 15px; font-size: 20px; color: var(--primary); margin-top: 35px;}
+        
+        .hidden { display: none !important; }
+
+        .btn-general {
+            display: block; width: 100%; max-width: 300px; margin: 30px auto;
+            padding: 14px; background-color: var(--primary); color: white;
+            border: none; border-radius: 30px; font-size: 16px; font-weight: 600;
+            cursor: pointer; transition: 0.3s;
+            position: relative; z-index: 10;
+        }
+        .btn-general:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .btn-restart { background-color: var(--warning); }
+
+        /* ================= ETAPA 1: DIAGRAMA SAGITAL ================= */
+        .mapping-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            margin-top: 40px;
+            position: relative;
+            min-height: 400px;
+        }
+
+        #svg-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; /* Para no bloquear clicks */
+            z-index: 1;
+        }
+
+        .set-box {
+            width: 150px;
+            min-height: 280px;
+            border: 2px dashed var(--primary);
+            border-radius: 50px;
+            padding: 30px 10px;
+            background: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        .set-title { font-weight: bold; color: var(--primary); margin-bottom: 10px; }
+
+        .node {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--primary);
+            display: flex; justify-content: center; align-items: center;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .domain-item { cursor: crosshair; }
+        .domain-item:hover { background: var(--primary); color: white; }
+        
+        .codomain-item { cursor: grab; background: #e0f2fe; border-color: #0284c7; }
+        .codomain-item:active { cursor: grabbing; }
+
+        .trash-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 40px auto 0;
+            border: 2px dashed var(--danger);
+            background: #fef2f2;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            min-height: 100px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            transition: 0.3s;
+        }
+        .trash-container.drag-over { background: #fca5a5; }
+
+        /* ================= ETAPA 2: QUIZ ================= */
+        .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 8px; margin: 30px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--success); width: 33.33%; transition: 0.4s; }
+        .h5p-option { display: flex; padding: 16px; border: 1px solid var(--border-color); margin-bottom: 12px; border-radius: 8px; cursor: pointer; background: var(--bg-light); }
+        .h5p-option input { margin-right: 15px; accent-color: var(--primary); cursor: pointer;}
+        .h5p-feedback { padding: 20px; border-radius: 8px; margin-top: 20px; background: #f1f5f9; border-left: 6px solid var(--primary); }
+        .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; }
+
+        /* ================= ETAPA 3: DRAG & DROP ================= */
+        .n3-section { background: var(--bg-light); padding: 30px; border-radius: 12px; margin-bottom: 30px; }
+        .drop-zone { display: inline-block; width: 150px; height: 30px; border-bottom: 2px solid var(--primary); vertical-align: middle; text-align: center; background: white; border-radius: 4px 4px 0 0;}
+        .draggable-word { cursor: grab; font-weight: 600; background-color: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 6px; display: inline-block;}
+        .draggable-word:active { cursor: grabbing; }
+
+        .score-val { font-size: 28px; font-weight: 700; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div id="level-1-container">
+            <h1>Etapa 1: Configuración Intuitiva</h1>
+            <p style="text-align: center; color: #64748b;">Dibuja flechas arrastrando desde el Dominio al Codominio. Luego, para asegurar que la función sea <strong>sobreyectiva</strong>, arrastra a la papelera los elementos del codominio que no pertenezcan a la Imagen.</p>
+            
+            <div class="mapping-container" id="mapping-area">
+                <svg id="svg-canvas">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#004080" />
+                        </marker>
+                    </defs>
+                </svg>
+
+                <div class="set-box" id="domain-box">
+                    <div class="set-title">Dominio (A)</div>
+                    <div class="node domain-item" id="x1">x₁</div>
+                    <div class="node domain-item" id="x2">x₂</div>
+                    <div class="node domain-item" id="x3">x₃</div>
+                    <div class="node domain-item" id="x4">x₄</div>
+                </div>
+
+                <div class="set-box" id="codomain-box">
+                    <div class="set-title">Codominio (B)</div>
+                    <div class="node codomain-item" id="y1">y₁</div>
+                    <div class="node codomain-item" id="y2">y₂</div>
+                    <div class="node codomain-item" id="y3">y₃</div>
+                    <div class="node codomain-item" id="y4">y₄</div>
+                    <div class="node codomain-item" id="y5">y₅</div>
+                </div>
+            </div>
+
+            <div class="trash-container" id="trash-bin">
+                <i class="fa-solid fa-trash-can" style="color: var(--danger); font-size: 24px; width: 100%;"></i>
+                <div style="width: 100%; color: var(--danger); font-size: 14px;">Basura de Elementos</div>
+            </div>
+
+            <button class="btn-general" id="btn-validar-n1" onclick="verificarEtapa1()">Verificar Sobreyectividad</button>
+            <button class="btn-general hidden" id="btn-pasar-n2" style="background-color: var(--success);" onclick="iniciarEtapa2()">Continuar a Etapa 2 🚀</button>
+        </div>
+
+        <div id="level-2-container" class="hidden">
+            <h1>Etapa 2: Marco Teórico</h1>
+            <div class="progress-container"><div class="progress-bar" id="h5p-progress"></div></div>
+            <p id="h5p-counter" style="text-align: right; font-weight: 600; color: var(--primary);">1/3</p>
+
+            <div id="step-1" class="quiz-step">
+                <h3>1. ¿Qué condición formal define a una función sobreyectiva $f: A \to B$?</h3>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> $f(x_1) = f(x_2) \Rightarrow x_1 = x_2$</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> $\text{Imagen}(f) = B$</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> El dominio es igual al codominio</label>
+                <div id="feedback-1" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-2" class="quiz-step hidden">
+                <h3>2. Si una función NO es sobreyectiva, ¿qué ajuste estructural se requiere para que lo sea?</h3>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Ampliar el conjunto del dominio.</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Cambiar la regla de correspondencia a una lineal.</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> Restringir el codominio para que sea exactamente su Imagen.</label>
+                <div id="feedback-2" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-3" class="quiz-step hidden">
+                <h3>3. En una función sobreyectiva, ¿puede un elemento del codominio recibir flechas de más de un elemento del dominio?</h3>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> Sí, esto no viola la sobreyectividad.</label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> No, porque entonces dejaría de ser función.</label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> No, esto violaría la definición de sobreyectividad.</label>
+                <div id="feedback-3" class="h5p-feedback hidden"></div>
+            </div>
+
+            <button class="btn-general" id="btn-comprobar-quiz" onclick="comprobarPregunta()">Comprobar</button>
+            <button class="btn-general hidden" id="btn-siguiente-quiz" style="background-color: var(--success);" onclick="siguientePregunta()">Siguiente</button>
+        </div>
+
+        <div id="level-3-container" class="hidden">
+            <h1>Etapa 3: Rigor Formal</h1>
+            
+            <div class="n3-section">
+                <h3>A. Análisis de Operaciones de Funciones</h3>
+                <p style="margin-bottom: 25px; color: #64748b;">Demuestra por qué la <strong>suma</strong> de dos funciones sobreyectivas no necesariamente produce una función sobreyectiva. Arrastra los términos:</p>
+                
+                <p style="line-height: 2.2;">
+                    1. Sean $f(x) = x$ y $g(x) = -x$. Ambas son funciones <span class="drop-zone" data-expected="sobreyectivas"></span> de $\mathbb{R}$ en $\mathbb{R}$.<br>
+                    2. Evaluamos la suma: $(f+g)(x) = x + (-x) = 0$.<br>
+                    3. La <span class="drop-zone" data-expected="imagen"></span> de $f+g$ se reduce al conjunto constante $\{0\}$.<br>
+                    4. Como $\{0\} \neq \mathbb{R}$, se concluye que la suma de funciones sobreyectivas <span class="drop-zone" data-expected="no_siempre"></span> es sobreyectiva.
+                </p>
+                
+                <div id="banco-palabras" style="margin-top:30px; display:flex; gap:15px; flex-wrap: wrap;">
+                    <span class="draggable-word" draggable="true" data-value="sobreyectivas">Sobreyectivas</span>
+                    <span class="draggable-word" draggable="true" data-value="imagen">Imagen (Rango)</span>
+                    <span class="draggable-word" draggable="true" data-value="no_siempre">NO siempre</span>
+                    <span class="draggable-word" draggable="true" data-value="inyectivas" style="background-color: #64748b;">Inyectivas</span>
+                    <span class="draggable-word" draggable="true" data-value="siempre" style="background-color: #64748b;">Siempre</span>
+                </div>
+            </div>
+
+            <button class="btn-general" onclick="evaluarEtapa3()">Evaluar Escenario Final</button>
+        </div>
+
+        <div id="resumen-final-container" class="hidden" style="text-align: center;">
+            <h1>Resultados de Ingeniería Pedagógica</h1>
+            <div style="display:flex; justify-content: space-around; margin: 40px 0; flex-wrap: wrap; gap: 20px;">
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 120px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 1</p>
+                    <div class="score-val" id="res-n1">0/1</div>
+                </div>
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 120px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 2</p>
+                    <div class="score-val" id="res-n2">0/3</div>
+                </div>
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 120px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 3</p>
+                    <div class="score-val" id="res-n3">0/3</div>
+                </div>
+            </div>
+            <button class="btn-general btn-restart" onclick="reiniciarActividad()">REINICIAR ESCENARIO 4</button>
+        </div>
+
+    </div>
 
     <script>
-   
+        // Variables de puntuación global
+        let aciertosN1 = 0, aciertosN2 = 0, aciertosN3 = 0, preguntaActual = 1;
 
-      const arrayOpcionesBasura = ["5", "9"];
+        // ==============================================================
+        // LÓGICA ETAPA 1: MOTOR DE DIBUJO Y DRAG & DROP A LA BASURA
+        // ==============================================================
+        let isDrawing = false;
+        let startNode = null;
+        let tempLine = null;
+        const svg = document.getElementById('svg-canvas');
+        let connections = []; // Guarda objetos: { from: DOMElement, to: DOMElement, line: SVGElement }
 
-      let arrayRespuestas = [];
-      let boleano1,
-        boleano2,
-        boleano3,
-        boleano4,
-        boleano5,
-        boleano6 = false;
-      let arrayValidar = [];
-      let fijoElementos = 6;
-      //let boleano2 = false;
-
-      function validarCirculo(x, y, h, k) {
-        if (Math.sqrt(Math.pow(x - h, 2) + Math.pow(y - k, 2)) <= 20) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-
-      function validarRectangulo(abscisa, ordenada) {
-        if (
-          149 < abscisa &&
-          abscisa < 514 &&
-          324 < ordenada &&
-          ordenada < 437
-        ) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-
-      (function () {
-        var canvas = (this.__canvas = new fabric.Canvas(
-          "myCanvas",
-          { backgroundColor: "#F1F1F1" },
-          { selection: false }
-        ));
-        fabric.Object.prototype.originX = fabric.Object.prototype.originY =
-          "center";
-        fabric.Object.prototype.noScaleCache = true;
-
-        //function makeTriangle(left, top, text, line1, line2, line3, line4) {
-        function makeTriangle(left, top, text, line) {
-          let c = new fabric.Triangle({
-            name: text,
-            top: top,
-            left: left,
-            width: 10,
-            height: 20,
-            fill: "#3D78FE",
-            angle: 90,
-          });
-          c.hasControls = c.hasBorders = false;
-
-          c.line = line;
-
-          return c;
+        // Inicializar limpieza de inputs
+        function init() {
+            document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
+            
+            // Reordenar un poco los nodos en B para darle aleatoriedad visual
+            const codomainBox = document.getElementById('codomain-box');
+            const bNodes = Array.from(codomainBox.querySelectorAll('.codomain-item'));
+            bNodes.sort(() => Math.random() - 0.5).forEach(n => codomainBox.appendChild(n));
         }
 
-        //function makeTextIzq(left, top, text, line1, line2, line3, line4)
-        function makeTextIzq(left, top, text, line) {
-          /* construye los números de la izquierda del diagrama */
-          let c = new fabric.Text(text, {
-            name: text,
-            fontSize: 20,
-            top: top,
-            left: left - 20,
-            hasBorders: false,
-            hasControls: false,
-            selectable: false,
-          });
-
-          c.hasControls = c.hasBorders = false;
-
-          c.line = line;
-
-          return c;
-        }
-        /* construye los números de la derecha del diagrama */
-
-        function makeTextDerecha(left, top, text) {
-          let c = new fabric.Text(text, {
-            name: text,
-            fontSize: 20,
-            top: top,
-            left: left,
-          });
-          c.hasControls = c.hasBorders = false;
-          return c;
-        }
-
-        function makeLine(coords) {
-          return new fabric.Line(coords, {
-            fill: "pink",
-            stroke: "#3D78FE",
-            strokeWidth: 2,
-            selectable: false,
-            evented: false,
-          });
-        }
-
-        //Se crean los círculos o elipses que representan el dominio y codominio de la función
-        const circle1 = new fabric.Circle({
-          //name: circulo1, //id nombre de la figura
-          radius: 100,
-          fill: "grey",
-          left: 200,
-          top: 175,
-          stroke: "black",
-          opacity: 0.3,
-          strokeWidth: 3,
-          scaleX: 0.7,
-          lockMovementY: true,
-          lockMovementX: true,
-          hasBorders: false,
-          hasControls: false,
-          selectable: false, // no se pueden seleccionar
+        // 1. Dibujo de flechas (Pointer Events)
+        document.querySelectorAll('.domain-item').forEach(item => {
+            item.addEventListener('pointerdown', e => {
+                isDrawing = true;
+                startNode = item;
+                
+                tempLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                tempLine.setAttribute('stroke', 'var(--primary)');
+                tempLine.setAttribute('stroke-width', '3');
+                tempLine.setAttribute('marker-end', 'url(#arrowhead)');
+                svg.appendChild(tempLine);
+                
+                updateTempLine(e.clientX, e.clientY);
+                e.preventDefault(); // Evitar seleccionar texto
+            });
         });
 
-        const circle2 = new fabric.Circle({
-          //name: circulo1, //id nombre de la figura
-          radius: 100,
-          fill: "grey",
-          left: 450,
-          top: 175,
-          stroke: "black",
-          opacity: 0.3,
-          strokeWidth: 3,
-          scaleX: 0.7,
-          // flipX: true,
-          lockMovementY: true,
-          lockMovementX: true,
-          hasBorders: false,
-          hasControls: false,
-          selectable: false, // no se pueden seleccionar
+        window.addEventListener('pointermove', e => {
+            if(isDrawing && tempLine) { updateTempLine(e.clientX, e.clientY); }
         });
 
-        const rectangulo = new fabric.Rect({
-          top: 380,
-          left: 325,
-          width: 370,
-          height: 130,
-          fill: "#3D78FE",
-          stroke: "black",
-          strokeWidth: 3,
-          opacity: 0.2,
-          lockMovementX: true,
-          lockMovementY: true,
-          hasBorders: false,
-          hasControl: false,
-          selectable: false,
+        window.addEventListener('pointerup', e => {
+            if(isDrawing) {
+                isDrawing = false;
+                let target = document.elementFromPoint(e.clientX, e.clientY);
+                
+                // Solo conectar si aterriza en un codominio que NO esté en la basura
+                if(target && target.classList.contains('codomain-item') && target.parentElement.id === 'codomain-box') {
+                    
+                    // Como es una función, A solo puede tener 1 salida. Borramos salidas previas de este A.
+                    connections = connections.filter(c => {
+                        if(c.from === startNode) { c.line.remove(); return false; }
+                        return true;
+                    });
+                    
+                    connections.push({from: startNode, to: target, line: tempLine});
+                    tempLine = null;
+                    updateAllLines();
+                } else {
+                    tempLine.remove();
+                    tempLine = null;
+                }
+                startNode = null;
+            }
         });
 
-        /* se manda a llamar a la función hacer linea mediante las coordenadas del punto inicial y final */
-        let line1 = makeLine([220, 100, 410, 100]);
-        let line2 = makeLine([220, 150, 410, 150]);
-        let line3 = makeLine([220, 200, 410, 200]);
-        let line4 = makeLine([220, 250, 410, 250]);
-
-        /* se manda a llamar a la función hacer textos derechos */
-        let textDerecho1 = makeTextDerecha(450, 100, "1");
-        let textDerecho2 = makeTextDerecha(450, 150, "4");
-        let textDerecho3 = makeTextDerecha(450, 200, "7");
-        let textDerecho4 = makeTextDerecha(450, 250, "10");
-        let textDerecho5 = makeTextDerecha(500, 150, "5");
-        let textDerecho6 = makeTextDerecha(500, 200, "9");
-
-        let c1 = makeTriangle(line1.get("x2"), line1.get("y2"), "1", line1);
-        let c2 = makeTriangle(line2.get("x2"), line2.get("y2"), "2", line2);
-        let c3 = makeTriangle(line3.get("x2"), line3.get("y2"), "3", line3);
-        let c4 = makeTriangle(line4.get("x2"), line4.get("y2"), "4", line4);
-
-        //Se agregan al canvas los círculos achatados, líneas y textos derechos.
-        canvas.selection = false;
-        canvas.add(
-          circle1,
-          circle2,
-          rectangulo,
-          line1,
-          line2,
-          line3,
-          line4,
-          textDerecho1,
-          textDerecho2,
-          textDerecho3,
-          textDerecho4,
-          textDerecho5,
-          textDerecho6
-        );
-
-        // console.log("linea 1: ", line1.get('x1'));
-
-        // Se agregan al canvas los textos izquierdos y los triángulos
-
-        canvas.add(
-          makeTextIzq(line1.get("x1"), line1.get("y1"), "1", line1),
-          makeTriangle(line1.get("x2"), line1.get("y2"), "1", line1),
-
-          makeTextIzq(line2.get("x1"), line2.get("y1"), "2", line2),
-          makeTriangle(line2.get("x2"), line2.get("y2"), "2", line2),
-
-          makeTextIzq(line3.get("x1"), line3.get("y1"), "3", line3),
-          makeTriangle(line3.get("x2"), line3.get("y2"), "3", line3),
-
-          makeTextIzq(line4.get("x1"), line4.get("y1"), "4", line4),
-          makeTriangle(line4.get("x2"), line4.get("y2"), "4", line4)
-        );
-
-        canvas.on("object:moving", function (e) {
-          var p = e.target;
-          fijaAnguloCordenadasMouse(p);
-
-          p.line && p.line.set({ x2: p.left, y2: p.top });
-          arrayRespuestas = removeArray(
-            arrayRespuestas,
-            p.name,
-            textDerecho1.name
-          );
-          if (
-            validarCirculo(p.left, p.top, textDerecho1.left, textDerecho1.top)
-          ) {
-            console.log("entro puntero al circulo: ");
-            console.log(p.line);
-            console.log(
-              "Estamos probando el texto Derecho1 : " +
-                p.name +
-                " --> " +
-                textDerecho1.name
-            );
-            //console.log(p);
-            console.log(
-              "coordenada de TextDerecho1:" +
-                "(" +
-                textDerecho1.left +
-                " , " +
-                textDerecho1.top +
-                ")"
-            );
-            console.log(
-              "coordenadas del Mouse:" + "(" + p.left + " , " + p.top + ")"
-            );
-            console.log("entro respuesta 1: ", arrayRespuestas);
-            arrayRespuestas.push({ valor1: p.name, valor2: textDerecho1.name });
-            //text1.set('fill', '#BCBCBC')
-            textDerecho1.set("fill", "#BCBCBC");
-          } else {
-            textDerecho1.set("fill", "#393939");
-             arrayRespuestas = removeArray(
-            arrayRespuestas,
-            p.name,
-            textDerecho1.name
-          );
-          }
-          arrayRespuestas = removeArray(
-            arrayRespuestas,
-            p.name,
-            textDerecho2.name
-          );
-          if (
-            validarCirculo(p.left, p.top, textDerecho2.left, textDerecho2.top)
-          ) {
-            console.log("entro respuesta 2: ", arrayRespuestas);
-
-            arrayRespuestas.push({ valor1: p.name, valor2: textDerecho2.name });
-            textDerecho2.set("fill", "#BCBCBC");
-          } else {
-            textDerecho2.set("fill", "#393939");
-            arrayRespuestas = removeArray(
-              arrayRespuestas,
-              p.name,
-              textDerecho2.name
-            );
-          }
-          arrayRespuestas = removeArray(
-            arrayRespuestas,
-            p.name,
-            textDerecho3.name
-          );
-          if (
-            validarCirculo(p.left, p.top, textDerecho3.left, textDerecho3.top)
-          ) {
-            console.log("entro respuesta 3: ", arrayRespuestas);
-            arrayRespuestas.push({ valor1: p.name, valor2: textDerecho3.name });
-            textDerecho3.set("fill", "#BCBCBC");
-          } else {
-            textDerecho3.set("fill", "#393939");
-              arrayRespuestas = removeArray(
-            arrayRespuestas,
-            p.name,
-            textDerecho3.name
-          );
-          }
-          arrayRespuestas = removeArray(
-            arrayRespuestas,
-            p.name,
-            textDerecho4.name
-          );
-          if (
-            validarCirculo(p.left, p.top, textDerecho4.left, textDerecho4.top)
-          ) {
-            console.log("entro respuesta 4: ", arrayRespuestas);
-
-            arrayRespuestas.push({ valor1: p.name, valor2: textDerecho4.name });
-            textDerecho4.set("fill", "#BCBCBC");
-          } else {
-            textDerecho4.set("fill", "#393939");
-              arrayRespuestas = removeArray(
-            arrayRespuestas,
-            p.name,
-            textDerecho4.name
-          );
-          }
-          arrayRespuestas = removeArray(
-            arrayRespuestas,
-            p.name,
-            textDerecho5.name
-          );
-          if (
-            validarCirculo(p.left, p.top, textDerecho5.left, textDerecho5.top)
-          ) {
-            console.log("entro respuesta 4: ", arrayRespuestas);
-
-            arrayRespuestas.push({ valor1: p.name, valor2: textDerecho5.name });
-            textDerecho5.set("fill", "#BCBCBC");
-          } else {
-            textDerecho5.set("fill", "#393939");
-             arrayRespuestas = removeArray(
-            arrayRespuestas,
-            p.name,
-            textDerecho5.name
-          );
-          }
-          arrayRespuestas = removeArray(
-            arrayRespuestas,
-            p.name,
-            textDerecho6.name
-          );
-          if (
-            validarCirculo(p.left, p.top, textDerecho6.left, textDerecho6.top)
-          ) {
-            console.log("entro respuesta 4: ", arrayRespuestas);
-
-            arrayRespuestas.push({ valor1: p.name, valor2: textDerecho6.name });
-            textDerecho6.set("fill", "#BCBCBC");
-          } else {
-            textDerecho6.set("fill", "#393939");
-              arrayRespuestas = removeArray(
-            arrayRespuestas,
-            p.name,
-            textDerecho6.name
-          );
-          }
-
-          boleano1 = validarRectangulo(textDerecho1.left, textDerecho1.top);
-          boleano2 = validarRectangulo(textDerecho2.left, textDerecho2.top);
-          boleano3 = validarRectangulo(textDerecho3.left, textDerecho3.top);
-          boleano4 = validarRectangulo(textDerecho4.left, textDerecho4.top);
-          boleano5 = validarRectangulo(textDerecho5.left, textDerecho5.top);
-          boleano6 = validarRectangulo(textDerecho6.left, textDerecho6.top);
-          arrayValidar = [
-            { nombre: textDerecho1.nombre, valor: boleano1 },
-            { nombre: textDerecho2.nombre, valor: boleano2 },
-            { nombre: textDerecho3.nombre, valor: boleano3 },
-            { nombre: textDerecho4.nombre, valor: boleano4 },
-            { nombre: textDerecho5.nombre, valor: boleano5 },
-            { nombre: textDerecho6.nombre, valor: boleano6 },
-          ];
-
-          canvas.renderAll();
-        });
-
-        canvas.on("selection:created", function (e) {
-          console.log("selection:created: ", e);
-        });
-      })();
-
-      function fijaAnguloCordenadasMouse(objeto) {
-        console.log("move: ", objeto);
-
-        let angulo;
-
-        if (objeto.line) {
-          angulo =
-            (180 / 3.1416) *
-            Math.atan(
-              (objeto.line.get("y1") - objeto.top) /
-                (objeto.line.get("x1") - objeto.left)
-            );
-
-          if (objeto.line.get("x1") < objeto.left) {
-            angulo = angulo + 90;
-          } else {
-            angulo = angulo + 270;
-          }
+        // 2. Cálculo de Coordenadas Relativas al SVG
+        function updateTempLine(clientX, clientY) {
+            if(!startNode || !tempLine) return;
+            let rect = startNode.getBoundingClientRect();
+            let svgRect = svg.getBoundingClientRect();
+            tempLine.setAttribute('x1', (rect.right - svgRect.left) - 5);
+            tempLine.setAttribute('y1', (rect.top + rect.height/2) - svgRect.top);
+            tempLine.setAttribute('x2', clientX - svgRect.left);
+            tempLine.setAttribute('y2', clientY - svgRect.top);
         }
 
-        objeto.set("angle", angulo);
-      }
-
-      function validarRespuestas() {
-        let conteoCorrectos = 0;
-
-       arrayValidar.map((item) => {
-          if (
-            item.valor &&
-            arrayRespuestas.filter((item1) => item.nombre !== item1.valor2)
-          ) {
-            conteoCorrectos += 1;
-          }
-        });
-        console.log("arrayRespuestas: ", arrayRespuestas);
-        console.log("Conteo de respuestas correctas: ", conteoCorrectos);
-        if ( ((fijoElementos - conteoCorrectos ) +  conteoCorrectos) === fijoElementos ) {
-          swal({
-            title: "Exito.",
-            text: "Respuesta correcta",
-            icon: "success",
-          });
-        } else {
-          swal({
-            title: "Error.",
-            text: "Respuesta incorrecta",
-            icon: "error",
-          });
+        function updateAllLines() {
+            let svgRect = svg.getBoundingClientRect();
+            connections.forEach(c => {
+                let r1 = c.from.getBoundingClientRect();
+                let r2 = c.to.getBoundingClientRect();
+                c.line.setAttribute('x1', (r1.right - svgRect.left) - 5);
+                c.line.setAttribute('y1', (r1.top + r1.height/2) - svgRect.top);
+                // Apuntar al borde izquierdo del nodo B
+                c.line.setAttribute('x2', (r2.left - svgRect.left) - 5);
+                c.line.setAttribute('y2', (r2.top + r2.height/2) - svgRect.top);
+            });
         }
-      }
 
-      function removeArray(data, valor1, valor2) {
-        return data.filter(
-          (item) => item.valor1 !== valor1 || item.valor2 !== valor2
-        );
-      }
+        // Reposicionar líneas si se hace scroll o resize
+        window.addEventListener('scroll', updateAllLines);
+        window.addEventListener('resize', updateAllLines);
+
+        // 3. Drag & Drop a la Basura (Codominio)
+        const codomainItems = document.querySelectorAll('.codomain-item');
+        const trashBin = document.getElementById('trash-bin');
+        const codomainBox = document.getElementById('codomain-box');
+
+        codomainItems.forEach(item => {
+            item.draggable = true;
+            item.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text/plain', item.id);
+            });
+        });
+
+        [trashBin, codomainBox].forEach(zone => {
+            zone.addEventListener('dragover', e => {
+                e.preventDefault();
+                if(zone === trashBin) zone.classList.add('drag-over');
+            });
+            zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                const id = e.dataTransfer.getData('text/plain');
+                const item = document.getElementById(id);
+                
+                if(item) {
+                    zone.appendChild(item);
+                    
+                    // Si se tira a la basura, se rompen las flechas que apuntaban a él
+                    if(zone === trashBin) {
+                        connections = connections.filter(c => {
+                            if(c.to === item) { c.line.remove(); return false; }
+                            return true;
+                        });
+                    }
+                    setTimeout(updateAllLines, 50); // Dar tiempo a que el DOM re-renderice
+                }
+            });
+        });
+
+        // 4. Verificación Etapa 1
+        function verificarEtapa1() {
+            const domainItems = document.querySelectorAll('.domain-item');
+            
+            // Regla 1: Todos los A deben tener conexión (debe ser función)
+            let domainMapped = 0;
+            domainItems.forEach(a => {
+                if(connections.some(c => c.from === a)) domainMapped++;
+            });
+
+            if(domainMapped < domainItems.length) {
+                swal("Falta de Asignación", "Para que sea una función, todos los elementos del Dominio deben tener una flecha de salida.", "warning");
+                return;
+            }
+
+            // Regla 2: Elementos en Codominio = Imagen. (Ninguno sin conexión en Codominio Box)
+            const currentCodomainItems = document.getElementById('codomain-box').querySelectorAll('.codomain-item');
+            let isSurjective = true;
+
+            currentCodomainItems.forEach(b => {
+                let hasIncomingArrow = connections.some(c => c.to === b);
+                if(!hasIncomingArrow) isSurjective = false;
+            });
+
+            if(!isSurjective) {
+                swal("Aún no es Sobreyectiva", "Hay elementos en el codominio que no tienen flechas de llegada. Arrástralos a la basura.", "error");
+                return;
+            }
+
+            // Si pasa todo
+            aciertosN1 = 1;
+            swal("¡Excelente deducción!", "Al restringir el codominio a los elementos que sí tienen preimagen, has garantizado la sobreyectividad.", "success");
+            
+            // Bloquear interacción UI
+            document.getElementById('svg-canvas').style.display = 'none'; // Quitar canvas temporalmente para evitar bugs visuales al cambiar tabs
+            document.getElementById('btn-validar-n1').classList.add('hidden');
+            document.getElementById('btn-pasar-n2').classList.remove('hidden');
+        }
+
+        function iniciarEtapa2() {
+            document.getElementById('level-1-container').classList.add('hidden');
+            document.getElementById('level-2-container').classList.remove('hidden');
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        // ==============================================================
+        // LÓGICA ETAPA 2: QUIZ TEÓRICO
+        // ==============================================================
+        function comprobarPregunta() {
+            const s = document.querySelector(`input[name="q${preguntaActual}"]:checked`);
+            if(!s) { swal("Aviso", "Seleccione una respuesta.", "warning"); return; }
+            
+            const f = document.getElementById(`feedback-${preguntaActual}`);
+            f.classList.remove('hidden'); 
+            document.querySelectorAll(`input[name="q${preguntaActual}"]`).forEach(el => el.disabled = true);
+
+            if(s.value === "correcta") {
+                f.innerHTML = "<strong>¡Correcto!</strong> Fundamento validado.";
+                f.classList.remove('error');
+                aciertosN2++;
+            } else {
+                f.innerHTML = "<strong>Incorrecto.</strong> Revise el marco conceptual.";
+                f.classList.add('error');
+            }
+
+            document.getElementById('btn-comprobar-quiz').classList.add('hidden');
+            document.getElementById('btn-siguiente-quiz').classList.remove('hidden');
+            if (preguntaActual === 3) document.getElementById('btn-siguiente-quiz').innerText = "Pasar a Etapa 3";
+        }
+
+        function siguientePregunta() {
+            if(preguntaActual === 3) {
+                document.getElementById('level-2-container').classList.add('hidden');
+                document.getElementById('level-3-container').classList.remove('hidden');
+                if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                return;
+            }
+            document.getElementById(`step-${preguntaActual}`).classList.add('hidden');
+            preguntaActual++;
+            document.getElementById(`step-${preguntaActual}`).classList.remove('hidden');
+            
+            document.getElementById('h5p-progress').style.width = (preguntaActual/3)*100 + "%";
+            document.getElementById('h5p-counter').innerText = preguntaActual + "/3";
+            document.getElementById('btn-siguiente-quiz').classList.add('hidden');
+            document.getElementById('btn-comprobar-quiz').classList.remove('hidden');
+        }
+
+        // ==============================================================
+        // LÓGICA ETAPA 3: DEMOSTRACIÓN (DRAG & DROP)
+        // ==============================================================
+        let draggedWord = null;
+
+        document.addEventListener("dragstart", e => { 
+            if(e.target.classList.contains('draggable-word')) draggedWord = e.target; 
+        });
+
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', e => e.preventDefault());
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                if (zone.hasChildNodes()) document.getElementById('banco-palabras').appendChild(zone.firstChild);
+                if (draggedWord && draggedWord.classList.contains('draggable-word')) {
+                    zone.appendChild(draggedWord);
+                    draggedWord = null;
+                }
+            });
+        });
+
+        function evaluarEtapa3() {
+            let correctas = 0;
+            document.querySelectorAll('.drop-zone').forEach(z => {
+                if (z.hasChildNodes() && z.firstChild.dataset.value === z.dataset.expected) {
+                    correctas++; 
+                    z.style.borderBottomColor = "var(--success)";
+                } else { 
+                    z.style.borderBottomColor = "var(--danger)"; 
+                }
+            });
+
+            aciertosN3 = correctas; // Máximo 3
+
+            document.getElementById('level-3-container').classList.add('hidden');
+            document.getElementById('resumen-final-container').classList.remove('hidden');
+            
+            document.getElementById('res-n1').innerText = aciertosN1 + "/1";
+            document.getElementById('res-n2').innerText = aciertosN2 + "/3";
+            document.getElementById('res-n3').innerText = aciertosN3 + "/3";
+            
+            confetti({ particleCount: 300, spread: 120, origin: { y: 0.6 } });
+        }
+
+        function reiniciarActividad() { location.reload(); }
+
+        init();
     </script>
-  </body>
+</body>
 </html>
+
+
