@@ -48,6 +48,7 @@
 
         h1 { color: var(--primary); font-family: 'Outfit', sans-serif; font-weight: 700; text-align: center; }
         h2 { border-left: 8px solid var(--success); padding-left: 15px; font-size: 20px; color: var(--primary); margin-top: 35px;}
+        h3 { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: var(--text-dark); }
         
         .hidden { display: none !important; }
 
@@ -56,7 +57,7 @@
             padding: 14px; background-color: var(--primary); color: white;
             border: none; border-radius: 30px; font-size: 16px; font-weight: 600;
             cursor: pointer; transition: 0.3s;
-            position: relative; z-index: 10;
+            position: relative; z-index: 20; /* Asegurar que esté sobre el SVG */
         }
         .btn-general:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .btn-restart { background-color: var(--warning); }
@@ -74,8 +75,8 @@
         #svg-canvas {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; /* Para no bloquear clicks */
-            z-index: 1;
+            pointer-events: none; /* Para no bloquear clicks en nodos */
+            z-index: 10; /* FIX: Subir capa para estar sobre los conjuntos */
         }
 
         .set-box {
@@ -90,7 +91,7 @@
             align-items: center;
             gap: 20px;
             position: relative;
-            z-index: 2;
+            z-index: 2; /* Conjuntos abajo */
         }
         .set-title { font-weight: bold; color: var(--primary); margin-bottom: 10px; }
 
@@ -102,6 +103,7 @@
             display: flex; justify-content: center; align-items: center;
             font-weight: bold;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative; z-index: 5; /* Nodos sobre el conjunto, bajo el SVG */
         }
 
         .domain-item { cursor: crosshair; }
@@ -139,10 +141,27 @@
         .h5p-feedback { padding: 20px; border-radius: 8px; margin-top: 20px; background: #f1f5f9; border-left: 6px solid var(--primary); }
         .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; }
 
-        /* ================= ETAPA 3: DRAG & DROP ================= */
+        /* ================= ETAPA 3: RIGOR FORMAL ================= */
         .n3-section { background: var(--bg-light); padding: 30px; border-radius: 12px; margin-bottom: 30px; }
-        .drop-zone { display: inline-block; width: 150px; height: 30px; border-bottom: 2px solid var(--primary); vertical-align: middle; text-align: center; background: white; border-radius: 4px 4px 0 0;}
-        .draggable-word { cursor: grab; font-weight: 600; background-color: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 6px; display: inline-block;}
+        
+        /* FIX: Ajuste de contenedores del párrafo para palabras 'gordas' */
+        .formal-proof-p { line-height: 2.2; color: var(--text-dark); }
+        .formal-proof-p .drop-zone { 
+            display: inline-flex; /* Flex para alinear tarjeta gorda */
+            align-items: center; 
+            justify-content: center;
+            width: 170px; 
+            height: 45px; /* Altura aumentada para preservar grosor */
+            border-bottom: 2px solid var(--primary); 
+            vertical-align: middle; /* Alineación con texto */
+            text-align: center; 
+            background: white; 
+            border-radius: 4px 4px 0 0;
+            margin: 0 5px;
+            transition: 0.2s;
+        }
+
+        .draggable-word { cursor: grab; font-weight: 600; background-color: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;}
         .draggable-word:active { cursor: grabbing; }
 
         .score-val { font-size: 28px; font-weight: 700; color: var(--primary); }
@@ -229,10 +248,10 @@
             <h1>Etapa 3: Rigor Formal</h1>
             
             <div class="n3-section">
-                <h3>A. Análisis de Operaciones de Funciones</h3>
+                <h3>Análisis de Operaciones de Funciones</h3>
                 <p style="margin-bottom: 25px; color: #64748b;">Demuestra por qué la <strong>suma</strong> de dos funciones sobreyectivas no necesariamente produce una función sobreyectiva. Arrastra los términos:</p>
                 
-                <p style="line-height: 2.2;">
+                <p class="formal-proof-p">
                     1. Sean $f(x) = x$ y $g(x) = -x$. Ambas son funciones <span class="drop-zone" data-expected="sobreyectivas"></span> de $\mathbb{R}$ en $\mathbb{R}$.<br>
                     2. Evaluamos la suma: $(f+g)(x) = x + (-x) = 0$.<br>
                     3. La <span class="drop-zone" data-expected="imagen"></span> de $f+g$ se reduce al conjunto constante $\{0\}$.<br>
@@ -240,30 +259,32 @@
                 </p>
                 
                 <div id="banco-palabras" style="margin-top:30px; display:flex; gap:15px; flex-wrap: wrap;">
-                    <span class="draggable-word" draggable="true" data-value="sobreyectivas">Sobreyectivas</span>
-                    <span class="draggable-word" draggable="true" data-value="imagen">Imagen (Rango)</span>
-                    <span class="draggable-word" draggable="true" data-value="no_siempre">NO siempre</span>
-                    <span class="draggable-word" draggable="true" data-value="inyectivas" style="background-color: #64748b;">Inyectivas</span>
-                    <span class="draggable-word" draggable="true" data-value="siempre" style="background-color: #64748b;">Siempre</span>
+                    <span class="axioma-item draggable-word" draggable="true" data-value="sobreyectivas">Sobreyectivas</span>
+                    <span class="axioma-item draggable-word" draggable="true" data-value="imagen">Imagen (Rango)</span>
+                    <span class="axioma-item draggable-word" draggable="true" data-value="no_siempre">NO siempre</span>
+                    <span class="axioma-item draggable-word" draggable="true" data-value="inyectivas" style="background-color: #64748b;">Inyectivas</span>
+                    <span class="axioma-item draggable-word" draggable="true" data-value="siempre" style="background-color: #64748b;">Siempre</span>
                 </div>
             </div>
 
-            <button class="btn-general" onclick="evaluarEtapa3()">Evaluar Escenario Final</button>
+            <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()">Evaluar Respuestas</button>
+            <button class="btn-general hidden" id="btn-finalizar-actividad" style="background-color: var(--success);" onclick="mostrarResumenFinal()">Finalizar Actividad y Ver Resultados🚀</button>
         </div>
 
         <div id="resumen-final-container" class="hidden" style="text-align: center;">
             <h1>Resultados de Ingeniería Pedagógica</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 30px;">Repasa tu desempeño en las tres etapas de la sobreyectividad.</p>
             <div style="display:flex; justify-content: space-around; margin: 40px 0; flex-wrap: wrap; gap: 20px;">
-                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 120px; border: 1px solid var(--border-color);">
-                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 1</p>
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 140px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b; font-size: 14px; text-transform: uppercase;">Intuitiva</p>
                     <div class="score-val" id="res-n1">0/1</div>
                 </div>
-                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 120px; border: 1px solid var(--border-color);">
-                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 2</p>
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 140px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b; font-size: 14px; text-transform: uppercase;">Teórica</p>
                     <div class="score-val" id="res-n2">0/3</div>
                 </div>
-                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 120px; border: 1px solid var(--border-color);">
-                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 3</p>
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 140px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b; font-size: 14px; text-transform: uppercase;">Formal</p>
                     <div class="score-val" id="res-n3">0/3</div>
                 </div>
             </div>
@@ -285,17 +306,16 @@
         const svg = document.getElementById('svg-canvas');
         let connections = []; // Guarda objetos: { from: DOMElement, to: DOMElement, line: SVGElement }
 
-        // Inicializar limpieza de inputs
         function init() {
             document.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = false; r.disabled = false; });
             
-            // Reordenar un poco los nodos en B para darle aleatoriedad visual
+            // Reordenar codominio aleatoriamente
             const codomainBox = document.getElementById('codomain-box');
             const bNodes = Array.from(codomainBox.querySelectorAll('.codomain-item'));
             bNodes.sort(() => Math.random() - 0.5).forEach(n => codomainBox.appendChild(n));
         }
 
-        // 1. Dibujo de flechas (Pointer Events)
+        // 1. Dibujo de flechas
         document.querySelectorAll('.domain-item').forEach(item => {
             item.addEventListener('pointerdown', e => {
                 isDrawing = true;
@@ -308,7 +328,7 @@
                 svg.appendChild(tempLine);
                 
                 updateTempLine(e.clientX, e.clientY);
-                e.preventDefault(); // Evitar seleccionar texto
+                e.preventDefault(); 
             });
         });
 
@@ -321,10 +341,10 @@
                 isDrawing = false;
                 let target = document.elementFromPoint(e.clientX, e.clientY);
                 
-                // Solo conectar si aterriza en un codominio que NO esté en la basura
+                // Solo conectar si aterriza en un codominio válido
                 if(target && target.classList.contains('codomain-item') && target.parentElement.id === 'codomain-box') {
                     
-                    // Como es una función, A solo puede tener 1 salida. Borramos salidas previas de este A.
+                    // Como es una función, A solo tiene 1 salida. Borrar previas.
                     connections = connections.filter(c => {
                         if(c.from === startNode) { c.line.remove(); return false; }
                         return true;
@@ -334,14 +354,13 @@
                     tempLine = null;
                     updateAllLines();
                 } else {
-                    tempLine.remove();
+                    if(tempLine) tempLine.remove();
                     tempLine = null;
                 }
                 startNode = null;
             }
         });
 
-        // 2. Cálculo de Coordenadas Relativas al SVG
         function updateTempLine(clientX, clientY) {
             if(!startNode || !tempLine) return;
             let rect = startNode.getBoundingClientRect();
@@ -359,17 +378,15 @@
                 let r2 = c.to.getBoundingClientRect();
                 c.line.setAttribute('x1', (r1.right - svgRect.left) - 5);
                 c.line.setAttribute('y1', (r1.top + r1.height/2) - svgRect.top);
-                // Apuntar al borde izquierdo del nodo B
                 c.line.setAttribute('x2', (r2.left - svgRect.left) - 5);
                 c.line.setAttribute('y2', (r2.top + r2.height/2) - svgRect.top);
             });
         }
 
-        // Reposicionar líneas si se hace scroll o resize
         window.addEventListener('scroll', updateAllLines);
         window.addEventListener('resize', updateAllLines);
 
-        // 3. Drag & Drop a la Basura (Codominio)
+        // 2. Drag & Drop a la Basura
         const codomainItems = document.querySelectorAll('.codomain-item');
         const trashBin = document.getElementById('trash-bin');
         const codomainBox = document.getElementById('codomain-box');
@@ -396,37 +413,32 @@
                 if(item) {
                     zone.appendChild(item);
                     
-                    // Si se tira a la basura, se rompen las flechas que apuntaban a él
+                    // Romper flechas si va a la basura
                     if(zone === trashBin) {
                         connections = connections.filter(c => {
                             if(c.to === item) { c.line.remove(); return false; }
                             return true;
                         });
                     }
-                    setTimeout(updateAllLines, 50); // Dar tiempo a que el DOM re-renderice
+                    setTimeout(updateAllLines, 50);
                 }
             });
         });
 
-        // 4. Verificación Etapa 1
+        // 3. Verificación Etapa 1
         function verificarEtapa1() {
             const domainItems = document.querySelectorAll('.domain-item');
             
-            // Regla 1: Todos los A deben tener conexión (debe ser función)
             let domainMapped = 0;
-            domainItems.forEach(a => {
-                if(connections.some(c => c.from === a)) domainMapped++;
-            });
+            domainItems.forEach(a => { if(connections.some(c => c.from === a)) domainMapped++; });
 
             if(domainMapped < domainItems.length) {
                 swal("Falta de Asignación", "Para que sea una función, todos los elementos del Dominio deben tener una flecha de salida.", "warning");
                 return;
             }
 
-            // Regla 2: Elementos en Codominio = Imagen. (Ninguno sin conexión en Codominio Box)
             const currentCodomainItems = document.getElementById('codomain-box').querySelectorAll('.codomain-item');
             let isSurjective = true;
-
             currentCodomainItems.forEach(b => {
                 let hasIncomingArrow = connections.some(c => c.to === b);
                 if(!hasIncomingArrow) isSurjective = false;
@@ -437,12 +449,9 @@
                 return;
             }
 
-            // Si pasa todo
             aciertosN1 = 1;
             swal("¡Excelente deducción!", "Al restringir el codominio a los elementos que sí tienen preimagen, has garantizado la sobreyectividad.", "success");
             
-            // Bloquear interacción UI
-            document.getElementById('svg-canvas').style.display = 'none'; // Quitar canvas temporalmente para evitar bugs visuales al cambiar tabs
             document.getElementById('btn-validar-n1').classList.add('hidden');
             document.getElementById('btn-pasar-n2').classList.remove('hidden');
         }
@@ -522,13 +531,22 @@
                 if (z.hasChildNodes() && z.firstChild.dataset.value === z.dataset.expected) {
                     correctas++; 
                     z.style.borderBottomColor = "var(--success)";
+                    z.style.backgroundColor = "#dcfce7"; // Feedback visual gordo
                 } else { 
                     z.style.borderBottomColor = "var(--danger)"; 
+                    z.style.backgroundColor = "#fee2e2"; // Feedback visual gordo
                 }
             });
 
             aciertosN3 = correctas; // Máximo 3
+            
+            // Pausa pedagógica: mostrar botón de finalizar
+            document.getElementById('btn-evaluar-n3').classList.add('hidden');
+            document.getElementById('btn-finalizar-actividad').classList.remove('hidden');
+            swal("Evaluación completada", "Revisa tus respuestas marcadas en color antes de ver el resumen final.", "info");
+        }
 
+        function mostrarResumenFinal() {
             document.getElementById('level-3-container').classList.add('hidden');
             document.getElementById('resumen-final-container').classList.remove('hidden');
             
@@ -545,5 +563,6 @@
     </script>
 </body>
 </html>
+
 
 
