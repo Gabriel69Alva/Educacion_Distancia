@@ -27,7 +27,7 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: #f1f5f9;
             color: var(--text-dark);
             margin: 0;
@@ -50,7 +50,7 @@
         
         .hidden { display: none !important; }
 
-        /* GRID INDUSTRIAL */
+        /* ================= ETAPA 1: TABLAS ================= */
         .grid-axiomas {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -67,6 +67,7 @@
             font-size: 15px;
             cursor: pointer;
             transition: 0.2s;
+            user-select: none;
         }
 
         .axioma-item:hover { border-color: var(--primary); background: var(--bg-light); }
@@ -83,21 +84,23 @@
         .btn-general:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .btn-restart { background-color: var(--warning); }
 
-        /* QUIZ PROGRESS */
+        /* ================= ETAPA 2: QUIZ ================= */
         .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 8px; margin: 30px 0; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--success); width: 0%; transition: 0.4s; }
+        .progress-bar { height: 100%; background: var(--success); width: 33.33%; transition: 0.4s; }
 
         .h5p-option { 
             display: flex; padding: 16px; border: 1px solid var(--border-color); 
             margin-bottom: 12px; border-radius: 8px; cursor: pointer; background: var(--bg-light); 
         }
-        .h5p-option input { margin-right: 15px; accent-color: var(--primary); }
+        .h5p-option input { margin-right: 15px; accent-color: var(--primary); cursor: pointer;}
         .h5p-feedback { padding: 20px; border-radius: 8px; margin-top: 20px; background: #f1f5f9; border-left: 6px solid var(--primary); }
+        .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; }
 
-        /* DRAG & DROP */
+        /* ================= ETAPA 3: DRAG & DROP ================= */
         .n3-section { background: var(--bg-light); padding: 30px; border-radius: 12px; margin-bottom: 30px; }
         .drop-zone { display: inline-block; width: 180px; height: 35px; border-bottom: 2px solid var(--primary); vertical-align: middle; text-align: center; }
-        .sortable-item { background: #fff; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 8px; border-radius: 6px; cursor: grab; display: flex; align-items: center; gap: 15px; }
+        .draggable-word { cursor: grab; font-weight: 600; background-color: var(--primary); color: white; border: none; }
+        .draggable-word:active { cursor: grabbing; }
 
         .score-val { font-size: 28px; font-weight: 700; color: var(--primary); }
     </style>
@@ -108,7 +111,7 @@
         
         <div id="level-1-container">
             <h1>Estrategia de Axiomas</h1>
-            <p style="text-align: center; color: #64748b;">Identifique los axiomas correspondientes a cada categoría industrial.</p>
+            <p style="text-align: center; color: #64748b;">Identifique <strong>únicamente</strong> los axiomas correspondientes a cada categoría industrial. (Cuidado con los distractores).</p>
             
             <h2>1. Axiomas de Campo (Estructura)</h2>
             <div class="grid-axiomas" id="grid-campo"></div>
@@ -129,20 +132,23 @@
                 <h3>1. ¿Qué axioma justifica que $a + b = b + a$?</h3>
                 <label class="h5p-option"><input type="radio" name="q1" value="correcta"> Conmutatividad de la suma</label>
                 <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Asociatividad de la suma</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Neutro aditivo</label>
                 <div id="feedback-1" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-2" class="quiz-step hidden">
                 <h3>2. Si $x < y$ y $y < z \Rightarrow x < z$. ¿Es?</h3>
-                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> Transitividad</label>
                 <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Tricotomía</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Cerradura bajo suma</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> Transitividad</label>
                 <div id="feedback-2" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-3" class="quiz-step hidden">
-                <h3>3. ¿Qué axioma relaciona suma y producto?</h3>
-                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> Distributividad</label>
+                <h3>3. ¿Qué axioma relaciona de forma simultánea la suma y el producto?</h3>
                 <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> Inverso multiplicativo</label>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> Distributividad</label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> Asociatividad</label>
                 <div id="feedback-3" class="h5p-feedback hidden"></div>
             </div>
 
@@ -153,13 +159,16 @@
         <div id="level-3-container" class="hidden">
             <h1>Etapa 3: Rigor Formal</h1>
             <div class="n3-section">
-                <h3>A. Demostración de Cerradura</h3>
+                <h3>A. Demostración del Teorema</h3>
+                <p style="margin-bottom: 25px;">Demuestra que $a \cdot 0 = 0$. Arrastra los axiomas correctos:</p>
+                
                 <p>1. $a \cdot 0 = a \cdot (0 + 0)$ por el <span class="drop-zone" data-expected="neutro"></span>.</p>
                 <p>2. $a \cdot 0 = a \cdot 0 + a \cdot 0$ aplicando <span class="drop-zone" data-expected="distributividad"></span>.</p>
                 
-                <div id="banco-palabras" style="margin-top:20px; display:flex; gap:10px;">
-                    <span class="axioma-item" draggable="true" data-value="neutro" style="padding:10px;">Neutro aditivo</span>
-                    <span class="axioma-item" draggable="true" data-value="distributividad" style="padding:10px;">Distributividad</span>
+                <div id="banco-palabras" style="margin-top:30px; display:flex; gap:15px; flex-wrap: wrap;">
+                    <span class="axioma-item draggable-word" draggable="true" data-value="neutro">Neutro aditivo</span>
+                    <span class="axioma-item draggable-word" draggable="true" data-value="distributividad">Distributividad</span>
+                    <span class="axioma-item draggable-word" draggable="true" data-value="falso">Cerradura</span>
                 </div>
             </div>
             <button class="btn-general" onclick="evaluarEtapa3()">Evaluar Final</button>
@@ -167,10 +176,19 @@
 
         <div id="resumen-final-container" class="hidden" style="text-align: center;">
             <h1>Resultados de Ingeniería Pedagógica</h1>
-            <div style="display:flex; justify-content: space-around; margin: 40px 0;">
-                <div><p>Etapa 1</p><div class="score-val" id="res-n1">0/2</div></div>
-                <div><p>Etapa 2</p><div class="score-val" id="res-n2">0/3</div></div>
-                <div><p>Etapa 3</p><div class="score-val" id="res-n3">0/2</div></div>
+            <div style="display:flex; justify-content: space-around; margin: 40px 0; flex-wrap: wrap; gap: 20px;">
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 120px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 1</p>
+                    <div class="score-val" id="res-n1">0/2</div>
+                </div>
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 120px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 2</p>
+                    <div class="score-val" id="res-n2">0/3</div>
+                </div>
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 120px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 3</p>
+                    <div class="score-val" id="res-n3">0/2</div>
+                </div>
             </div>
             <button class="btn-general btn-restart" onclick="reiniciarActividad()">REINICIAR ESCENARIO</button>
         </div>
@@ -178,48 +196,112 @@
     </div>
 
     <script>
+        // Variables de puntaje
         let aciertosN1 = 0, aciertosN2 = 0, aciertosN3 = 0, preguntaActual = 1;
 
+        // Datos con respuestas correctas E INCORRECTAS para generar el reto
         const dataCampo = [
             { n: 'Conmutatividad', c: true }, { n: 'Asociatividad', c: true },
-            { n: 'Neutros', c: true }, { n: 'Inversos', c: true }, { n: 'Distributividad', c: true }
+            { n: 'Neutro e Inverso', c: true }, { n: 'Distributividad', c: true },
+            { n: 'Tricotomía', c: false }, { n: 'Transitividad', c: false }, 
+            { n: 'Cerradura bajo suma', c: false }
         ];
         const dataOrden = [
             { n: 'Tricotomía', c: true }, { n: 'Transitividad', c: true },
-            { n: 'Cerradura bajo suma', c: true }, { n: 'Cerradura bajo producto', c: true }
+            { n: 'Cerradura bajo suma', c: true }, { n: 'Cerradura bajo producto', c: true },
+            { n: 'Conmutatividad', c: false }, { n: 'Distributividad', c: false }, 
+            { n: 'Irreflexividad', c: false }
         ];
 
+        // Inicializar tablas de Etapa 1
         function init() {
-            const render = (id, data, cat) => {
+            const render = (id, data) => {
                 const g = document.getElementById(id);
+                // Mezcla aleatoria de opciones
                 data.sort(() => Math.random() - 0.5).forEach(i => {
-                    let d = document.createElement('div'); d.className = 'axioma-item';
-                    d.innerText = i.n; d.dataset.cor = i.c; d.onclick = () => d.classList.toggle('selected');
+                    let d = document.createElement('div'); 
+                    d.className = 'axioma-item';
+                    d.innerText = i.n; 
+                    d.dataset.cor = i.c; 
+                    d.onclick = () => d.classList.toggle('selected');
                     g.appendChild(d);
                 });
             };
-            render('grid-campo', dataCampo); render('grid-orden', dataOrden);
+            render('grid-campo', dataCampo); 
+            render('grid-orden', dataOrden);
         }
 
+        // Validación Etapa 1
         function verificarEtapa1() {
             let err = 0;
-            document.querySelectorAll('.axioma-item').forEach(i => {
-                if(i.dataset.cor === "true" && !i.classList.contains('selected')) { i.classList.add('error'); err++; }
-                else if(i.dataset.cor === "true" && i.classList.contains('selected')) i.classList.add('correct');
+            // Solo evaluar los items del nivel 1 (para no afectar los del nivel 3)
+            document.querySelectorAll('#level-1-container .axioma-item').forEach(i => {
+                let isCorrect = i.dataset.cor === "true";
+                let isSelected = i.classList.contains('selected');
+
+                if (isCorrect && isSelected) {
+                    i.classList.add('correct');
+                } else if (!isCorrect && isSelected) {
+                    i.classList.add('error'); // Seleccionó un distractor
+                    err++;
+                } else if (isCorrect && !isSelected) {
+                    i.classList.add('error'); // Le faltó seleccionar uno verdadero
+                    err++;
+                } else {
+                    i.style.opacity = '0.4'; // No era verdadero y no lo seleccionó (Bien)
+                }
             });
-            aciertosN1 = err === 0 ? 2 : 1;
+            
+            // Calculo de aciertos (1 por tabla perfecta)
+            aciertosN1 = err === 0 ? 2 : (err <= 2 ? 1 : 0); 
+            
+            if (err === 0) {
+                swal("¡Precisión Industrial!", "Identificaste correctamente la estructura lógica.", "success");
+            } else {
+                swal("Atención", "Se detectaron errores (marcados en rojo). Revisa tus selecciones.", "warning");
+            }
+
             document.getElementById('btn-validar-n1').classList.add('hidden');
             document.getElementById('btn-pasar-n2').classList.remove('hidden');
         }
 
+        // Transición a Etapa 2
+        function iniciarEtapa2() {
+            document.getElementById('level-1-container').classList.add('hidden');
+            document.getElementById('level-2-container').classList.remove('hidden');
+            // Forzar renderizado de MathJax por si estaba oculto
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        // Validación Etapa 2
         function comprobarPregunta() {
             const s = document.querySelector(`input[name="q${preguntaActual}"]:checked`);
-            if(!s) return;
+            if(!s) {
+                swal("Aviso", "Debe seleccionar un parámetro.", "warning");
+                return;
+            }
+            
             const f = document.getElementById(`feedback-${preguntaActual}`);
-            f.classList.remove('hidden'); f.innerText = s.value === "correcta" ? "¡Correcto! Axioma validado." : "Incorrecto. Revise la teoría de Cerradura.";
-            if(s.value === "correcta") aciertosN2++;
+            f.classList.remove('hidden'); 
+            
+            // Deshabilitar inputs para no cambiar respuesta
+            document.querySelectorAll(`input[name="q${preguntaActual}"]`).forEach(el => el.disabled = true);
+
+            if(s.value === "correcta") {
+                f.innerHTML = "<strong>¡Correcto!</strong> Parámetro validado con éxito.";
+                f.classList.remove('error');
+                aciertosN2++;
+            } else {
+                f.innerHTML = "<strong>Incorrecto.</strong> Revise la teoría axiomática.";
+                f.classList.add('error');
+            }
+
             document.getElementById('btn-comprobar-quiz').classList.add('hidden');
             document.getElementById('btn-siguiente-quiz').classList.remove('hidden');
+            
+            if (preguntaActual === 3) {
+                document.getElementById('btn-siguiente-quiz').innerText = "Pasar a Etapa 3";
+            }
         }
 
         function siguientePregunta() {
@@ -231,28 +313,68 @@
             document.getElementById(`step-${preguntaActual}`).classList.add('hidden');
             preguntaActual++;
             document.getElementById(`step-${preguntaActual}`).classList.remove('hidden');
+            
             document.getElementById('h5p-progress').style.width = (preguntaActual/3)*100 + "%";
             document.getElementById('h5p-counter').innerText = preguntaActual + "/3";
+            
             document.getElementById('btn-siguiente-quiz').classList.add('hidden');
             document.getElementById('btn-comprobar-quiz').classList.remove('hidden');
         }
 
+        // Lógica de Drag & Drop para la Etapa 3
+        let draggedItem = null;
+
+        document.addEventListener("dragstart", e => { 
+            if(e.target.classList.contains('draggable-word')) draggedItem = e.target; 
+        });
+
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', e => e.preventDefault());
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                // Si la zona ya tiene una palabra, regresarla al banco
+                if (zone.hasChildNodes()) {
+                    document.getElementById('banco-palabras').appendChild(zone.firstChild);
+                }
+                // Soltar la nueva palabra
+                if (draggedItem && draggedItem.classList.contains('draggable-word')) {
+                    zone.appendChild(draggedItem);
+                }
+            });
+        });
+
+        // Validación Etapa 3
         function evaluarEtapa3() {
-            aciertosN3 = 2; // Simplificado para el prototipo
+            let correctas = 0;
+            document.querySelectorAll('.drop-zone').forEach(z => {
+                if (z.hasChildNodes() && z.firstChild.dataset.value === z.dataset.expected) {
+                    correctas++; 
+                    z.style.borderColor = "var(--success)";
+                } else { 
+                    z.style.borderColor = "var(--danger)"; 
+                }
+            });
+
+            aciertosN3 = correctas; 
+
             document.getElementById('level-3-container').classList.add('hidden');
             document.getElementById('resumen-final-container').classList.remove('hidden');
+            
+            // Imprimir resultados
             document.getElementById('res-n1').innerText = aciertosN1 + "/2";
             document.getElementById('res-n2').innerText = aciertosN2 + "/3";
             document.getElementById('res-n3').innerText = aciertosN3 + "/2";
-            confetti();
+            
+            confetti({ particleCount: 200, spread: 90, origin: { y: 0.5 } });
         }
 
+        // Reinicio
         function reiniciarActividad() {
-            location.reload(); // En este nivel de interactividad, reload asegura limpieza total de MathJax y DOM.
+            location.reload(); 
         }
 
+        // Arrancar
         init();
     </script>
 </body>
 </html>
-
