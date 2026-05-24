@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escenario 6: Convergencia de Sucesiones</title>
+    
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'],['\\(','\\)']]}});
+    </script>
+
+    <style>
+        :root {
+            --primary: #004080;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --soft-red: #ef5a1f;      /* Tonalidad de rojo baja y elegante */
+            --seq-blue: #0284c7;      /* Azul de nuestra paleta */
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .main-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        h1 { color: var(--primary); font-family: 'Outfit', sans-serif; font-weight: 700; text-align: center; }
+        h2 { border-left: 8px solid var(--primary); padding-left: 15px; font-size: 20px; color: var(--primary); margin-top: 30px;}
+        
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .layout-grid { grid-template-columns: 1fr; }
+        }
+
+        .panel {
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 25px;
+        }
+
+        .btn-general {
+            display: inline-block; width: 100%;
+            padding: 12px; background-color: var(--primary); color: white;
+            border: none; border-radius: 8px; font-size: 16px; font-weight: 600;
+            cursor: pointer; transition: 0.3s; margin-top: 15px;
+        }
+        .btn-general:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-success { background-color: var(--success); }
+        
+        .btn-soft-red { 
+            background-color: var(--soft-red); 
+            font-size: 17px;
+        }
+        .btn-soft-red i {
+            font-size: 22px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--primary);}
+        
+        .math-input {
+            width: 70px;
+            padding: 5px;
+            text-align: center;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary);
+            outline: none;
+        }
+        .math-input:focus { border-color: var(--primary); }
+        
+        .math-step {
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px; margin: 15px 0; font-size: 18px;
+        }
+
+        #jxgbox {
+            width: 100%;
+            height: 480px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <h1>Análisis de Convergence: Definición Épsilon-N</h1>
+        <p style="text-align: center; color: #64748b;">Analiza la sucesión generada aleatoriamente y demuestra su convergencia determinando el índice $N$.</p>
+
+        <div class="layout-grid">
+            
+            <div class="panel">
+                <h2>1. Exploración Visual</h2>
+                <p id="txt-sucesion">Cargando sucesión...</p>
+                
+                <div class="form-group">
+                    <label for="inputEpsilon">Define el radio de la vecindad ($\varepsilon$):</label>
+                    <input type="number" id="inputEpsilon" class="math-input" style="width: 100px;" value="0.2" min="0.01" max="1" step="0.01" onchange="actualizarEpsilon()" autocomplete="off">
+                    <button class="btn-general" onclick="ejecutarSucesion()">Generar Gráfica y Sucesión</button>
+                </div>
+
+                <h2>2. Desarrollo Algebraico</h2>
+                <p style="font-size: 14px; color: var(--text-dark);">Para garantizar que $|a_n - L| < \varepsilon$, simplifica la expresión y encuentra el valor del numerador del valor absoluto:</p>
+                
+                <div class="math-step" id="step-algebra-1">
+                    $| \frac{An}{n+B} - A | = \frac{\text{?}}{n+B} < \varepsilon$
+                </div>
+                
+                <div style="text-align: center; margin-bottom: 20px;">
+                    Numerador: <input type="number" id="inputNumerador" class="math-input" autocomplete="off">
+                    <button class="btn-general btn-success" style="width: auto; padding: 6px 15px; margin-left: 10px;" onclick="validarAlgebra()">Validar</button>
+                </div>
+
+                <div id="step-algebra-2" style="display: none; transition: 0.3s;">
+                    <h2>3. Despeje de la variable $n$</h2>
+                    <p style="font-size: 14px;">Resuelve la desigualdad anterior aislando por completo la variable $n$ (admite decimales):</p>
+                    <div class="math-step" id="latex-despeje">
+                        </div>
+                    <div style="text-align: center; margin-bottom: 20px;">
+                         Valor de la variable \(n\): <input type="number" id="inputDespeje" class="math-input" style="width: 100px;" step="0.01" autocomplete="off">
+                        <button class="btn-general btn-success" style="width: auto; padding: 6px 15px; margin-left: 10px;" onclick="validarDespeje()">Validar Despeje</button>
+                    </div>
+                </div>
+
+                <div id="step-algebra-3" style="display: none; transition: 0.3s;">
+                    <h2>4. Determinación de \(N\)</h2>
+                    <p style="font-size: 14px;">A partir de la \(n\) obtenida, ingresa el primer valor entero natural $N$ desde el cual los puntos de la sucesión entran definitivamente a la vecindad:</p>
+                    <div class="math-step">
+                        $N \ge $ <input type="number" id="inputN" class="math-input" min="1" step="1" autocomplete="off">
+                    </div>
+                    <button class="btn-general" style="background-color: var(--primary);" onclick="validarN()">Comprobar Límite</button>
+                </div>
+
+                <button class="btn-general btn-soft-red" style="margin-top: 40px;" onclick="reiniciarJuego()">
+                    <i class="fa-solid fa-dice"></i> Generar Nueva Sucesión
+                </button>
+            </div>
+
+            <div class="panel" style="padding: 15px;">
+                <div id="jxgbox" class="jxgbox"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // VARIABLES GLOBALES Y LÓGICA ALEATORIA
+        // ==========================================
+        let board;
+        let epsilon = 0.0;
+        let epsilonRegion, successRegion, limitLine;
+        let puntosSucesion = [];
+        
+        // Generación de Sucesión: a_n = (A * n) / (n + B)
+        const A = Math.floor(Math.random() * 4) + 1; 
+        const B = Math.floor(Math.random() * 4) + 1; 
+        const limiteL = A;
+        const numeradorConstante = A * B; 
+
+        // ==========================================
+        // INICIALIZACIÓN Y LIMPIEZA ABSOLUTA
+        // ==========================================
+        function init() {
+            // Limpieza manual y forzada de inputs para evitar persistencia de caché del navegador
+            document.getElementById('inputEpsilon').value = "0.0";
+            document.getElementById('inputNumerador').value = "";
+            document.getElementById('inputNumerador').disabled = false;
+            document.getElementById('inputNumerador').style.borderColor = "var(--border-color)";
+            
+            if(document.getElementById('inputDespeje')) {
+                document.getElementById('inputDespeje').value = "";
+                document.getElementById('inputDespeje').disabled = false;
+                document.getElementById('inputDespeje').style.borderColor = "var(--border-color)";
+            }
+            
+            document.getElementById('inputN').value = "";
+            document.getElementById('inputN').disabled = false;
+            document.getElementById('inputN').style.borderColor = "var(--border-color)";
+
+            document.getElementById('step-algebra-2').style.display = "none";
+            document.getElementById('step-algebra-3').style.display = "none";
+
+            // Imprimir la sucesión en pantalla
+            const txtSucesion = document.getElementById('txt-sucesion');
+            let formula = A === 1 ? `\\frac{n}{n+${B}}` : `\\frac{${A}n}{n+${B}}`;
+            txtSucesion.innerHTML = `Muestra que: $$\\lim_{n \\to \\infty} ${formula} = ${limiteL}$$`;
+            
+            const step1 = document.getElementById('step-algebra-1');
+            step1.innerHTML = `$| ${formula} - ${limiteL} | = \\frac{\\text{?}}{n+${B}} < \\varepsilon$`;
+
+            // Renderizar dinámicamente el paso del despeje simbólico
+            const labelDespeje = document.getElementById('latex-despeje');
+            labelDespeje.innerHTML = `$n > \\frac{${numeradorConstante}}{\\varepsilon} - ${B}$`;
+
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+
+            // Inicializar Board con un xmax estático (52) ajustado a los 45 puntos para evitar que se estire
+            JXG.Options.board.minimizeReflow = 'none';
+            board = JXG.JSXGraph.initBoard('jxgbox', {
+                boundingbox: [-3, limiteL + 2, 52, -0.5], 
+                axis: true,
+                showNavigation: true,
+                showCopyright: false,
+                pan: { enabled: false },
+                zoom: { enabled: false }
+            });
+        }
+
+        // ==========================================
+        // GRÁFICA Y ANIMACIONES DISCRETAS
+        // ==========================================
+        function actualizarEpsilon() {
+            epsilon = parseFloat(document.getElementById('inputEpsilon').value);
+            if (epsilon <= 0 || isNaN(epsilon)) {
+                swal("Atención", "Épsilon debe ser un valor mayor a 0.", "warning");
+                document.getElementById('inputEpsilon').value = 0.0;
+                epsilon = 0.0;
+            }
+            dibujarFranjaEpsilon();
+            
+            // Si el alumno cambia épsilon a mitad del juego, actualizamos el paso algebraico del despeje visible
+            const labelDespeje = document.getElementById('latex-despeje');
+            labelDespeje.innerHTML = `$n > \\frac{${numeradorConstante}}{\\varepsilon} - ${B}$`;
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function dibujarFranjaEpsilon() {
+            if (epsilonRegion) board.removeObject(epsilonRegion);
+            if (limitLine) board.removeObject(limitLine);
+            if (successRegion) board.removeObject(successRegion);
+
+            let incY = limiteL + epsilon;
+            let decY = limiteL - epsilon;
+
+            limitLine = board.create("line", [[0, limiteL], [55, limiteL]], {
+                straightFirst: false, straightLast: false, strokeWidth: 2, strokeColor: "var(--success)"
+            });
+
+            epsilonRegion = board.create('polygon', [[0, decY], [0, incY], [55, incY], [55, decY]], {
+                borders: { strokeColor: 'var(--primary)', dash: 2 },
+                fillOpacity: 0.1, fillColor: "var(--primary)", vertices: { visible: false }
+            });
+            board.update();
+        }
+
+        function ejecutarSucesion() {
+            puntosSucesion.forEach(p => board.removeObject(p));
+            puntosSucesion = [];
+            
+            actualizarEpsilon();
+
+            // Sucesión discreta: Generamos hasta 45 puntos espaciados para evidenciar el dominio natural
+            let n = 1;
+            function animarPuntos() {
+                if (n <= 50) {
+                    let valorY = (A * n) / (n + B);
+                    // Puntos en el azul corporativo solicitado
+                    let p = board.create('point', [n, valorY], { 
+                        name: '', size: 1.2, fillColor: 'var(--seq-blue)', strokeColor: 'var(--seq-blue)', fixed: true 
+                    });
+                    puntosSucesion.push(p);
+                    n++;
+                    setTimeout(animarPuntos, 50);
+                }
+            }
+            animarPuntos();
+        }
+
+        // ==========================================
+        // VALIDACIONES PEDAGÓGICAS CON REFORZAMIENTO
+        // ==========================================
+        function validarAlgebra() {
+            const inputNum = parseInt(document.getElementById('inputNumerador').value);
+            if (isNaN(inputNum)) {
+                swal("Aviso", "Ingresa un valor numérico.", "warning");
+                return;
+            }
+
+            if (inputNum === numeradorConstante) {
+                document.getElementById('inputNumerador').style.borderColor = "var(--success)";
+                document.getElementById('inputNumerador').disabled = true;
+                document.getElementById('step-algebra-2').style.display = "block";
+                swal("¡Excelente!", "El numerador es correcto. Ahora calcula el valor numérico del despeje de n.", "success");
+            } else {
+                document.getElementById('inputNumerador').style.borderColor = "var(--danger)";
+                swal("Incorrecto", "Revisa la simplificación de la fracción algebraica.", "error");
+            }
+        }
+
+        function validarDespeje() {
+            const inputDes = parseFloat(document.getElementById('inputDespeje').value);
+            const valorDespejeExacto = (numeradorConstante / epsilon) - B;
+
+            if (isNaN(inputDes)) {
+                swal("Aviso", "Ingresa el resultado numérico del despeje.", "warning");
+                return;
+            }
+
+            // Margen de tolerancia decimal (0.1) para posibles redondeos del estudiante
+            if (Math.abs(inputDes - valorDespejeExacto) < 0.1) {
+                document.getElementById('inputDespeje').style.borderColor = "var(--success)";
+                document.getElementById('inputDespeje').disabled = true;
+                document.getElementById('step-algebra-3').style.display = "block";
+                swal("¡Despeje Correcto!", "Has determinado el límite inferior decimal. Propón el entero N correspondiente.", "success");
+            } else {
+                document.getElementById('inputDespeje').style.borderColor = "var(--danger)";
+                swal("Error de cálculo", "El valor ingresado no corresponde al despeje algebraico evaluado con el épsilon actual.", "error");
+            }
+        }
+
+        function validarN() {
+            const inputN = parseInt(document.getElementById('inputN').value);
+            const nMinimoExacto = (numeradorConstante / epsilon) - B;
+            const NTeorico = Math.max(1, Math.ceil(nMinimoExacto));
+
+            if (isNaN(inputN)) {
+                swal("Aviso", "Ingresa un valor para N.", "warning");
+                return;
+            }
+
+            if (inputN >= NTeorico) {
+                document.getElementById('inputN').style.borderColor = "var(--success)";
+                swal("¡Demostración Completada!", `Correcto. A partir de N = ${inputN}, todos los términos caen dentro de la franja de radio ${epsilon}.`, "success");
+                
+                confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 } });
+
+                if (successRegion) board.removeObject(successRegion);
+                let incY = limiteL + epsilon;
+                let decY = limiteL - epsilon;
+                successRegion = board.create('polygon', [[inputN, decY], [inputN, incY], [55, incY], [55, decY]], {
+                    borders: { strokeColor: 'var(--success)', dash: 1, strokeWidth: 2 },
+                    fillOpacity: 0.25, fillColor: "var(--success)", vertices: { visible: false }
+                });
+                board.update();
+
+            } else {
+                document.getElementById('inputN').style.borderColor = "var(--danger)";
+                swal("Cálculo inexacto", `El valor N=${inputN} es demasiado pequeño. Para ε=${epsilon}, aún quedan términos naturales flotando fuera de la vecindad.`, "error");
+            }
+        }
+
+        function reiniciarJuego() {
+            location.reload();
+        }
+
+        // Iniciar al cargar
+        window.onload = init;
+    </script>
+</body>
+</html>
+
+

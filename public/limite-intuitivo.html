@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Definición de Límite con Deslizador</title>
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+    
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f0f4f8; color: #333; }
+        .container { max-width: 950px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        h1 { color: #0284c7; text-align: center; }
+        .instruction { text-align: center; color: #666; margin-bottom: 20px; }
+        .formula-box { background: #e0f2fe; padding: 15px; border-radius: 8px; text-align: center; font-size: 1.2em; margin-bottom: 20px; color: #0369a1; font-weight: bold; }
+        
+        .control-group { margin-bottom: 15px; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; }
+        .control-group label { font-weight: bold; margin-right: 10px; color: #0f172a; }
+        input[type="number"] { width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 1em; }
+        
+        button { padding: 8px 16px; background-color: #0284c7; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        button:hover { background-color: #0369a1; }
+        .btn-success { background-color: #10b981; }
+        .btn-success:hover { background-color: #059669; }
+        .btn-warning { background-color: #f59e0b; }
+        .btn-warning:hover { background-color: #d97706; }
+        .btn-info { background-color: #6366f1; }
+        .btn-info:hover { background-color: #4f46e5; }
+        
+        #jxgbox { width: 100%; height: 500px; border: 1px solid #cbd5e1; border-radius: 8px; margin-top: 20px; background-color: #ffffff; }
+        .flex-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Análisis Geométrico de Límites</h1>
+    <p class="instruction">Fija un punto de análisis, calcula el límite teórico y ajusta el deslizador para encontrar la vecindad de radio que cumple la definición.</p>
+
+    <div class="formula-box" id="formula-display">
+        Cargando función...
+    </div>
+
+    <div class="control-group flex-row" id="step1">
+        <div>
+            <label>1. Punto de análisis en X:</label>
+            <input type="number" id="inputPunto" value="2" step="0.5" onchange="reiniciarYFijarPunto()">
+        </div>
+        <div>
+            <label>2. Límite esperado (en Y):</label>
+            <input type="number" id="inputLimite" value="" step="0.01">
+            <button onclick="validarLimite()">Validar Límite</button>
+        </div>
+    </div>
+
+    <div id="controlesEpsilon" class="control-group flex-row" style="display: none;">
+        <div>
+            <label>3. Franja de tolerancia (Épsilon):</label>
+            <input type="number" id="inputEpsilon" value="" min="0.1" max="3" step="0.1" placeholder="Ej: 1.0" onchange="dibujarEpsilon()">
+        </div>
+        <div id="controlesDelta" style="display: none; gap: 10px;">
+            <button class="btn-success" onclick="validarDelta()">4. Validar vecindad Delta</button>
+            <button id="btnSiguiente" class="btn-warning" onclick="cargarSiguienteFuncion()" style="display: none;">Siguiente Función ➔</button>
+            <button class="btn-info" onclick="finalizarJuego()">¡Ya comprendí la idea intuitiva!</button>
+        </div>
+    </div>
+
+    <div id="jxgbox"></div>
+</div>
+
+<script>
+    let board;
+    let funcionGraph;
+    let p, limite;
+    let epsilon = 0;
+    
+    // Objetos dinámicos de JSXGraph
+    let ptCentro, ptLimite;
+    let regionEpsilon, regionDeltaVert, regionDeltaHoriz, deltaSlider;
+    
+    // Banco de funciones aleatorias
+    const catalogoFunciones = [
+        { f: function(x) { return 0.5 * Math.pow(x, 2) + 1; }, latex: "\\frac{x^2}{2} + 1", defaultP: 2 },
+        { f: function(x) { return 12 / x; }, latex: "\\frac{12}{x}", defaultP: 3 },
+        { f: function(x) { return 2 * Math.sqrt(x - 1) + 1; }, latex: "2\\sqrt{x - 1} + 1", defaultP: 5 }
+    ];
+
+    let indiceFuncionActual = -1;
+    let funcionActiva = null;
+
+    function cargarSiguienteFuncion() {
+        let nuevoIndice;
+        do { nuevoIndice = Math.floor(Math.random() * catalogoFunciones.length); } 
+        while (nuevoIndice === indiceFuncionActual);
+        
+        indiceFuncionActual = nuevoIndice;
+        funcionActiva = catalogoFunciones[indiceFuncionActual];
+
+        // Restablecer interfaz
+        document.getElementById("inputPunto").value = funcionActiva.defaultP;
+        document.getElementById("inputLimite").value = "";
+        
+        // 1. Limpiar completamente la casilla Épsilon y ocultar el botón Siguiente
+        document.getElementById("inputEpsilon").value = ""; 
+        document.getElementById("btnSiguiente").style.display = "none";
+        
+        document.getElementById("controlesEpsilon").style.display = "none";
+        document.getElementById("controlesDelta").style.display = "none";
+        
+        // Renderizar fórmula
+        const formulaDisplay = document.getElementById("formula-display");
+        formulaDisplay.innerHTML = `$$ f(x) = ${funcionActiva.latex} $$`;
+        if (window.MathJax) MathJax.typesetPromise();
+
+        initBoard();
+    }
+
+    function initBoard() {
+        if (board) JXG.JSXGraph.freeBoard(board);
+        
+        board = JXG.JSXGraph.initBoard('jxgbox', { boundingbox: [-1, 10, 10, -1], axis: true, showNavigation: true });
+        funcionGraph = board.create('functiongraph', [funcionActiva.f, 0.1, 9.5], { strokeColor: '#0284c7', strokeWidth: 3 });
+        
+        reiniciarYFijarPunto();
+    }
+
+    function reiniciarYFijarPunto() {
+        p = parseFloat(document.getElementById("inputPunto").value);
+        document.getElementById("inputLimite").value = "";
+        document.getElementById("controlesEpsilon").style.display = "none";
+        document.getElementById("controlesDelta").style.display = "none";
+        document.getElementById("btnSiguiente").style.display = "none";
+        
+        if (ptCentro) board.removeObject(ptCentro);
+        if (ptLimite) board.removeObject(ptLimite);
+        if (regionEpsilon) board.removeObject(regionEpsilon);
+        if (regionDeltaVert) board.removeObject(regionDeltaVert);
+        if (regionDeltaHoriz) board.removeObject(regionDeltaHoriz);
+        if (deltaSlider) board.removeObject(deltaSlider);
+        
+        ptCentro = board.create('point', [p, 0], { name: 'x_0', size: 3, color: 'red', fixed: true });
+        board.update();
+    }
+
+    function validarLimite() {
+        let inputLimite = parseFloat(document.getElementById("inputLimite").value);
+        limite = funcionActiva.f(p);
+
+        if (!isNaN(inputLimite) && Math.abs(inputLimite - limite) < 0.05) {
+            swal("¡Límite Correcto!", "El límite es exacto. Ahora ingresa un valor de tolerancia Épsilon (ej. 1.0).", "success");
+            ptLimite = board.create('point', [p, limite], { name: 'L', size: 3, color: 'green', fixed: true });
+            
+            document.getElementById("controlesEpsilon").style.display = "flex";
+            document.getElementById("controlesDelta").style.display = "flex"; // Mostramos el contenedor
+            document.getElementById("btnSiguiente").style.display = "none"; // Pero mantenemos oculto el botón siguiente
+        } else {
+            swal("Revisa tus cálculos", "El valor ingresado no corresponde al límite.", "error");
+        }
+    }
+
+    function dibujarEpsilon() {
+        let valEpsilon = document.getElementById("inputEpsilon").value;
+        if (valEpsilon === "" || isNaN(valEpsilon)) return; // Si está vacío, no dibuja nada
+        
+        epsilon = parseFloat(valEpsilon);
+        
+        if (regionEpsilon) board.removeObject(regionEpsilon);
+        if (regionDeltaVert) board.removeObject(regionDeltaVert);
+        if (regionDeltaHoriz) board.removeObject(regionDeltaHoriz);
+        if (deltaSlider) board.removeObject(deltaSlider);
+
+        let incY = limite + epsilon;
+        let decY = limite - epsilon;
+
+        regionEpsilon = board.create('polygon', [[-1, decY], [-1, incY], [10, incY], [10, decY]], {
+            borders: { strokeColor: 'blue', dash: 2 },
+            fillColor: "lightgrey", fillOpacity: 0.7, vertices: { visible: false }
+        });
+
+        dibujarDelta();
+    }
+
+    function dibujarDelta() {
+        // 3. Diseño mejorado del deslizador e inicializado en 0.
+        // Formato [min, inicio, max]. Empieza exactamente en 0.
+        deltaSlider = board.create('slider', [[1, -0.5], [6, -0.5], [0, 0, 2.0]], { 
+            name: '&delta;',
+            baseline: { strokeColor: '#cbd5e1', strokeWidth: 5 },
+            highline: { strokeColor: '#0284c7', strokeWidth: 5 },
+            fillColor: '#0284c7',
+            label: { fontSize: 16, strokeColor: '#0369a1' }
+        });
+
+        regionDeltaVert = board.create('polygon', [
+            function() { return [p - deltaSlider.Value(), 0]; },  
+            function() { return [p + deltaSlider.Value(), 0]; },  
+            function() { return [p + deltaSlider.Value(), funcionActiva.f(p + deltaSlider.Value())]; }, 
+            function() { return [p - deltaSlider.Value(), funcionActiva.f(p - deltaSlider.Value())]; }  
+        ], {
+            borders: { strokeColor: 'purple', dash: 1, strokeWidth: 2 },
+            fillColor: "purple", fillOpacity: 0.5, vertices: { visible: false }
+        });
+
+        regionDeltaHoriz = board.create('polygon', [
+            function() { return [0, funcionActiva.f(p - deltaSlider.Value())]; }, 
+            function() { return [p - deltaSlider.Value(), funcionActiva.f(p - deltaSlider.Value())]; }, 
+            function() { return [p + deltaSlider.Value(), funcionActiva.f(p + deltaSlider.Value())]; }, 
+            function() { return [0, funcionActiva.f(p + deltaSlider.Value())]; }
+        ], {
+            borders: { strokeColor: 'purple', dash: 1, strokeWidth: 2 },
+            fillColor: "purple", fillOpacity: 0.5, vertices: { visible: false }
+        });
+        
+        board.update();
+    }
+
+    function validarDelta() {
+        let d = deltaSlider.Value();
+        
+        // Validación extra por si oprimen el botón sin mover el deslizador
+        if (d === 0) {
+            swal("Desliza el control", "El radio Delta es 0. Debes mover el deslizador azul hacia la derecha para crear una vecindad válida.", "info");
+            return;
+        }
+
+        let y1 = funcionActiva.f(p - d);
+        let y2 = funcionActiva.f(p + d);
+        let maxY = Math.max(y1, y2);
+        let minY = Math.min(y1, y2);
+        let incY = limite + epsilon;
+        let decY = limite - epsilon;
+
+        if (maxY <= incY && minY >= decY) {
+            swal("¡Demostración Exitosa!", "¡Excelente! La vecindad mantiene toda la función dentro de la tolerancia Épsilon.", "success");
+            // 2. Activamos el botón para pasar a la siguiente función
+            document.getElementById("btnSiguiente").style.display = "inline-block";
+        } else {
+            swal("¡Cuidado!", "El radio Delta es muy grande y se sale de Épsilon. Haz tu Delta más pequeño.", "warning");
+        }
+    }
+
+    function finalizarJuego() {
+        swal({
+            title: "¡Excelente Trabajo!",
+            text: "¡Felicidades! Has capturado con éxito el comportamiento geométrico del límite. La comprensión intuitiva visual es el pilar fundamental antes de abordar las demostraciones analíticas estrictas.",
+            icon: "success",
+            button: "Finalizar Actividad"
+        });
+    }
+
+    window.onload = cargarSiguienteFuncion;
+</script>
+
+</body>
+</html>
+
+

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis del Límite: Acotación de Delta</title>
+    
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script>
+
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'],['\\(','\\)']]}});
+    </script>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --soft-red: #f65515;      
+            --seq-blue: #0284c7;      
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+        }
+
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: var(--text-dark); margin: 0; padding: 20px; }
+        .main-container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        h1 { color: var(--primary); font-weight: 700; text-align: center; }
+        h2 { border-left: 8px solid var(--primary); padding-left: 15px; font-size: 18px; color: var(--primary); margin-top: 30px;}
+        
+        .layout-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 30px; margin-top: 30px; }
+        @media (max-width: 900px) { .layout-grid { grid-template-columns: 1fr; } }
+
+        .panel { background: var(--bg-light); border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; }
+        
+        .btn-general { display: inline-block; width: 100%; padding: 12px; background-color: var(--primary); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 15px; }
+        .btn-general:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-success { background-color: var(--success); }
+        .btn-soft-red { background-color: var(--soft-red); font-size: 17px; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--primary);}
+        
+        .math-input { width: 90px; padding: 8px; text-align: center; border: 2px solid var(--border-color); border-radius: 6px; font-size: 15px; font-weight: bold; color: var(--primary); outline: none; }
+        .math-input:focus { border-color: var(--primary); }
+        
+        .math-step { text-align: center; margin: 15px 0; font-size: 18px; }
+        .instruction-text { font-size: 14px; color: #64748b; margin-bottom: 10px; line-height: 1.5; }
+
+        #jxgbox { width: 100%; height: 550px; border-radius: 8px; border: 1px solid var(--border-color); background-color: #ffffff; }
+        
+        .flex-row { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 15px; flex-wrap: wrap;}
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <h1>Análisis de Límites: Acotación de Delta en Curvas</h1>
+        <p style="text-align: center; color: #64748b;">Las funciones no lineales generan vecindades asimétricas. Encuentra los extremos, calcula las distancias y aplica la regla del mínimo para acotar el radio de validez.</p>
+
+        <div class="layout-grid">
+            
+            <div class="panel">
+                <h2>1. Exploración Gráfica del Límite</h2>
+                <div class="math-step" id="txt-limite">Cargando función...</div>
+                
+                <div class="form-group flex-row">
+                    <label style="margin:0;">Margen de error ($\varepsilon$):</label>
+                    <input type="number" id="inputEpsilon" class="math-input" value="1.0" min="0.1" max="2.0" step="0.1" autocomplete="off">
+                    <button class="btn-general" style="width: auto; margin:0;" onclick="graficarEntornoEpsilon()">Trazar Entorno</button>
+                </div>
+
+                <div id="step-algebra-1" style="display: none; transition: 0.3s;">
+                    <h2>2. Intersecciones Asimétricas</h2>
+                    <p class="instruction-text">Calcula exactamente los valores de X donde la curva intersecta los techos de la tolerancia: $f(x) = L - \varepsilon$ y $f(x) = L + \varepsilon$.</p>
+                    
+                    <div class="flex-row">
+                        <div>
+                            $X_{izq} = $ <input type="number" id="inputX1" class="math-input" step="0.001" placeholder="Ej: 1.414">
+                        </div>
+                        <div>
+                            $X_{der} = $ <input type="number" id="inputX2" class="math-input" step="0.001">
+                        </div>
+                    </div>
+                    <button class="btn-general btn-success" onclick="validarIntersecciones()">Validar Extremos</button>
+                </div>
+
+                <div id="step-algebra-2" style="display: none; transition: 0.3s;">
+                    <h2>3. Acotar Delta (Regla del Mínimo)</h2>
+                    <p class="instruction-text">Calcula la distancia desde el centro $c$ hacia cada extremo. Para que la caja no desborde la curva, el radio máximo permitido ($\delta_{max}$) debe ser estrictamente la menor de esas dos distancias.</p>
+                    <div class="flex-row">
+                        $\delta_{max} =$ <input type="number" id="inputDeltaMax" class="math-input" step="0.001">
+                        <button class="btn-general btn-success" style="width: auto; margin:0;" onclick="validarDeltaMax()">Asegurar Cota</button>
+                    </div>
+                </div>
+
+                <div id="step-algebra-3" style="display: none; transition: 0.3s;">
+                    <h2>4. Proponer un Radio $\delta$ Válido</h2>
+                    <p class="instruction-text">Elige un radio simétrico $\delta$ que respete la cota ($0 < \delta \le \delta_{max}$):</p>
+                    <div class="math-step">
+                        $\delta =$ <input type="number" id="inputDelta" class="math-input" min="0.001" step="0.01" autocomplete="off">
+                    </div>
+                    <button class="btn-general" style="background-color: var(--primary);" onclick="comprobarLmiteFinal()">Comprobar Entorno Geométrico</button>
+                </div>
+
+                <button class="btn-general btn-soft-red" style="margin-top: 30px;" onclick="reiniciarJuego()">
+                    <i class="fa-solid fa-dice"></i> Generar Nueva Función Aleatoria
+                </button>
+            </div>
+
+            <div class="panel" style="padding: 15px;">
+                <div id="jxgbox" class="jxgbox"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let board, epsilonRegion, deltaRegion, limitLineHorizontal, targetBox;
+        let pCentro, pLimite;
+        let epsilon = 0.0;
+        let delta = 0.0;
+        
+        let c, L, functionData;
+        let xIzqReal, xDerReal, deltaMaxReal;
+
+        // Catálogo de familias de funciones
+        const catalog = [
+            {
+                name: "parabola",
+                generate: () => {
+                    const a = [0.5, 1, 2][Math.floor(Math.random() * 3)];
+                    const b = Math.floor(Math.random() * 3);
+                    const pc = Math.floor(Math.random() * 3) + 2; // x entre 2 y 4
+                    return {
+                        f: (x) => a * x * x + b,
+                        inv: (y) => Math.sqrt((y - b) / a),
+                        tex: `${a !== 1 ? a : ''}x^2 ${b > 0 ? '+ '+b : ''}`,
+                        c: pc,
+                        L: a * pc * pc + b
+                    };
+                }
+            },
+            {
+                name: "inversa",
+                generate: () => {
+                    const a = [6, 8, 12, 16][Math.floor(Math.random() * 4)];
+                    const pc = Math.floor(Math.random() * 3) + 2; 
+                    return {
+                        f: (x) => a / x,
+                        inv: (y) => a / y,
+                        tex: `\\frac{${a}}{x}`,
+                        c: pc,
+                        L: a / pc
+                    };
+                }
+            },
+            {
+                name: "cubica",
+                generate: () => {
+                    const a = [0.5, 1][Math.floor(Math.random() * 2)];
+                    const b = Math.floor(Math.random() * 3) - 1;
+                    const pc = Math.floor(Math.random() * 2) + 2;
+                    return {
+                        f: (x) => a * Math.pow(x, 3) + b,
+                        inv: (y) => Math.cbrt((y - b) / a),
+                        tex: `${a !== 1 ? a : ''}x^3 ${b > 0 ? '+ '+b : (b < 0 ? b : '')}`,
+                        c: pc,
+                        L: a * Math.pow(pc, 3) + b
+                    };
+                }
+            }
+        ];
+
+        function init() {
+            const family = catalog[Math.floor(Math.random() * catalog.length)];
+            functionData = family.generate();
+            c = functionData.c;
+            
+            // Truncar/Redondear el valor del límite a un máximo de 3 decimales
+            L = parseFloat(functionData.L.toFixed(3));
+
+            document.getElementById('inputEpsilon').value = "0.0";
+            document.querySelectorAll('.math-input').forEach(el => {
+                if(el.id !== 'inputEpsilon') {
+                    el.value = "";
+                    el.disabled = false;
+                    el.style.borderColor = "var(--border-color)";
+                }
+            });
+
+            document.getElementById('step-algebra-1').style.display = "none";
+            document.getElementById('step-algebra-2').style.display = "none";
+            document.getElementById('step-algebra-3').style.display = "none";
+
+            const txtLim = document.getElementById('txt-limite');
+            txtLim.innerHTML = `$$\\lim_{x \\to ${c}} \\left( ${functionData.tex} \\right) = ${L}$$`;
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+
+            if(board) JXG.JSXGraph.freeBoard(board);
+            
+            // ESCALA DINÁMICA: Asegurar que el eje X (y=0) esté siempre visible en la pantalla
+            let yMinimo = Math.min(-1, L - 3);
+            let yMaximo = L + 5;
+
+            board = JXG.JSXGraph.initBoard('jxgbox', {
+                boundingbox: [c - 4, yMaximo, c + 4, yMinimo], 
+                axis: true, showNavigation: true, showCopyright: false
+            });
+
+            board.create('functiongraph', [functionData.f, 0.1, c + 6], {
+                strokeWidth: 3, strokeColor: 'var(--seq-blue)'
+            });
+
+            pCentro = board.create('point', [c, 0], { name: `c=${c}`, size: 3, color: 'gray', fixed: true });
+            pLimite = board.create('point', [c, L], { name: `L=${L}`, size: 4, color: 'var(--danger)', fixed: true });
+        }
+
+        function graficarEntornoEpsilon() {
+            epsilon = parseFloat(document.getElementById('inputEpsilon').value);
+            if (epsilon <= 0 || isNaN(epsilon)) return swal("Error", "Épsilon debe ser > 0", "warning");
+
+            if (epsilonRegion) board.removeObject(epsilonRegion);
+            if (limitLineHorizontal) board.removeObject(limitLineHorizontal);
+            borrarRegionesX();
+
+            let supY = L + epsilon;
+            let infY = L - epsilon;
+
+            // Calcular intersecciones reales basadas en el límite L de 3 decimales
+            let v1 = functionData.inv(infY);
+            let v2 = functionData.inv(supY);
+            xIzqReal = Math.min(v1, v2);
+            xDerReal = Math.max(v1, v2);
+            
+            // Distancias asimétricas
+            let d1 = c - xIzqReal;
+            let d2 = xDerReal - c;
+            deltaMaxReal = Math.min(d1, d2);
+
+            limitLineHorizontal = board.create("line", [[c - 5, L], [c + 5, L]], { strokeWidth: 1, strokeColor: "#94a3b8", dash: 1 });
+            epsilonRegion = board.create('polygon', [[0, infY], [0, supY], [c+10, supY], [c+10, infY]], {
+                borders: { strokeColor: 'var(--primary)', dash: 2, strokeWidth: 1 },
+                fillOpacity: 0.08, fillColor: "var(--primary)", vertices: { visible: false }
+            });
+
+            document.getElementById('step-algebra-1').style.display = "block";
+            board.update();
+        }
+
+        function borrarRegionesX() {
+            if (deltaRegion) board.removeObject(deltaRegion);
+            if (targetBox) board.removeObject(targetBox);
+            document.getElementById('inputDelta').disabled = false;
+            document.getElementById('inputDelta').style.borderColor = "var(--border-color)";
+        }
+
+        function validarIntersecciones() {
+            let inX1 = parseFloat(document.getElementById('inputX1').value);
+            let inX2 = parseFloat(document.getElementById('inputX2').value);
+
+            if (isNaN(inX1) || isNaN(inX2)) return swal("Aviso", "Ingresa ambos valores numéricos.", "warning");
+
+            let err1 = Math.abs(inX1 - xIzqReal);
+            let err2 = Math.abs(inX2 - xDerReal);
+
+            if (err1 < 0.02 && err2 < 0.02) {
+                document.getElementById('inputX1').style.borderColor = "var(--success)";
+                document.getElementById('inputX2').style.borderColor = "var(--success)";
+                document.getElementById('inputX1').disabled = true;
+                document.getElementById('inputX2').disabled = true;
+                
+                // Trazar guías visuales de las intersecciones
+                board.create('segment', [[xIzqReal, 0], [xIzqReal, functionData.f(xIzqReal)]], {dash:2, strokeColor:'gray'});
+                board.create('segment', [[xDerReal, 0], [xDerReal, functionData.f(xDerReal)]], {dash:2, strokeColor:'gray'});
+                board.update();
+
+                document.getElementById('step-algebra-2').style.display = "block";
+                swal("¡Correcto!", "Has encontrado los bordes asimétricos exactos.", "success");
+            } else {
+                document.getElementById('inputX1').style.borderColor = "var(--danger)";
+                document.getElementById('inputX2').style.borderColor = "var(--danger)";
+                swal("Cálculo inexacto", "Iguala la función a (L - ε) y a (L + ε), y despeja X. Usa 3 decimales.", "error");
+            }
+        }
+
+        function validarDeltaMax() {
+            let inDMax = parseFloat(document.getElementById('inputDeltaMax').value);
+            if (isNaN(inDMax)) return swal("Aviso", "Ingresa el valor decimal.", "warning");
+
+            if (Math.abs(inDMax - deltaMaxReal) < 0.015) {
+                document.getElementById('inputDeltaMax').style.borderColor = "var(--success)";
+                document.getElementById('inputDeltaMax').disabled = true;
+                document.getElementById('step-algebra-3').style.display = "block";
+                swal("¡Acotación Perfecta!", "Elegiste la distancia más restrictiva. Esto evitará que la curva se escape de la caja.", "success");
+            } else {
+                document.getElementById('inputDeltaMax').style.borderColor = "var(--danger)";
+                swal("Revisa tus distancias", `Calcula la distancia desde x=${c} hacia los extremos que acabas de encontrar y escoge la MENOR.`, "error");
+            }
+        }
+
+        function comprobarLmiteFinal() {
+            delta = parseFloat(document.getElementById('inputDelta').value);
+            if (isNaN(delta) || delta <= 0) return swal("Aviso", "Ingresa un radio válido mayor a 0.", "warning");
+
+            if (delta <= deltaMaxReal + 0.005) { // Pequeña tolerancia de redondeo
+                document.getElementById('inputDelta').style.borderColor = "var(--success)";
+                borrarRegionesX();
+
+                let izqX = c - delta;
+                let derX = c + delta;
+                let infY = L - epsilon;
+                let supY = L + epsilon;
+
+                deltaRegion = board.create('polygon', [[izqX, 0], [izqX, L+5], [derX, L+5], [derX, 0]], {
+                    borders: { strokeColor: 'var(--warning)', dash: 2, strokeWidth: 1 },
+                    fillOpacity: 0.1, fillColor: "var(--warning)", vertices: { visible: false }
+                });
+
+                targetBox = board.create('polygon', [[izqX, infY], [izqX, supY], [derX, supY], [derX, infY]], {
+                    borders: { strokeColor: 'var(--success)', strokeWidth: 2 },
+                    fillOpacity: 0.3, fillColor: "var(--success)", vertices: { visible: false }
+                });
+
+                board.update();
+                swal("¡Demostración Geométrica Exitosa!", "¡Maravilloso! Al acotar usando el mínimo, la proyección de tu vecindad entra limpiamente por los costados de la caja Épsilon sin tocar el techo ni el suelo.", "success");
+                confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+
+            } else {
+                document.getElementById('inputDelta').style.borderColor = "var(--danger)";
+                swal("Caja desbordada", "Si no respetas la cota máxima del mínimo, parte de la curva saldrá por arriba o por abajo de la franja Épsilon. Reduce tu delta.", "error");
+            }
+        }
+
+        function reiniciarJuego() { init(); }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis del Límite de una Función: Épsilon-Delta</title>
+    
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script>
+
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'],['\\(','\\)']]}});
+    </script>
+
+    <style>
+        :root {
+            --primary: #004080;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --soft-red: #b43434;      
+            --seq-blue: #0284c7;      
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .main-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        h1 { color: var(--primary); font-family: 'Outfit', sans-serif; font-weight: 700; text-align: center; }
+        h2 { border-left: 8px solid var(--primary); padding-left: 15px; font-size: 20px; color: var(--primary); margin-top: 30px;}
+        
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .layout-grid { grid-template-columns: 1fr; }
+        }
+
+        .panel {
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 25px;
+        }
+
+        .btn-general {
+            display: inline-block; width: 100%;
+            padding: 12px; background-color: var(--primary); color: white;
+            border: none; border-radius: 8px; font-size: 16px; font-weight: 600;
+            cursor: pointer; transition: 0.3s; margin-top: 15px;
+        }
+        .btn-general:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-success { background-color: var(--success); }
+        
+        .btn-soft-red { 
+            background-color: var(--soft-red); 
+            font-size: 17px;
+        }
+        .btn-soft-red i {
+            font-size: 22px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--primary);}
+        
+        .math-input {
+            width: 70px;
+            padding: 5px;
+            text-align: center;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary);
+            outline: none;
+        }
+        .math-input:focus { border-color: var(--primary); }
+        
+        .math-step {
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px; margin: 15px 0; font-size: 18px;
+        }
+
+        #jxgbox {
+            width: 100%;
+            height: 500px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <h1>Análisis de Límites Continuos: Definición $\varepsilon-\delta$</h1>
+        <p style="text-align: center; color: #64748b;">Encuentra una vecindad del punto crítico en el eje $X$ ($\delta$) que garantice que la función permanezca dentro de la tolerancia de error ($\varepsilon$) en el eje $Y$.</p>
+
+        <div class="layout-grid">
+            
+            <div class="panel">
+                <h2>1. Exploración Gráfica del Límite</h2>
+                <p id="txt-limite">Cargando función...</p>
+                
+                <div class="form-group">
+                    <label for="inputEpsilon">Margen de error tolerado ($\varepsilon$):</label>
+                    <input type="number" id="inputEpsilon" class="math-input" style="width: 100px;" value="0.3" min="0.05" max="1.5" step="0.05" onchange="actualizarEpsilon()" autocomplete="off">
+                    <button class="btn-general" onclick="graficarEntornoEpsilon()">Trazar Entorno Épsilon</button>
+                </div>
+
+                <h2>2. Acotación Métrica (Valor Absoluto)</h2>
+                <p style="font-size: 14px; color: var(--text-dark);">A partir de $|f(x) - L| < \varepsilon$, extrae analíticamente el factor constante para aislar la forma $|x - c|$:</p>
+                
+                <div class="math-step" id="step-algebra-1">
+                    Cargando ecuación...
+                </div>
+                
+                <div style="text-align: center; margin-bottom: 20px;">
+                    Factor multiplicador: <input type="number" id="inputFactor" class="math-input" autocomplete="off">
+                    <button class="btn-general btn-success" style="width: auto; padding: 6px 15px; margin-left: 10px;" onclick="validarFactor()">Validar Factor</button>
+                </div>
+
+                <div id="step-algebra-2" style="display: none; transition: 0.3s;">
+                    <h2>3. Umbral Máximo de Tolerancia ($\delta_{max}$)</h2>
+                    <p style="font-size: 14px;">Divide el radio $\varepsilon$ actual entre tu factor constante para hallar la cota superior decimal exacta de $\delta$:</p>
+                    <div class="math-step" id="latex-despeje">
+                        Cargando umbral...
+                    </div>
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        $\delta_{max} =$ <input type="number" id="inputDeltaMax" class="math-input" style="width: 100px;" step="0.001" autocomplete="off">
+                        <button class="btn-general btn-success" style="width: auto; padding: 6px 15px; margin-left: 10px;" onclick="validarDeltaMax()">Validar Umbral</button>
+                    </div>
+                </div>
+
+                <div id="step-algebra-3" style="display: none; transition: 0.3s;">
+                    <h2>4. Proponer un Radio $\delta$ Válido</h2>
+                    <p style="font-size: 14px;">Elige un radio de vecindad real $\delta$ que cumpla de forma segura con la condición del límite ($0 < \delta \le \delta_{max}$):</p>
+                    <div class="math-step">
+                        $\delta =$ <input type="number" id="inputDelta" class="math-input" style="width: 100px;" min="0.001" step="0.01" autocomplete="off">
+                    </div>
+                    <button class="btn-general" style="background-color: var(--primary);" onclick="comprobarLmiteFinal()">Comprobar Entorno Geométrico</button>
+                </div>
+
+                <button class="btn-general btn-soft-red" style="margin-top: 40px;" onclick="reiniciarJuego()">
+                    <i class="fa-solid fa-dice"></i> Plantear Nueva Función
+                </button>
+            </div>
+
+            <div class="panel" style="padding: 15px;">
+                <div id="jxgbox" class="jxgbox"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // VARIABLES GLOBALES Y GENERACIÓN ALEATORIA
+        // ==========================================
+        let board;
+        let epsilon = 0.3;
+        let delta = 0.0;
+        let epsilonRegion, deltaRegion, limitLineHorizontal, limitLineVertical;
+        let epsilonText, deltaText; // <- Variables para las letras griegas
+        let functionGraph, targetBox;
+        
+        // Punto de análisis aleatorio en X (entre -3 y 3)
+        let c = Math.floor(Math.random() * 7) - 3;
+        // Evitamos c=0 para asegurar que el estudiante practique el formato |x - c|
+        if (c === 0) c = (Math.random() > 0.5) ? 2 : -2; 
+        
+        const M = Math.floor(Math.random() * 3) + 2;    // Pendiente entre 2 y 4
+        const B = Math.floor(Math.random() * 7) - 3;    // Ordenada al origen entre -3 y 3
+        const L = M * c + B;                            // Límite real evaluado
+
+        // Formato algebraico elegante para el valor absoluto |x - c|
+        let strXC = c > 0 ? `x - ${c}` : `x + ${Math.abs(c)}`;
+
+        // ==========================================
+        // INICIALIZACIÓN CON CASILLAS LIMPIAS
+        // ==========================================
+        function init() {
+            // Forzar limpieza total 
+            document.getElementById('inputEpsilon').value = "0.3";
+            document.getElementById('inputFactor').value = "";
+            document.getElementById('inputFactor').disabled = false;
+            document.getElementById('inputFactor').style.borderColor = "var(--border-color)";
+            
+            document.getElementById('inputDeltaMax').value = "";
+            document.getElementById('inputDeltaMax').disabled = false;
+            document.getElementById('inputDeltaMax').style.borderColor = "var(--border-color)";
+            
+            document.getElementById('inputDelta').value = "";
+            document.getElementById('inputDelta').disabled = false;
+            document.getElementById('inputDelta').style.borderColor = "var(--border-color)";
+
+            document.getElementById('step-algebra-2').style.display = "none";
+            document.getElementById('step-algebra-3').style.display = "none";
+
+            // Textos dinámicos
+            const txtLim = document.getElementById('txt-limite');
+            let signoB = "";
+            if (B > 0) signoB = `+ ${B}`;
+            else if (B < 0) signoB = `- ${Math.abs(B)}`;
+            
+            let expLineal = B === 0 ? `${M}x` : `${M}x ${signoB}`;
+            
+            txtLim.innerHTML = `Demuestra formalmente mediante entornos métricos que: $$\\lim_{x \\to ${c}} (${expLineal}) = ${L}$$`;
+            
+            const step1 = document.getElementById('step-algebra-1');
+            step1.innerHTML = `$| (${expLineal}) - ${L} | = \\text{?} \\cdot |${strXC}| < \\varepsilon$`;
+
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+
+            // Configurar el Canvas dinámico centrado en (c, L)
+            board = JXG.JSXGraph.initBoard('jxgbox', {
+                boundingbox: [c - 3.5, L + 4.5, c + 3.5, L - 4.5], 
+                axis: true,
+                showNavigation: true,
+                showCopyright: false,
+                pan: { enabled: false },
+                zoom: { enabled: false }
+            });
+
+            // Graficar la recta asegurando que cruce el lienzo dinámico
+            functionGraph = board.create('functiongraph', [function(x){ return M*x + B; }, c - 5, c + 5], {
+                strokeWidth: 3, strokeColor: 'var(--seq-blue)'
+            });
+
+            // Punto crítico (c, L)
+            board.create('point', [c, L], {
+                name: `(${c}, ${L})`, size: 4, fillColor: 'var(--danger)', strokeColor: 'var(--danger)', fixed: true
+            });
+        }
+
+        // ==========================================
+        // MANIPULACIÓN GEOMÉTRICA DE ENTORNOS
+        // ==========================================
+        function actualizarEpsilon() {
+            epsilon = parseFloat(document.getElementById('inputEpsilon').value);
+            if (epsilon <= 0 || isNaN(epsilon)) {
+                swal("Atención", "El valor de épsilon debe ser mayor a 0.", "warning");
+                document.getElementById('inputEpsilon').value = 0.3;
+                epsilon = 0.3;
+            }
+            if (epsilonRegion) borrarRegionesX();
+            
+            const labelDespeje = document.getElementById('latex-despeje');
+            labelDespeje.innerHTML = `$|${strXC}| < \\frac{${epsilon}}{${M}}$`;
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function graficarEntornoEpsilon() {
+            actualizarEpsilon();
+
+            if (epsilonRegion) board.removeObject(epsilonRegion);
+            if (limitLineHorizontal) board.removeObject(limitLineHorizontal);
+            if (epsilonText) board.removeObject(epsilonText); // Limpiar texto anterior
+
+            let supY = L + epsilon;
+            let infY = L - epsilon;
+
+            // Franja adaptada al centro c
+            limitLineHorizontal = board.create("line", [[c - 5, L], [c + 5, L]], {
+                straightFirst: false, straightLast: false, strokeWidth: 1, strokeColor: "#94a3b8", dash: 1
+            });
+
+            epsilonRegion = board.create('polygon', [[c - 5, infY], [c - 5, supY], [c + 5, supY], [c + 5, infY]], {
+                borders: { strokeColor: 'var(--primary)', dash: 2, strokeWidth: 1 },
+                fillOpacity: 0.08, fillColor: "var(--primary)", vertices: { visible: false }
+            });
+
+            // Dibujar la letra Épsilon cerca de la franja superior
+            epsilonText = board.create('text', [c + 2.8, supY + 0.1, '&epsilon;'], {
+                fontSize: 24, strokeColor: 'var(--primary)'
+            });
+
+            board.update();
+        }
+
+        function borrarRegionesX() {
+            if (deltaRegion) board.removeObject(deltaRegion);
+            if (limitLineVertical) board.removeObject(limitLineVertical);
+            if (targetBox) board.removeObject(targetBox);
+            if (deltaText) board.removeObject(deltaText); // Limpiar texto anterior
+            
+            document.getElementById('inputDelta').disabled = false;
+            document.getElementById('inputDelta').style.borderColor = "var(--border-color)";
+        }
+
+        // ==========================================
+        // VALIDACIÓN DE PASOS ALGEBRAICOS
+        // ==========================================
+        function validarFactor() {
+            const inputFac = parseInt(document.getElementById('inputFactor').value);
+            if (isNaN(inputFac)) {
+                swal("Aviso", "Ingresa una constante numérica.", "warning");
+                return;
+            }
+
+            if (inputFac === M) {
+                document.getElementById('inputFactor').style.borderColor = "var(--success)";
+                document.getElementById('inputFactor').disabled = true;
+                
+                const labelDespeje = document.getElementById('latex-despeje');
+                labelDespeje.innerHTML = `$|${strXC}| < \\frac{\\varepsilon}{${M}}$`;
+                if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+
+                document.getElementById('step-algebra-2').style.display = "block";
+                swal("¡Factorización Correcta!", "Has aislado con éxito la distancia métrica. Calcula ahora el límite superior de delta.", "success");
+            } else {
+                document.getElementById('inputFactor').style.borderColor = "var(--danger)";
+                swal("Factor Erróneo", `Revisa la factorización por término común de tu expresión algebraíca. Ayuda: Extrae la pendiente de la función.`, "error");
+            }
+        }
+
+        function validarDeltaMax() {
+            const inputDMax = parseFloat(document.getElementById('inputDeltaMax').value);
+            const deltaTeoricaMax = epsilon / M;
+
+            if (isNaN(inputDMax)) {
+                swal("Aviso", "Ingresa el valor decimal correspondiente.", "warning");
+                return;
+            }
+
+            if (Math.abs(inputDMax - deltaTeoricaMax) < 0.015) {
+                document.getElementById('inputDeltaMax').style.borderColor = "var(--success)";
+                document.getElementById('inputDeltaMax').disabled = true;
+                document.getElementById('step-algebra-3').style.display = "block";
+                swal("¡Umbral Correcto!", `Perfecto, $\\delta$ no puede superar el valor de ${deltaTeoricaMax.toFixed(3)}. Propón tu radio operativo.`, "success");
+            } else {
+                document.getElementById('inputDeltaMax').style.borderColor = "var(--danger)";
+                swal("Cálculo incorrecto", `Divide el valor de épsilon actual (${epsilon}) entre tu factor validado (${M}).`, "error");
+            }
+        }
+
+        function comprobarLmiteFinal() {
+            delta = parseFloat(document.getElementById('inputDelta').value);
+            const deltaTeoricaMax = epsilon / M;
+
+            if (isNaN(delta) || delta <= 0) {
+                swal("Aviso", "El valor de delta debe ser un número real positivo.", "warning");
+                return;
+            }
+
+            if (delta <= deltaTeoricaMax) {
+                document.getElementById('inputDelta').style.borderColor = "var(--success)";
+                document.getElementById('inputDelta').disabled = true;
+
+                if (deltaRegion) board.removeObject(deltaRegion);
+                if (limitLineVertical) board.removeObject(limitLineVertical);
+                if (targetBox) board.removeObject(targetBox);
+                if (deltaText) board.removeObject(deltaText); // Limpiar texto anterior
+
+                let izqX = c - delta;
+                let derX = c + delta;
+                let infY = L - epsilon;
+                let supY = L + epsilon;
+
+                limitLineVertical = board.create("line", [[c, L - 6], [c, L + 6]], {
+                    straightFirst: false, straightLast: false, strokeWidth: 1, strokeColor: "#94a3b8", dash: 1
+                });
+
+                deltaRegion = board.create('polygon', [[izqX, L - 6], [izqX, L + 6], [derX, L + 6], [derX, L - 6]], {
+                    borders: { strokeColor: 'var(--warning)', dash: 2, strokeWidth: 1 },
+                    fillOpacity: 0.05, fillColor: "var(--warning)", vertices: { visible: false }
+                });
+
+                targetBox = board.create('polygon', [[izqX, infY], [izqX, supY], [derX, supY], [derX, infY]], {
+                    borders: { strokeColor: 'var(--success)', strokeWidth: 2 },
+                    fillOpacity: 0.2, fillColor: "var(--success)", vertices: { visible: false }
+                });
+                
+                // Dibujar la letra Delta cerca de la frontera vertical derecha
+                deltaText = board.create('text', [derX + 0.1, L + 2.5, '&delta;'], {
+                    fontSize: 24, strokeColor: 'var(--warning)'
+                });
+
+                board.update();
+
+                swal("¡Demostración Geométrica Exitosa!", `¡Excelente! Con una delta de ${delta}, la recta entra por los costados y jamás se escapa por el techo ni el suelo de la caja de tolerancia.`, "success");
+                confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+
+            } else {
+                document.getElementById('inputDelta').style.borderColor = "var(--danger)";
+                swal("Entorno inestable", `¡La vecindad es demasiado ancha! Si usas delta = ${delta}, hay valores de X que producen imágenes fuera del margen de error de épsilon.`, "error");
+            }
+        }
+
+        function reiniciarJuego() {
+            location.reload();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
+
+
