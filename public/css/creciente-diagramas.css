@@ -1,12 +1,8 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #f3f4f6;
+  background-color: #1e1e2f; /* Fondo oscuro tipo gaming */
   color: #1f2937;
   display: flex;
   justify-content: center;
@@ -18,71 +14,174 @@ body {
 .card-container {
   background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
   padding: 32px;
   max-width: 760px;
   width: 100%;
   text-align: center;
 }
 
-.app-header h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #111827;
-  margin-bottom: 8px;
-}
+.app-header h2 { font-size: 1.8rem; font-weight: 700; color: #111827; margin-bottom: 8px; }
+.app-header p { font-size: 1rem; color: #4b5563; line-height: 1.5; margin-bottom: 20px; }
 
-.app-header p {
-  font-size: 0.95rem;
-  color: #6b7280;
-  line-height: 1.5;
+/* Gamificación Stats */
+.game-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f3f4f6;
+  padding: 12px 24px;
+  border-radius: 12px;
   margin-bottom: 24px;
+  font-size: 1.2rem;
+  font-weight: 700;
 }
+.score { color: #3b82f6; }
+.lives { letter-spacing: 4px; }
 
 .canvas-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 24px;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+  display: flex; justify-content: center; margin-bottom: 24px;
+  border-radius: 12px; overflow: hidden;
+  box-shadow: 0 0 0 2px #e5e7eb;
 }
 
-canvas {
-  display: block;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
+.action-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.mt-4 { margin-top: 24px; }
 
 .btn {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 500;
-  padding: 10px 24px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 600;
+  padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer;
+  transition: transform 0.1s, filter 0.2s;
 }
-
-.btn-primary {
-  background-color: #3b82f6;
+.btn:active { transform: scale(0.96); }
+.btn-primary { background-color: #3b82f6; color: #ffffff; }
+.btn-primary:hover { filter: brightness(1.1); }
+.btn-secondary { background-color: #e5e7eb; color: #374151; }
+.btn-secondary:hover { filter: brightness(0.9); }
+.btn-success { background-color: #10b981; color: white; animation: pulse 1.5s infinite; }
+.btn-info {
+  background-color: #d97706; /* Color ámbar elegante */
   color: #ffffff;
 }
 
-.btn-primary:hover {
-  background-color: #2563eb;
+.btn-info:hover {
+  filter: brightness(1.1);
 }
 
-.btn-secondary {
-  background-color: #f3f4f6;
-  color: #4b5563;
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
-.btn-secondary:hover {
-  background-color: #e5e7eb;
+.hidden { display: none !important; }
+.text-left { text-align: left; }
+
+/* Estilos Cuestionario */
+.quiz-title { color: #8b5cf6; margin-bottom: 20px; font-size: 1.5rem; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+.quiz-question { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #8b5cf6; }
+.quiz-question p { font-weight: 600; margin-bottom: 10px; color: #1f2937; }
+.quiz-question label { display: block; margin-bottom: 8px; cursor: pointer; color: #4b5563; }
+.quiz-question input { margin-right: 10px; accent-color: #8b5cf6; }
+
+/* --- Estilos de Feedback para el Cuestionario --- */
+
+/* Resetear estilos previos (para cuando re-evalúan) */
+.quiz-question.correct,
+.quiz-question.incorrect {
+  border-left-width: 4px; /* Mantener el ancho del borde original */
 }
+
+/* Estilo para respuesta Correcta */
+.quiz-question.correct {
+  border-left-color: #10b981 !important; /* Verde Esmeralda */
+  background-color: #ecfdf5; /* Fondo verde muy suave */
+}
+.quiz-question.correct p {
+  color: #065f46; /* Texto verde oscuro */
+}
+
+/* Estilo para respuesta Incorrecta */
+.quiz-question.incorrect {
+  border-left-color: #ef4444 !important; /* Rojo */
+  background-color: #fef2f2; /* Fondo rojo muy suave */
+}
+.quiz-question.incorrect p {
+  color: #991b1b; /* Texto rojo oscuro */
+}
+/* --- ANIMACIONES DE LOS CORAZONES --- */
+
+.corazon-contenedor {
+  display: inline-block;
+  font-size: 24px; /* Tamaño ideal para los emojis */
+  margin: 0 4px;
+  position: relative;
+}
+
+/* Animación cuando ganas un punto (Latido de vida) */
+.corazon-pulso {
+  display: inline-block;
+  animation: latidoVida 1.2s ease-in-out;
+}
+
+@keyframes latidoVida {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.5); } /* Se agranda */
+  60% { transform: scale(0.9); }
+  100% { transform: scale(1); }  /* Vuelve a su tamaño original */
+}
+
+/* Animación cuando pierdes una vida (Caída libre) */
+.corazon-caido {
+  display: inline-block;
+  animation: caidaMuerte 1.5s forwards ease-in;
+}
+
+@keyframes caidaMuerte {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  30% { transform: translateY(-10px) rotate(-15deg); } /* Pequeño brinco antes de caer */
+  100% { transform: translateY(200px) rotate(90deg); opacity: 0; } /* Cae al suelo y se desvanece */
+}
+
+/* Espacio vacío transparente para mantener la alineación cuando un corazón cae */
+.corazon-vacio {
+  display: inline-block;
+  width: 24px; /* Mismo ancho del emoji para que no se muevan de lugar los demás */
+  visibility: hidden;
+}
+
+/* --- ESTILOS NIVEL 3 (DRAG AND DROP) --- */
+.demostracion-box {
+  background: #f8f9fa; padding: 20px; border-radius: 8px;
+  font-size: 1.1rem; line-height: 2; color: #1f2937;
+  border-left: 4px solid #3b82f6; margin-bottom: 20px;
+}
+
+.drop-zone {
+  display: inline-block; min-width: 120px; height: 35px;
+  border: 2px dashed #9ca3af; border-radius: 6px;
+  background-color: #e5e7eb; vertical-align: middle;
+  margin: 0 5px; text-align: center; line-height: 35px;
+  transition: all 0.2s;
+}
+
+.drop-zone.drag-over {
+  background-color: #dbeafe; border-color: #3b82f6; transform: scale(1.05);
+}
+
+.banco-palabras {
+  display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;
+  padding: 15px; background: #f3f4f6; border-radius: 8px;
+}
+
+.draggable-word {
+  background: white; border: 2px solid #8b5cf6; color: #4c1d95;
+  padding: 5px 15px; border-radius: 20px; cursor: grab;
+  font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.draggable-word:active { cursor: grabbing; }
+
+/* Feedback visual de aciertos en Nivel 3 */
+.drop-zone.correct { border-color: #10b981; background-color: #d1fae5; }
+.drop-zone.incorrect { border-color: #ef4444; background-color: #fee2e2; }
