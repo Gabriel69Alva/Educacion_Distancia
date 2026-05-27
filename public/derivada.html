@@ -154,7 +154,7 @@
                     <i class="fa-solid fa-clover" id="life2"></i>
                     <i class="fa-solid fa-clover" id="life3"></i>
                 </div>
-                <div style="font-weight: bold;" id="target-label">Función actual: 1 / 3</div>
+                <div style="font-weight: bold;" id="target-label">Aciertos necesarios: 3</div>
                 <div>Retos superados: <span id="score-text" style="font-size: 20px;">0</span> / 3</div>
             </div>
 
@@ -316,7 +316,7 @@
         });
 
         function cargarNuevoReto() {
-            if (score >= 3) return;
+            if (score >= 3 || lives <= 0) return;
 
             document.getElementById('btn-validate').classList.remove('hidden');
             document.getElementById('slope-slider').disabled = false;
@@ -335,8 +335,9 @@
             if (pIdealAux) brd.removeObject(pIdealAux);
             if (curve) brd.removeObject(curve);
 
-            retoActual = retos[score];
-            document.getElementById('target-label').innerText = `Analizando: ${retoActual.desc}`;
+            const indiceAleatorio = Math.floor(Math.random() * retos.length);
+            retoActual = retos[indiceAleatorio];
+            document.getElementById('target-label').innerText = `Analizando: ${retoActual.desc} | Aciertos: ${score}/3 | Vidas: ${lives}/3`;
 
             // Curva de la función
             curve = brd.create('functiongraph', [retoActual.f, -6, 6], {
@@ -370,11 +371,27 @@
             brd.update(); // Fuerza a JSXGraph a revaluar las coordenadas dinámicas de pUsuarioAux
         }
 
+        // Ajuste de precisión para comparar pendientes con base en la resolución real del slider.
+        function redondearConPaso(valor, min, step) {
+            return min + Math.round((valor - min) / step) * step;
+        }
+
+        function formatearNumero(valor, decimales = 2) {
+            return Number(valor.toFixed(decimales)).toString();
+        }
+
         window.validarTangente = function () {
+            const slider = document.getElementById('slope-slider');
             const userSlope = parseFloat(document.getElementById('slope-slider').value);
             const idealSlope = retoActual.df(retoActual.x0);
-            
-            const esCorrecto = Math.abs(userSlope - idealSlope) <= 0.21;
+            const minSlope = parseFloat(slider.min);
+            const maxSlope = parseFloat(slider.max);
+            const sliderStep = parseFloat(slider.step) || 0.1;
+
+            const idealAcotado = Math.min(maxSlope, Math.max(minSlope, idealSlope));
+            const idealDiscreto = redondearConPaso(idealAcotado, minSlope, sliderStep);
+            const toleranciaNumerica = 1e-9;
+            const esCorrecto = Math.abs(userSlope - idealDiscreto) <= toleranciaNumerica;
 
             // Congelar escenario inmediatamente
             document.getElementById('slope-slider').disabled = true;
@@ -389,13 +406,14 @@
             brd.unsuspendUpdate();
             brd.update();
 
-            score++;
-            document.getElementById('score-text').innerText = score;
-
             if (esCorrecto) {
+                score++;
+                document.getElementById('score-text').innerText = score;
+                document.getElementById('target-label').innerText = `Analizando: ${retoActual.desc} | Aciertos: ${score}/3 | Vidas: ${lives}/3`;
+
                 if (score < 3) {
                     document.getElementById('btn-siguiente-grafica').classList.remove('hidden');
-                    swal("¡Excelente Estimación!", `Calculaste una pendiente de m = ${userSlope.toFixed(1)}, lo cual coincide con la derivada f'(${retoActual.x0}) = ${idealSlope}.\n\nAnaliza la gráfica congelada antes de continuar.`, "success");
+                    swal("¡Excelente Estimación!", `Calculaste una pendiente de m = ${userSlope.toFixed(1)}, coincidiendo con el valor objetivo ajustado por resolución del control (≈ ${formatearNumero(idealDiscreto, 2)}) para f'(${retoActual.x0}) = ${formatearNumero(idealSlope, 3)}.\n\nAnaliza la gráfica congelada antes de continuar.`, "success");
                 } else {
                     document.getElementById('btn-pasar-n2').classList.remove('hidden');
                     swal("¡Fase Completada!", "¡Impecable! Has demostrado una gran precisión geométrica.", "success");
@@ -405,6 +423,7 @@
                 if (lives > 0) {
                     document.getElementById(`life${lives}`).classList.add('lost');
                     lives--;
+                    document.getElementById('target-label').innerText = `Analizando: ${retoActual.desc} | Aciertos: ${score}/3 | Vidas: ${lives}/3`;
                 }
 
                 if (lives === 0) {
@@ -412,7 +431,7 @@
                 } else {
                     if (score < 3) {
                         document.getElementById('btn-siguiente-grafica').classList.remove('hidden');
-                        swal("Desviación de Tangencia", `Tu pendiente de m = ${userSlope.toFixed(1)} corta o se aleja del comportamiento local. Observa la línea verde punteada para contrastar el valor matemático real f'(${retoActual.x0}) = ${idealSlope}.\n\nPierdes un trébol. Presiona 'Siguiente Reto' cuando estés listo.`, "error");
+                        swal("Desviación de Tangencia", `Tu pendiente de m = ${userSlope.toFixed(1)} no coincide con el valor objetivo permitido por el deslizador (≈ ${formatearNumero(idealDiscreto, 2)}), derivado de f'(${retoActual.x0}) = ${formatearNumero(idealSlope, 3)}.\n\nObserva la línea verde punteada para contrastar la pendiente real. Pierdes un trébol. Presiona 'Siguiente Reto' cuando estés listo.`, "error");
                     } else {
                         document.getElementById('btn-pasar-n2').classList.remove('hidden');
                         swal("Etapa Concluida", `Módulo de observación finalizado. Mira la discrepancia con la tangente real (línea verde discontinua) antes de avanzar a la teoría.`, "warning");
