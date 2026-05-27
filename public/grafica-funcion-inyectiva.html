@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escenario 7: Función Inyectiva - Industrial Animado</title>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'],['\\(','\\)']]}});
+    </script>
+
+    <style>
+        :root {
+            --primary: #004080;
+            --primary-hover: #002d5a;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 950px;
+            width: 100%;
+            background: #fff;
+            padding: 45px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        h1 { color: var(--primary); font-weight: 700; text-align: center; }
+        h2 { border-left: 8px solid var(--success); padding-left: 15px; font-size: 20px; color: var(--primary); margin-top: 35px; }
+        h3 { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: var(--text-dark); line-height: 1.4; }
+        p { line-height: 1.6; }
+        
+        .hidden { display: none !important; }
+
+        .btn-general {
+            display: block; width: 100%; max-width: 360px; margin: 30px auto; padding: 14px;
+            background-color: var(--primary); color: white; border: none; border-radius: 30px;
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; position: relative;
+        }
+        .btn-general:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .btn-general:disabled { background-color: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-success { background-color: var(--success); }
+        .btn-secondary { background-color: #64748b; }
+        
+        .btn-general i.fa-rocket {
+            font-size: 1.8rem; vertical-align: middle; margin-left: 12px;
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); color: #ffffff;
+        }
+        .btn-general:hover i.fa-rocket { transform: translateX(6px) translateY(-5px) scale(1.15); }
+
+        /* ================= ETAPA 1 ================= */
+        .game-panel { background: var(--bg-light); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .jxgbox-large { width: 100%; height: 500px; max-width: 700px; margin: 0 auto 20px auto; border-radius: 8px; border: 1px solid var(--border-color); background: #fff; }
+        
+        .status-bar { display: flex; justify-content: space-between; align-items: center; background: #e0f2fe; padding: 15px 25px; border-radius: 8px; font-weight: 600; color: var(--primary); margin-bottom: 20px; border: 1px solid #bae6fd; }
+        
+        .lives { display: flex; align-items: center; gap: 5px; }
+        .lives i { color: var(--success); font-size: 22px; display: inline-block; transform-origin: center; }
+        
+        /* Animación de expansión y caída del trébol */
+        .lives i.lost {
+            animation: cloverPopFall 3.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+        }
+
+        @keyframes cloverPopFall {
+            0% { transform: scale(1); color: var(--success); }
+            20% { transform: scale(1.5); color: var(--danger); }
+            40% { transform: scale(1.2) translateY(0); opacity: 1; }
+            100% { transform: scale(1.0) translateY(200px) rotate(90deg); opacity: 0; color: var(--danger); }
+        }
+
+        .btn-row { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .btn-row button { margin: 10px 0; max-width: 200px; }
+
+        /* ================= ETAPA 2 (H5P) ================= */
+        .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 8px; margin: 20px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--success); width: 33.33%; transition: 0.4s; }
+        
+        .h5p-option { display: flex; align-items: center; padding: 16px; border: 1px solid var(--border-color); margin-bottom: 12px; border-radius: 8px; cursor: pointer; background: var(--bg-light); transition: 0.2s; }
+        .h5p-option:hover { border-color: #94a3b8; }
+        .h5p-option input { margin-right: 15px; accent-color: var(--primary); transform: scale(1.2); cursor: pointer; }
+        .h5p-feedback { padding: 20px; border-radius: 8px; margin-top: 20px; background: #f1f5f9; border-left: 6px solid var(--primary); font-size: 15px; line-height: 1.5; }
+        .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; color: #991b1b; }
+
+        /* ================= ETAPA 3 ================= */
+        .n3-section { background: var(--bg-light); padding: 30px; border-radius: 12px; margin-bottom: 30px; border: 1px solid var(--border-color); }
+        .math-input { width: 60px; padding: 6px; text-align: center; border: 2px solid var(--border-color); border-radius: 6px; font-size: 16px; font-weight: bold; color: var(--primary); outline: none; margin: 0 8px; }
+        .math-input:focus { border-color: var(--primary); }
+        select.math-input { width: auto; padding: 6px 10px; }
+        .step-row { display: flex; align-items: center; margin-bottom: 15px; font-size: 17px; flex-wrap: wrap; }
+        .step-row strong { margin-right: 8px; } /* Evita que el texto en negrita se pegue a las fórmulas */
+
+        /* Estilos del reporte final de desempeño */
+        .summary-card { text-align: left; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; margin-top: 15px; }
+        .summary-item { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }
+        .summary-item span.accent { font-weight: bold; color: var(--primary); }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div id="level-1-container">
+            <h1>Etapa 1: Creación Visual</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 20px;">
+                Manipula los puntos de control amarillos y los puntos extremos de la gráfica para formar <strong>3 funciones inyectivas</strong> en el intervalo $[-3, 3]$. Recuerda la prueba de la línea horizontal.
+            </p>
+
+            <div class="status-bar">
+                <div class="lives">
+                    Vidas: 
+                    <i class="fa-solid fa-clover" id="life1"></i>
+                    <i class="fa-solid fa-clover" id="life2"></i>
+                    <i class="fa-solid fa-clover" id="life3"></i>
+                </div>
+                <div>Funciones logradas: <span id="score-text" style="font-size: 20px;">0</span> / 3</div>
+            </div>
+
+            <div id="jxgbox" class="jxgbox-large"></div>
+
+            <div class="btn-row" id="controls-etapa1">
+                <button class="btn-general" id="btn-validate" onclick="validarCurva()">Validar Función</button>
+                <button class="btn-general btn-secondary" id="btn-reset" onclick="setRandomInitialPositions()">Generar Nueva Curva</button>
+            </div>
+            
+            <button class="btn-general btn-success hidden" id="btn-pasar-n2" onclick="iniciarEtapa2()">Continuar a Etapa 2 <i class="fa-solid fa-rocket"></i></button>
+        </div>
+
+        <div id="level-2-container" class="hidden">
+            <h1>Etapa 2: Conceptos Fundamentales</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Comprueba tu comprensión teórica sobre la inyectividad.</p>
+
+            <div class="progress-container"><div class="progress-bar" id="h5p-progress"></div></div>
+            <p id="h5p-counter" style="text-align: right; font-weight: 600; color: var(--primary);">1/3</p>
+
+            <div id="step-1" class="quiz-step">
+                <h3>1. ¿Cuál de las siguientes es una función inyectiva?</h3>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>A) $f(x) = x^2$</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>B) $f(x) = |x|$</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> <span>C) $f(x) = x^3$</span></label>
+                <div id="feedback-1" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-2" class="quiz-step hidden">
+                <h3>2. La prueba de la línea horizontal se usa para determinar visualmente si una función es:</h3>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>A) Creciente</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> <span>B) Inyectiva (Uno a uno)</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>C) Suprayectiva</span></label>
+                <div id="feedback-2" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-3" class="quiz-step hidden">
+                <h3>3. La definición formal establece que si $f(a) = f(b)$ implica necesariamente que $a = b$, then la función es:</h3>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> <span>A) Inyectiva</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>B) Par</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>C) Impar</span></label>
+                <div id="feedback-3" class="h5p-feedback hidden"></div>
+            </div>
+
+            <button class="btn-general" id="btn-comprobar-quiz" onclick="comprobarPregunta()">Comprobar</button>
+            <button class="btn-general hidden btn-success" id="btn-siguiente-quiz" onclick="siguientePregunta()">Siguiente</button>
+        </div>
+
+        <div id="level-3-container" class="hidden">
+            <h1>Etapa 3: Demostración Analítica</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 30px;">
+                Utiliza la definición formal para demostrar si las siguientes funciones son inyectivas.<br>
+                <strong>Regla de oro:</strong> Partimos de suponer que $f(a) = f(b)$. Si tras despejar llegamos a que <strong>$a = b$</strong>, es inyectiva.
+            </p>
+
+            <div class="n3-section">
+                <h3 style="color: var(--primary);">Ejercicio A: $f(x) = 3x - 5$</h3>
+                <div class="step-row"><strong>Suposición inicial:</strong>&nbsp;$f(a) = f(b)$</div>
+                <div class="step-row">
+                    <strong>Paso 1:</strong>&nbsp;<input type="number" id="ans1-1" class="math-input">&nbsp;$a - 5 = 3b - 5$
+                </div>
+                <div class="step-row">
+                    <strong>Paso 2 (Sumamos 5):</strong>&nbsp;$3a =$&nbsp;<input type="number" id="ans1-2" class="math-input">&nbsp;$b$
+                </div>
+                <div class="step-row">
+                    <strong>Paso 3 (Dividimos entre 3):</strong>&nbsp;$a = b$
+                </div>
+                <hr style="border: 0; border-top: 1px dashed var(--border-color); margin: 15px 0;">
+                <div class="step-row">
+                    <strong>Conclusión:</strong>&nbsp;La función&nbsp;
+                    <select id="ans1-concl" class="math-input">
+                        <option value="">--</option>
+                        <option value="si">SÍ es inyectiva</option>
+                        <option value="no">NO es inyectiva</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="n3-section">
+                <h3 style="color: var(--primary);">Ejercicio B: $g(x) = x^2 + 2$</h3>
+                <div class="step-row"><strong>Suposición inicial:</strong>&nbsp;$g(a) = g(b)$</div>
+                <div class="step-row">
+                    <strong>Paso 1:</strong>&nbsp;$a^2 + 2 = b^2 + 2$
+                </div>
+                <div class="step-row">
+                    <strong>Paso 2 (Restamos 2):</strong>&nbsp;$a^2 = b^2$
+                </div>
+                <div class="step-row">
+                    <strong>Paso 3 (Raíz cuadrada):</strong>&nbsp;$a =$&nbsp;
+                    <select id="ans2-1" class="math-input">
+                        <option value="">--</option>
+                        <option value="b">b</option>
+                        <option value="-b">-b</option>
+                        <option value="pm">±b</option>
+                    </select>
+                </div>
+                <hr style="border: 0; border-top: 1px dashed var(--border-color); margin: 15px 0;">
+                <div class="step-row">
+                    <strong>Conclusión:</strong>&nbsp;La función&nbsp;
+                    <select id="ans2-concl" class="math-input">
+                        <option value="">--</option>
+                        <option value="si">SÍ es inyectiva</option>
+                        <option value="no">NO es inyectiva</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()">Evaluar Demostraciones</button>
+            <button class="btn-general hidden btn-success" id="btn-finalizar-actividad" onclick="finalizarTodo()">Finalizar Actividad <i class="fa-solid fa-rocket"></i></button>
+        </div>
+
+    </div>
+
+    <script>
+        let totalErroresVisuales = 0;
+        let aciertosQuizN2 = 0;
+        let aciertosAlgebraN3 = 0;
+
+        window.onload = function() {
+            document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+            document.querySelectorAll('input[type="number"]').forEach(i => i.value = '');
+            document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+        };
+
+        // ==========================================
+        // LÓGICA ETAPA 1 - JUEGO DE BEZIER
+        // ==========================================
+        let lives = 3;
+        let score = 0;
+        let highlightedPoints = [];
+        let curve, brd, g1, g2, p5, p6;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            brd = JXG.JSXGraph.initBoard('jxgbox', {
+                boundingbox: [-6, 6, 6, -6], axis: true, grid: true,
+                pan: { enabled: false }, zoom: { enabled: false }, showNavigation: false
+            });
+
+            brd.suspendUpdate();
+
+            var l1_left_guide = brd.create('line', [[-3, 2], [-3, 4]], { visible: false });
+            var l2_right_guide = brd.create('line', [[3, 2], [3, 4]], { visible: false });
+            var l3_horizontal = brd.create('segment', [[-3, 0], [3, 0]], { color: '#6fbff9', size: 15, strokeWidth: 5, fixed: true });
+
+            g1 = brd.create('glider', [-3, 0, l1_left_guide], { name: 'A', size: 5, color: '#004080' });
+            g2 = brd.create('glider', [3, 0, l2_right_guide], { name: 'B', size: 5, color: '#004080' });
+            p5 = brd.create('point', [0, 0], { name: 'P1', size: 4, color: '#f59e0b' });
+            p6 = brd.create('point', [0, 0], { name: 'P2', size: 4, color: '#f59e0b' });
+
+            brd.on('update', () => {
+                [g1, g2, p5, p6].forEach(pt => {
+                    if (pt.Y() > 4) pt.moveTo([pt.X(), 4]);
+                    else if (pt.Y() < -4) pt.moveTo([pt.X(), -4]);
+                });
+            });
+
+            curve = brd.create('curve', JXG.Math.Numerics.bezier([g1, p5, p6, g2]), {
+                strokeColor: '#004080', strokeWidth: 3, layer: 9
+            });
+
+            brd.unsuspendUpdate();
+            setRandomInitialPositions();
+        });
+
+        function getRandomCoord(min, max) { return Math.random() * (max - min) + min; }
+
+        function setRandomInitialPositions() {
+            g1.moveTo([-3, getRandomCoord(-4, 4)]);
+            g2.moveTo([3, getRandomCoord(-4, 4)]);
+            
+            const p5Alto = Math.random() < 0.5;
+            p5.moveTo([getRandomCoord(-2.5, -0.5), p5Alto ? getRandomCoord(1.5, 4) : getRandomCoord(-4, -1.5)]);
+            p6.moveTo([getRandomCoord(0.5, 2.5), p5Alto ? getRandomCoord(-4, -1.5) : getRandomCoord(1.5, 4)]);
+
+            [g1, g2, p5, p6].forEach(pt => pt.setAttribute({ fixed: false }));
+            highlightedPoints.forEach(p => brd.removeObject(p));
+            highlightedPoints = [];
+            brd.update();
+        }
+
+        const highlightProblemPoints = (points) => {
+            highlightedPoints.forEach(p => brd.removeObject(p));
+            highlightedPoints = [];
+            points.forEach(pt => {
+                highlightedPoints.push(brd.create('point', [pt.x, pt.y], {
+                    name: '', color: '#ef4444', size: 4, strokeWidth: 3, face: 'o', fixed: true, layer: 10
+                }));
+            });
+            brd.update();
+        };
+
+        window.validarCurva = function () {
+            brd.suspendUpdate();
+            [g1, g2, p5, p6].forEach(pt => pt.setAttribute({ fixed: true }));
+
+            const muestrasT = 2000;
+            const tolerancia = 0.05;
+            const xToYValuesMap = {};
+            let nonFunctionPoints = null;
+
+            for (let i = 0; i <= muestrasT; i++) {
+                const t = i / muestrasT;
+                const xActual = curve.X(t), yActual = curve.Y(t);
+                const xRedondeada = xActual.toFixed(2);
+                if (!xToYValuesMap[xRedondeada]) xToYValuesMap[xRedondeada] = [];
+                xToYValuesMap[xRedondeada].push({ x: xActual, y: yActual });
+            }
+
+            for (const x in xToYValuesMap) {
+                if (xToYValuesMap[x].length > 1) {
+                    const points = xToYValuesMap[x];
+                    const minPoint = points.reduce((p, c) => (p.y < c.y ? p : c));
+                    const maxPoint = points.reduce((p, c) => (p.y > c.y ? p : c));
+                    if (Math.abs(minPoint.y - maxPoint.y) > tolerancia) {
+                        nonFunctionPoints = { first: minPoint, second: maxPoint };
+                        break;
+                    }
+                }
+            }
+
+            if (nonFunctionPoints) {
+                brd.unsuspendUpdate();
+                highlightProblemPoints([nonFunctionPoints.first, nonFunctionPoints.second]);
+                perderVida("¡No es una Función!", "La curva falla la prueba de la línea vertical. Hay dos puntos con el mismo valor de X.");
+                return;
+            }
+
+            const yToXValuesMap = {};
+            let nonInjectivePoints = null;
+
+            for (let i = 0; i <= muestrasT; i++) {
+                const t = i / muestrasT;
+                const xActual = curve.X(t), yActual = curve.Y(t);
+                const yRedondeada = yActual.toFixed(2);
+                if (!yToXValuesMap[yRedondeada]) yToXValuesMap[yRedondeada] = [];
+                yToXValuesMap[yRedondeada].push({ x: xActual, y: yActual });
+            }
+
+            for (const y in yToXValuesMap) {
+                if (yToXValuesMap[y].length > 1) {
+                    const points = yToXValuesMap[y];
+                    const minPoint = points.reduce((p, c) => (p.x < c.x ? p : c));
+                    const maxPoint = points.reduce((p, c) => (p.x > c.x ? p : c));
+                    if (Math.abs(minPoint.x - maxPoint.x) > tolerancia) {
+                        nonInjectivePoints = { first: minPoint, second: maxPoint };
+                        break;
+                    }
+                }
+            }
+
+            brd.unsuspendUpdate();
+
+            if (nonInjectivePoints) {
+                highlightProblemPoints([nonInjectivePoints.first, nonInjectivePoints.second]);
+                perderVida("¡No es Inyectiva!", "La curva falla la prueba de la línea horizontal. Hay al menos dos puntos distintos con el mismo valor en Y.");
+            } else {
+                ganarPunto();
+            }
+        };
+
+        function perderVida(titulo, msg) {
+            if (lives > 0) {
+                document.getElementById(`life${lives}`).classList.add('lost');
+                lives--;
+                totalErroresVisuales++;
+                swal(titulo, `${msg}\n\nPierdes un trébol de la suerte. Te quedan ${lives}.`, "error");
+                
+                if (lives === 0) {
+                    document.getElementById('btn-validate').disabled = true;
+                    document.getElementById('btn-reset').disabled = true;
+                    swal("Sin intentos", "Has perdido todos tus tréboles. Recarga la página para intentarlo de nuevo.", "error");
+                }
+            }
+        }
+
+        function ganarPunto() {
+            score++;
+            document.getElementById('score-text').innerText = score;
+            if (score < 3) {
+                swal("¡Correcto!", `Has trazado una función inyectiva. Te faltan ${3 - score} más.`, "success").then(setRandomInitialPositions);
+            } else {
+                swal("¡Reto superado!", "Has dominado la identificación visual de funciones inyectivas.", "success");
+                document.getElementById('controls-etapa1').classList.add('hidden');
+                document.getElementById('btn-pasar-n2').classList.remove('hidden');
+            }
+        }
+
+        // ==========================================
+        // LÓGICA ETAPA 2 - CUESTIONARIO H5P
+        // ==========================================
+        let preguntaActualN2 = 1;
+        const totalN2 = 3;
+        const feedbackN2 = {
+            1: "Correcto. $x^3$ siempre crece y pasa la prueba de la línea horizontal. Las otras repiten valores de Y (por ejemplo, $(-2)^2 = 2^2 = 4$).",
+            2: "Exacto. La línea horizontal verifica que ningún valor del codominio (eje Y) sea tomado más de una vez por la función.",
+            3: "¡Muy bien! Esa es exactamente la AWS de que cada salida proviene de una única entrada."
+        };
+
+        function iniciarEtapa2() {
+            document.getElementById('level-1-container').classList.add('hidden');
+            document.getElementById('level-2-container').classList.remove('hidden');
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function comprobarPregunta() {
+            const s = document.querySelector(`input[name="q${preguntaActualN2}"]:checked`);
+            if (!s) return swal("Aviso", "Seleccione una respuesta.", "warning");
+
+            const f = document.getElementById(`feedback-${preguntaActualN2}`);
+            f.classList.remove('hidden');
+            document.querySelectorAll(`input[name="q${preguntaActualN2}"]`).forEach(el => el.disabled = true);
+
+            if (s.value === "correcta") {
+                f.innerHTML = `<strong>¡Correcto!</strong> ${feedbackN2[preguntaActualN2]}`;
+                f.classList.remove('error');
+                aciertosQuizN2++;
+            } else {
+                f.innerHTML = `<strong>Incorrecto.</strong> ${feedbackN2[preguntaActualN2]}`;
+                f.classList.add('error');
+            }
+
+            document.getElementById('btn-comprobar-quiz').classList.add('hidden');
+            document.getElementById('btn-siguiente-quiz').classList.remove('hidden');
+            if (preguntaActualN2 === totalN2) document.getElementById('btn-siguiente-quiz').innerText = "Pasar a Etapa 3";
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub, f]);
+        }
+
+        function siguientePregunta() {
+            if (preguntaActualN2 === totalN2) {
+                document.getElementById('level-2-container').classList.add('hidden');
+                document.getElementById('level-3-container').classList.remove('hidden');
+                return;
+            }
+            document.getElementById(`step-${preguntaActualN2}`).classList.add('hidden');
+            preguntaActualN2++;
+            document.getElementById(`step-${preguntaActualN2}`).classList.remove('hidden');
+            document.getElementById('h5p-progress').style.width = (preguntaActualN2 / totalN2) * 100 + "%";
+            document.getElementById('h5p-counter').innerText = `${preguntaActualN2}/${totalN2}`;
+            
+            document.getElementById('btn-siguiente-quiz').classList.add('hidden');
+            document.getElementById('btn-comprobar-quiz').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // LÓGICA ETAPA 3 - DEMOSTRACIÓN ANALÍTICA
+        // ==========================================
+        function evaluarEtapa3() {
+            const a1 = parseInt(document.getElementById('ans1-1').value);
+            const a2 = parseInt(document.getElementById('ans1-2').value);
+            const c1 = document.getElementById('ans1-concl').value;
+            const a3 = document.getElementById('ans2-1').value;
+            const c2 = document.getElementById('ans2-concl').value;
+
+            if (isNaN(a1) || isNaN(a2) || c1==="" || a3==="" || c2==="") {
+                return swal("Incompleto", "Llena todas las casillas y selecciona las conclusiones.", "warning");
+            }
+
+            aciertosAlgebraN3 = 0;
+            if(a1 === 3) { aciertosAlgebraN3++; document.getElementById('ans1-1').style.borderColor = "var(--success)"; } else { document.getElementById('ans1-1').style.borderColor = "var(--danger)"; }
+            if(a2 === 3) { aciertosAlgebraN3++; document.getElementById('ans1-2').style.borderColor = "var(--success)"; } else { document.getElementById('ans1-2').style.borderColor = "var(--danger)"; }
+            if(c1 === "si") { aciertosAlgebraN3++; document.getElementById('ans1-concl').style.borderColor = "var(--success)"; } else { document.getElementById('ans1-concl').style.borderColor = "var(--danger)"; }
+            
+            if(a3 === "pm") { aciertosAlgebraN3++; document.getElementById('ans2-1').style.borderColor = "var(--success)"; } else { document.getElementById('ans2-1').style.borderColor = "var(--danger)"; }
+            if(c2 === "no") { aciertosAlgebraN3++; document.getElementById('ans2-concl').style.borderColor = "var(--success)"; } else { document.getElementById('ans2-concl').style.borderColor = "var(--danger)"; }
+
+            document.querySelectorAll('#level-3-container input, #level-3-container select').forEach(el => el.disabled = true);
+
+            if (aciertosAlgebraN3 === 5) {
+                swal("¡Análisis Perfecto!", "Demostraste algebraicamente ambas condiciones de inyectividad.", "success");
+            } else {
+                swal("Revisa tus resultados", "Recuerda que la raíz cuadrada arroja un valor positivo y uno negativo (±), lo que rompe la inyectividad.", "error");
+            }
+
+            document.getElementById('btn-evaluar-n3').classList.add('hidden');
+            document.getElementById('btn-finalizar-actividad').classList.remove('hidden');
+        }
+
+        function finalizarTodo() {
+            confetti({ particleCount: 400, spread: 150, origin: { y: 0.6 } });
+            
+            const nodeSummary = document.createElement('div');
+            nodeSummary.className = 'summary-card';
+            nodeSummary.innerHTML = `
+                <div class="summary-item">
+                    <span>Tréboles restantes al final:</span>
+                    <span class="accent">${lives} / 3</span>
+                </div>
+                <div class="summary-item">
+                    <span>Errores de trazo en Etapa 1:</span>
+                    <span class="accent" style="color: ${totalErroresVisuales > 0 ? 'var(--danger)' : 'var(--success)'};">${totalErroresVisuales}</span>
+                </div>
+                <div class="summary-item">
+                    <span>Aciertos teóricos en Etapa 2:</span>
+                    <span class="accent">${aciertosQuizN2} / 3</span>
+                </div>
+                <div class="summary-item">
+                    <span>Casillas correctas en Etapa 3 (Nivel Formal):</span>
+                    <span class="accent">${aciertosAlgebraN3} / 5</span>
+                </div>
+                <p style="text-align: center; font-weight: bold; margin-top: 15px; color: var(--primary);">
+                    ${aciertosAlgebraN3 === 5 && lives === 3 ? '¡Desempeño impecable, Ingeniero/a!' : '¡Análisis concluido con éxito!'}
+                </p>
+            `;
+
+            swal({
+                title: "¡Reporte de Daños y Aciertos!",
+                content: nodeSummary,
+                icon: "success",
+                button: "Finalizar Todo"
+            });
+        }
+    </script>
+</body>
+
+</html>

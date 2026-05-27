@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escenario 10: La Recta Tangente y la Derivada</title>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'],['\\(','\\)']]}});
+    </script>
+
+    <style>
+        :root {
+            --primary: #004080;
+            --primary-hover: #003366;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --purple: #6366f1;
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 950px;
+            width: 100%;
+            background: #fff;
+            padding: 45px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        h1 { color: var(--primary); font-weight: 700; text-align: center; margin-bottom: 5px; }
+        h2 { border-left: 8px solid var(--purple); padding-left: 15px; font-size: 20px; color: var(--primary); margin-top: 35px; }
+        h3 { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: var(--text-dark); line-height: 1.4; }
+        p { line-height: 1.6; }
+        
+        .hidden { display: none !important; }
+
+        /* Botones */
+        .btn-general {
+            display: block; width: 100%; max-width: 360px; margin: 30px auto; padding: 14px;
+            background-color: var(--primary); color: white; border: none; border-radius: 30px;
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            text-align: center;
+        }
+        .btn-general:hover:not(:disabled) { 
+            transform: scale(1.03); 
+            background-color: var(--primary-hover);
+            box-shadow: 0 6px 15px rgba(0, 64, 128, 0.2);
+        }
+        .btn-general:disabled { background-color: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-success { background-color: var(--success); }
+        .btn-success:hover:not(:disabled) { background-color: #0d9668; box-shadow: 0 6px 15px rgba(16, 185, 129, 0.2); }
+        .btn-secondary { background-color: #64748b; }
+        .btn-secondary:hover:not(:disabled) { background-color: #475569; box-shadow: 0 6px 15px rgba(100, 116, 139, 0.2); }
+        
+        .btn-general i.fa-rocket {
+            font-size: 1.5rem; vertical-align: middle; margin-left: 10px;
+            transition: transform 0.4s ease; color: #ffffff;
+        }
+        .btn-general:hover:not(:disabled) i.fa-rocket { transform: translateX(5px) translateY(-5px); }
+
+        /* ================= ETAPA 1 ================= */
+        .jxgbox-large { width: 100%; height: 400px; max-width: 700px; margin: 0 auto 20px auto; border-radius: 8px; border: 1px solid var(--border-color); background: #fff; }
+        
+        .status-bar { display: flex; justify-content: space-between; align-items: center; background: #f0fdf4; padding: 15px 25px; border-radius: 8px; font-weight: 600; color: #166534; margin-bottom: 20px; border: 1px solid #bbf7d0; }
+        
+        .lives { display: flex; align-items: center; gap: 5px; }
+        .lives i { color: var(--success); font-size: 22px; display: inline-block; transform-origin: center; }
+        .lives i.lost { animation: cloverPopFall 2.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
+
+        @keyframes cloverPopFall {
+            0% { transform: scale(1); color: var(--success); }
+            30% { transform: scale(1.5); color: var(--danger); }
+            50% { transform: scale(1.1) translateY(0); opacity: 1; }
+            100% { transform: scale(0.9) translateY(150px) rotate(45deg); opacity: 0; color: var(--danger); }
+        }
+
+        .slider-section { max-width: 600px; margin: 20px auto; text-align: center; background: var(--bg-light); padding: 15px 25px; border-radius: 10px; border: 1px solid var(--border-color); }
+        .slider-label { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: var(--primary); }
+        .custom-slider { width: 100%; height: 8px; border-radius: 5px; background: #cbd5e1; outline: none; accent-color: var(--primary); cursor: pointer; }
+        .slider-value { font-size: 20px; font-weight: 700; color: var(--text-dark); margin-top: 5px; font-family: monospace; }
+
+        .btn-row { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .btn-row button { margin: 10px 0; max-width: 240px; }
+
+        .legend { text-align: center; font-size: 15px; margin-bottom: 20px; font-weight: 500; }
+        .target-badge { background: var(--primary); color: white; padding: 3px 10px; border-radius: 12px; font-weight: bold; }
+
+        /* ================= ETAPA 2 ================= */
+        .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 8px; margin: 20px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--purple); width: 25%; transition: 0.4s; }
+        
+        .h5p-option { display: flex; align-items: center; padding: 16px; border: 1px solid var(--border-color); margin-bottom: 12px; border-radius: 8px; cursor: pointer; background: var(--bg-light); transition: 0.2s; }
+        .h5p-option:hover { border-color: #94a3b8; }
+        .h5p-option input { margin-right: 15px; accent-color: var(--purple); transform: scale(1.2); cursor: pointer; }
+        .h5p-feedback { padding: 20px; border-radius: 8px; margin-top: 20px; background: #f1f5f9; border-left: 6px solid var(--purple); font-size: 15px; line-height: 1.5; }
+        .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; color: #991b1b; }
+
+        /* ================= ETAPA 3 ================= */
+        .n3-section { background: var(--bg-light); padding: 30px; border-radius: 12px; margin-bottom: 30px; border: 1px solid var(--border-color); }
+        select.math-input { padding: 6px 10px; border: 2px solid var(--border-color); border-radius: 6px; font-size: 16px; font-weight: bold; color: var(--primary); outline: none; margin: 0 8px; cursor: pointer; }
+        select.math-input:focus { border-color: var(--primary); }
+        .step-row { display: flex; align-items: center; margin-bottom: 15px; font-size: 17px; flex-wrap: wrap; }
+        .step-row strong { margin-right: 8px; }
+
+        /* Resumen */
+        .summary-card { text-align: left; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; margin-top: 15px; }
+        .summary-item { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }
+        .summary-item span.accent { font-weight: bold; color: var(--primary); }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div id="level-1-container">
+            <h1>Etapa 1: El Ojo del Tangencial</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 10px;">
+                La derivada de una función en un punto es, de forma exacta, el valor de la pendiente de su recta tangente en ese lugar.
+            </p>
+            <p class="legend">
+                Observa la curva fija y el punto marcado. Mueve el deslizador inferior para cambiar la pendiente de la recta roja hasta que sea <span class="target-badge">Perfectamente Tangente</span>.
+            </p>
+
+            <div class="status-bar">
+                <div class="lives">
+                    Vidas: 
+                    <i class="fa-solid fa-clover" id="life1"></i>
+                    <i class="fa-solid fa-clover" id="life2"></i>
+                    <i class="fa-solid fa-clover" id="life3"></i>
+                </div>
+                <div style="font-weight: bold;" id="target-label">Función actual: 1 / 3</div>
+                <div>Retos superados: <span id="score-text" style="font-size: 20px;">0</span> / 3</div>
+            </div>
+
+            <div id="jxgbox" class="jxgbox-large"></div>
+
+            <div class="slider-section">
+                <div class="slider-label">Ajustar Pendiente de la Recta ($m$)</div>
+                <input type="range" id="slope-slider" class="custom-slider" min="-4.0" max = "4.0" step="0.1" value="0.0" oninput="actualizarLinea()">
+                <div class="slider-value">m = <span id="slope-val-text">0.0</span></div>
+            </div>
+
+            <div class="btn-row" id="controls-etapa1">
+                <button class="btn-general" id="btn-validate" onclick="validarTangente()">Validar Tangencia</button>
+                <button class="btn-general btn-secondary hidden" id="btn-siguiente-grafica" onclick="cargarNuevoReto()">Siguiente Reto <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></button>
+            </div>
+            
+            <button class="btn-general btn-success hidden" id="btn-pasar-n2" onclick="iniciarEtapa2()">Continuar a Etapa 2 <i class="fa-solid fa-rocket"></i></button>
+        </div>
+
+        <div id="level-2-container" class="hidden">
+            <h1>Etapa 2: El Concepto del Límite</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Comprende el paso de la aproximación geométrica al cálculo infinitesimal instantáneo.</p>
+
+            <div class="progress-container"><div class="progress-bar" id="h5p-progress"></div></div>
+            <p id="h5p-counter" style="text-align: right; font-weight: 600; color: var(--purple);">1/4</p>
+
+            <div id="step-1" class="quiz-step">
+                <h3>1. ¿Cuál es la diferencia constructiva entre una recta secante y una recta tangente a una curva?</h3>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>A) La secante solo existe en rectas paralelas y la tangente en curvas cerradas.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> <span>B) La secante corta a la curva en dos puntos, mientras que la tangente la roza en un único punto local.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>C) La recta tangente tiene siempre una pendiente igual a infinito.</span></label>
+                <div id="feedback-1" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-2" class="quiz-step hidden">
+                <h3>2. En la definición matemática $\lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$, ¿qué representa físicamente el término $h$?</h3>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>A) La altura máxima que alcanza la curva en el eje vertical Y.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>B) La pendiente final evaluada en la recta tangente.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> <span>C) La separación horizontal entre los dos puntos iniciales de la recta secante.</span></label>
+                <div id="feedback-2" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-3" class="quiz-step hidden">
+                <h3>3. Si al calcular la derivada de una función en un punto específico obtienes $f'(a) = -3$, ¿cómo se observa visualmente la recta tangente?</h3>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> <span>A) Como una línea recta inclinada que desciende al avanzar de izquierda a derecha.</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>B) Como una línea perfectamente horizontal paralela al eje X.</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>C) Como una línea inclinada hacia arriba con ángulo agudo de 45 grados.</span></label>
+                <div id="feedback-3" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-4" class="quiz-step hidden">
+                <h3>4. ¿Qué ocurre geométricamente con la recta secante cuando forzamos el límite haciendo que $h \to 0$?</h3>
+                <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>A) Se desvanece de la pantalla porque la distancia se anula por completo.</span></label>
+                <label class="h5p-option"><input type="radio" name="q4" value="correcta"> <span>B) El segundo punto se desliza sobre la curva aproximándose al primero, transformándose en la recta tangente.</span></label>
+                <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>C) Cambia su forma convirtiéndose en una parábola de segundo grado.</span></label>
+                <div id="feedback-4" class="h5p-feedback hidden"></div>
+            </div>
+
+            <button class="btn-general" id="btn-comprobar-quiz" onclick="comprobarPregunta()">Comprobar Respuesta</button>
+            <button class="btn-general hidden btn-success" id="btn-siguiente-quiz" onclick="siguientePregunta()">Siguiente Pregunta</button>
+        </div>
+
+        <div id="level-3-container" class="hidden">
+            <h1>Etapa 3: La Ecuación Analítica</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 30px;">
+                Desarrolla paso a paso la ecuación formal de la recta tangente a la función:<br>
+                <strong style="font-size: 1.2rem; color: var(--primary);">&nbsp;$f(x) = 2x^2 - 4x + 3$&nbsp;</strong> en el punto de estudio &nbsp;<strong>$x = 2$</strong>.
+            </p>
+
+            <div class="n3-section">
+                <h3 style="color: var(--primary);">Paso 1: Punto de Contacto Coordenado</h3>
+                <div class="step-row" style="line-height: 2;">
+                    Para determinar la coordenada exacta de altura, evaluamos el valor inicial en la función original: &nbsp;$f(2) = 2(2)^2 - 4(2) + 3 = 8 - 8 + 3$&nbsp;.
+                </div>
+                <div class="step-row">
+                    Por lo tanto, la coordenada completa sobre la curva es &nbsp;$(2, $&nbsp;
+                    <select id="ans10-1" class="math-input">
+                        <option value="">--</option>
+                        <option value="1">1</option>
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                    </select>
+                    $)$.
+                </div>
+            </div>
+
+            <div class="n3-section">
+                <h3 style="color: var(--primary);">Paso 2: Obtención de la Pendiente Real</h3>
+                <div class="step-row" style="line-height: 2;">
+                    Calculamos la función derivada genérica aplicando reglas polinomiales: &nbsp;$f'(x) = 4x - 4$&nbsp;.
+                </div>
+                <div class="step-row">
+                    Evaluamos la derivada en nuestra coordenada de interés &nbsp;$x = 2$&nbsp; para hallar el valor exacto de la pendiente &nbsp;$m = f'(2) = 4(2) - 4$&nbsp;. El resultado es &nbsp;$m = $&nbsp;
+                    <select id="ans10-2" class="math-input">
+                        <option value="">--</option>
+                        <option value="2">2</option>
+                        <option value="4">4</option>
+                        <option value="0">0</option>
+                    </select>
+                    .
+                </div>
+            </div>
+
+            <div class="n3-section">
+                <h3 style="color: var(--primary);">Paso 3: Construcción de la Recta Lineal</h3>
+                <div class="step-row" style="line-height: 2;">
+                    Aplicamos el modelo punto-pendiente formal: &nbsp;$y - y_1 = m(x - x_1)$&nbsp;. Al sustituir nuestros datos, obtenemos: &nbsp;$y - 3 = 4(x - 2)$&nbsp;.
+                </div>
+                <div class="step-row" style="line-height: 2;">
+                    Despejando y reduciendo los términos independientes a su forma explícita &nbsp;$y = mx + b$&nbsp;, la ecuación final del sistema es:&nbsp;
+                    <select id="ans10-3" class="math-input">
+                        <option value="">-- Selecciona Ecuación --</option>
+                        <option value="v1">y = 4x - 5</option>
+                        <option value="v2">y = 4x - 8</option>
+                        <option value="v3">y = 4x + 3</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()">Validar Estructura Analítica</button>
+            <button class="btn-general hidden btn-success" id="btn-finalizar-actividad" onclick="finalizarTodo()">Finalizar Actividad Módulo <i class="fa-solid fa-rocket"></i></button>
+        </div>
+
+    </div>
+
+    <script>
+        let totalErroresVisuales = 0;
+        let aciertosQuizN2 = 0;
+        let aciertosTeoricosN3 = 0;
+
+        window.onload = function() {
+            document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+            document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+            document.getElementById('slope-slider').value = 0.0;
+        };
+
+        // ==========================================
+        // LÓGICA ETAPA 1 - DESAFÍO GEOMÉTRICO
+        // ==========================================
+        let lives = 3;
+        let score = 0; 
+        let brd, curve, pTangencia, userLine, idealLine;
+        let pUsuarioAux, pIdealAux; // Puntos dinámicos para guiar las rectas
+
+        const retos = [
+            { f: (x) => 0.5*x*x - 1, df: (x) => x, x0: 2, desc: "f(x) = 0.5x² - 1  en  x = 2" }, 
+            { f: (x) => -0.25*x*x + 3, df: (x) => -0.5*x, x0: 2, desc: "f(x) = -0.25x² + 3  en  x = 2" }, 
+            { f: (x) => 0.25*x*x + x - 1, df: (x) => 0.5*x + 1, x0: -4, desc: "f(x) = 0.25x² + x - 1  en  x = -4" } 
+        ];
+
+        let retoActual = null;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            brd = JXG.JSXGraph.initBoard('jxgbox', {
+                boundingbox: [-6, 6, 6, -6], axis: true, grid: true,
+                pan: { enabled: false }, zoom: { enabled: false }, showNavigation: false
+            });
+            cargarNuevoReto();
+        });
+
+        function cargarNuevoReto() {
+            if (score >= 3) return;
+
+            document.getElementById('btn-validate').classList.remove('hidden');
+            document.getElementById('slope-slider').disabled = false;
+            document.getElementById('slope-slider').value = 0.0;
+            document.getElementById('slope-val-text').innerText = "0.0";
+            
+            let btnSig = document.getElementById('btn-siguiente-grafica');
+            if (btnSig) btnSig.classList.add('hidden');
+
+            brd.suspendUpdate();
+
+            if (userLine) brd.removeObject(userLine);
+            if (idealLine) brd.removeObject(idealLine);
+            if (pTangencia) brd.removeObject(pTangencia);
+            if (pUsuarioAux) brd.removeObject(pUsuarioAux);
+            if (pIdealAux) brd.removeObject(pIdealAux);
+            if (curve) brd.removeObject(curve);
+
+            retoActual = retos[score];
+            document.getElementById('target-label').innerText = `Analizando: ${retoActual.desc}`;
+
+            // Curva de la función
+            curve = brd.create('functiongraph', [retoActual.f, -6, 6], {
+                strokeColor: '#004080', strokeWidth: 3, layer: 3
+            });
+
+            // Punto fijo sobre la curva
+            const y0 = retoActual.f(retoActual.x0);
+            pTangencia = brd.create('point', [retoActual.x0, y0], {
+                name: 'P', size: 5, color: 'var(--purple)', fixed: true, layer: 5
+            });
+
+            // PUNTO AUXILIAR DINÁMICO REACIVO AL SLIDER EXTERNO (Solución al refresco visual)
+            pUsuarioAux = brd.create('point', [
+                () => retoActual.x0 + 1,
+                () => retoActual.f(retoActual.x0) + parseFloat(document.getElementById('slope-slider').value)
+            ], { visible: false });
+
+            // Línea del usuario trazada uniendo ambos puntos
+            userLine = brd.create('line', [pTangencia, pUsuarioAux], {
+                strokeColor: '#ef4444', strokeWidth: 2.5, name: 'Tu Tangente', layer: 4
+            });
+
+            brd.unsuspendUpdate();
+            brd.update();
+        }
+
+        function actualizarLinea() {
+            const val = parseFloat(document.getElementById('slope-slider').value);
+            document.getElementById('slope-val-text').innerText = val.toFixed(1);
+            brd.update(); // Fuerza a JSXGraph a revaluar las coordenadas dinámicas de pUsuarioAux
+        }
+
+        window.validarTangente = function () {
+            const userSlope = parseFloat(document.getElementById('slope-slider').value);
+            const idealSlope = retoActual.df(retoActual.x0);
+            
+            const esCorrecto = Math.abs(userSlope - idealSlope) <= 0.21;
+
+            // Congelar escenario inmediatamente
+            document.getElementById('slope-slider').disabled = true;
+            document.getElementById('btn-validate').classList.add('hidden');
+
+            // Crear la recta tangente ideal para contrastar visualmente
+            brd.suspendUpdate();
+            pIdealAux = brd.create('point', [retoActual.x0 + 1, retoActual.f(retoActual.x0) + idealSlope], { visible: false });
+            idealLine = brd.create('line', [pTangencia, pIdealAux], {
+                strokeColor: 'var(--success)', strokeWidth: 2.2, dash: 2, layer: 4
+            });
+            brd.unsuspendUpdate();
+            brd.update();
+
+            score++;
+            document.getElementById('score-text').innerText = score;
+
+            if (esCorrecto) {
+                if (score < 3) {
+                    document.getElementById('btn-siguiente-grafica').classList.remove('hidden');
+                    swal("¡Excelente Estimación!", `Calculaste una pendiente de m = ${userSlope.toFixed(1)}, lo cual coincide con la derivada f'(${retoActual.x0}) = ${idealSlope}.\n\nAnaliza la gráfica congelada antes de continuar.`, "success");
+                } else {
+                    document.getElementById('btn-pasar-n2').classList.remove('hidden');
+                    swal("¡Fase Completada!", "¡Impecable! Has demostrado una gran precisión geométrica.", "success");
+                }
+            } else {
+                totalErroresVisuales++;
+                if (lives > 0) {
+                    document.getElementById(`life${lives}`).classList.add('lost');
+                    lives--;
+                }
+
+                if (lives === 0) {
+                    swal("Sin Intentos", "Te has quedado sin tréboles de aproximación. Reinicia el módulo para intentarlo nuevamente.", "error");
+                } else {
+                    if (score < 3) {
+                        document.getElementById('btn-siguiente-grafica').classList.remove('hidden');
+                        swal("Desviación de Tangencia", `Tu pendiente de m = ${userSlope.toFixed(1)} corta o se aleja del comportamiento local. Observa la línea verde punteada para contrastar el valor matemático real f'(${retoActual.x0}) = ${idealSlope}.\n\nPierdes un trébol. Presiona 'Siguiente Reto' cuando estés listo.`, "error");
+                    } else {
+                        document.getElementById('btn-pasar-n2').classList.remove('hidden');
+                        swal("Etapa Concluida", `Módulo de observación finalizado. Mira la discrepancia con la tangente real (línea verde discontinua) antes de avanzar a la teoría.`, "warning");
+                    }
+                }
+            }
+        };
+
+        // ==========================================
+        // LÓGICA ETAPA 2 - CUESTIONARIO CONCEPTO
+        // ==========================================
+        let preguntaActualN2 = 1;
+        const totalN2 = 4;
+        const feedbackN2 = {
+            1: "¡Correcto! Una secante cruza el cuerpo del gráfico uniendo dos coordenadas distintas, mientras que la tangente abraza el borde en un único punto representando la velocidad en ese microinstante.",
+            2: "Exacto. La variable $h$ representa el incremento o distancia en el eje horizontal. Al hacer que tienda a cero, los puntos de la secante se fusionan.",
+            3: "¡Muy bien! Una derivada negativa se traduce en una recta tangente con pendiente descendente, reflejando que la función original está perdiendo altura en esa zona.",
+            4: "Perfecto. Ese es el corazón del cálculo diferencial: el límite transforma la pendiente promedio de una secante común en la pendiente instantánea de la tangente."
+        };
+
+        function iniciarEtapa2() {
+            document.getElementById('level-1-container').classList.add('hidden');
+            document.getElementById('level-2-container').classList.remove('hidden');
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function comprobarPregunta() {
+            const s = document.querySelector(`input[name="q${preguntaActualN2}"]:checked`);
+            if (!s) return swal("Aviso", "Selecciona una alternativa para continuar.", "warning");
+
+            const f = document.getElementById(`feedback-${preguntaActualN2}`);
+            f.classList.remove('hidden');
+            document.querySelectorAll(`input[name="q${preguntaActualN2}"]`).forEach(el => el.disabled = true);
+
+            if (s.value === "correcta") {
+                f.innerHTML = `<strong>¡Correcto!</strong> ${feedbackN2[preguntaActualN2]}`;
+                f.classList.remove('error');
+                aciertosQuizN2++;
+            } else {
+                f.innerHTML = `<strong>Incorrecto.</strong> ${feedbackN2[preguntaActualN2]}`;
+                f.classList.add('error');
+            }
+
+            document.getElementById('btn-comprobar-quiz').classList.add('hidden');
+            document.getElementById('btn-siguiente-quiz').classList.remove('hidden');
+            if (preguntaActualN2 === totalN2) document.getElementById('btn-siguiente-quiz').innerHTML = 'Continuar a Etapa 3 <i class="fa-solid fa-rocket"></i>';
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub, f]);
+        }
+
+        function siguientePregunta() {
+            if (preguntaActualN2 === totalN2) {
+                document.getElementById('level-2-container').classList.add('hidden');
+                document.getElementById('level-3-container').classList.remove('hidden');
+                if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                return;
+            }
+            document.getElementById(`step-${preguntaActualN2}`).classList.add('hidden');
+            preguntaActualN2++;
+            document.getElementById(`step-${preguntaActualN2}`).classList.remove('hidden');
+            document.getElementById('h5p-progress').style.width = (preguntaActualN2 / totalN2) * 100 + "%";
+            document.getElementById('h5p-counter').innerText = `${preguntaActualN2}/${totalN2}`;
+            
+            document.getElementById('btn-siguiente-quiz').classList.add('hidden');
+            document.getElementById('btn-comprobar-quiz').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // LÓGICA ETAPA 3 - DEMOSTRACIÓN FORMAL
+        // ==========================================
+        function evaluarEtapa3() {
+            const s1 = document.getElementById('ans10-1');
+            const s2 = document.getElementById('ans10-2');
+            const s3 = document.getElementById('ans10-3');
+
+            if (!s1.value || !s2.value || !s3.value) {
+                return swal("Incompleto", "Por favor completa todas las casillas de selección analítica.", "warning");
+            }
+
+            aciertosTeoricosN3 = 0;
+            const validarSelect = (elem, correcta) => {
+                if(elem.value === correcta) {
+                    elem.style.borderColor = "var(--success)";
+                    aciertosTeoricosN3++;
+                } else {
+                    elem.style.borderColor = "var(--danger)";
+                }
+            };
+
+            validarSelect(s1, "3");  // f(2) = 3
+            validarSelect(s2, "4");  // f'(2) = 4
+            validarSelect(s3, "v1"); // y = 4x - 5
+
+            document.querySelectorAll('#level-3-container select').forEach(el => el.disabled = true);
+
+            if (aciertosTeoricosN3 === 3) {
+                swal("¡Deducción Perfecta!", "Has construido la ecuación exacta de la recta tangente con absoluto rigor algebraico.", "success");
+            } else {
+                swal("Errores Detectados", "Revisa los signos operativos y las sustituciones algebraicas hechas en el despeje.", "error");
+            }
+
+            document.getElementById('btn-evaluar-n3').classList.add('hidden');
+            document.getElementById('btn-finalizar-actividad').classList.remove('hidden');
+        }
+
+        function finalizarTodo() {
+            confetti({ particleCount: 400, spread: 140, origin: { y: 0.6 } });
+            
+            const nodeSummary = document.createElement('div');
+            nodeSummary.className = 'summary-card';
+            nodeSummary.innerHTML = `
+                <div class="summary-item">
+                    <span>Tréboles visuales conservados:</span>
+                    <span class="accent">${lives} / 3</span>
+                </div>
+                <div class="summary-item">
+                    <span>Desajustes visuales en Etapa 1:</span>
+                    <span class="accent" style="color: ${totalErroresVisuales > 0 ? 'var(--danger)' : 'var(--success)'};">${totalErroresVisuales}</span>
+                </div>
+                <div class="summary-item">
+                    <span>Comprensión del Límite en Etapa 2:</span>
+                    <span class="accent">${aciertosQuizN2} / 4</span>
+                </div>
+                <div class="summary-item">
+                    <span>Ecuación Analítica en Etapa 3:</span>
+                    <span class="accent">${aciertosTeoricosN3} / 3</span>
+                </div>
+                <p style="text-align: center; font-weight: bold; margin-top: 20px; color: var(--primary); font-size: 1.1em;">
+                    ${aciertosTeoricosN3 === 3 && lives === 3 ? '¡Dominio Absoluto de la Razón de Cambio!' : '¡Módulo Finalizado Exitosamente!'}
+                </p>
+            `;
+
+            swal({
+                title: "¡Reporte Final de la Tangente!",
+                content: nodeSummary,
+                icon: "success",
+                button: "Terminar Sesión"
+            });
+        }
+    </script>
+</body>
+
+</html>
+
