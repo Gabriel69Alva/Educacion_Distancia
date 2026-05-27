@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escenario: El Teorema del Valor Medio</title>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'],['\\(','\\)']]}});
+    </script>
+
+    <style>
+        :root {
+            --primary: #004080;
+            --primary-hover: #003366;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --purple: #6366f1;
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 950px;
+            width: 100%;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 { color: var(--primary); font-weight: 700; text-align: center; margin-bottom: 5px; }
+        h2 { border-left: 8px solid var(--purple); padding-left: 15px; font-size: 20px; color: var(--primary); margin-top: 35px; }
+        h3 { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: var(--text-dark); line-height: 1.4; }
+        p { line-height: 1.6; }
+        
+        .hidden { display: none !important; }
+
+        /* Botones Modernizados */
+        .btn-general {
+            display: block; width: 100%; max-width: 360px; margin: 30px auto; padding: 14px;
+            background-color: var(--primary); color: white; border: none; border-radius: 30px;
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-align: center; text-decoration: none;
+        }
+        .btn-general:hover:not(:disabled) { 
+            transform: scale(1.02); 
+            background-color: var(--primary-hover);
+            box-shadow: 0 6px 15px rgba(0, 64, 128, 0.2);
+        }
+        .btn-general:disabled { background-color: #94a3b8; cursor: not-allowed; }
+        .btn-success { background-color: var(--success); }
+        .btn-success:hover:not(:disabled) { background-color: #0d9668; box-shadow: 0 6px 15px rgba(16, 185, 129, 0.2); }
+        .btn-secondary { background-color: #64748b; }
+        .btn-secondary:hover:not(:disabled) { background-color: #475569; }
+        .btn-danger { background-color: var(--danger); }
+        .btn-danger:hover:not(:disabled) { background-color: #dc2626; box-shadow: 0 6px 15px rgba(239, 68, 68, 0.2); }
+
+        /* ================= ETAPA 1 ================= */
+        .jxgbox-square { width: 500px; height: 500px; margin: 0 auto 20px auto; border-radius: 8px; border: 1px solid var(--border-color); background: #fff; }
+        .status-bar { display: flex; justify-content: space-between; align-items: center; background: #f0fdf4; padding: 15px 25px; border-radius: 8px; font-weight: 600; color: #166534; margin-bottom: 20px; border: 1px solid #bbf7d0; }
+        .lives { display: flex; align-items: center; gap: 5px; }
+        .lives i { color: var(--success); font-size: 22px; display: inline-block; transition: all 0.3s; }
+        
+        .lives i.lost { animation: cloverPopFall 4.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
+
+        @keyframes cloverPopFall {
+            0% { transform: scale(1) rotate(0deg); color: var(--success); }
+            15% { transform: scale(1.6) rotate(-20deg); color: var(--danger); filter: drop-shadow(0 0 8px rgba(239,68,68,0.6)); }
+            30% { transform: scale(1.2) rotate(30deg); color: var(--danger); opacity: 0.9; }
+            100% { transform: scale(0.4) translateY(350px) rotate(720deg); opacity: 0; color: var(--danger); }
+        }
+
+        .slider-section { max-width: 550px; margin: 20px auto; text-align: center; background: var(--bg-light); padding: 15px 25px; border-radius: 10px; border: 1px solid var(--border-color); }
+        .slider-label { font-size: 15px; font-weight: 600; margin-bottom: 12px; color: var(--primary); }
+        
+        /* Contenedor de micro-ajuste */
+        .slider-control-container { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 10px; }
+        .btn-micro { background-color: var(--purple); color: white; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-micro:hover:not(:disabled) { background-color: #4f46e5; transform: scale(1.05); }
+        .btn-micro:disabled { background-color: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+        
+        .custom-slider { flex-grow: 1; height: 8px; border-radius: 5px; background: #cbd5e1; outline: none; accent-color: var(--purple); cursor: pointer; }
+        .slider-value { font-size: 18px; font-weight: 700; margin-top: 5px; font-family: monospace; }
+        .badge-info { background: #e0f2fe; color: #0369a1; padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: bold; display: inline-block; margin-bottom: 15px; }
+
+        .slope-display-container { display: flex; justify-content: space-around; margin-top: 15px; padding-top: 12px; border-top: 1px dashed var(--border-color); }
+        .slope-box { font-size: 14px; font-weight: bold; }
+        .slope-box span { font-family: monospace; font-size: 16px; }
+
+        /* ================= ETAPA 2 ================= */
+        .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 8px; margin: 20px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--purple); width: 25%; transition: 0.4s; }
+        .h5p-option { display: flex; align-items: center; padding: 16px; border: 1px solid var(--border-color); margin-bottom: 12px; border-radius: 8px; cursor: pointer; background: var(--bg-light); transition: 0.2s; }
+        .h5p-option:hover { border-color: #94a3b8; background: #f1f5f9; }
+        .h5p-option input { margin-right: 15px; transform: scale(1.2); cursor: pointer; }
+        .h5p-feedback { padding: 20px; border-radius: 8px; margin-top: 20px; background: #f1f5f9; border-left: 6px solid var(--purple); font-size: 15px; }
+        .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; color: #991b1b; }
+
+        /* ================= ETAPA 3 ================= */
+        .n3-section { background: var(--bg-light); padding: 25px; border-radius: 12px; margin-bottom: 25px; border: 1px solid var(--border-color); }
+        select.math-input { padding: 6px 10px; border: 2px solid var(--border-color); border-radius: 6px; font-size: 15px; font-weight: bold; color: var(--primary); outline: none; margin: 0 6px; cursor: pointer; }
+        .step-row { display: flex; align-items: center; margin-bottom: 12px; font-size: 16px; flex-wrap: wrap; line-height: 2; }
+
+        .summary-card { text-align: left; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; margin-top: 15px; }
+        .summary-item { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }
+        .summary-item span.accent { font-weight: bold; color: var(--primary); }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div id="level-1-container">
+            <h1>Etapa 1: El Desafío del Paralelismo</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 15px;">
+                El Teorema del Valor Medio (TVM) establece que si una función es continua en $[a,b]$ y derivable en $(a,b)$, existe al menos un punto $c \in (a,b)$ donde la derivada instantánea es igual a la razón de cambio promedio del intervalo.
+            </p>
+            
+            <div style="text-align: center;">
+                <span class="badge-info" id="interval-badge">Intervalo de estudio actual: [-1.0, 1.0]</span>
+            </div>
+
+            <div class="status-bar">
+                <div class="lives">
+                    Intentos disponibles: 
+                    <i class="fa-solid fa-clover" id="life1"></i>
+                    <i class="fa-solid fa-clover" id="life2"></i>
+                    <i class="fa-solid fa-clover" id="life3"></i>
+                </div>
+                <div style="font-weight: bold;" id="target-label">Reto Objetivo: 1 / 3</div>
+                <div>Aciertos Logrados: <span id="score-text" style="font-size: 20px; color: var(--success);">0</span> / 3</div>
+            </div>
+
+            <div id="box" class="jxgbox-square"></div>
+
+            <div class="slider-section">
+                <div class="slider-label">Mover posición de $\omega$ (Punto $c$ en el dominio)</div>
+                
+                <div class="slider-control-container">
+                    <button id="btn-minus" class="btn-micro" onclick="ajustarSlider(-0.001)"><i class="fa-solid fa-minus"></i></button>
+                    <input type="range" id="slope-slider" class="custom-slider" min="-1.8" max="1.8" step="0.001" value="0.000" oninput="actualizarEscenario()">
+                    <button id="btn-plus" class="btn-micro" onclick="ajustarSlider(0.001)"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                
+                <div class="slider-value" style="margin-bottom: 5px;"> \(c\) = <span id="slope-val-text">0.000</span></div>
+                
+                <div class="slope-display-container">
+                    <div class="slope-box" style="color: var(--purple);">Razón de Cambio Promedio ($m_{sec}$): <span id="m-sec-val">0.00</span></div>
+                    <div class="slope-box" style="color: var(--success);">Pendiente Tangente ($m_{tan}$): <span id="m-tan-val">0.00</span></div>
+                </div>
+            </div>
+
+            <div class="btn-row" style="text-align: center;">
+                <button class="btn-general" id="btn-validate" onclick="validarParalelismo()">Validar Paralelismo</button>
+                <button class="btn-general btn-secondary hidden" id="btn-siguiente-grafica" onclick="cargarNuevoReto()">Siguiente Configuración</button>
+                <button class="btn-general btn-danger hidden" id="btn-reset-lvl1" onclick="reiniciarNivel1()">Reiniciar Etapa 1</button>
+            </div>
+            
+            <button class="btn-general btn-success hidden" id="btn-pasar-n2" onclick="iniciarEtapa2()">Continuar a Etapa 2 <i class="fa-solid fa-rocket"></i></button>
+        </div>
+
+        <div id="level-2-container" class="hidden">
+            <h1>Etapa 2: El Radar de la Autopista</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Aplica los fundamentos conceptuales y teoremas del cálculo en entornos reales.</p>
+
+            <div class="progress-container"><div class="progress-bar" id="h5p-progress"></div></div>
+            <p id="h5p-counter" style="text-align: right; font-weight: 600; color: var(--purple);">1/4</p>
+
+            <div id="step-1" class="quiz-step">
+                <h3>1. Una patrulla detiene a un conductor. Las casetas registran que recorrió 271 km en exactamente 3 horas en una vía recta. Si el límite máximo es de 90 km/h, ¿el policía puede multarlo basándose en el TVM?</h3>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> <span>A) Sí. Su velocidad promedio fue de 90.33 km/h, por lo que el TVM garantiza que en al menos un instante su velocidad real exacta fue de 90.33 km/h.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>B) No, porque los registros solo miden promedios globales y no la velocidad instantánea del velocímetro.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>C) Sí, pero solo si la patrulla cuenta con una fotografía del vehículo en exceso de velocidad exacta.</span></label>
+                <div id="feedback-1" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-2" class="quiz-step hidden">
+                <h3>2. ¿Cuáles son los requisitos obligatorios de comportamiento que debe cumplir la curva en el intervalo dado para que el teorema garantice la existencia de $c$?</h3>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>A) Debe ser una función polinomial estrictamente creciente o con valores positivos en los extremos.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> <span>B) Ser continua en el intervalo cerrado $[a,b]$ y derivable en el intervalo abierto $(a,b)$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>C) Tener un valor máximo absoluto y un valor mínimo absoluto que valgan cero.</span></label>
+                <div id="feedback-2" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-3" class="quiz-step hidden">
+                <h3>3. El teorema de Rolle es considerado un caso particular del Teorema del Valor Medio. ¿Qué condición restrictiva especial lo caracteriza?</h3>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>A) La derivada en el punto medio debe ser una constante mayor a uno.</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> <span>B) Que los valores de altura en los extremos sean iguales ($f(a) = f(b)$), resultando en una pendiente secante igual a cero.</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>C) Que la función no posea puntos de inflexión dentro del intervalo de estudio.</span></label>
+                <div id="feedback-3" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-4" class="quiz-step hidden">
+                <h3>4. De acuerdo a la cadena formal de derivación, ¿cuál es el orden lógico de deducción de estas herramientas teóricas?</h3>
+                <label class="h5p-option"><input type="radio" name="q4" value="correcta"> <span>A) Teorema de Weierstrass $\to$ Proposición del punto crítico (Fermat) $\to$ Teorema de Rolle $\to$ Teorema del Valor Medio.</span></label>
+                <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>B) Teorema del Valor Medio $\to$ Teorema de Rolle $\to$ Teorema de Weierstrass de forma inversa.</span></label>
+                <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>C) Las mapas son totalmente independientes y no guardan relación de herencia matemática.</span></label>
+                <div id="feedback-4" class="h5p-feedback hidden"></div>
+            </div>
+
+            <button class="btn-general" id="btn-comprobar-quiz" onclick="comprobarPregunta()">Comprobar Respuesta</button>
+            <button class="btn-general hidden btn-success" id="btn-siguiente-quiz" onclick="siguientePregunta()">Siguiente Pregunta</button>
+        </div>
+
+        <div id="level-3-container" class="hidden">
+            <h1>Etapa 3: La Deducción Analítica</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 30px;">
+                Calcula formalmente el valor analítico exacto de $c$ para la función de estudio:<br>
+                <strong style="font-size: 1.2rem; color: var(--primary);">&nbsp;$f(x) = x^3 - x + 0.5$&nbsp;</strong> en el intervalo cerrado &nbsp;<strong>$[-1, 2]$</strong>.
+            </p>
+
+            <div class="n3-section">
+                <h3 style="color: var(--primary);">Paso 1: Razón de Cambio Promedio (Secante)</h3>
+                <div class="step-row">
+                    Evaluando los extremos del intervalo obtenemos las imágenes: &nbsp;$f(-1) = 0.5$&nbsp; y &nbsp;$f(2) = 6.5$&nbsp;.
+                </div>
+                <div class="step-row">
+                    La pendiente de la recta secante está dada por &nbsp;$m = \frac{f(2) - f(-1)}{2 - (-1)} = \frac{6.5 - 0.5}{3} =$&nbsp;
+                    <select id="ans5-1" class="math-input">
+                        <option value="">--</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="n3-section">
+                <h3 style="color: var(--primary);">Paso 2: Expresión de la Derivada</h3>
+                <div class="step-row">
+                    Calculamos la derivada general de la función polinomial empleando las reglas tradicionales de potencia:
+                </div>
+                <div class="step-row">
+                    &nbsp;$f'(x) =$&nbsp;
+                    <select id="ans5-2" class="math-input">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v1">3x²</option>
+                        <option value="v2">3x² - 1</option>
+                        <option value="v3">x² - 1</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="n3-section">
+                <h3 style="color: var(--primary);">Paso 3: Determinación del Valor $c$</h3>
+                <div class="step-row">
+                    Igualamos &nbsp;$f'(c) = m$&nbsp; resolviendo el sistema: &nbsp;$3c^2 - 1 = 2 \implies 3c^2 = 3 \implies c^2 = 1$&nbsp;.
+                </div>
+                <div class="step-row">
+                    Al despejar las raíces obtenemos las soluciones algebraicas: &nbsp;
+                    <select id="ans5-3" class="math-input">
+                        <option value="">-- Selecciona --</option>
+                        <option value="-1">c = -1</option>
+                        <option value="1">c = 1</option>
+                        <option value="ambos">c = ±1</option>
+                        <option value="0">c = 0</option>
+                    </select>
+                    &nbsp;. Dado que el teorema exige estrictamente un punto interior contenido en el intervalo abierto &nbsp;$(-1, 2)$&nbsp;, el único valor válido final para &nbsp;$c$&nbsp; es: &nbsp;
+                    <select id="ans5-4" class="math-input">
+                        <option value="">-- Selecciona --</option>
+                        <option value="negativo">c = -1</option>
+                        <option value="positivo">c = 1</option>
+                        <option value="ninguno">Ninguno es válido</option>
+                    </select>
+                    &nbsp; dentro del dominio analizado.
+                </div>
+            </div>
+
+            <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()">Validar Estructura Analítica</button>
+            <button class="btn-general hidden btn-success" id="btn-finalizar-actividad" onclick="finalizarTodo()">Finalizar Actividad Módulo <i class="fa-solid fa-rocket"></i></button>
+        </div>
+
+    </div>
+
+    <script>
+        let totalErroresVisuales = 0;
+        let aciertosQuizN2 = 0;
+        let aciertosTeoricosN3 = 0;
+        const $ = (id) => document.getElementById(id);
+
+        // ==========================================
+        // LÓGICA ETAPA 1 - DESAFÍO GEOMÉTRICO
+        // ==========================================
+        let lives = 3;
+        let score = 0; 
+        let board, graph, userTangent, secantLine;
+        let pSec1, pSec2, gTangencia, pTangAux;
+        let pX1, pX2, pX3, intervalSegment, verticalSegment;
+
+        const f = function (x) { return (x * x * x) - x + 0.5; };
+        
+        const retos = [
+            { d: -1.0, e: 1.0, desc: "Reto 1: Intervalo [-1.0, 1.0]" },
+            { d: -1.5, e: 0.0, desc: "Reto 2: Intervalo [-1.5, 0.0]" },
+            { d: -0.5, e: 1.5, desc: "Reto 3: Intervalo [-0.5, 1.5]" }
+        ];
+
+        function setLevel1ControlsEnabled(enabled) {
+            $('slope-slider').disabled = !enabled;
+            $('btn-minus').disabled = !enabled;
+            $('btn-plus').disabled = !enabled;
+            $('btn-validate').disabled = !enabled;
+        }
+
+        function getSliderValue() {
+            return parseFloat($('slope-slider').value);
+        }
+
+        function updateSlopeDisplays() {
+            $('m-sec-val').innerText = formatSlope(secantLine.getSlope());
+            $('m-tan-val').innerText = formatSlope(userTangent.getSlope());
+        }
+
+        function roundToDecimals(value, decimals) {
+            const factor = 10 ** decimals;
+            return Math.round((value + Number.EPSILON) * factor) / factor;
+        }
+
+        function normalizeNegativeZero(value) {
+            return Object.is(value, -0) ? 0 : value;
+        }
+
+        function formatSlope(value) {
+            return normalizeNegativeZero(roundToDecimals(value, 2)).toFixed(2);
+        }
+
+        function areEqualAtDisplayedPrecision(a, b, decimals = 2) {
+            const ra = normalizeNegativeZero(roundToDecimals(a, decimals));
+            const rb = normalizeNegativeZero(roundToDecimals(b, decimals));
+            return ra === rb;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+            document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+
+            board = JXG.JSXGraph.initBoard('box', { 
+                boundingbox: [-2.3, 2.3, 2.3, -2.3], 
+                axis: true, 
+                grid: true,
+                pan: { enabled: false }, 
+                zoom: { enabled: false }, 
+                showNavigation: false 
+            });
+
+            graph = board.create('functiongraph', [f], { strokeColor: '#004080', strokeWidth: 2.5, layer: 3 });
+            reiniciarNivel1();
+        });
+
+        function reiniciarNivel1() {
+            lives = 3;
+            score = 0;
+            totalErroresVisuales = 0;
+            $('score-text').innerText = "0";
+            $('btn-reset-lvl1').classList.add('hidden');
+            $('btn-pasar-n2').classList.add('hidden');
+            
+            for(let i=1; i<=3; i++) {
+                let clv = $(`life${i}`);
+                if (clv) clv.classList.remove('lost');
+            }
+            cargarNuevoReto();
+        }
+
+        function cargarNuevoReto() {
+            if (score >= 3) return;
+
+            $('btn-validate').classList.remove('hidden');
+            setLevel1ControlsEnabled(true);
+            
+            let btnSig = $('btn-siguiente-grafica');
+            if (btnSig) btnSig.classList.add('hidden');
+
+            let cfg = retos[score];
+            let puntoInicio = (cfg.d + cfg.e) / 2; // Inicia al centro del intervalo
+            $('slope-slider').value = puntoInicio.toFixed(3);
+            $('slope-val-text').innerText = puntoInicio.toFixed(3);
+
+            board.suspendUpdate();
+
+            if (secantLine) board.removeObject(secantLine);
+            if (userTangent) board.removeObject(userTangent);
+            if (pSec1) board.removeObject(pSec1);
+            if (pSec2) board.removeObject(pSec2);
+            if (gTangencia) board.removeObject(gTangencia);
+            if (pTangAux) board.removeObject(pTangAux);
+            if (pX1) board.removeObject(pX1);
+            if (pX2) board.removeObject(pX2);
+            if (pX3) board.removeObject(pX3);
+            if (intervalSegment) board.removeObject(intervalSegment);
+            if (verticalSegment) board.removeObject(verticalSegment);
+
+            $('target-label').innerText = `Reto Objetivo: ${score + 1} / 3`;
+            $('interval-badge').innerText = `Intervalo de estudio actual: [${cfg.d.toFixed(1)}, ${cfg.e.toFixed(1)}]`;
+
+            pSec1 = board.create('point', [cfg.d, f(cfg.d)], { size: 4, color: '#6366f1', name: 'D', fixed: true, layer: 5 });
+            pSec2 = board.create('point', [cfg.e, f(cfg.e)], { size: 4, color: '#6366f1', name: 'E', fixed: true, layer: 5 });
+            
+            secantLine = board.create('line', [pSec1, pSec2], { strokeColor: '#6366f1', dash: 2, strokeWidth: 2, layer: 4 });
+
+            pX1 = board.create('point', [cfg.d, 0], { size: 2, name: '', fixed: true, visible: false });
+            pX2 = board.create('point', [cfg.e, 0], { size: 2, name: '', fixed: true, visible: false });
+            intervalSegment = board.create('segment', [pX1, pX2], { strokeColor: '#93c5fd', strokeWidth: 6, layer: 4 });
+
+            gTangencia = board.create('point', [
+                () => getSliderValue(),
+                () => f(getSliderValue())
+            ], { size: 5, color: '#ef4444', name: 'c', layer: 6 });
+
+            pTangAux = board.create('point', [
+                () => getSliderValue() + 1,
+                () => {
+                    let cVal = getSliderValue();
+                    let mInstantanea = 3 * cVal * cVal - 1; 
+                    return f(cVal) + mInstantanea;
+                }
+            ], { visible: false });
+
+            userTangent = board.create('line', [gTangencia, pTangAux], { strokeColor: '#10b981', strokeWidth: 2.5, layer: 4 });
+
+            pX3 = board.create('point', [() => getSliderValue(), 0], { size: 3, color: '#ef4444', name: 'ω' });
+            verticalSegment = board.create('segment', [gTangencia, pX3], { strokeColor: '#ef4444', dash: 1, strokeWidth: 1.5 });
+
+            board.unsuspendUpdate();
+            board.update();
+
+            updateSlopeDisplays();
+        }
+
+        function ajustarSlider(delta) {
+            let s = $('slope-slider');
+            if(s.disabled) return;
+            let val = parseFloat(s.value) + delta;
+            if(val >= parseFloat(s.min) && val <= parseFloat(s.max)) {
+                s.value = val.toFixed(3);
+                actualizarEscenario();
+            }
+        }
+
+        function actualizarEscenario() {
+            const val = getSliderValue();
+            $('slope-val-text').innerText = val.toFixed(3);
+            board.update(); 
+            $('m-tan-val').innerText = formatSlope(userTangent.getSlope());
+        }
+
+        window.validarParalelismo = function () {
+            let mSecante = secantLine.getSlope();
+            let mTangente = userTangent.getSlope();
+
+            // Compara exactamente al nivel de visualización (centésimas), sin falsos negativos por floating-point.
+            let esCorrecto = areEqualAtDisplayedPrecision(mSecante, mTangente, 2);
+
+            if (esCorrecto) {
+                score++;
+                $('score-text').innerText = score;
+                
+                // Bloqueamos controles momentáneamente tras el acierto
+                setLevel1ControlsEnabled(false);
+                $('btn-validate').classList.add('hidden');
+
+                if (score < 3) {
+                    $('btn-siguiente-grafica').classList.remove('hidden');
+                    swal("¡Excelente Paralelismo!", "¡Buen ojo! Lograste igualar las pendientes centésima a centésima. Avanza al siguiente reto.", "success");
+                } else {
+                    $('btn-pasar-n2').classList.remove('hidden');
+                    swal("Fase 1 Superada", "Has completado exitosamente los 3 aciertos requeridos por la actividad matemática.", "success");
+                }
+            } else {
+                totalErroresVisuales++;
+                if (lives > 0) {
+                    $(`life${lives}`).classList.add('lost');
+                    lives--;
+                }
+
+                if (lives === 0) {
+                    // Fin del juego: Deshabilitar todo y forzar reinicio
+                    setLevel1ControlsEnabled(false);
+                    $('btn-validate').classList.add('hidden');
+                    $('btn-siguiente-grafica').classList.add('hidden');
+                    $('btn-reset-lvl1').classList.remove('hidden');
+                    swal("Intentos Agotados", "Has agotado tus tréboles guía sin conseguir los 3 aciertos consecutivos. Presiona 'Reiniciar Etapa 1'.", "error");
+                } else {
+                    // Congelamos el intento fallido y habilitamos avance manual al siguiente reto.
+                    setLevel1ControlsEnabled(false);
+                    $('btn-validate').classList.add('hidden');
+                    $('btn-siguiente-grafica').classList.remove('hidden');
+                    swal("Rectas no Paralelas", `Aún no coinciden los decimales en pantalla (${formatSlope(mSecante)} vs ${formatSlope(mTangente)}).\n\nUsa los botones (+) y (-) para micro-ajustar el valor con precisión.`, "error");
+                }
+            }
+        };
+
+        // ==========================================
+        // LÓGICA ETAPA 2 - CUESTIONARIO TEÓRICO
+        // ==========================================
+        let preguntaActualN2 = 1;
+        const totalN2 = 4;
+        const feedbackN2 = {
+            1: "¡Correcto! Es el principio fundamental del radar de tramo. Si tu tasa de velocidad promedio supera los 90 km/h, el TVM valida legalmente que en al menos un instante exacto tu velocímetro marcó esa misma velocidad de infracción.",
+            2: "Exacto. Esas son las dos condiciones sine qua non del teorema. Si la curva presentara un salto (discontinuidad) o un vértice picudo (no derivable), la existencia de la recta paralela se anularía.",
+            3: "¡Es correcto! Rolle es el cimiento plano del TVM. Al tener extremos a la misma altura, la razón de cambio es idéntica a cero, forzando la aparición de una cima o valle de tangente horizontal.",
+            4: "Perfecto. Es la herencia matemática lógica: Weierstrass asegura extremos, Fermat vincula la derivada nula a estos puntos, Rolle formaliza la tangente plana y el TVM inclina el eje para generalizar cualquier función continua."
+        };
+
+        function iniciarEtapa2() {
+            document.getElementById('level-1-container').classList.add('hidden');
+            document.getElementById('level-2-container').classList.remove('hidden');
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function comprobarPregunta() {
+            const s = document.querySelector(`input[name="q${preguntaActualN2}"]:checked`);
+            if (!s) return swal("Aviso", "Selecciona una alternativa para continuar.", "warning");
+
+            const f = document.getElementById(`feedback-${preguntaActualN2}`);
+            f.classList.remove('hidden');
+            document.querySelectorAll(`input[name="q${preguntaActualN2}"]`).forEach(el => el.disabled = true);
+
+            if (s.value === "correcta") {
+                f.innerHTML = `<strong>¡Correcto!</strong> ${feedbackN2[preguntaActualN2]}`;
+                f.classList.remove('error');
+                aciertosQuizN2++;
+            } else {
+                f.innerHTML = `<strong>Incorrecto.</strong> ${feedbackN2[preguntaActualN2]}`;
+                f.classList.add('error');
+            }
+
+            document.getElementById('btn-comprobar-quiz').classList.add('hidden');
+            document.getElementById('btn-siguiente-quiz').classList.remove('hidden');
+            if (preguntaActualN2 === totalN2) document.getElementById('btn-siguiente-quiz').innerHTML = 'Continuar a Etapa 3 <i class="fa-solid fa-rocket"></i>';
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub, f]);
+        }
+
+        function siguientePregunta() {
+            if (preguntaActualN2 === totalN2) {
+                document.getElementById('level-2-container').classList.add('hidden');
+                document.getElementById('level-3-container').classList.remove('hidden');
+                if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                return;
+            }
+            document.getElementById(`step-${preguntaActualN2}`).classList.add('hidden');
+            preguntaActualN2++;
+            document.getElementById(`step-${preguntaActualN2}`).classList.remove('hidden');
+            document.getElementById('h5p-progress').style.width = (preguntaActualN2 / totalN2) * 100 + "%";
+            document.getElementById('h5p-counter').innerText = `${preguntaActualN2}/${totalN2}`;
+            
+            document.getElementById('btn-siguiente-quiz').classList.add('hidden');
+            document.getElementById('btn-comprobar-quiz').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // LÓGICA ETAPA 3 - DEMOSTRACIÓN ANALÍTICA
+        // ==========================================
+        function evaluarEtapa3() {
+            const s1 = document.getElementById('ans5-1');
+            const s2 = document.getElementById('ans5-2');
+            const s3 = document.getElementById('ans5-3');
+            const s4 = document.getElementById('ans5-4');
+
+            if (!s1.value || !s2.value || !s3.value || !s4.value) {
+                return swal("Incompleto", "Por favor completa todas las casillas analíticas antes de evaluar.", "warning");
+            }
+
+            aciertosTeoricosN3 = 0;
+            const validarSelect = (elem, correcta) => {
+                if(elem.value === correcta) {
+                    elem.style.borderColor = "var(--success)";
+                    aciertosTeoricosN3++;
+                } else {
+                    elem.style.borderColor = "var(--danger)";
+                }
+            };
+
+            validarSelect(s1, "2");   
+            validarSelect(s2, "v2");  
+            validarSelect(s3, "ambos"); 
+            validarSelect(s4, "positivo"); 
+
+            document.querySelectorAll('#level-3-container select').forEach(el => el.disabled = true);
+
+            if (aciertosTeoricosN3 === 4) {
+                swal("¡Cálculo Riguroso Correcto!", "Estupendo. Has determinado con precisión formal el punto analítico garantizado por las hipótesis del teorema.", "success");
+            } else {
+                swal("Errores Detectados", "Revisa la discriminación de raíces basada en los límites abiertos del intervalo.", "error");
+            }
+
+            document.getElementById('btn-evaluar-n3').classList.add('hidden');
+            document.getElementById('btn-finalizar-actividad').classList.remove('hidden');
+        }
+
+        function finalizarTodo() {
+            confetti({ particleCount: 250, spread: 100, origin: { y: 0.6 } });
+            
+            const nodeSummary = document.createElement('div');
+            nodeSummary.className = 'summary-card';
+            nodeSummary.innerHTML = `
+                <div class="summary-item">
+                    <span>Tréboles de vida restantes:</span>
+                    <span class="accent">${lives} / 3</span>
+                </div>
+                <div class="summary-item">
+                    <span>Reajustes geométricos fallidos (Etapa 1):</span>
+                    <span class="accent" style="color: ${totalErroresVisuales > 0 ? 'var(--danger)' : 'var(--success)'};">${totalErroresVisuales}</span>
+                </div>
+                <div class="summary-item">
+                    <span>Evaluación teórica (Etapa 2):</span>
+                    <span class="accent">${aciertosQuizN2} / 4</span>
+                </div>
+                <div class="summary-item">
+                    <span>Deducción analítica (Etapa 3):</span>
+                    <span class="accent">${aciertosTeoricosN3} / 4</span>
+                </div>
+                <p style="text-align: center; font-weight: bold; margin-top: 20px; color: var(--primary);">
+                    ¡Módulo del Teorema del Valor Medio Completado!
+                </p>
+            `;
+
+            swal({
+                title: "Reporte de Rendimiento Metodológico",
+                content: nodeSummary,
+                icon: "success",
+                button: "Cerrar Actividad"
+            });
+        }
+    </script>
+</body>
+
+</html>
+
+
