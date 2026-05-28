@@ -1,77 +1,736 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caracterización del supremo</title>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css">
-    <!--MathJax -->
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>Laboratorio Didáctico: Caracterización del Supremo</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+        };
+    </script>
+
+    <style>
+        :root {
+            --primary: #0f172a;
+            --primary-hover: #1e293b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --azure-accent: #38bdf8;
+            --azure-dark: #0284c7;
+            --azure-bg: #e0f7fa;
+            --azure-border: #b2ebf2;
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: #fff;
+            padding: 35px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        h1 { color: var(--primary); font-weight: 700; text-align: center; margin-bottom: 5px; font-size: 26px; }
+        h3 { font-size: 17px; font-weight: 600; margin-bottom: 12px; color: var(--text-dark); }
+        p { line-height: 1.6; font-size: 15px; }
+        
+        .hidden { display: none !important; }
+
+        /* Controles de Configuración Parámetros */
+        .setup-box {
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .control-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 200px; }
+        .control-group label { font-size: 14px; font-weight: 700; color: var(--primary); }
+        .control-group input { padding: 10px; border: 2px solid var(--border-color); border-radius: 8px; outline: none; font-size: 15px; font-weight: bold; }
+        .control-group input:focus { border-color: var(--azure-dark); }
+
+        /* Botonera */
+        .btn-general {
+            display: block; width: 100%; max-width: 340px; margin: 15px auto; padding: 13px;
+            background-color: var(--primary); color: white; border: none; border-radius: 25px;
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.25s ease;
+            text-align: center; text-decoration: none; box-shadow: 0 4px 10px rgba(15,23,42,0.15);
+        }
+        .btn-general:hover:not(:disabled) { 
+            transform: translateY(-2px); 
+            background-color: var(--primary-hover);
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.25);
+        }
+        .btn-general:disabled { background-color: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+        .btn-success { background-color: var(--success); }
+        .btn-success:hover:not(:disabled) { background-color: #059669; }
+        .btn-secondary { background-color: #64748b; }
+        .btn-secondary:hover:not(:disabled) { background-color: #475569; }
+        .btn-danger { background-color: var(--danger); }
+        .btn-danger:hover:not(:disabled) { background-color: #dc2626; }
+
+        /* Contenedor e Instrucciones Canvas */
+        .canvas-wrapper {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 15px auto;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            overflow: hidden;
+            position: relative;
+        }
+        canvas { display: block; margin: 0 auto; cursor: crosshair; }
+
+        /* Módulos de Estado */
+        .status-bar { display: flex; justify-content: space-between; align-items: center; background: var(--azure-bg); padding: 12px 20px; border-radius: 8px; font-weight: 600; color: #006064; margin-bottom: 15px; border: 1px solid var(--azure-border); font-size: 14px; }
+        .lives-box i { color: var(--danger); font-size: 18px; margin-right: 3px; transition: all 0.3s; }
+        .lives-box i.lost { opacity: 0.2; transform: scale(0.8); }
+        .badge-info { background: #0f172a; color: #fff; padding: 8px 18px; border-radius: 6px; font-size: 15px; font-weight: 600; display: inline-block; margin-bottom: 15px; }
+
+        /* Capa Quiz (Etapa 2) */
+        .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 6px; margin: 15px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--azure-accent); width: 50%; transition: 0.4s; }
+        .h5p-option { display: flex; align-items: center; padding: 14px; border: 1px solid var(--border-color); margin-bottom: 10px; border-radius: 8px; cursor: pointer; background: var(--bg-light); transition: 0.2s; }
+        .h5p-option:hover { border-color: var(--azure-accent); background: #f0fdfa; }
+        .h5p-option input { margin-right: 12px; transform: scale(1.1); }
+        .h5p-feedback { padding: 15px; border-radius: 8px; margin-top: 15px; background: #f1f5f9; border-left: 6px solid var(--azure-accent); font-size: 14.5px; }
+        .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; color: #991b1b; }
+
+        /* Capa Analítica (Etapa 3) */
+        .n3-section { background: var(--bg-light); padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--border-color); }
+        select.math-input { margin: 0 8px; padding: 6px 10px; border: 2px solid var(--border-color); border-radius: 6px; font-size: 14px; font-weight: bold; color: var(--azure-dark); outline: none; cursor: pointer; background: #fff; display: inline-block; vertical-align: middle; }
+        select.math-input:focus { border-color: var(--azure-accent); }
+        .step-row { display: flex; align-items: center; margin-bottom: 15px; font-size: 15px; flex-wrap: wrap; line-height: 2.2; }
+
+        /* Reporte Final H5P */
+        .h5p-summary-box { border: 2px solid var(--azure-accent); background: #f0f9ff; border-radius: 12px; padding: 25px; margin-top: 20px; text-align: left; }
+        .summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #cbd5e1; font-size: 15px; font-weight: 500; }
+        .summary-row span.bold-val { font-weight: 700; color: var(--azure-dark); }
+    </style>
 </head>
 
 <body>
 
-    <h1><b> Actividad 1</b></h1>
-    <h1 class=""> Caracterización del supremo &nbsp;</h1>
-    <p class="">Con ayuda del siguiente interactivo muestra que el supremo del conjunto \( A=\left\{ \frac{n}{n+1} \right\} \) es 1.<br></p>
-    <p class="">Observa que, \( \lim_{n \to \infty } \frac{n}{n+1}=1.\) <br></p>
-    <div class="card-header"> En el interactivo debes proponer un valor pequeño entre 0 y 0.5 para tu vecindad de radio épsilon. Posteriormente, realiza los cálculos<br></div>
-    <div class="card-header"> correspondientes para mostrar que para cualquier \( \varepsilon>0 \),  se tiene que, entre \( l- \varepsilon \) y 1, siempre existen puntos del conjunto \(A\). <br></div>
-    <h3 class="text-left">Elige un valor para épsilon</h3>
+    <div class="container">
 
-    <!--  <div>
-        <label for="inputEpsilon" class="col-2 col-form-label">\( \varepsilon : \)</label>
-        
-    </div>  -->
-   
+        <div id="level-1-container">
+            <h1>Etapa 1: Caracterización Geométrica del Supremo</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 15px;">
+                Muestra de forma dinámica que el Supremo de la sucesión $A = \left\{ \frac{n}{n+1} \right\}$ es $1$. Define una vecindad de radio $\varepsilon$ y calcula el umbral de corte $N$.
+            </p>
+            
+            <div class="setup-box">
+                <div class="control-group">
+                    <label for="inputEpsilon">Vecindad Radio $\varepsilon$ ($0 < \varepsilon \le 0.5$):</label>
+                    <input type="number" id="inputEpsilon" min="0.01" max="0.5" step="0.01" value="0.2" oninput="actualizarEntornoEpsilon()">
+                </div>
+                <div class="control-group">
+                    <label for="inputVerificaN">Proponer un valor crítico de $n$ ($n > N$):</label>
+                    <input type="number" id="inputVerificaN" min="1" max="100" step="1" value="1">
+                </div>
+            </div>
 
-    <div>
-    <p>  Dada, \( \varepsilon = \)  <input onchange="changeEpsilon()"  
-         type="number" class="form-control w-50" id="inputEpsilon" min="0" max="0.5" step="0.01"> 
-         existe  \( N  \in  \mathrm{I}\!\mathrm{N}  \) tal que para   </p>
+            <div class="status-bar">
+                <div class="lives-box">
+                    Estabilidad: 
+                    <i class="fa-solid fa-heart" id="life1"></i>
+                    <i class="fa-solid fa-heart" id="life2"></i>
+                    <i class="fa-solid fa-heart" id="life3"></i>
+                </div>
+                <div style="font-weight: bold;" id="game-state-indicator">Estado: Configuración</div>
+                <div>Aciertos Requeridos: <span id="score-text" style="font-size: 16px; color: var(--success); font-weight: bold;">0</span> / 1</div>
+            </div>
 
-	<p>  \( \ l   -    \)  <span id="epsilonChange1"> \( \varepsilon \) </span></p>  
-	
+            <div class="canvas-wrapper">
+                <canvas id="supremoCanvas" width="800" height="400"></canvas>
+            </div>
 
-	<label for="inputVerificaN">  \(n \gt \) </label>
-	
-	<input onchange="ejecutarN()"  type="number" id="inputVerificaN" min="1" max="50" step="1" >
+            <p id="instruccion-click" style="text-align: center; font-weight: bold; color: var(--azure-dark);" class="hidden">
+                <i class="fa-solid fa-bullseye"></i> ¡Fase de Caza! Hay dos candidatos en la franja $(1-\varepsilon,1]$: uno pertenece a la sucesión y el otro es señuelo. Decide con cálculo aritmético.
+            </p>
+
+            <div style="text-align: center; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                <button class="btn-general" id="btn-run-succession" onclick="ejecutarSucesionGeometria()">1. Ejecutar Sucesión</button>
+                <button class="btn-general btn-secondary hidden" id="btn-spawn-points" onclick="inyectarPuntosAleatorios()">2. Desplegar Puntos en Vecindad</button>
+                <button class="btn-general btn-danger hidden" id="btn-reset-lvl1" onclick="reiniciarEtapa1()">Reiniciar Juego</button>
+            </div>
+            
+            <button class="btn-general btn-success hidden" id="btn-go-to-n2" onclick="activarEtapa2()">Avanzar a la Etapa 2 <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+        <div id="level-2-container" class="hidden">
+            <h1>Etapa 2: Diagnóstico Conceptual (Estilo H5P)</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Responde los reactivos teóricos basados en las propiedades del Supremo y vecindades de épsilon.</p>
+
+            <div class="progress-container"><div class="progress-bar" id="quiz-progress"></div></div>
+            <p id="quiz-counter" style="text-align: right; font-weight: 600; color: var(--azure-dark); margin-top:0;">Pregunta 1 de 2</p>
+
+            <div id="qstep-1" class="quiz-block">
+                <h3>1. Si $L$ es la menor de las cotas superiores de un conjunto $A$, ¿cuál es el significado geométrico-analítico de plantear la prueba $L - \varepsilon$?</h3>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>A) Generar una nueva cota superior que reemplace al supremo actual.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcto"> <span>B) Romper la condición de cota superior de $L$, forzando a que existan elementos del conjunto en la franja $(L-\varepsilon, L]$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>C) Demostrar que el conjunto es infinito y no acotado por la izquierda.</span></label>
+                <div id="qfeedback-1" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="qstep-2" class="quiz-block hidden">
+                <h3>2. Para el conjunto $A = \{\frac{n}{n+1}\}$, si reducimos el valor de $\varepsilon$ a $0.01$, ¿qué ocurre con el valor mínimo de $n \in \mathbb{N}$ requerido para superar la barrera $1 - \varepsilon$?</h3>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcto"> <span>A) El valor de $n$ aumenta de manera inversa, exigiendo elementos mucho más avanzados en la sucesión ($n > 99$).</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>B) El valor de $n$ disminuye, ya que la vecindad se vuelve más tolerante.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>C) Se mantiene constante debido a que el Supremo nunca cambia su valor de adherencia.</span></label>
+                <div id="qfeedback-2" class="h5p-feedback hidden"></div>
+            </div>
+
+            <button class="btn-general" id="btn-check-quiz" onclick="verificarPreguntaQuiz()">Comprobar Respuesta</button>
+            <button class="btn-general hidden btn-success" id="btn-next-quiz" onclick="pasarSiguientePreguntaQuiz()">Siguiente Pregunta</button>
+        </div>
+
+        <div id="level-3-container" class="hidden">
+            <h1>Etapa 3: Estructuración de la Demostración Formal</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 25px;">
+                Completa los bloques analíticos para formalizar matemáticamente la caracterización del Supremo mediante contradicción lógica.
+            </p>
+
+            <div class="n3-section">
+                <h3 style="color: var(--azure-dark);">Demostración Analítica del Supremo</h3>
+                <div class="step-row">
+                    Sea el conjunto $A=\left\{ \frac{n}{n+1} \right\}$. Para probar que $\text{sup}(A) = 1$, verificamos que para cualquier $\varepsilon > 0$, el valor $1 - \varepsilon$ 
+                    <select id="dem-1" class="math-input">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v1">Sigue siendo cota superior</option>
+                        <option value="v2">No es cota superior de A</option>
+                    </select>.
+                </div>
+                <div class="step-row">
+                    Buscamos un elemento tal que $\frac{n}{n+1} > 1 - \varepsilon$. Desarrollando algebraicamente la desigualdad: $n > (1-\varepsilon)(n+1) \Rightarrow n > n - n\varepsilon + 1 - \varepsilon \Rightarrow n\varepsilon > 1 - \varepsilon$. Al despejar, se concluye que basta con elegir un entero tal que 
+                    <select id="dem-2" class="math-input">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v1">n > (1/ε) - 1</option>
+                        <option value="v2">n < ε / (1+ε)</option>
+                    </select>.
+                </div>
+                <div class="step-row">
+                    Por la propiedad 
+                    <select id="dem-3" class="math-input">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v1">Arquimediana</option>
+                        <option value="v2">De Tricotomía</option>
+                    </select>
+                    de los números reales, siempre existe un número natural $n$ que cumple esta condición, garantizando la existencia del punto dentro del entorno de radio $\varepsilon$.
+                </div>
+            </div>
+
+            <button class="btn-general" id="btn-eval-n3" onclick="validarEtapa3()">Validar Estructura Formal</button>
+            <button class="btn-general hidden btn-success" id="btn-finish-all" onclick="mostrarCierreH5P()">Generar Reporte de Competencias <i class="fa-solid fa-graduation-cap"></i></button>
+        </div>
+
     </div>
 
-    <br>
-    <br>
+    <script>
+        // Variables globales del Laboratorio
+        let fallosGlobales = 0;
+        let aciertosQuiz = 0;
+        let puntosAnaliticosN3 = 0;
+        let vidas = 3;
+        let aciertosLvl1 = 0;
 
-    <button onclick="ejecutarSucesion()" (click)="expression">Ejecutar Sucesión</button>
+        // Estado del Canvas y Simulación
+        let canvas, ctx;
+        let epsilon = 0.2;
+        let limiteInferiorN = 1;
+        let animacionID = null;
+        let faseCazaActiva = false;
 
-    <div>
-        <!--  <button onclick="ejecutarSucesion()" (click)="expression">Ejecutar Sucesión</button>  -->
-        <br>
-        <button id="boton" onclick="reload()">Puntos Aleatorios</button>
-        <br>
-        <br>
-        <div id="coordenadas">(x,y)</div>
-        <br>
+        // Estructuras de Puntos
+        let puntosSucesionDibujados = [];
+        let puntosSeñueloAparicion = [];
+        let puntosBuenosDefinidos = [];
+        let buenosCapturados = 0;
 
-    </div>
+        // Configuración de escalas del Canvas
+        const offsetX = 80;
+        const widthEje = 650;
+        const centerY = 200; // Eje horizontal real central
 
-    <br>
+        document.addEventListener('DOMContentLoaded', function () {
+            canvas = document.getElementById('supremoCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // Registrar evento de clic en el canvas para la Fase de Caza
+            canvas.addEventListener('click', manejarClicCanvas);
+            
+            actualizarEntornoEpsilon();
+        });
 
-    <a class="custom-button" href="./caracterizacion-del-supremo.html">reinicio</a>
+        function actualizarEntornoEpsilon() {
+            if (faseCazaActiva) return;
+            const inputE = document.getElementById('inputEpsilon');
+            epsilon = parseFloat(inputE.value);
+            if(isNaN(epsilon) || epsilon <= 0 || epsilon > 0.5) {
+                epsilon = 0.2;
+            }
+            renderizarEjeBase();
+        }
 
-    <div id="edvi" style="width:650px; height:400px;display:block;margin-left:auto;margin-right:auto;"> </div>
+        function renderizarEjeBase() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            // 1. Dibujar línea del Eje Real Horizontal
+            ctx.beginPath();
+            ctx.moveTo(offsetX, centerY);
+            ctx.lineTo(offsetX + widthEje, centerY);
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 4;
+            ctx.stroke();
 
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            // 2. Marcar el origen (0) y el Límite/Supremo (1)
+            dibujarMarcaEje(0, "0", "#334155");
+            dibujarMarcaEje(1, "Supremo = 1", "green", 6);
 
-    <script type="text/javascript" language="javascript" src="./js/caracterizacion_supremo.js"></script>
+            // 3. Dibujar área/vecindad de corte de Épsilon (1 - epsilon)
+            let valorCorte = 1 - epsilon;
+            let coordCorteX = offsetX + (valorCorte * widthEje);
+
+            // Franja coloreada que representa la Vecindad (1-epsilon, 1]
+            ctx.fillStyle = 'rgba(56, 189, 248, 0.15)';
+            ctx.fillRect(coordCorteX, centerY - 40, (1 - valorCorte) * widthEje, 80);
+
+            // Línea divisoria de la barrera de Epsilon
+            ctx.beginPath();
+            ctx.moveTo(coordCorteX, centerY - 40);
+            ctx.lineTo(coordCorteX, centerY + 40);
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([4, 4]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Etiqueta de la barrera 1 - epsilon
+            ctx.fillStyle = '#b91c1c';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.fillText(`1 - ε (${valorCorte.toFixed(2)})`, coordCorteX - 30, centerY - 50);
+        }
+
+        function dibujarMarcaEje(valor, etiqueta, color, grosor = 3) {
+            let x = offsetX + (valor * widthEje);
+            ctx.beginPath();
+            ctx.moveTo(x, centerY - 15);
+            ctx.lineTo(x, centerY + 15);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = grosor;
+            ctx.stroke();
+
+            ctx.fillStyle = color;
+            ctx.font = 'bold 13px sans-serif';
+            ctx.fillText(etiqueta, x - 20, centerY + 35);
+        }
+
+        function ejecutarSucesionGeometria() {
+            cancelAnimationFrame(animacionID);
+            renderizarEjeBase();
+            
+            limiteInferiorN = parseInt(document.getElementById('inputVerificaN').value);
+            if(isNaN(limiteInferiorN) || limiteInferiorN < 1) limiteInferiorN = 1;
+
+            document.getElementById('game-state-indicator').innerText = "Estado: Renderizando Sucesión";
+            puntosSucesionDibujados = [];
+
+            let i = 1;
+            function animarPuntos() {
+                if (i <= limiteInferiorN) {
+                    let valorPunto = i / (i + 1);
+                    let x = offsetX + (valorPunto * widthEje);
+
+                    // Dibujar punto de la Sucesión (Color Púrpura)
+                    ctx.beginPath();
+                    ctx.arc(x, centerY, 6, 0, 2 * Math.PI);
+                    ctx.fillStyle = "purple";
+                    ctx.fill();
+
+                    // Guardar coordenadas de renderizado
+                    puntosSucesionDibujados.push({ n: i, valor: valorPunto, x: x, y: centerY });
+
+                    i++;
+                    setTimeout(() => {
+                        animacionID = requestAnimationFrame(animarPuntos);
+                    }, 150);
+                } else {
+                    // Verificar si el N provisto cumple el umbral analítico algebraico
+                    let umbralAnalitico = (1 / epsilon) - 1;
+                    if (limiteInferiorN > umbralAnalitico) {
+                        document.getElementById('btn-run-succession').classList.add('hidden');
+                        document.getElementById('btn-spawn-points').classList.remove('hidden');
+                        document.getElementById('game-state-indicator').innerText = "Estado: Umbral N Correcto";
+                        swal("¡Umbral N Válido!", `Excelente. Como n = ${limiteInferiorN} > ${umbralAnalitico.toFixed(2)}, la propiedad arquimediana asegura que entramos a la zona de caza dentro del entorno de épsilon.`, "success");
+                    } else {
+                        fallosGlobales++;
+                        reducirVidaEstructural();
+                        swal("Puntos fuera de la vecindad", `El valor n = ${limiteInferiorN} no es lo suficientemente grande. Los puntos se quedaron antes de la barrera 1 - ε (${(1-epsilon).toFixed(2)}). Intenta con un valor mayor.`, "warning");
+                    }
+                }
+            }
+            animarPuntos();
+        }
+
+        function inyectarPuntosAleatorios() {
+            document.getElementById('btn-spawn-points').classList.add('hidden');
+            document.getElementById('instruccion-click').classList.remove('hidden');
+            document.getElementById('game-state-indicator').innerText = "Estado: ¡Fase de Caza!";
+            faseCazaActiva = true;
+
+            // Bloquear campos de entrada
+            document.getElementById('inputEpsilon').disabled = true;
+            document.getElementById('inputVerificaN').disabled = true;
+
+            let minY = 1 - epsilon;
+            let maxY = 1;
+
+            puntosSeñueloAparicion = [];
+            puntosBuenosDefinidos = [];
+            buenosCapturados = 0;
+
+            // 1. Generar un señuelo falso en la franja (no pertenece a la sucesión n/(n+1))
+            let randomValorY = Math.random() * (maxY - minY) + minY;
+            let xCoord = offsetX + (randomValorY * widthEje);
+            let yDisp = centerY - 6;
+            puntosSeñueloAparicion.push({ x: xCoord, y: yDisp, val: randomValorY });
+
+            // Dibujar Señuelo Azul Oscuro
+            ctx.beginPath();
+            ctx.arc(xCoord, yDisp, 5, 0, 2 * Math.PI);
+            ctx.fillStyle = "darkblue";
+            ctx.fill();
+            ctx.fillStyle = "#1e3a8a";
+            ctx.font = "bold 14px sans-serif";
+            ctx.fillText(randomValorY.toFixed(3), xCoord - 16, yDisp - 34);
+
+            // 2. Generar un único punto verdadero de la sucesión dentro de la franja
+            let nBueno = Math.floor(Math.random() * 15) + limiteInferiorN + 1;
+            let valorBueno = nBueno / (nBueno + 1);
+            let xBueno = offsetX + (valorBueno * widthEje);
+            let yBueno = centerY + 6;
+
+            puntosBuenosDefinidos.push({ x: xBueno, y: yBueno, val: valorBueno, n: nBueno, capturado: false });
+
+            // Dibujar punto verdadero (Rosa/Pink Brillante)
+            ctx.beginPath();
+            ctx.arc(xBueno, yBueno, 6, 0, 2 * Math.PI);
+            ctx.fillStyle = "#ec4899";
+            ctx.fill();
+            ctx.strokeStyle = "#db2777";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            ctx.fillStyle = "#9d174d";
+            ctx.font = "bold 14px sans-serif";
+            ctx.fillText(valorBueno.toFixed(3), xBueno - 16, yBueno + 34);
+
+            document.getElementById('game-state-indicator').innerText = "Estado: ¡Fase de Caza! Determina cuál punto es de la sucesión";
+        }
+
+        function lanzarReflexionSupremo() {
+            swal({
+                title: "Reflexiona: ¿Por qué debe existir ese punto?",
+                text: "Si para un ε > 0 no hubiera elementos de la sucesión en (1-ε, 1], ¿qué concluirías?",
+                icon: "info",
+                buttons: {
+                    opcionA: { text: "A) Que 1-ε sería cota superior menor que 1, contradiciendo que 1 es supremo", value: "correcta" },
+                    opcionB: { text: "B) Que la sucesión deja de ser monótona, pero el supremo sigue igual", value: "incorrectaB" },
+                    opcionC: { text: "C) Que 1 deja de ser real y el supremo no aplica", value: "incorrectaC" }
+                }
+            }).then((seleccion) => {
+                if (seleccion === "correcta") {
+                    swal("¡Muy bien!", "Exactamente: si no existieran puntos por encima de 1-ε, entonces 1-ε sería una cota superior menor que 1. Eso contradice la definición de supremo.", "success");
+                } else if (seleccion) {
+                    swal("Casi", "Revisa la definición: el punto clave es evitar que exista una cota superior menor que 1.", "warning");
+                }
+            });
+        }
+
+        function manejarClicCanvas(e) {
+            if (!faseCazaActiva) return;
+
+            // Obtener coordenadas relativas del clic dentro del canvas
+            const rect = canvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+
+            let radioColision = 14;
+
+            // Comprobar si golpeó alguno de los puntos verdaderos de la sucesión
+            for (let i = 0; i < puntosBuenosDefinidos.length; i++) {
+                const punto = puntosBuenosDefinidos[i];
+                if (punto.capturado) continue;
+                let distBueno = Math.sqrt(Math.pow(clickX - punto.x, 2) + Math.pow(clickY - punto.y, 2));
+                if (distBueno <= radioColision) {
+                    punto.capturado = true;
+                    buenosCapturados++;
+                    aciertosLvl1++;
+                    document.getElementById('score-text').innerText = aciertosLvl1;
+                    document.getElementById('instruccion-click').classList.add('hidden');
+                    document.getElementById('btn-go-to-n2').classList.remove('hidden');
+                    document.getElementById('game-state-indicator').innerText = "Estado: Etapa 1 Superada";
+                    faseCazaActiva = false;
+                    swal("¡Elección correcta!", `Ese punto sí pertenece a la sucesión porque ${punto.val.toFixed(3)} = ${punto.n}/(${punto.n}+1), y además cae en (1-ε,1].`, "success")
+                        .then(() => lanzarReflexionSupremo());
+                    return;
+                }
+            }
+
+            // Comprobar si golpeó algún señuelo
+            let golpeoSeñuelo = false;
+            puntosSeñueloAparicion.forEach(item => {
+                let dist = Math.sqrt(Math.pow(clickX - item.x, 2) + Math.pow(clickY - item.y, 2));
+                if (dist <= radioColision) {
+                    golpeoSeñuelo = true;
+                    fallosGlobales++;
+                    reducirVidaEstructural();
+                    swal("¡Punto Inválido!", `El valor ${item.val.toFixed(3)} está en la franja de la vecindad, pero es un número real flotante aleatorio. NO existe ningún n entero que pueda generar ese punto exacto en la sucesión.`, "error");
+                }
+            });
+
+            if(!golpeoSeñuelo) {
+                swal("Espacio Vacío", "Haz clic con precisión quirúrgica sobre uno de los nodos numéricos graficados.", "warning");
+            }
+        }
+
+        function reducirVidaEstructural() {
+            if (vidas > 0) {
+                document.getElementById(`life${vidas}`).classList.add('lost');
+                vidas--;
+            }
+            if (vidas === 0) {
+                faseCazaActiva = false;
+                document.getElementById('btn-run-succession').classList.add('hidden');
+                document.getElementById('btn-spawn-points').classList.add('hidden');
+                document.getElementById('instruccion-click').classList.add('hidden');
+                document.getElementById('btn-reset-lvl1').classList.remove('hidden');
+                document.getElementById('game-state-indicator').innerText = "Estado: Colapso por Inestabilidad";
+                swal("Intentos Agotados", "El entorno lógico colapsó debido a múltiples errores de aproximación. Presiona 'Reiniciar Juego' para intentarlo de nuevo.", "error");
+            }
+        }
+
+        function reiniciarEtapa1() {
+            // Restaurar contadores globales
+            vidas = 3; aciertosLvl1 = 0; fallosGlobales = 0; aciertosQuiz = 0; puntosAnaliticosN3 = 0;
+            faseCazaActiva = false;
+            puntosBuenosDefinidos = [];
+            buenosCapturados = 0;
+
+            document.getElementById('score-text').innerText = "0";
+            document.getElementById('btn-reset-lvl1').classList.add('hidden');
+            document.getElementById('btn-go-to-n2').classList.add('hidden');
+            document.getElementById('instruccion-click').classList.add('hidden');
+            document.getElementById('btn-run-succession').classList.remove('hidden');
+
+            document.getElementById('inputEpsilon').disabled = false;
+            document.getElementById('inputVerificaN').disabled = false;
+            document.getElementById('inputEpsilon').value = "";
+            document.getElementById('inputVerificaN').value = "";
+            document.getElementById('game-state-indicator').innerText = "Estado: Configuración";
+
+            for(let i = 1; i <= 3; i++) {
+                document.getElementById(`life${i}`).classList.remove('lost');
+            }
+
+            // Limpieza absoluta de la Etapa 2 (Quiz H5P)
+            indexQuiz = 1;
+            document.querySelectorAll('.quiz-block').forEach(bloque => {
+                bloque.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.checked = false;
+                    radio.disabled = false;
+                });
+            });
+            document.querySelectorAll('.h5p-feedback').forEach(fb => {
+                fb.classList.add('hidden');
+                fb.innerHTML = "";
+            });
+            document.getElementById('qstep-1').classList.remove('hidden');
+            document.getElementById('qstep-2').classList.add('hidden');
+            document.getElementById('quiz-progress').style.width = "50%";
+            document.getElementById('quiz-counter').innerText = `Pregunta 1 de 2`;
+            document.getElementById('btn-check-quiz').classList.remove('hidden');
+            document.getElementById('btn-next-quiz').classList.add('hidden');
+
+            // Limpieza de la Etapa 3
+            document.querySelectorAll('#level-3-container select').forEach(select => {
+                select.value = "";
+                select.disabled = false;
+                select.style.borderColor = "var(--border-color)";
+            });
+            document.getElementById('btn-eval-n3').classList.remove('hidden');
+            document.getElementById('btn-finish-all').classList.add('hidden');
+
+            // Conmutación de pantallas a la pestaña principal
+            document.getElementById('level-2-container').classList.add('hidden');
+            document.getElementById('level-3-container').classList.add('hidden');
+            document.getElementById('level-1-container').classList.remove('hidden');
+
+            actualizarEntornoEpsilon();
+        }
+
+        // ==========================================
+        // LÓGICA ETAPA 2: CUESTIONARIO CONCEPTUAL
+        // ==========================================
+        let indexQuiz = 1;
+        const totalQuiz = 2;
+        const explicacionesQuiz = {
+            1: "Por definición, el Supremo es la menor de las cotas superiores. Si restamos cualquier valor ε > 0, la cantidad resultante (L - ε) deja de ser una cota superior de forma inmediata, lo que obliga matemáticamente a que existan elementos del conjunto que la superen.",
+            2: "Al reducir ε a 0.01, la franja de vecindad se vuelve extremadamente estrecha alrededor del 1. La inecuación n > (1/ε) - 1 se traduce en n > (1/0.01) - 1 = 99. Por lo tanto, requerimos por obligación elementos con n ≥ 100."
+        };
+
+        function activarEtapa2() {
+            document.getElementById('level-1-container').classList.add('hidden');
+            document.getElementById('level-2-container').classList.remove('hidden');
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function verificarPreguntaQuiz() {
+            const checkedRadio = document.querySelector(`input[name="q${indexQuiz}"]:checked`);
+            if (!checkedRadio) return swal("Casilla Vacía", "Por favor selecciona una alternativa de respuesta antes de verificar.", "warning");
+
+            const layerFeedback = document.getElementById(`qfeedback-${indexQuiz}`);
+            layerFeedback.classList.remove('hidden');
+            document.querySelectorAll(`input[name="q${indexQuiz}"]`).forEach(input => input.disabled = true);
+
+            if (checkedRadio.value === "correcto") {
+                layerFeedback.innerHTML = `<strong>¡Respuesta Correcta!</strong> ${explicacionesQuiz[indexQuiz]}`;
+                layerFeedback.classList.remove('error');
+                aciertosQuiz++;
+            } else {
+                layerFeedback.innerHTML = `<strong>Respuesta Incorrecta.</strong> ${explicacionesQuiz[indexQuiz]}`;
+                layerFeedback.classList.add('error');
+            }
+
+            document.getElementById('btn-check-quiz').classList.add('hidden');
+            document.getElementById('btn-next-quiz').classList.remove('hidden');
+            if (indexQuiz === totalQuiz) document.getElementById('btn-next-quiz').innerHTML = 'Pasar a la Etapa 3 <i class="fa-solid fa-arrow-right"></i>';
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub, layerFeedback]);
+        }
+
+        function pasarSiguientePreguntaQuiz() {
+            if (indexQuiz === totalQuiz) {
+                document.getElementById('level-2-container').classList.add('hidden');
+                document.getElementById('level-3-container').classList.remove('hidden');
+                if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                return;
+            }
+            document.getElementById(`qstep-${indexQuiz}`).classList.add('hidden');
+            indexQuiz++;
+            document.getElementById(`qstep-${indexQuiz}`).classList.remove('hidden');
+            
+            document.getElementById('quiz-progress').style.width = (indexQuiz / totalQuiz) * 100 + "%";
+            document.getElementById('quiz-counter').innerText = `Pregunta ${indexQuiz} de ${totalQuiz}`;
+            
+            document.getElementById('btn-next-quiz').classList.add('hidden');
+            document.getElementById('btn-check-quiz').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // LÓGICA ETAPA 3: DEMOSTRACIÓN ANALÍTICA
+        // ==========================================
+        function validarEtapa3() {
+            const select1 = document.getElementById('dem-1');
+            const select2 = document.getElementById('dem-2');
+            const select3 = document.getElementById('dem-3');
+
+            if (!select1.value || !select2.value || !select3.value) {
+                return swal("Desarrollo Incompleto", "Por favor completa todos los pasos deductivos lógicos del bloque.", "warning");
+            }
+
+            puntosAnaliticosN3 = 0;
+            const revisarSeleccion = (el, correcto) => {
+                if (el.value === correcto) {
+                    el.style.borderColor = "var(--success)";
+                    puntosAnaliticosN3++;
+                } else {
+                    el.style.borderColor = "var(--danger)";
+                }
+            };
+
+            revisarSeleccion(select1, "v2");
+            revisarSeleccion(select2, "v1");
+            revisarSeleccion(select3, "v1");
+
+            document.querySelectorAll('#level-3-container select').forEach(s => s.disabled = true);
+            document.getElementById('btn-eval-n3').classList.add('hidden');
+            document.getElementById('btn-finish-all').classList.remove('hidden');
+
+            if (puntosAnaliticosN3 === 3) {
+                swal("Demostración Impecable", "Has estructurado con perfecto rigor formal los criterios de convergencia y acotación superior mínima.", "success");
+            } else {
+                swal("Incoherencias Lógicas", "Algunas conexiones analíticas son erróneas. Revisa los cuadros resaltados en rojo.", "error");
+            }
+        }
+
+        // ==========================================
+        // PANEL FINAL DE EVALUACIÓN (ESTILO H5P)
+        // ==========================================
+        function mostrarCierreH5P() {
+            confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+
+            const cajaResumen = document.createElement('div');
+            cajaResumen.className = 'h5p-summary-box';
+            cajaResumen.innerHTML = `
+                <div class="summary-row">
+                    <span>Errores de precisión geométrica (Etapa 1):</span>
+                    <span class="bold-val" style="color: ${fallosGlobales > 0 ? 'var(--danger)' : 'var(--success)'};">${fallosGlobales}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Corazones lógicos salvados:</span>
+                    <span class="bold-val">${vidas} / 3</span>
+                </div>
+                <div class="summary-row">
+                    <span>Aciertos teóricos en Entornos (Etapa 2):</span>
+                    <span class="bold-val">${aciertosQuiz} / 2</span>
+                </div>
+                <div class="summary-row">
+                    <span>Estructuración Demostración Formal (Etapa 3):</span>
+                    <span class="bold-val">${puntosAnaliticosN3} / 3</span>
+                </div>
+                <p style="text-align: center; font-weight: bold; margin-top: 20px; color: var(--azure-dark); font-size:15px;">
+                    ¡Estructura de Espacios Métricos Acotados Completada!
+                </p>
+            `;
+
+            swal({
+                title: "Reporte Estadístico de Competencias H5P",
+                content: cajaResumen,
+                icon: "success",
+                button: "Finalizar Actividad"
+            });
+        }
+    </script>
 </body>
 
 </html>
+
 
