@@ -1,86 +1,640 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blog De Matemáticas</title>
-  <link rel="stylesheet" href="../css/normalize.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=PT+Sans:wght@400;700&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="./css/style2.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio de Análisis Funcional: Estudio de Conjuntos</title>
+
+    <link rel="stylesheet" type="text/css" href="https://jsxgraph.org/distrib/jsxgraph.css" />
+    <script src="https://jsxgraph.org/distrib/jsxgraphcore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.18/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+        };
+    </script>
+
+    <style>
+        :root {
+            --primary: #0f172a;
+            --primary-hover: #1e293b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --azure-accent: #38bdf8;
+            --azure-dark: #0284c7;
+            --azure-bg: #e0f7fa;
+            --azure-border: #b2ebf2;
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 850px;
+            width: 100%;
+            background: #fff;
+            padding: 35px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        h1 { color: var(--primary); font-weight: 700; text-align: center; margin-bottom: 5px; font-size: 26px; }
+        h3 { font-size: 17px; font-weight: 600; margin-bottom: 12px; color: var(--text-dark); text-align: left;}
+        p { line-height: 1.6; font-size: 15px; }
+        
+        .hidden { display: none !important; }
+
+        /* Botonera */
+        .btn-general {
+            display: block; width: 100%; max-width: 320px; margin: 15px auto; padding: 13px;
+            background-color: var(--primary); color: white; border: none; border-radius: 25px;
+            font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.25s ease;
+            text-align: center; text-decoration: none; box-shadow: 0 4px 10px rgba(15,23,42,0.15);
+        }
+        .btn-general:hover:not(:disabled) { 
+            transform: translateY(-2px); 
+            background-color: var(--primary-hover);
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.25);
+        }
+        .btn-general:disabled { background-color: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+        .btn-success { background-color: var(--success); }
+        .btn-success:hover:not(:disabled) { background-color: #059669; }
+        .btn-secondary { background-color: #64748b; }
+        .btn-secondary:hover:not(:disabled) { background-color: #475569; }
+        .btn-danger { background-color: var(--danger); }
+        .btn-danger:hover:not(:disabled) { background-color: #dc2626; }
+
+        /* Contenedor Gráfico */
+        .jxgbox-wrapper {
+            width: 100%;
+            max-width: 750px;
+            margin: 0 auto 15px auto;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            overflow: hidden;
+            background: #171616;
+        }
+
+        /* Módulos de Estado */
+        .status-bar { display: flex; justify-content: space-between; align-items: center; background: var(--azure-bg); padding: 12px 20px; border-radius: 8px; font-weight: 600; color: #006064; margin-bottom: 15px; border: 1px solid var(--azure-border); font-size: 14px; }
+        .lives-box i { color: var(--danger); font-size: 18px; margin-right: 3px; transition: all 0.3s; }
+        .lives-box i.lost { opacity: 0.2; transform: scale(0.8); }
+
+        /* Capa Quiz (Etapa 2) */
+        .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 6px; margin: 15px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--azure-accent); width: 50%; transition: 0.4s; }
+        .h5p-option { display: flex; align-items: center; padding: 14px; border: 1px solid var(--border-color); margin-bottom: 10px; border-radius: 8px; cursor: pointer; background: var(--bg-light); transition: 0.2s; }
+        .h5p-option:hover { border-color: var(--azure-accent); background: #f0fdfa; }
+        .h5p-option input { margin-right: 12px; transform: scale(1.1); }
+        .h5p-feedback { padding: 15px; border-radius: 8px; margin-top: 15px; background: #f1f5f9; border-left: 6px solid var(--azure-accent); font-size: 14.5px; }
+        .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; color: #991b1b; }
+
+        /* Capa Analítica (Etapa 3) */
+        .n3-section { background: var(--bg-light); padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--border-color); }
+        select.math-input { margin: 0 8px; padding: 6px 10px; border: 2px solid var(--border-color); border-radius: 6px; font-size: 14px; font-weight: bold; color: var(--azure-dark); outline: none; cursor: pointer; background: #fff; display: inline-block; vertical-align: middle; }
+        select.math-input:focus { border-color: var(--azure-accent); }
+        .step-row { display: flex; align-items: center; margin-bottom: 15px; font-size: 15px; flex-wrap: wrap; line-height: 2.2; }
+
+        /* Reporte Final H5P */
+        .h5p-summary-box { border: 2px solid var(--azure-accent); background: #f0f9ff; border-radius: 12px; padding: 25px; margin-top: 20px; text-align: left; }
+        .summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #cbd5e1; font-size: 15px; font-weight: 500; }
+        .summary-row span.bold-val { font-weight: 700; color: var(--azure-dark); }
+    </style>
 </head>
-
-<header class="header">
-  <div class="header__texto">
-    <h2 class="no-margin">
-      "Entorno virtual interactivo para el aprendizaje de las matemáticas"
-    </h2>
-
-  </div>
-</header>
 
 <body>
 
-  <div class="contenedor contenido-principal">
-    <main class="blog">
-      <article class="entrada">
-        <h3 class="no-margin">Actividad 1. Puntos en donde la función es negativa </h3>
-        <br>
-        <p class="no-margin cortartext">
-          \( \text{El propósito de este ejercicio es que puedas identificar los puntos donde la función es negativa.} \)
-        </p>
+    <div class="container">
 
-        <p>
-          \( \text{Haz clic en el escenario de tal modo que indiques puntos que pertenezcan a }\)  \(A=\{x|f(x) \lt 0\}. \) 
-        </p>
+        <div id="level-1-container">
+            <h1>Etapa 1: Caracterización Geométrica del Conjunto</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 15px;">
+                Estudia la condición estructural dada por el conjunto definido matemáticamente como: $A=\{x \mid f(x) < 0\}$.
+            </p>
+            <p style="text-align: center; font-weight: 600; color: var(--azure-dark);">
+                <i class="fa-solid fa-hand-pointer"></i> Haz clic sobre el escenario interactivo en el lugar exacto donde consideres que habitan los elementos que pertenecen al conjunto $A$.
+            </p>
 
-        <section class="contenedor2">
-          <!--   <hr>   -->
+            <div class="status-bar">
+                <div class="lives-box">
+                    Estabilidad del Sistema: 
+                    <i class="fa-solid fa-heart" id="life1"></i>
+                    <i class="fa-solid fa-heart" id="life2"></i>
+                    <i class="fa-solid fa-heart" id="life3"></i>
+                </div>
+                <div style="font-weight: bold;" id="state-indicator">Estado: Esperando Selección</div>
+                <div>Aciertos: <span id="score-text" style="font-size: 18px; color: var(--success); font-weight: bold;">0</span> / 3</div>
+            </div>
 
-          <h3 class="centrar-texto">Intervalos de una función</h3>
+            <div class="jxgbox-wrapper">
+                <div id="box" style="width: 100%; height: 500px;"></div>
+            </div>
 
-          <div id="hud-container" style="display: flex; justify-content: space-between; max-width: 600px; margin: 0 auto 10px auto; font-family: 'Open Sans', sans-serif;">
-            <div style="color: green; font-weight: bold; font-size: 1.8rem;">Aciertos: <span id="score">0</span>/3</div>
-            <div style="color: red; font-weight: bold; font-size: 1.8rem;">Errores: <span id="mistakes">0</span>/3</div>
-          </div>
+            <div style="text-align: center; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                <button class="btn-general btn-success hidden" id="btn-next-exercise" onclick="avanzarSiguienteEjercicio()">Continuar al Siguiente Ejercicio <i class="fa-solid fa-arrow-rotate-right"></i></button>
+                <button class="btn-general btn-danger hidden" id="btn-reset-game" onclick="reiniciarJuegoGlobal()">Reiniciar Nivel</button>
+            </div>
+            
+            <button class="btn-general btn-success hidden" id="btn-go-to-n2" onclick="activarEtapa2()">Avanzar a la Etapa 2 <i class="fa-solid fa-angles-right"></i></button>
+        </div>
 
-          <div id="box" style="width: 750px; height: 600px; background-color: rgb(23, 22, 22)"></div>
-          <br />
-          <div class="button-container">
-            <button class="modern-button modern-button:hover" onclick="validar()">
-              Validar
-            </button>
-            <button class="modern-button modern-button:hover modern-button-a" type="button"
-              onclick="reiniciarJuego()">
-              Reiniciar Juego
-            </button>
-          </div>
-        </section>
+        <div id="level-2-container" class="hidden">
+            <h1>Etapa 2: Diagnóstico Conceptual (Estilo H5P)</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Analiza estructuralmente las definiciones lógicas aplicadas a los intervalos de definición.</p>
 
-      </article>
-    </main>
+            <div class="progress-container"><div class="progress-bar" id="quiz-progress"></div></div>
+            <p id="quiz-counter" style="text-align: right; font-weight: 600; color: var(--azure-dark); margin-top:0;">Pregunta 1 de 2</p>
 
-  </div>
+            <div id="qstep-1" class="quiz-block">
+                <h3>1. Si buscamos representar el conjunto $A = \{x \mid f(x) < 0\}$, ¿qué tipo de objetos matemáticos componen propiamente este conjunto solución?</h3>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>A) Pares ordenados $(x, y)$ ubicados exactamente sobre la trayectoria de la curva.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcto"> <span>B) Valores o números reales de la recta de entrada cuya imagen se proyecta en el semiplano inferior.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>C) Los valores del eje ordenado que cortan a la asíntota principal.</span></label>
+                <div id="qfeedback-1" class="h5p-feedback hidden"></div>
+            </div>
 
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script> -->
-  <script src="https://jsxgraph.org/distrib/jsxgraphcore.js"></script>
+            <div id="qstep-2" class="quiz-block hidden">
+                <h3>2. En una función con una discontinuidad de salto donde la curva pasa de forma abrupta de un valor positivo a uno negativo, ¿cómo afecta esto al conjunto solución?</h3>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcto"> <span>A) El intervalo se segmenta o excluye el punto de discontinuidad, analizando de forma independiente el signo de las imágenes.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>B) El conjunto solución se invalida automáticamente por carecer de una raíz o cruce por cero continuo.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>C) Obliga a que el conjunto $A$ contenga números complejos imaginarios.</span></label>
+                <div id="qfeedback-2" class="h5p-feedback hidden"></div>
+            </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.18/dist/sweetalert2.all.min.js"></script>
-  
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-  <script src="js/abscisas.js"></script>
+            <button class="btn-general" id="btn-check-quiz" onclick="verificarPreguntaQuiz()">Comprobar Respuesta</button>
+            <button class="btn-general hidden btn-success" id="btn-next-quiz" onclick="pasarSiguientePreguntaQuiz()">Siguiente Pregunta</button>
+        </div>
 
+        <div id="level-3-container" class="hidden">
+            <h1>Etapa 3: Estructuración Formal y Deducción</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 25px;">
+                Completa las expresiones lógicas del bloque deductivo para validar formalmente los intervalos de negatividad de la estructura algebraica analizada.
+            </p>
 
-  <script src="js/modernizr.js"></script>
+            <div class="n3-section">
+                <h3 style="color: var(--azure-dark);">Análisis Analítico de Intervalos</h3>
+                <div class="step-row">
+                    Sea la función cuadrática continua dada por la expresión regular $f(x) = x^2 - 4$. Al plantear analíticamente la condición de negatividad $f(x) < 0$, se define la inecuación cuadrática fundamental: 
+                    <select id="dem-1" class="math-input">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v1">x² - 4 > 0</option>
+                        <option value="v2">x² - 4 < 0</option>
+                    </select>.
+                </div>
+                <div class="step-row">
+                    Factorizando la diferencia de cuadrados perfectos obtenemos $(x-2)(x+2) < 0$. Para que el producto de dos factores sea estrictamente negativo, se requiere que ambos factores tengan signos 
+                    <select id="dem-2" class="math-input">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v1">Opuestos o contrarios</option>
+                        <option value="v2">Iguales y positivos</option>
+                    </select>,
+                    lo cual restringe las fronteras críticas de la variable real.
+                </div>
+                <div class="step-row">
+                    Por consiguiente, resolviendo el sistema simultáneo de desigualdades elementales, el conjunto de soluciones en forma de intervalo abierto equivale de forma exacta a: 
+                    <select id="dem-3" class="math-input">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v1">(-∞, -2) ∪ (2, ∞)</option>
+                        <option value="v2">(-2, 2)</option>
+                    </select>.
+                </div>
+            </div>
 
-  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-  
-  <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({tex2jax: {inlineMath:  [['$','$'],['\\(','\\)']]}});
+            <button class="btn-general" id="btn-eval-n3" onclick="validarEtapa3()">Validar Solución Formal</button>
+            <button class="btn-general hidden btn-success" id="btn-finish-all" onclick="mostrarCierreH5P()">Generar Reporte de Competencias <i class="fa-solid fa-graduation-cap"></i></button>
+        </div>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURACIÓN Y ESTADO GLOBAL UNIFICADO
+        // ==========================================
+        const GAME_CONFIG = {
+            maxScore: 3,
+            boundingBox: [-5, 5, 5, -5],
+            tolerance: 0.15 
+        };
+
+        let state = {
+            score: 0,
+            mistakes: 0,
+            lives: 3,
+            gameActive: true,
+            currentFunction: null,
+            selectedCandidate: null,
+            puntosGraficadosLvl1: []
+        };
+
+        let board;
+        let indexQuiz = 1;
+        const totalQuiz = 2;
+        let aciertosQuiz = 0; 
+        let puntosAnaliticosN3 = 0;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarTableroJSX();
+            initLevel();
+        });
+
+        function inicializarTableroJSX() {
+            board = JXG.JSXGraph.initBoard("box", {
+                boundingbox: GAME_CONFIG.boundingBox,
+                axis: true,
+                showCopyright: false,
+                pan: { enabled: false },
+                zoom: { enabled: false }
+            });
+
+            board.on('down', procesarClicEstudiante);
+        }
+
+        // ==========================================
+        // GENERADOR DE FUNCIONES MATEMÁTICAS
+        // ==========================================
+        function generateFunction() {
+            const choice = Math.random();
+            let f;
+
+            if (choice < 0.5) {
+                let r1 = parseFloat((Math.random() * -2 - 1).toFixed(1)); 
+                let r2 = parseFloat((Math.random() * 2 + 1).toFixed(1));  
+                f = (x) => 0.5 * (x - r1) * (x - r2);
+            } else {
+                const desplazamiento = Math.floor(Math.random() * 3) - 1; 
+                f = (x) => {
+                    if (x < 0) return x + desplazamiento; 
+                    return Math.pow(x - 2, 2) - 2.2;
+                };
+            }
+            return { f };
+        }
+
+        // ==========================================
+        // RENDERIZADO DE LAS ESTRUCTURAS
+        // ==========================================
+        function initLevel() {
+            if(state.puntosGraficadosLvl1) {
+                state.puntosGraficadosLvl1.forEach(p => { try { board.removeObject(p); } catch(e){} });
+            }
+            state.puntosGraficadosLvl1 = [];
+            
+            Object.values(board.objects).forEach(obj => {
+                if (obj.getAttribute('isDynamic')) board.removeObject(obj);
+            });
+
+            state.currentFunction = generateFunction();
+            state.selectedCandidate = null;
+            const f = state.currentFunction.f;
+
+            board.create('functiongraph', [f], { 
+                strokeColor: '#8f0dece2', strokeWidth: 4, isDynamic: true 
+            });
+
+            board.update();
+        }
+
+        // ==========================================
+        // CAPTURA Y CONGELAMIENTO DE CLICS
+        // ==========================================
+        function procesarClicEstudiante(e) {
+            if (!state.gameActive) return; 
+
+            let coords = getMouseCoords(e);
+            let xUser = coords.usrCoords[1];
+            let yUser = coords.usrCoords[2];
+
+            state.gameActive = false;
+            document.getElementById('state-indicator').innerText = "Estado: Escenario Congelado";
+
+            if (Math.abs(yUser) > GAME_CONFIG.tolerance) {
+                state.mistakes++;
+                reducirVidaEstructural();
+
+                let pFallo = board.create('point', [xUser, yUser], {
+                    name: '✘', color: 'red', size: 5, fixed: true
+                });
+                state.puntosGraficadosLvl1.push(pFallo);
+
+                Swal.fire({
+                    title: 'Ubicación Espacial Incorrecta',
+                    text: 'Observa detenidamente la definición por comprensión de la actividad. ¿Qué tipo de componentes numéricos constituyen los elementos de A y en qué coordenadas o posiciones lógicas se representan?',
+                    icon: 'error',
+                    confirmButtonColor: 'var(--danger)'
+                }).then(() => {
+                    gestionarPostValidacion();
+                });
+                return;
+            }
+
+            let fVal = state.currentFunction.f(xUser);
+
+            if (fVal < 0) {
+                state.score++;
+                document.getElementById('score-text').innerText = state.score;
+
+                let pExito = board.create('point', [xUser, 0], {
+                    name: '✔', color: 'green', size: 5, fixed: true
+                });
+                state.puntosGraficadosLvl1.push(pExito);
+
+                Swal.fire({
+                    title: 'Elemento Encontrado',
+                    text: `El valor seleccionado cumple formalmente con la propiedad propuesta para el conjunto.`,
+                    icon: 'success',
+                    confirmButtonColor: 'var(--success)'
+                }).then(() => {
+                    gestionarPostValidacion();
+                });
+            } else {
+                state.mistakes++;
+                reducirVidaEstructural();
+
+                let pErrorEje = board.create('point', [xUser, 0], {
+                    name: '✘', color: 'red', size: 5, fixed: true
+                });
+                state.puntosGraficadosLvl1.push(pErrorEje);
+
+                Swal.fire({
+                    title: 'Propiedad No Satisfecha',
+                    text: `En la coordenada seleccionada, el comportamiento evaluado de la función no cumple con la restricción de ser estrictamente menor que cero. Analiza la altura de la curva en esa vertical.`,
+                    icon: 'error',
+                    confirmButtonColor: 'var(--danger)'
+                }).then(() => {
+                    gestionarPostValidacion();
+                });
+            }
+        }
+
+        function gestionarPostValidacion() {
+            if (state.score >= GAME_CONFIG.maxScore) {
+                document.getElementById('btn-next-exercise').classList.add('hidden');
+                document.getElementById('btn-go-to-n2').classList.remove('hidden');
+                document.getElementById('state-indicator').innerText = "Estado: Etapa 1 Superada";
+            } else if (state.lives > 0) {
+                document.getElementById('btn-next-exercise').classList.remove('hidden');
+            }
+        }
+
+        function avanzarSiguienteEjercicio() {
+            document.getElementById('btn-next-exercise').classList.add('hidden');
+            state.gameActive = true;
+            document.getElementById('state-indicator').innerText = "Estado: Esperando Selección";
+            initLevel();
+        }
+
+        function reducirVidaEstructural() {
+            if (state.lives > 0) {
+                document.getElementById(`life${state.lives}`).classList.add('lost');
+                state.lives--;
+            }
+
+            if (state.lives === 0) {
+                state.gameActive = false;
+                document.getElementById('btn-next-exercise').classList.add('hidden');
+                document.getElementById('btn-reset-game').classList.remove('hidden');
+                document.getElementById('state-indicator').innerText = "Estado: Sistema Colapsado";
+                Swal.fire({
+                    title: 'Intentos Agotados',
+                    text: 'El sistema ha perdido estabilidad lógica. Analiza la última configuración gráfica antes de reiniciar la prueba.',
+                    icon: 'warning',
+                    confirmButtonColor: 'var(--primary)'
+                });
+            }
+        }
+
+        function getMouseCoords(e) {
+            let cPos = board.getCoordsTopLeftCorner(e),
+                absPos = JXG.getPosition(e),
+                dx = absPos[0] - cPos[0], dy = absPos[1] - cPos[1];
+            return new JXG.Coords(JXG.COORDS_BY_SCREEN, [dx, dy], board);
+        }
+
+        // ==========================================
+        // MODULARIZACIÓN EXPLÍCITA DE LIMPIEZA
+        // ==========================================
+        function resetearEtapa2() {
+            indexQuiz = 1;
+            aciertosQuiz = 0;
+
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+                radio.disabled = false;
+            });
+
+            document.querySelectorAll('.h5p-feedback').forEach(fb => {
+                fb.classList.add('hidden');
+                fb.innerHTML = "";
+            });
+
+            document.getElementById('qstep-1').classList.remove('hidden');
+            document.getElementById('qstep-2').classList.add('hidden');
+
+            document.getElementById('quiz-progress').style.width = "50%";
+            document.getElementById('quiz-counter').innerText = `Pregunta 1 de 2`;
+            document.getElementById('btn-check-quiz').classList.remove('hidden');
+            document.getElementById('btn-next-quiz').classList.add('hidden');
+        }
+
+        function resetearEtapa3() {
+            puntosAnaliticosN3 = 0;
+            document.querySelectorAll('#level-3-container select').forEach(select => {
+                select.selectedIndex = 0; // Fuerza la visualización al marcador '-- Selecciona --'
+                select.value = "";
+                select.disabled = false;
+                select.style.borderColor = "var(--border-color)";
+            });
+            document.getElementById('btn-eval-n3').classList.remove('hidden');
+            document.getElementById('btn-finish-all').classList.add('hidden');
+        }
+
+        function reiniciarJuegoGlobal() {
+            state.score = 0;
+            state.mistakes = 0;
+            state.lives = 3;
+            state.gameActive = true;
+
+            document.getElementById('score-text').innerText = "0";
+            document.getElementById('state-indicator').innerText = "Estado: Esperando Selección";
+            document.getElementById('btn-next-exercise').classList.add('hidden');
+            document.getElementById('btn-go-to-n2').classList.add('hidden');
+            document.getElementById('btn-reset-game').classList.add('hidden');
+
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`life${i}`).classList.remove('lost');
+            }
+
+            // Invocar limpieza absoluta de etapas posteriores
+            resetearEtapa2();
+            resetearEtapa3();
+
+            document.getElementById('level-2-container').classList.add('hidden');
+            document.getElementById('level-3-container').classList.add('hidden');
+            document.getElementById('level-1-container').classList.remove('hidden');
+
+            initLevel();
+        }
+
+        // ==========================================
+        // LÓGICA ETAPA 2: CUESTIONARIO CONCEPTUAL
+        // ==========================================
+        const explicacionesQuiz = {
+            1: "El conjunto solución está compuesto por elementos de entrada independientes (valores x). La condición f(x) < 0 es una propiedad restrictiva que deben cumplir sus imágenes, pero el objeto contenido en el conjunto es la coordenada unidimensional de origen.",
+            2: "Las discontinuidades dividen las regiones de análisis de signos de forma abierta. Al no existir continuidad, se debe segmentar el intervalo excluyendo los puntos de salto indefinidos."
+        };
+
+        function activarEtapa2() {
+            resetearEtapa2(); 
+            document.getElementById('level-1-container').classList.add('hidden');
+            document.getElementById('level-2-container').classList.remove('hidden');
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function verificarPreguntaQuiz() {
+            const checkedRadio = document.querySelector(`input[name="q${indexQuiz}"]:checked`);
+            if (!checkedRadio) {
+                Swal.fire({ title: "Selección Requerida", text: "Por favor elige una opción antes de comprobar.", icon: "warning" });
+                return;
+            }
+
+            const layerFeedback = document.getElementById(`qfeedback-${indexQuiz}`);
+            layerFeedback.classList.remove('hidden');
+            document.querySelectorAll(`input[name="q${indexQuiz}"]`).forEach(input => input.disabled = true);
+
+            if (checkedRadio.value === "correcto") {
+                layerFeedback.innerHTML = `<strong>¡Respuesta Correcta!</strong> ${explicacionesQuiz[indexQuiz]}`;
+                layerFeedback.classList.remove('error');
+                aciertosQuiz++;
+            } else {
+                layerFeedback.innerHTML = `<strong>Respuesta Incorrecta.</strong> ${explicacionesQuiz[indexQuiz]}`;
+                layerFeedback.classList.add('error');
+            }
+
+            document.getElementById('btn-check-quiz').classList.add('hidden');
+            document.getElementById('btn-next-quiz').classList.remove('hidden');
+            
+            if (indexQuiz === totalQuiz) {
+                document.getElementById('btn-next-quiz').innerHTML = 'Pasar a la Etapa 3 <i class="fa-solid fa-angles-right"></i>';
+            }
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub, layerFeedback]);
+        }
+
+        function pasarSiguientePreguntaQuiz() {
+            if (indexQuiz === totalQuiz) {
+                activarEtapa3();
+                return;
+            }
+            document.getElementById(`qstep-${indexQuiz}`).classList.add('hidden');
+            indexQuiz++;
+            document.getElementById(`qstep-${indexQuiz}`).classList.remove('hidden');
+            
+            document.getElementById('quiz-progress').style.width = (indexQuiz / totalQuiz) * 100 + "%";
+            document.getElementById('quiz-counter').innerText = `Pregunta ${indexQuiz} de ${totalQuiz}`;
+            
+            document.getElementById('btn-next-quiz').classList.add('hidden');
+            document.getElementById('btn-check-quiz').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // LÓGICA ETAPA 3: DEMOSTRACIÓN ANALÍTICA
+        // ==========================================
+        function activarEtapa3() {
+            resetearEtapa3(); // Asegura un estado virgen al ingresar de forma lineal
+            document.getElementById('level-2-container').classList.add('hidden');
+            document.getElementById('level-3-container').classList.remove('hidden');
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function validarEtapa3() {
+            const select1 = document.getElementById('dem-1');
+            const select2 = document.getElementById('dem-2');
+            const select3 = document.getElementById('dem-3');
+
+            if (!select1.value || !select2.value || !select3.value) {
+                Swal.fire({ title: "Formulario Incompleto", text: "Asegúrate de rellenar todas las cajas lógicas de la demostración.", icon: "warning" });
+                return;
+            }
+
+            puntosAnaliticosN3 = 0;
+            const revisarSeleccion = (el, correcto) => {
+                if (el.value === correcto) {
+                    el.style.borderColor = "var(--success)";
+                    puntosAnaliticosN3++;
+                } else {
+                    el.style.borderColor = "var(--danger)";
+                }
+            };
+
+            revisarSeleccion(select1, "v2");
+            revisarSeleccion(select2, "v1");
+            revisarSeleccion(select3, "v2");
+
+            document.querySelectorAll('#level-3-container select').forEach(s => s.disabled = true);
+            document.getElementById('btn-eval-n3').classList.add('hidden');
+            document.getElementById('btn-finish-all').classList.remove('hidden');
+
+            if (puntosAnaliticosN3 === 3) {
+                Swal.fire({ title: "Estructura Correcta", text: "Has acoplado con éxito los intervalos analíticos abiertos.", icon: "success" });
+            } else {
+                Swal.fire({ title: "Inconsistencia Analítica", text: "Existen errores lógicos en la resolución de desigualdades. Compruébalo en los selectores marcados.", icon: "error" });
+            }
+        }
+
+        // ==========================================
+        // PANEL FINAL: REPORTE DE DESEMPEÑO H5P
+        // ==========================================
+        function mostrarCierreH5P() {
+            const cajaResumen = document.createElement('div');
+            cajaResumen.className = 'h5p-summary-box';
+            cajaResumen.innerHTML = `
+                <div class="summary-row">
+                    <span>Errores de precisión geométrica (Etapa 1):</span>
+                    <span class="bold-val" style="color: ${state.mistakes > 0 ? 'var(--danger)' : 'var(--success)'};">${state.mistakes}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Corazones de estabilidad remanentes:</span>
+                    <span class="bold-val">${state.lives} / 3</span>
+                </div>
+                <div class="summary-row">
+                    <span>Aciertos teóricos del Quiz (Etapa 2):</span>
+                    <span class="bold-val">${aciertosQuiz} / 2</span>
+                </div>
+                <div class="summary-row">
+                    <span>Cajas Analíticas Validadas (Etapa 3):</span>
+                    <span class="bold-val">${puntosAnaliticosN3} / 3</span>
+                </div>
+                <p style="text-align: center; font-weight: bold; margin-top: 25px; color: var(--azure-dark); font-size:16px;">
+                    ¡Módulo de Análisis de Intervalos Concluido con Éxito!
+                </p>
+            `;
+
+            Swal.fire({
+                title: "Reporte Estadístico de Competencias H5P",
+                html: cajaResumen,
+                icon: "success",
+                confirmButtonText: "Terminar Actividad"
+            });
+        }
     </script>
-
-  <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </body>
 
 </html>
+
+
+
+
