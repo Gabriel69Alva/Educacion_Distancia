@@ -144,17 +144,18 @@
         <div id="level-1-container">
             <h1>Etapa 1: Caracterización Geométrica del Supremo</h1>
             <p style="text-align: center; color: #64748b; margin-bottom: 15px;">
-                Muestra de forma dinámica que el Supremo de la sucesión $A = \left\{ \frac{n}{n+1} \right\}$ es $1$. Define una vecindad de radio $\varepsilon$ y calcula el umbral de corte $N$.
+                Dada $\varepsilon > 0$, la caracterización del supremo de $A = \left\{ \frac{n}{n+1} \right\}$ afirma que <strong>existe $N \in \mathbb{N}$</strong> tal que, para todo $n > N$, se cumple $a_n \in (1-\varepsilon,\, 1]$.
+                <br><strong>Encuentra la $N$ que satisface la condición.</strong> La sucesión se acerca a la cota $1-\varepsilon$; los términos dentro de la franja no se grafican aquí (solo se validan al final).
             </p>
             
             <div class="setup-box">
                 <div class="control-group">
-                    <label for="inputEpsilon">Vecindad Radio $\varepsilon$ ($0 < \varepsilon \le 0.5$):</label>
+                    <label for="inputEpsilon">Vecindad: radio $\varepsilon$ ($0 < \varepsilon \le 0.5$):</label>
                     <input type="number" id="inputEpsilon" min="0.01" max="0.5" step="0.01" value="0.2" oninput="actualizarEntornoEpsilon()">
                 </div>
                 <div class="control-group">
-                    <label for="inputVerificaN">Proponer un valor crítico de $n$ ($n > N$):</label>
-                    <input type="number" id="inputVerificaN" min="1" max="100" step="1" value="1">
+                    <label for="inputVerificaN">Tu candidato $N$ (entero $\ge 1$):</label>
+                    <input type="number" id="inputVerificaN" min="1" max="500" step="1" value="1" placeholder="¿Cuál N funciona?">
                 </div>
             </div>
 
@@ -174,12 +175,12 @@
             </div>
 
             <p id="instruccion-click" style="text-align: center; font-weight: bold; color: var(--azure-dark);" class="hidden">
-                <i class="fa-solid fa-bullseye"></i> ¡Fase de Caza! Hay dos candidatos en la franja $(1-\varepsilon,1]$: uno pertenece a la sucesión y el otro es señuelo. Decide con cálculo aritmético.
+                <i class="fa-solid fa-bullseye"></i> En la franja $(1-\varepsilon,\, 1]$ hay dos valores <strong>sobre el eje</strong>: uno es $a_n$ de la sucesión y el otro es señuelo. Haz clic en el que sí puede escribirse como $\frac{n}{n+1}$.
             </p>
 
             <div style="text-align: center; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-                <button class="btn-general" id="btn-run-succession" onclick="ejecutarSucesionGeometria()">1. Ejecutar Sucesión</button>
-                <button class="btn-general btn-secondary hidden" id="btn-spawn-points" onclick="inyectarPuntosAleatorios()">2. Desplegar Puntos en Vecindad</button>
+                <button class="btn-general" id="btn-run-succession" onclick="ejecutarSucesionGeometria()">1. Verificar mi $N$</button>
+                <button class="btn-general btn-secondary hidden" id="btn-spawn-points" onclick="inyectarPuntosAleatorios()">2. Probar en la vecindad</button>
                 <button class="btn-general btn-danger hidden" id="btn-reset-lvl1" onclick="reiniciarEtapa1()">Reiniciar Juego</button>
             </div>
             
@@ -319,11 +320,11 @@
             let valorCorte = 1 - epsilon;
             let coordCorteX = offsetX + (valorCorte * widthEje);
 
-            // Franja coloreada que representa la Vecindad (1-epsilon, 1]
+            // Franja (1-epsilon, 1]: zona donde la sucesión NO se dibuja en la animación
             ctx.fillStyle = 'rgba(56, 189, 248, 0.15)';
             ctx.fillRect(coordCorteX, centerY - 40, (1 - valorCorte) * widthEje, 80);
 
-            // Línea divisoria de la barrera de Epsilon
+            // Cota superior ficticia 1 - epsilon (la sucesión "topa" aquí)
             ctx.beginPath();
             ctx.moveTo(coordCorteX, centerY - 40);
             ctx.lineTo(coordCorteX, centerY + 40);
@@ -333,10 +334,27 @@
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // Etiqueta de la barrera 1 - epsilon
             ctx.fillStyle = '#b91c1c';
             ctx.font = 'bold 12px sans-serif';
             ctx.fillText(`1 - ε (${valorCorte.toFixed(2)})`, coordCorteX - 30, centerY - 50);
+            ctx.fillStyle = '#64748b';
+            ctx.font = '11px sans-serif';
+            ctx.fillText('cota sup. ficticia', coordCorteX - 38, centerY - 62);
+        }
+
+        /** Términos de la sucesión que caen fuera de (1-ε, 1] — solo estos se grafican en el eje */
+        function valorFueraDeVecindad(valor) {
+            return valor <= 1 - epsilon;
+        }
+
+        function redibujarSucesionEnEje() {
+            renderizarEjeBase();
+            puntosSucesionDibujados.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, centerY, 6, 0, 2 * Math.PI);
+                ctx.fillStyle = 'purple';
+                ctx.fill();
+            });
         }
 
         function dibujarMarcaEje(valor, etiqueta, color, grosor = 3) {
@@ -356,44 +374,56 @@
         function ejecutarSucesionGeometria() {
             cancelAnimationFrame(animacionID);
             renderizarEjeBase();
-            
-            limiteInferiorN = parseInt(document.getElementById('inputVerificaN').value);
-            if(isNaN(limiteInferiorN) || limiteInferiorN < 1) limiteInferiorN = 1;
 
-            document.getElementById('game-state-indicator').innerText = "Estado: Renderizando Sucesión";
+            limiteInferiorN = parseInt(document.getElementById('inputVerificaN').value, 10);
+            if (isNaN(limiteInferiorN) || limiteInferiorN < 1) limiteInferiorN = 1;
+
+            document.getElementById('game-state-indicator').innerText = "Estado: Sucesión acercándose a 1 - ε";
             puntosSucesionDibujados = [];
 
+            const maxAnimar = Math.min(80, Math.max(limiteInferiorN + 12, 20));
             let i = 1;
+
             function animarPuntos() {
-                if (i <= limiteInferiorN) {
-                    let valorPunto = i / (i + 1);
-                    let x = offsetX + (valorPunto * widthEje);
+                if (i <= maxAnimar) {
+                    const valorPunto = i / (i + 1);
+                    const x = offsetX + (valorPunto * widthEje);
 
-                    // Dibujar punto de la Sucesión (Color Púrpura)
-                    ctx.beginPath();
-                    ctx.arc(x, centerY, 6, 0, 2 * Math.PI);
-                    ctx.fillStyle = "purple";
-                    ctx.fill();
-
-                    // Guardar coordenadas de renderizado
-                    puntosSucesionDibujados.push({ n: i, valor: valorPunto, x: x, y: centerY });
+                    // Solo graficar términos fuera de (1-ε, 1]: la franja queda vacía en la animación
+                    if (valorFueraDeVecindad(valorPunto)) {
+                        ctx.beginPath();
+                        ctx.arc(x, centerY, 6, 0, 2 * Math.PI);
+                        ctx.fillStyle = 'purple';
+                        ctx.fill();
+                        puntosSucesionDibujados.push({ n: i, valor: valorPunto, x, y: centerY });
+                    }
 
                     i++;
                     setTimeout(() => {
                         animacionID = requestAnimationFrame(animarPuntos);
-                    }, 150);
+                    }, 120);
                 } else {
-                    // Verificar si el N provisto cumple el umbral analítico algebraico
-                    let umbralAnalitico = (1 / epsilon) - 1;
-                    if (limiteInferiorN > umbralAnalitico) {
+                    const umbralAnalitico = (1 / epsilon) - 1;
+                    const nCorrecto = limiteInferiorN > umbralAnalitico;
+
+                    if (nCorrecto) {
                         document.getElementById('btn-run-succession').classList.add('hidden');
                         document.getElementById('btn-spawn-points').classList.remove('hidden');
-                        document.getElementById('game-state-indicator').innerText = "Estado: Umbral N Correcto";
-                        swal("¡Umbral N Válido!", `Excelente. Como n = ${limiteInferiorN} > ${umbralAnalitico.toFixed(2)}, la propiedad arquimediana asegura que entramos a la zona de caza dentro del entorno de épsilon.`, "success");
+                        document.getElementById('game-state-indicator').innerText = "Estado: N correcta";
+                        swal(
+                            'N correcta',
+                            `Existe N = ${limiteInferiorN} tal que, para todo n > N, los términos caen en (1-ε, 1] (umbral: n > ${umbralAnalitico.toFixed(2)}). Pulsa "Probar en la vecindad" para validar un valor concreto sobre el eje.`,
+                            'success'
+                        );
                     } else {
                         fallosGlobales++;
                         reducirVidaEstructural();
-                        swal("Puntos fuera de la vecindad", `El valor n = ${limiteInferiorN} no es lo suficientemente grande. Los puntos se quedaron antes de la barrera 1 - ε (${(1-epsilon).toFixed(2)}). Intenta con un valor mayor.`, "warning");
+                        document.getElementById('game-state-indicator').innerText = 'Estado: N insuficiente';
+                        swal(
+                            'N no satisface la condición',
+                            `Con N = ${limiteInferiorN} la caracterización aún no garantiza a_n en (1-ε, 1] para todo n > N. Prueba con N > ${Math.ceil(umbralAnalitico)} (equivalente a n > ${umbralAnalitico.toFixed(2)}).`,
+                            'warning'
+                        );
                     }
                 }
             }
@@ -417,43 +447,43 @@
             puntosBuenosDefinidos = [];
             buenosCapturados = 0;
 
-            // 1. Generar un señuelo falso en la franja (no pertenece a la sucesión n/(n+1))
-            let randomValorY = Math.random() * (maxY - minY) + minY;
-            let xCoord = offsetX + (randomValorY * widthEje);
-            let yDisp = centerY - 6;
-            puntosSeñueloAparicion.push({ x: xCoord, y: yDisp, val: randomValorY });
+            redibujarSucesionEnEje();
 
-            // Dibujar Señuelo Azul Oscuro
+            // 1. Señuelo en la franja, sobre el eje X (no es n/(n+1))
+            const randomValorY = Math.random() * (maxY - minY) + minY;
+            const xCoord = offsetX + (randomValorY * widthEje);
+            puntosSeñueloAparicion.push({ x: xCoord, y: centerY, val: randomValorY });
+
             ctx.beginPath();
-            ctx.arc(xCoord, yDisp, 5, 0, 2 * Math.PI);
-            ctx.fillStyle = "darkblue";
+            ctx.arc(xCoord, centerY, 7, 0, 2 * Math.PI);
+            ctx.fillStyle = 'darkblue';
             ctx.fill();
-            ctx.fillStyle = "#1e3a8a";
-            ctx.font = "bold 14px sans-serif";
-            ctx.fillText(randomValorY.toFixed(3), xCoord - 16, yDisp - 34);
-
-            // 2. Generar un único punto verdadero de la sucesión dentro de la franja
-            let nBueno = Math.floor(Math.random() * 15) + limiteInferiorN + 1;
-            let valorBueno = nBueno / (nBueno + 1);
-            let xBueno = offsetX + (valorBueno * widthEje);
-            let yBueno = centerY + 6;
-
-            puntosBuenosDefinidos.push({ x: xBueno, y: yBueno, val: valorBueno, n: nBueno, capturado: false });
-
-            // Dibujar punto verdadero (Rosa/Pink Brillante)
-            ctx.beginPath();
-            ctx.arc(xBueno, yBueno, 6, 0, 2 * Math.PI);
-            ctx.fillStyle = "#ec4899";
-            ctx.fill();
-            ctx.strokeStyle = "#db2777";
-            ctx.lineWidth = 1;
+            ctx.strokeStyle = '#1e40af';
+            ctx.lineWidth = 2;
             ctx.stroke();
+            ctx.fillStyle = '#1e3a8a';
+            ctx.font = 'bold 13px sans-serif';
+            ctx.fillText(randomValorY.toFixed(3), xCoord - 18, centerY - 14);
 
-            ctx.fillStyle = "#9d174d";
-            ctx.font = "bold 14px sans-serif";
-            ctx.fillText(valorBueno.toFixed(3), xBueno - 16, yBueno + 34);
+            // 2. Término real a_n con n > N, también sobre el eje X
+            const nBueno = Math.floor(Math.random() * 15) + limiteInferiorN + 1;
+            const valorBueno = nBueno / (nBueno + 1);
+            const xBueno = offsetX + (valorBueno * widthEje);
 
-            document.getElementById('game-state-indicator').innerText = "Estado: ¡Fase de Caza! Determina cuál punto es de la sucesión";
+            puntosBuenosDefinidos.push({ x: xBueno, y: centerY, val: valorBueno, n: nBueno, capturado: false });
+
+            ctx.beginPath();
+            ctx.arc(xBueno, centerY, 7, 0, 2 * Math.PI);
+            ctx.fillStyle = '#ec4899';
+            ctx.fill();
+            ctx.strokeStyle = '#db2777';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.fillStyle = '#9d174d';
+            ctx.font = 'bold 13px sans-serif';
+            ctx.fillText(valorBueno.toFixed(3), xBueno - 18, centerY + 22);
+
+            document.getElementById('game-state-indicator').innerText = 'Estado: elige el valor de la sucesión (eje X)';
         }
 
         function lanzarReflexionSupremo() {
@@ -550,6 +580,7 @@
             document.getElementById('btn-go-to-n2').classList.add('hidden');
             document.getElementById('instruccion-click').classList.add('hidden');
             document.getElementById('btn-run-succession').classList.remove('hidden');
+            document.getElementById('btn-spawn-points').classList.add('hidden');
 
             document.getElementById('inputEpsilon').disabled = false;
             document.getElementById('inputVerificaN').disabled = false;
@@ -732,5 +763,7 @@
 </body>
 
 </html>
+
+
 
 
