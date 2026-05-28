@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio Didáctico: Correspondencia de Conjuntos</title>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+        };
+    </script>
+
+    <style>
+        :root {
+            --primary: #0f172a;
+            --primary-hover: #1e293b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --azure-accent: #38bdf8;
+            --azure-dark: #0284c7;
+            --azure-bg: #e0f7fa;
+            --azure-border: #b2ebf2;
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: #fff;
+            padding: 35px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        h1 { color: var(--primary); font-weight: 700; text-align: center; margin-bottom: 5px; font-size: 26px; }
+        h3 { font-size: 17px; font-weight: 600; margin-bottom: 12px; color: var(--text-dark); }
+        p { line-height: 1.6; font-size: 15px; }
+        
+        .hidden { display: none !important; }
+
+        /* Botonera */
+        .btn-general {
+            display: block; width: 100%; max-width: 340px; margin: 20px auto; padding: 13px;
+            background-color: var(--primary); color: white; border: none; border-radius: 25px;
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.25s ease;
+            text-align: center; text-decoration: none; box-shadow: 0 4px 10px rgba(15,23,42,0.15);
+        }
+        .btn-general:hover:not(:disabled) { 
+            transform: translateY(-2px); 
+            background-color: var(--primary-hover);
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.25);
+        }
+        .btn-general:disabled { background-color: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+        .btn-success { background-color: var(--success); }
+        .btn-success:hover:not(:disabled) { background-color: #059669; }
+        .btn-secondary { background-color: #64748b; }
+        .btn-secondary:hover:not(:disabled) { background-color: #475569; }
+        .btn-danger { background-color: var(--danger); }
+        .btn-danger:hover:not(:disabled) { background-color: #dc2626; }
+
+        /* Contenedor Canvas */
+        .canvas-wrapper {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 15px auto;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            overflow: hidden;
+        }
+        canvas { display: block; margin: 0 auto; }
+
+        /* Módulos de Estado */
+        .status-bar { display: flex; justify-content: space-between; align-items: center; background: var(--azure-bg); padding: 12px 20px; border-radius: 8px; font-weight: 600; color: #006064; margin-bottom: 15px; border: 1px solid var(--azure-border); font-size: 14px; }
+        .lives-box i { color: var(--danger); font-size: 18px; margin-right: 3px; transition: all 0.3s; }
+        .lives-box i.lost { opacity: 0.2; transform: scale(0.8); }
+        .badge-info { background: #0f172a; color: #fff; padding: 8px 18px; border-radius: 6px; font-size: 15px; font-weight: 600; display: inline-block; margin-bottom: 15px; }
+
+        /* Capa Quiz (Etapa 2) */
+        .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 6px; margin: 15px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--azure-accent); width: 33.3%; transition: 0.4s; }
+        .h5p-option { display: flex; align-items: center; padding: 14px; border: 1px solid var(--border-color); margin-bottom: 10px; border-radius: 8px; cursor: pointer; background: var(--bg-light); transition: 0.2s; }
+        .h5p-option:hover { border-color: var(--azure-accent); background: #f0fdfa; }
+        .h5p-option input { margin-right: 12px; transform: scale(1.1); }
+        .h5p-feedback { padding: 15px; border-radius: 8px; margin-top: 15px; background: #f1f5f9; border-left: 6px solid var(--azure-accent); font-size: 14.5px; }
+        .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; color: #991b1b; }
+
+        /* Capa Analítica (Etapa 3) */
+        .n3-section { background: var(--bg-light); padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--border-color); }
+        select.math-input { margin: 0 12px; padding: 6px 10px; border: 2px solid var(--border-color); border-radius: 6px; font-size: 14px; font-weight: bold; color: var(--azure-dark); outline: none; cursor: pointer; background: #fff; display: inline-block; vertical-align: middle; }
+        select.math-input:focus { border-color: var(--azure-accent); }
+        .step-row { display: flex; align-items: center; margin-bottom: 15px; font-size: 15.5px; flex-wrap: wrap; line-height: 2; }
+
+        /* Reporte Final H5P */
+        .h5p-summary-box { border: 2px solid var(--azure-accent); background: #f0f9ff; border-radius: 12px; padding: 25px; margin-top: 20px; text-align: left; }
+        .summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #cbd5e1; font-size: 15px; font-weight: 500; }
+        .summary-row span.bold-val { font-weight: 700; color: var(--azure-dark); }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div id="level-1-container">
+            <h1>Etapa 1: Mapeo de Relaciones y Funciones</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 15px;">
+                Arrastra las puntas grises de las flechas desde el Dominio $A$ hasta los elementos del Codominio $B$ para cumplir la propiedad solicitada.
+            </p>
+            
+            <div style="text-align: center;">
+                <span class="badge-info" id="challenge-badge">Inicializando lienzo de relaciones...</span>
+            </div>
+
+            <div class="status-bar">
+                <div class="lives-box">
+                    Estabilidad del Sistema: 
+                    <i class="fa-solid fa-heart" id="life1"></i>
+                    <i class="fa-solid fa-heart" id="life2"></i>
+                    <i class="fa-solid fa-heart" id="life3"></i>
+                </div>
+                <div style="font-weight: bold;" id="target-label">Desafío: 1 / 2</div>
+                <div>Aciertos: <span id="score-text" style="font-size: 18px; color: var(--success); font-weight: bold;">0</span> / 2</div>
+            </div>
+
+            <div class="canvas-wrapper">
+                <canvas id="myCanvas" width="800" height="450"></canvas>
+            </div>
+
+            <div style="text-align: center; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                <button class="btn-general" id="btn-validate" onclick="validarRelacionamiento()">Validar Relación</button>
+                <button class="btn-general btn-secondary" id="btn-reset-arrows" onclick="reiniciarFlechas()">Reiniciar Flechas</button>
+                <button class="btn-general btn-success hidden" id="btn-next-challenge" onclick="avanzarSiguienteReto()">Siguiente Desafío <i class="fa-solid fa-arrow-right"></i></button>
+                <button class="btn-general btn-danger hidden" id="btn-reset-lvl1" onclick="reiniciarEtapa1()">Reiniciar Juego</button>
+            </div>
+            
+            <button class="btn-general btn-success hidden" id="btn-go-to-n2" onclick="activarEtapa2()">Avanzar a la Etapa 2 <i class="fa-solid fa-arrow-right-to-bracket"></i></button>
+        </div>
+
+        <div id="level-2-container" class="hidden">
+            <h1>Etapa 2: Diagnóstico Conceptual (Estilo H5P)</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Responde los reactivos teóricos basados en las propiedades de las estructuras de mapeo.</p>
+
+            <div class="progress-container"><div class="progress-bar" id="quiz-progress"></div></div>
+            <p id="quiz-counter" style="text-align: right; font-weight: 600; color: var(--azure-dark); margin-top:0;">Pregunta 1 de 2</p>
+
+            <div id="qstep-1" class="quiz-block">
+                <h3>1. Si un diagrama de flechas conecta un Dominio de 4 elementos con un Codominio de 4 elementos y se determina que es INYECTIVA, ¿qué propiedad colateral se cumple de forma obligatoria?</h3>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>A) Existen elementos en el codominio que reciben más de dos flechas simultáneas.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcto"> <span>B) La función automáticamente se vuelve sobreyectiva (y por ende biyectiva) debido a la igualdad de cardinalidades.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>C) Ninguno de los elementos del dominio puede arrancar una trayectoria lineal.</span></label>
+                <div id="qfeedback-1" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="qstep-2" class="quiz-block hidden">
+                <h3>2. ¿Cuál es la condición fundamental en un mapeo de flechas para asegurar que la relación de correspondencia NO sea considerada una función matemática válida?</h3>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcto"> <span>A) Que un solo elemento del Dominio $A$ posea dos o más flechas de salida apuntando a diferentes destinos.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>B) Que queden elementos libres en el conjunto de llegada sin recibir flechas.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>C) Que dos flechas independientes coincidan exactamente en el mismo destino.</span></label>
+                <div id="qfeedback-2" class="h5p-feedback hidden"></div>
+            </div>
+
+            <button class="btn-general" id="btn-check-quiz" onclick="verificarPreguntaQuiz()">Comprobar Respuesta</button>
+            <button class="btn-general hidden btn-success" id="btn-next-quiz" onclick="pasarSiguientePreguntaQuiz()">Siguiente Pregunta</button>
+        </div>
+
+        <div id="level-3-container" class="hidden">
+            <h1>Etapa 3: Estructuración Formal y Análisis</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 25px;">
+                Completa los componentes lógicos del bloque deductivo para estructurar formalmente las propiedades de los conjuntos de correspondencia.
+            </p>
+
+            <div class="n3-section">
+                <h3 style="color: var(--azure-dark);">Análisis de Cardinalidades en Funciones Biyectivas</h3>
+                <div class="step-row">
+                    Para que una función discreta $f: A \rightarrow B$ pueda tener la condición de biyectiva, se requiere de forma obligatoria que la cardinalidad de los conjuntos cumpla la relación: 
+                    <select id="dem-1" class="math-input">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v1">|A| &gt; |B|</option>
+                        <option value="v2">|A| = |B|</option>
+                        <option value="v3">|A| &lt; |B|</option>
+                    </select>.
+                </div>
+                <div class="step-row">
+                    Si se diera la situación donde $|A| &lt; |B|$, el principio del palomar nos garantiza que la función bajo ninguna circunstancia podría ser 
+                    <select id="dem-2" class="math-input">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v1">Sobreyectiva</option>
+                        <option value="v2">Inyectiva</option>
+                    </select>
+                    ya que quedarían elementos vacíos en el eje de llegada.
+                </div>
+            </div>
+
+            <button class="btn-general" id="btn-eval-n3" onclick="validarEtapa3()">Validar Estructura</button>
+            <button class="btn-general hidden btn-success" id="btn-finish-all" onclick="mostrarCierreH5P()">Generar Reporte de Competencias <i class="fa-solid fa-graduation-cap"></i></button>
+        </div>
+
+    </div>
+
+    <script>
+        // Variables globales del Laboratorio
+        let fallosGeometria = 0;
+        let aciertosQuiz = 0;
+        let puntosAnaliticosN3 = 0;
+
+        let vidas = 3;
+        let aciertosLvl1 = 0;
+        let canvasFabric;
+        let arrayRespuestas = [];
+        let textDestinos = [];
+        let retoActual = {};
+        let indexQuiz = 1; // Sincronizado globalmente
+        const totalQuiz = 2;
+
+        const desafiosLvl1 = [
+            { tipo: "INYECTIVA", titulo: "Construye una función INYECTIVA (Cada destino recibe máximo una flecha)" },
+            { tipo: "SOBREYECTIVA", titulo: "Construye una función SOBREYECTIVA (Todos los destinos reciben al menos una flecha)" }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            canvasFabric = new fabric.Canvas('myCanvas', { selection: false });
+            fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
+
+            canvasFabric.on('object:moving', function (e) {
+                let p = e.target;
+                if (p.type === 'triangle' && p.line) {
+                    p.line.set({ 'x2': p.left, 'y2': p.top });
+                    
+                    const startX = p.line.get('x1');
+                    const startY = p.line.get('y1');
+                    const angleRadians = Math.atan2(p.top - startY, p.left - startX);
+                    p.set('angle', (angleRadians * (180 / Math.PI)) + 90);
+                }
+
+                textDestinos.forEach(txt => txt.set('fill', '#334155'));
+                arrayRespuestas = arrayRespuestas.filter(item => item.origen !== p.name);
+
+                textDestinos.forEach(txt => {
+                    let distancia = Math.sqrt(Math.pow((p.left - txt.left), 2) + Math.pow(p.top - txt.top, 2));
+                    if (distancia <= 35) { 
+                        arrayRespuestas.push({ origen: p.name, destino: txt.name });
+                        txt.set('fill', 'var(--azure-dark)'); 
+                    }
+                });
+
+                canvasFabric.renderAll();
+            });
+
+            generarRetoMapeo();
+        });
+
+        function generarRetoMapeo() {
+            if (aciertosLvl1 >= 2) return;
+
+            document.getElementById('btn-validate').classList.remove('hidden');
+            document.getElementById('btn-validate').disabled = false;
+            document.getElementById('btn-reset-arrows').disabled = false;
+            document.getElementById('btn-next-challenge').classList.add('hidden');
+
+            retoActual = desafiosLvl1[aciertosLvl1];
+            document.getElementById('target-label').innerText = `Desafío: ${aciertosLvl1 + 1} / 2`;
+            document.getElementById('challenge-badge').innerText = retoActual.titulo;
+
+            reiniciarFlechas();
+        }
+
+        function reiniciarFlechas() {
+            canvasFabric.clear();
+            arrayRespuestas = [];
+            textDestinos = [];
+
+            const elipseOrigenX = 220;
+            const elipseDestinoX = 580;
+            const elipseCenterY = 225; 
+            const rx = 75;
+            const ry = 150; 
+
+            canvasFabric.add(new fabric.Ellipse({
+                left: elipseOrigenX, top: elipseCenterY, rx: rx, ry: ry,
+                fill: '#f0fdfa', stroke: '#14b8a6', strokeWidth: 2, selectable: false, evented: false
+            }));
+
+            canvasFabric.add(new fabric.Ellipse({
+                left: elipseDestinoX, top: elipseCenterY, rx: rx, ry: ry,
+                fill: '#f0f9ff', stroke: 'var(--azure-accent)', strokeWidth: 2, selectable: false, evented: false
+            }));
+
+            const posicionesY = [
+                elipseCenterY - 90, 
+                elipseCenterY - 30, 
+                elipseCenterY + 30, 
+                elipseCenterY + 90
+            ];
+
+            const valoresDestino = ['10', '15', '20', '25'];
+            posicionesY.forEach((posY, idx) => {
+                let txtObj = new fabric.Text(valoresDestino[idx], {
+                    name: valoresDestino[idx], fontSize: 24, fontWeight: 'bold',
+                    top: posY, left: elipseDestinoX, fill: '#334155', selectable: false
+                });
+                textDestinos.push(txtObj);
+                canvasFabric.add(txtObj);
+            });
+
+            const valoresOrigen = ['1', '2', '3', '4'];
+            const startXLine = elipseOrigenX + 25;
+
+            posicionesY.forEach((posY, idx) => {
+                let txtOri = new fabric.Text(valoresOrigen[idx], {
+                    fontSize: 24, fontWeight: 'bold', top: posY, left: elipseOrigenX - 20, fill: '#334155', selectable: false
+                });
+
+                let line = new fabric.Line([startXLine, posY, startXLine + 30, posY], {
+                    fill: 'gray', stroke: 'gray', strokeWidth: 3, selectable: false, evented: false
+                });
+
+                let arrowHead = new fabric.Triangle({
+                    name: valoresOrigen[idx], top: posY, left: startXLine + 30,
+                    width: 13, height: 15, fill: '#64748b', angle: 90, hasControls: false, hasBorders: false
+                });
+
+                arrowHead.line = line;
+                canvasFabric.add(txtOri, line, arrowHead);
+            });
+
+            canvasFabric.renderAll();
+        }
+
+        function validarRelacionamiento() {
+            if (arrayRespuestas.length < 4) {
+                return swal("Asignación Incompleta", "Debes conectar las 4 flechas moviendo las puntas grises hasta tocar los números del conjunto B.", "warning");
+            }
+
+            const conteoDestinos = {};
+            arrayRespuestas.forEach(item => {
+                conteoDestinos[item.destino] = (conteoDestinos[item.destino] || 0) + 1;
+            });
+
+            let evaluacionCorrecta = false;
+            let mensajeRetro = "";
+
+            if (retoActual.tipo === "INYECTIVA") {
+                let tieneDuplicados = Object.values(conteoDestinos).some(cant => cant > 1);
+                evaluacionCorrecta = !tieneDuplicados;
+                mensajeRetro = evaluacionCorrecta ? 
+                    "¡Excelente! Cada elemento del conjunto de llegada cuenta con una única preimagen (máximo una flecha)." : 
+                    "Incorrecto. Hay elementos en el destino recibiendo múltiples flechas simultáneas, rompiendo la inyectividad.";
+            } else {
+                let totalDestinosCubiertos = Object.keys(conteoDestinos).length;
+                evaluacionCorrecta = (totalDestinosCubiertos === 4);
+                mensajeRetro = evaluacionCorrecta ? 
+                    "¡Espectacular! El rango coincide completamente con el codominio. Todos los elementos tienen preimagen." : 
+                    "Incorrecto. Al quedar elementos libres sin flechas asignadas, la relación no cumple la condición sobreyectiva.";
+            }
+
+            canvasFabric.forEachObject(obj => { if(obj.type === 'triangle') obj.selectable = false; });
+            document.getElementById('btn-validate').classList.add('hidden');
+            document.getElementById('btn-reset-arrows').disabled = true;
+
+            if (evaluacionCorrecta) {
+                aciertosLvl1++;
+                document.getElementById('score-text').innerText = aciertosLvl1;
+
+                if (aciertosLvl1 < 2) {
+                    document.getElementById('btn-next-challenge').classList.remove('hidden');
+                    swal("¡Desafío Logrado!", mensajeRetro, "success");
+                } else {
+                    document.getElementById('btn-go-to-n2').classList.remove('hidden');
+                    swal("¡Etapa Geométrica Superada!", "Has dominado el mapeo discreto mediante diagramas de Venn.", "success");
+                }
+            } else {
+                fallosGeometria++;
+                if (vidas > 0) {
+                    document.getElementById(`life${vidas}`).classList.add('lost');
+                    vidas--;
+                }
+
+                if (vidas === 0) {
+                    document.getElementById('btn-reset-lvl1').classList.remove('hidden');
+                    swal("Intentos Agotados", "Has agotado las vidas de estabilidad. Revisa el diagrama congelado e intenta de nuevo.", "error");
+                } else {
+                    swal("Relación Errónea", `${mensajeRetro}\n\nPresiona 'Reiniciar Flechas' para reconfigurar tus trayectorias.`, "warning");
+                    document.getElementById('btn-validate').classList.remove('hidden');
+                    document.getElementById('btn-reset-arrows').disabled = false;
+                    canvasFabric.forEachObject(obj => { if(obj.type === 'triangle') obj.selectable = true; });
+                }
+            }
+        }
+
+        function reiniciarEtapa1() {
+            // 1. Resetear contadores y estados de la Etapa 1
+            vidas = 3; aciertosLvl1 = 0; fallosGeometria = 0;
+            document.getElementById('score-text').innerText = "0";
+            document.getElementById('btn-reset-lvl1').classList.add('hidden');
+            document.getElementById('btn-go-to-n2').classList.add('hidden');
+            for(let i=1; i<=3; i++) document.getElementById(`life${i}`).classList.remove('lost');
+            
+            // 2. CORRECCIÓN SEGURO EXPLICITO: Limpieza absoluta del Quiz H5P de la Etapa 2
+            aciertosQuiz = 0;
+            indexQuiz = 1; // Forzar índice inicial antes de renderizar la UI
+            
+            // Forzar remoción y desmarcado recorriendo los bloques específicos
+            document.querySelectorAll('.quiz-block').forEach(bloque => {
+                const inputs = bloque.querySelectorAll('input[type="radio"]');
+                inputs.forEach(radio => {
+                    radio.checked = false;
+                    radio.disabled = false;
+                });
+            });
+
+            document.querySelectorAll('.h5p-feedback').forEach(fb => {
+                fb.classList.add('hidden');
+                fb.innerHTML = "";
+            });
+            
+            // Corrección de la visibilidad de los pasos del Quiz
+            document.getElementById('qstep-1').classList.remove('hidden');
+            document.getElementById('qstep-2').classList.add('hidden');
+            
+            // Sincronizar UI de la barra de progreso
+            document.getElementById('quiz-progress').style.width = "33.3%";
+            document.getElementById('quiz-counter').innerText = `Pregunta 1 de 2`;
+            document.getElementById('btn-check-quiz').classList.remove('hidden');
+            document.getElementById('btn-next-quiz').classList.add('hidden');
+            document.getElementById('btn-next-quiz').innerHTML = 'Siguiente Pregunta';
+
+            // 3. Limpieza de selectores de la Etapa 3
+            puntosAnaliticosN3 = 0;
+            document.querySelectorAll('#level-3-container select').forEach(select => {
+                select.value = "";
+                select.disabled = false;
+                select.style.borderColor = "var(--border-color)";
+            });
+            document.getElementById('btn-eval-n3').classList.remove('hidden');
+            document.getElementById('btn-finish-all').classList.add('hidden');
+
+            // 4. Volver a las pantallas iniciales
+            document.getElementById('level-2-container').classList.add('hidden');
+            document.getElementById('level-3-container').classList.add('hidden');
+            document.getElementById('level-1-container').classList.remove('hidden');
+
+            generarRetoMapeo();
+        }
+
+        function avanzarSiguienteReto() {
+            generarRetoMapeo();
+        }
+
+        // ==========================================
+        // LÓGICA ETAPA 2: CUESTIONARIO CONCEPTUAL
+        // ==========================================
+        const explicacionesQuiz = {
+            1: "Cuando el dominio y el codominio tienen exactamente la misma cantidad de elementos finitos, cualquier asignación inyectiva (uno a uno) asegura automáticamente que no quede ningún elemento libre en el destino, volviéndose también sobreyectiva por transiciones cardinales.",
+            2: "Para preservar la definición fundamental de función, cada valor de entrada en el Dominio debe poseer una y solo una imagen de salida. Si un elemento dispara dos flechas a destinos diferentes, se convierte en una relación general, invalidando su estatus de función."
+        };
+
+        function activarEtapa2() {
+            document.getElementById('level-1-container').classList.add('hidden');
+            document.getElementById('level-2-container').classList.remove('hidden');
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function verificarPreguntaQuiz() {
+            const checkedRadio = document.querySelector(`input[name="q${indexQuiz}"]:checked`);
+            if (!checkedRadio) return swal("Casilla Vacía", "Por favor selecciona una alternativa de respuesta antes de verificar.", "warning");
+
+            const layerFeedback = document.getElementById(`qfeedback-${indexQuiz}`);
+            layerFeedback.classList.remove('hidden');
+            document.querySelectorAll(`input[name="q${indexQuiz}"]`).forEach(input => input.disabled = true);
+
+            if (checkedRadio.value === "correcto") {
+                layerFeedback.innerHTML = `<strong>¡Respuesta Correcta!</strong> ${explicacionesQuiz[indexQuiz]}`;
+                layerFeedback.classList.remove('error');
+                aciertosQuiz++;
+            } else {
+                layerFeedback.innerHTML = `<strong>Respuesta Incorrecta.</strong> ${explicacionesQuiz[indexQuiz]}`;
+                layerFeedback.classList.add('error');
+            }
+
+            document.getElementById('btn-check-quiz').classList.add('hidden');
+            document.getElementById('btn-next-quiz').classList.remove('hidden');
+            if (indexQuiz === totalQuiz) document.getElementById('btn-next-quiz').innerHTML = 'Pasar a la Etapa 3 <i class="fa-solid fa-arrow-right"></i>';
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub, layerFeedback]);
+        }
+
+        function pasarSiguientePreguntaQuiz() {
+            if (indexQuiz === totalQuiz) {
+                document.getElementById('level-2-container').classList.add('hidden');
+                document.getElementById('level-3-container').classList.remove('hidden');
+                if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                return;
+            }
+            document.getElementById(`qstep-${indexQuiz}`).classList.add('hidden');
+            indexQuiz++;
+            document.getElementById(`qstep-${indexQuiz}`).classList.remove('hidden');
+            
+            document.getElementById('quiz-progress').style.width = (indexQuiz / totalQuiz) * 100 + "%";
+            document.getElementById('quiz-counter').innerText = `Pregunta ${indexQuiz} de ${totalQuiz}`;
+            
+            document.getElementById('btn-next-quiz').classList.add('hidden');
+            document.getElementById('btn-check-quiz').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // LÓGICA ETAPA 3: DEMOSTRACIÓN ANALÍTICA
+        // ==========================================
+        function validarEtapa3() {
+            const select1 = document.getElementById('dem-1');
+            const select2 = document.getElementById('dem-2');
+
+            if (!select1.value || !select2.value) {
+                return swal("Desarrollo Incompleto", "Asegúrate de responder todos los pasos lógicos del menú desplegable.", "warning");
+            }
+
+            puntosAnaliticosN3 = 0;
+            const revisarSeleccion = (el, correcto) => {
+                if (el.value === correcto) {
+                    el.style.borderColor = "var(--success)";
+                    puntosAnaliticosN3++;
+                } else {
+                    el.style.borderColor = "var(--danger)";
+                }
+            };
+
+            revisarSeleccion(select1, "v2");
+            revisarSeleccion(select2, "v1");
+
+            document.querySelectorAll('#level-3-container select').forEach(s => s.disabled = true);
+            document.getElementById('btn-eval-n3').classList.add('hidden');
+            document.getElementById('btn-finish-all').classList.remove('hidden');
+
+            if (puntosAnaliticosN3 === 2) {
+                swal("Estructura Correcta", "Has acoplado con éxito los principios cardinales analíticos discretos.", "success");
+            } else {
+                swal("Errores conceptuales", "La combinaciónedge deductiva presenta incoherencias matemáticas reales. Revisa los selectores marcados.", "error");
+            }
+        }
+
+        // ==========================================
+        // PANEL FINAL DE EVALUACIÓN (ESTILO H5P)
+        // ==========================================
+        function mostrarCierreH5P() {
+            confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 } });
+
+            const cajaResumen = document.createElement('div');
+            cajaResumen.className = 'h5p-summary-box';
+            cajaResumen.innerHTML = `
+                <div class="summary-row">
+                    <span>Mapeos espaciales fallidos (Etapa 1):</span>
+                    <span class="bold-val" style="color: ${fallosGeometria > 0 ? 'var(--danger)' : 'var(--success)'};">${fallosGeometria}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Corazones de estabilidad remanentes:</span>
+                    <span class="bold-val">${vidas} / 3</span>
+                </div>
+                <div class="summary-row">
+                    <span>Aciertos teóricos del Quiz (Etapa 2):</span>
+                    <span class="bold-val">${aciertosQuiz} / 2</span>
+                </div>
+                <div class="summary-row">
+                    <span>Aciertos analíticos estructurales (Etapa 3):</span>
+                    <span class="bold-val">${puntosAnaliticosN3} / 2</span>
+                </div>
+                <p style="text-align: center; font-weight: bold; margin-top: 20px; color: var(--azure-dark); font-size:16px;">
+                    ¡Módulo Informatizado de Relaciones Concluido!
+                </p>
+            `;
+
+            swal({
+                title: "Reporte de Competencias Estilo H5P",
+                content: cajaResumen,
+                icon: "success",
+                button: "Terminar Actividad"
+            });
+        }
+    </script>
+</body>
+
+</html>
