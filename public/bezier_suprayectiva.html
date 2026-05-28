@@ -2,144 +2,595 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Validación de Función Inyectiva con Curvas de Bezier</title>
-  <!-- Carga de JXG.JSXGraph CSS y JS -->
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraph.css" />
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraphcore.js"></script>
-  <!-- Carga de SweetAlert JS (¡Esta es la clave para las alertas!) -->
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-  <!-- Enlace a la fuente Inter para una mejor estética -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    /* Estilos generales para el cuerpo de la página */
-    body {
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      background-color: #f0f2f5;
-      /* Un fondo suave */
-      padding: 20px;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio Didáctico: Funciones Sobreyectivas</title>
 
-    /* Estilos para el contenedor del tablero JXG.JSXGraph */
-    #jxgbox {
-      width: 90vw;
-      /* Ancho responsivo */
-      max-width: 800px;
-      /* Ancho máximo para pantallas grandes */
-      height: 60vh;
-      /* Altura responsiva */
-      min-height: 300px;
-      /* Altura mínima */
-      background-color: #fff;
-      border-radius: 12px;
-      /* Esquinas más redondeadas */
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-      /* Sombra más pronunciada */
-      margin-bottom: 20px;
-      /* Espacio debajo del tablero */
-      overflow: hidden;
-      /* Asegura que no haya desbordamiento */
-    }
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    /* Estilos para los botones de validación */
-    .button-container {
-      display: flex;
-      gap: 15px;
-      /* Espacio entre botones */
-      margin-top: 10px;
-    }
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraph.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraphcore.js"></script>
 
-    button {
-      padding: 14px 28px;
-      font-size: 18px;
-      font-weight: 600;
-      background-color: #3498db;
-      /* Azul vibrante */
-      color: white;
-      border: none;
-      border-radius: 8px;
-      /* Esquinas redondeadas */
-      cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      /* Sombra para el botón */
-      outline: none;
-      /* Elimina el contorno al hacer clic */
-    }
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+        };
+    </script>
 
-    button:hover {
-      background-color: #2980b9;
-      /* Azul más oscuro al pasar el ratón */
-      transform: translateY(-3px);
-      /* Efecto de "levantar" */
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
-    }
+    <style>
+        :root {
+            --primary: #0f172a;
+            --primary-hover: #1e293b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --azure-accent: #38bdf8;
+            --azure-dark: #0284c7;
+            --azure-bg: #e0f7fa;
+            --azure-border: #b2ebf2;
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+        }
 
-    button:active {
-      background-color: #2c3e50;
-      /* Azul muy oscuro al hacer clic */
-      transform: translateY(0);
-      /* Vuelve a su posición original */
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
 
-    /* Estilo específico para el botón de reinicio */
-    button.reset-button {
-      background-color: #e74c3c;
-      /* Rojo para reiniciar */
-    }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: #fff;
+            padding: 35px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
 
-    button.reset-button:hover {
-      background-color: #c0392b;
-      /* Rojo más oscuro al pasar el ratón */
-    }
-  </style>
+        h1 { color: var(--primary); font-weight: 700; text-align: center; margin-bottom: 5px; font-size: 26px; }
+        h2 { border-left: 6px solid var(--azure-accent); padding-left: 12px; font-size: 20px; color: var(--primary); margin-top: 30px; }
+        h3 { font-size: 17px; font-weight: 600; margin-bottom: 12px; color: var(--text-dark); }
+        p { line-height: 1.6; font-size: 15px; }
+        
+        .hidden { display: none !important; }
+
+        /* Estilización de Botones */
+        .btn-general {
+            display: block; width: 100%; max-width: 340px; margin: 20px auto; padding: 13px;
+            background-color: var(--primary); color: white; border: none; border-radius: 25px;
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.25s ease;
+            text-align: center; text-decoration: none; box-shadow: 0 4px 10px rgba(15,23,42,0.15);
+        }
+        .btn-general:hover:not(:disabled) { 
+            transform: translateY(-2px); 
+            background-color: var(--primary-hover);
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.25);
+        }
+        .btn-general:disabled { background-color: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+        .btn-success { background-color: var(--success); }
+        .btn-success:hover:not(:disabled) { background-color: #059669; }
+        .btn-secondary { background-color: #64748b; }
+        .btn-secondary:hover:not(:disabled) { background-color: #475569; }
+
+        /* Módulos de Estado e Info */
+        .jxgbox-square { width: 100%; max-width: 600px; height: 450px; margin: 0 auto 15px auto; border-radius: 10px; border: 1px solid var(--border-color); background: #fff; }
+        .status-bar { display: flex; justify-content: space-between; align-items: center; background: var(--azure-bg); padding: 12px 20px; border-radius: 8px; font-weight: 600; color: #006064; margin-bottom: 15px; border: 1px solid var(--azure-border); font-size: 14px; }
+        .lives-box i { color: var(--danger); font-size: 18px; margin-right: 3px; transition: all 0.3s; }
+        .lives-box i.lost { opacity: 0.2; transform: scale(0.8); }
+        .badge-info { background: #0f172a; color: #fff; padding: 8px 18px; border-radius: 6px; font-size: 15px; font-weight: 600; display: inline-block; margin-bottom: 15px; }
+
+        /* Capa H5P Quiz */
+        .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 6px; margin: 15px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--azure-accent); width: 33.3%; transition: 0.4s; }
+        .h5p-option { display: flex; align-items: center; padding: 14px; border: 1px solid var(--border-color); margin-bottom: 10px; border-radius: 8px; cursor: pointer; background: var(--bg-light); transition: 0.2s; }
+        .h5p-option:hover { border-color: var(--azure-accent); background: #f0fdfa; }
+        .h5p-option input { margin-right: 12px; transform: scale(1.1); }
+        .h5p-feedback { padding: 15px; border-radius: 8px; margin-top: 15px; background: #f1f5f9; border-left: 6px solid var(--azure-accent); font-size: 14.5px; }
+        .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; color: #991b1b; }
+
+        /* Capa Analítica y Desplegables Matemáticos */
+        .n3-section { background: var(--bg-light); padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--border-color); }
+        select.math-input { margin: 0 12px; padding: 6px 10px; border: 2px solid var(--border-color); border-radius: 6px; font-size: 14px; font-weight: bold; color: var(--azure-dark); outline: none; cursor: pointer; background: #fff; display: inline-block; vertical-align: middle; }
+        select.math-input:focus { border-color: var(--azure-accent); }
+        .step-row { display: flex; align-items: center; margin-bottom: 15px; font-size: 15.5px; flex-wrap: wrap; line-height: 2; }
+
+        /* Cuadro Resumen H5P */
+        .h5p-summary-box { border: 2px solid var(--azure-accent); background: #f0f9ff; border-radius: 12px; padding: 25px; margin-top: 20px; text-align: left; }
+        .summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #cbd5e1; font-size: 15px; font-weight: 500; }
+        .summary-row span.bold-val { font-weight: 700; color: var(--azure-dark); }
+    </style>
 </head>
 
 <body>
-  <div class="main-container">
-    <p class="user-prompt">\(\text{Crea una función suprayectiva de}\) \([-3,3]\) a \([-4,4]\)</p>
-    <div id="jxgbox"></div>
 
-    <div class="button-container">
-    <button id="validateButton">Validar Función Suprayectiva</button>
-    <button id="resetButton" class="reset-button">Reinicializar Escenario</button>
-  </div>
-    
-    <p class="help-message">\(\text{Pista: Puedes arrastrar los puntos de control verdes y los extremos del intervalopara modificar la curva.} \)
-   </p>
-  </div>
+    <div class="container">
 
-    <script src="js/bezier_suprayectiva.js"></script>
+        <div id="level-1-container">
+            <h1>Etapa 1: Laboratorio de Modelado Sobreyectivo</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 15px;">
+                Modifica la gráfica arrastrando los puntos directamente con el mouse. El rango (eje $Y$) de la curva debe cubrir <strong>exactamente</strong> la banda azul del codominio objetivo.
+            </p>
+            
+            <div style="text-align: center;">
+                <span class="badge-info" id="challenge-badge">Inicializando el entorno gráfico...</span>
+            </div>
 
-     <script
-        type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath:  [['$','$'],['\\(','\\)']]}});</script>
+            <div class="status-bar">
+                <div class="lives-box">
+                    Corazones de Estabilidad: 
+                    <i class="fa-solid fa-heart" id="life1"></i>
+                    <i class="fa-solid fa-heart" id="life2"></i>
+                    <i class="fa-solid fa-heart" id="life3"></i>
+                </div>
+                <div style="font-weight: bold;" id="target-label">Desafío: 1 / 3</div>
+                <div>Aciertos Logrados: <span id="score-text" style="font-size: 18px; color: var(--success); font-weight: bold;">0</span> / 3</div>
+            </div>
 
-    <script src="js/jquery.2.2.4.js"></script>
+            <div id="box" class="jxgbox-square"></div>
 
-    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+            <div class="btn-row" style="text-align: center;">
+                <button class="btn-general" id="btn-validate" onclick="validarSobreyectividad()">Validar Función</button>
+                <button class="btn-general btn-success hidden" id="btn-next-challenge" onclick="avanzarSiguienteReto()">Siguiente Desafío <i class="fa-solid fa-arrow-right"></i></button>
+                <button class="btn-general btn-secondary hidden" id="btn-correct-attempt" onclick="descongelarParaCorregir()">Corregir Configuración <i class="fa-solid fa-rotate-left"></i></button>
+                <button class="btn-general btn-danger hidden" id="btn-reset-lvl1" onclick="reiniciarEtapa1()">Reiniciar Laboratorio</button>
+            </div>
+            
+            <button class="btn-general btn-success hidden" id="btn-go-to-n2" onclick="activarEtapa2()">Avanzar a la Etapa 2 <i class="fa-solid fa-arrow-right-to-bracket"></i></button>
+        </div>
 
+        <div id="level-2-container" class="hidden">
+            <h1>Etapa 2: Diagnóstico Conceptual (Estilo H5P)</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Responde los reactivos teóricos sobre la correspondencia entre imágenes y codominios.</p>
 
+            <div class="progress-container"><div class="progress-bar" id="quiz-progress"></div></div>
+            <p id="quiz-counter" style="text-align: right; font-weight: 600; color: var(--azure-dark); margin-top:0;">Pregunta 1 de 3</p>
 
+            <div id="qstep-1" class="quiz-block">
+                <h3>1. Sea una función $f: A \rightarrow B$. ¿Cuál de las siguientes condiciones define formalmente que la función es sobreyectiva (o suprayectiva)?</h3>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>A) Cada elemento del dominio $A$ tiene una única imagen en el codominio $B$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcto"> <span>B) El conjunto Imagen de la función coincide plenamente con el Codominio, es decir, $\text{Im}(f) = B$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>C) Elementos distintos de $A$ poseen imágenes estrictamente distintas en $B$.</span></label>
+                <div id="qfeedback-1" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="qstep-2" class="quiz-block hidden">
+                <h3>2. Analiza la función polinomial $f: \mathbb{R} \rightarrow \mathbb{R}$ definida por $f(x) = x^3 - 4x$. ¿Es esta función sobreyectiva sobre todo el conjunto de los números reales?</h3>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcto"> <span>A) Sí, porque al ser un polinomio de grado impar continuo, sus límites al infinito cubren desde $-\mathbb{R}$ hasta $+\mathbb{R}$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>B) No, ya que los mínimos locales impiden que la gráfica descienda por debajo de los valores reales.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>C) No, debido a que corta al eje horizontal en tres raíces reales definidas.</span></label>
+                <div id="qfeedback-2" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="qstep-3" class="quiz-block hidden">
+                <h3>3. Si una función continua $f: [-2, 2] \rightarrow [-1, 5]$ posee un valor mínimo de $y = 0$ y un valor máximo de $y = 5$ dentro de su rango real, ¿qué cambio se debe hacer para transformarla en sobreyectiva?</h3>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecto"> <span>A) Ampliar los extremos del dominio a $[-5, 5]$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecto"> <span>B) Modificar la regla de asignación sumando una constante unitaria.</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcto"> <span>C) Restringir el codominio original para que coincida exactamente con su rango real, es decir, cambiarlo a $[0, 5]$.</span></label>
+                <div id="qfeedback-3" class="h5p-feedback hidden"></div>
+            </div>
+
+            <button class="btn-general" id="btn-check-quiz" onclick="verificarPreguntaQuiz()">Comprobar Respuesta</button>
+            <button class="btn-general hidden btn-success" id="btn-next-quiz" onclick="pasarSiguientePreguntaQuiz()">Siguiente Pregunta</button>
+        </div>
+
+        <div id="level-3-container" class="hidden">
+            <h1>Etapa 3: Estructuración Formal y Demostración</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 25px;">
+                Completa las casillas lógicas desplegables para estructurar correctamente la demostración formal analítica de sobreyectividad.
+            </p>
+
+            <div class="n3-section">
+                <h3 style="color: var(--azure-dark);">Demostración: Probar que &nbsp; $f: \mathbb{R} \rightarrow \mathbb{R}$ &nbsp; dada por &nbsp; $f(x) = 3x - 5$ &nbsp; es Sobreyectiva</h3>
+                <div class="step-row">
+                    Para probar que es sobreyectiva, debemos asegurar que para todo elemento 
+                    <select id="dem-1" class="math-input">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v1">x ∈ ℝ</option>
+                        <option value="v2">y ∈ ℝ</option>
+                    </select>
+                    existe un pre-elemento en el dominio tal que se cumpla la ecuación &nbsp; $f(x) = y$ .
+                </div>
+                <div class="step-row">
+                    Planteamos la igualdad algebraica sustituyendo la regla de correspondencia: &nbsp; $3x - 5 = y$ .
+                </div>
+                <div class="step-row">
+                    Despejamos nuestra variable de entrada &nbsp; $x$ &nbsp; en función de la salida &nbsp; $y$ &nbsp; , obteniendo como resultado analítico:
+                </div>
+                <div class="step-row">
+                    $x$ &nbsp; = 
+                    <select id="dem-2" class="math-input">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v1">(y - 5) / 3</option>
+                        <option value="v2">(y + 5) / 3</option>
+                        <option value="v3">3y + 5</option>
+                    </select>
+                </div>
+                <div class="step-row">
+                    Como dicha expresión matemática siempre produce un número real bien definido para cualquier valor de &nbsp; $y$ &nbsp; , se concluye que: 
+                    <select id="dem-3" class="math-input">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v1">Im(f) = ℝ</option>
+                        <option value="v2">Im(f) ⊂ ℝ</option>
+                    </select>
+                    , quedando formalmente demostrada la propiedad sobreyectiva.
+                </div>
+            </div>
+
+            <button class="btn-general" id="btn-eval-n3" onclick="validarEtapa3()">Validar Demostración</button>
+            <button class="btn-general hidden btn-success" id="btn-finish-all" onclick="mostrarCierreH5P()">Generar Reporte de Competencias <i class="fa-solid fa-graduation-cap"></i></button>
+        </div>
+
+    </div>
+
+    <script>
+        // Variables globales
+        let fallosGeometria = 0;
+        let aciertosQuiz = 0;
+        let puntosAnaliticosN3 = 0;
+
+        let vidas = 3;
+        let aciertosLvl1 = 0;
+        let tablero, functionCurve, curveBranch2, codominioRegion;
+        let controlPoints = [];
+        let retoActual = {};
+
+        const opcionesCodominios = [
+            { min: -3, max: 3 },
+            { min: -4, max: 2 },
+            { min: -2, max: 4 },
+            { min: -4, max: 3 },
+            { min: -3, max: 4 }
+        ];
+        const tiposContinuidad = ["CONTINUA", "DISCONTINUA_POR_PARTES"];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            tablero = JXG.JSXGraph.initBoard('box', { 
+                boundingbox: [-5, 5, 5, -5], 
+                axis: true, 
+                grid: true,
+                pan: { enabled: false }, 
+                zoom: { enabled: false }, 
+                showNavigation: false 
+            });
+
+            // LOGRA QUE AL ARRASTRAR MÁS ALLÁ SE REGRESEN A LAS COTAS DEL CODOMINIO DINÁMICO
+            tablero.on('update', function() {
+                if (retoActual && retoActual.codoMin !== undefined) {
+                    controlPoints.forEach(pt => {
+                        let y = pt.Y();
+                        if (y > retoActual.codoMax) {
+                            pt.moveTo([pt.X(), retoActual.codoMax]);
+                        } else if (y < retoActual.codoMin) {
+                            pt.moveTo([pt.X(), retoActual.codoMin]);
+                        }
+                    });
+                }
+            });
+
+            generarRetoAleatorio();
+        });
+
+        function reiniciarEtapa1() {
+            vidas = 3;
+            aciertosLvl1 = 0;
+            fallosGeometria = 0;
+            document.getElementById('score-text').innerText = "0";
+            document.getElementById('btn-reset-lvl1').classList.add('hidden');
+            document.getElementById('btn-go-to-n2').classList.add('hidden');
+            
+            for(let i = 1; i <= 3; i++) {
+                let cor = document.getElementById(`life${i}`);
+                if (cor) cor.classList.remove('lost');
+            }
+            generarRetoAleatorio();
+        }
+
+        function generarRetoAleatorio() {
+            if (aciertosLvl1 >= 3) return;
+
+            document.getElementById('btn-validate').classList.remove('hidden');
+            document.getElementById('btn-validate').disabled = false;
+            document.getElementById('btn-next-challenge').classList.add('hidden');
+            document.getElementById('btn-correct-attempt').classList.add('hidden');
+
+            let codoRandom = opcionesCodominios[Math.floor(Math.random() * opcionesCodominios.length)];
+            let tipoRandom = tiposContinuidad[Math.floor(Math.random() * tiposContinuidad.length)];
+            
+            retoActual = {
+                tipo: tipoRandom,
+                codoMin: codoRandom.min,
+                codoMax: codoRandom.max,
+                titulo: `Construye una función ${tipoRandom.replace(/_/g, ' ')} sobreyectiva con Codominio en [${codoRandom.min}, ${codoRandom.max}]`
+            };
+
+            document.getElementById('target-label').innerText = `Desafío: ${aciertosLvl1 + 1} / 3`;
+            document.getElementById('challenge-badge').innerText = retoActual.titulo;
+
+            tablero.suspendUpdate();
+            
+            // Eliminar objetos anteriores
+            controlPoints.forEach(pt => tablero.removeObject(pt));
+            controlPoints = [];
+            if (functionCurve) tablero.removeObject(functionCurve);
+            if (curveBranch2) tablero.removeObject(curveBranch2);
+            if (codominioRegion) tablero.removeObject(codominioRegion);
+
+            // Capa visual del intervalo del codominio
+            codominioRegion = tablero.create('polygon', [
+                [-4.5, retoActual.codoMin], [4.5, retoActual.codoMin], 
+                [4.5, retoActual.codoMax], [-4.5, retoActual.codoMax]
+            ], {
+                fillColor: '#38bdf8', fillOpacity: 0.15, strokeColor: '#0284c7', strokeWidth: 1, withLines: true, vertices: {visible: false}
+            });
+
+            if (retoActual.tipo === "CONTINUA") {
+                let p1 = tablero.create('point', [-4, -1], { name: 'A', size: 4, color: '#0ea5e9' });
+                let p2 = tablero.create('point', [-1.5, 2], { name: 'B', size: 4, color: '#38bdf8' });
+                let p3 = tablero.create('point', [1.5, -2], { name: 'C', size: 4, color: '#38bdf8' });
+                let p4 = tablero.create('point', [4, 1], { name: 'D', size: 4, color: '#0ea5e9' });
+
+                // Restricciones en los ejes X para preservar que siga siendo una función válida
+                p1.on('drag', () => p1.moveTo([-4, p1.Y()]));
+                p2.on('drag', () => p2.moveTo([Math.max(-3.5, Math.min(-0.5, p2.X())), p2.Y()]));
+                p3.on('drag', () => p3.moveTo([Math.max(0.5, Math.min(3.5, p3.X())), p3.Y()]));
+                p4.on('drag', () => p4.moveTo([4, p4.Y()]));
+
+                controlPoints.push(p1, p2, p3, p4);
+                functionCurve = tablero.create('curve', JXG.Math.Numerics.bezier(controlPoints), { strokeColor: '#0f172a', strokeWidth: 3.5 });
+            } else {
+                // Discontinua por partes (Dos tramos lineales perfectamente acotados en X)
+                let p1 = tablero.create('point', [-4, -2], { name: 'A1', size: 4, color: '#0ea5e9' });
+                let p2 = tablero.create('point', [0, -3], { name: 'A2', size: 4, color: '#38bdf8' });
+                let p3 = tablero.create('point', [0.1, 4], { name: 'B1', size: 4, color: '#38bdf8' });
+                let p4 = tablero.create('point', [4, 2], { name: 'B2', size: 4, color: '#0ea5e9' });
+
+                p1.on('drag', () => p1.moveTo([-4, p1.Y()]));
+                p2.on('drag', () => p2.moveTo([0, p2.Y()]));
+                p3.on('drag', () => p3.moveTo([0.1, p3.Y()]));
+                p4.on('drag', () => p4.moveTo([4, p4.Y()]));
+
+                controlPoints.push(p1, p2, p3, p4);
+                
+                functionCurve = tablero.create('segment', [p1, p2], { strokeColor: '#0f172a', strokeWidth: 3.5 });
+                curveBranch2 = tablero.create('segment', [p3, p4], { strokeColor: '#0f172a', strokeWidth: 3.5 });
+            }
+
+            tablero.unsuspendUpdate();
+            tablero.update();
+        }
+
+        function validarSobreyectividad() {
+            let minYEncontrado = Infinity;
+            let maxYEncontrado = -Infinity;
+            let tieneHuecoInterno = false;
+
+            if (retoActual.tipo === "CONTINUA") {
+                const muestras = 300;
+                for (let i = 0; i <= muestras; i++) {
+                    let t = i / muestras;
+                    let evalY = functionCurve.Y(t);
+                    if (!isNaN(evalY)) {
+                        if (evalY < minYEncontrado) minYEncontrado = evalY;
+                        if (evalY > maxYEncontrado) maxYEncontrado = evalY;
+                    }
+                }
+            } else {
+                // EVITA EL ERROR DE VALIDACIÓN: Evaluamos los rangos independientes de los dos segmentos
+                let rangoSg1 = [Math.min(controlPoints[0].Y(), controlPoints[1].Y()), Math.max(controlPoints[0].Y(), controlPoints[1].Y())];
+                let rangoSg2 = [Math.min(controlPoints[2].Y(), controlPoints[3].Y()), Math.max(controlPoints[2].Y(), controlPoints[3].Y())];
+                
+                // Los ordenamos por cuál empieza más abajo en el eje Y
+                let primero = (rangoSg1[0] <= rangoSg2[0]) ? rangoSg1 : rangoSg2;
+                let segundo = (rangoSg1[0] <= rangoSg2[0]) ? rangoSg2 : rangoSg1;
+
+                minYEncontrado = primero[0];
+                maxYEncontrado = Math.max(primero[1], segundo[1]);
+                
+                // Si el final del primer tramo no alcanza el inicio del segundo tramo, hay un hueco vacío
+                const tolHueco = 0.08;
+                if (primero[1] < (segundo[0] - tolHueco)) {
+                    tieneHuecoInterno = true;
+                }
+            }
+
+            const tolerancia = 0.05; 
+            let cubreMinimo = minYEncontrado <= (retoActual.codoMin + tolerancia);
+            let cubreMaximo = maxYEncontrado >= (retoActual.codoMax - tolerancia);
+            
+            // Una función es sobreyectiva si cubre extremos Y NO TIENE HUECOS internos
+            let esSobreyectiva = cubreMinimo && cubreMaximo && !tieneHuecoInterno;
+
+            // --- CONGELAR ENTORNO INTERACTIVO ---
+            controlPoints.forEach(pt => pt.setAttribute({ fixed: true }));
+            document.getElementById('btn-validate').classList.add('hidden');
+
+            if (esSobreyectiva) {
+                aciertosLvl1++;
+                document.getElementById('score-text').innerText = aciertosLvl1;
+
+                if (aciertosLvl1 < 3) {
+                    document.getElementById('btn-next-challenge').classList.remove('hidden');
+                    swal("¡Función Sobreyectiva!", `¡Excelente trabajo! El rango de tu función cubre exactamente el codominio objetivo [${retoActual.codoMin}, ${retoActual.codoMax}]. Analiza la curva y avanza al siguiente reto.`, "success");
+                } else {
+                    document.getElementById('btn-go-to-n2').classList.remove('hidden');
+                    swal("¡Fase Geométrica Superada!", "Espectacular. Lograste modelar las condiciones de sobreyectividad en los 3 desafíos aleatorios.", "success");
+                }
+            } else {
+                fallosGeometria++;
+                if (vidas > 0) {
+                    document.getElementById(`life${vidas}`).classList.add('lost');
+                    vidas--;
+                }
+
+                if (vidas === 0) {
+                    document.getElementById('btn-reset-lvl1').classList.remove('hidden');
+                    swal("Guías Agotadas", "No lograste cubrir el rango requerido y has perdido tus vidas. Revisa la gráfica congelada para entender tu error y reinicia la etapa.", "error");
+                } else {
+                    document.getElementById('btn-correct-attempt').classList.remove('hidden');
+                    
+                    let msgAux = "";
+                    if (tieneHuecoInterno) {
+                        msgAux = "¡Cuidado! Aunque tocaste las cotas límites, tu función discontinua tiene un vacío (hueco) en medio del eje Y. Hay valores intermedios que se quedaron sin preimagen.";
+                    } else {
+                        msgAux = `Tu función abarca desde ${minYEncontrado.toFixed(1)} hasta ${maxYEncontrado.toFixed(1)}. Necesitas estirar la curva de extremo a extremo de la banda azul.`;
+                    }
+                    
+                    swal("Rango Insuficiente", `La curva no es sobreyectiva.\n\n${msgAux}\n\nPresiona 'Corregir Configuración' para desbloquear los controles.`, "warning");
+                }
+            }
+        }
+
+        function descongelarParaCorregir() {
+            controlPoints.forEach(pt => pt.setAttribute({ fixed: false }));
+            document.getElementById('btn-correct-attempt').classList.add('hidden');
+            document.getElementById('btn-validate').classList.remove('hidden');
+        }
+
+        function avanzarSiguienteReto() {
+            generarRetoAleatorio();
+        }
+
+        // ==========================================
+        // LÓGICA ETAPA 2: CUESTIONARIO CONCEPTUAL
+        // ==========================================
+        let indexQuiz = 1;
+        const totalQuiz = 3;
+        const explicacionesQuiz = {
+            1: "Por definición fundamental, una función es sobreyectiva si cada elemento del codominio posee al menos una preimagen en el dominio, lo que implica algebraicamente que el rango o conjunto imagen sea idéntico al codominio.",
+            2: "Los polinomios de grado impar (como las funciones cúbicas) tienen un comportamiento asintótico que tiende a $-\\infty$ por un extremo y a $+\\infty$ por el otro. Al ser continuos, por el Teorema del Valor Intermedio, cubren absolutamente todo el conjunto de los números reales.",
+            3: "Si una función genera valores únicamente en el rango $[0, 5]$, la forma matemática directa de convertirla en sobreyectiva sin alterar su estructura o regla es ajustar el codominio para que sea idéntico a ese conjunto real obtenido."
+        };
+
+        function activarEtapa2() {
+            document.getElementById('level-1-container').classList.add('hidden');
+            document.getElementById('level-2-container').classList.remove('hidden');
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function verificarPreguntaQuiz() {
+            const checkedRadio = document.querySelector(`input[name="q${indexQuiz}"]:checked`);
+            if (!checkedRadio) return swal("Casilla Vacía", "Por favor selecciona una alternativa de respuesta antes de verificar.", "warning");
+
+            const layerFeedback = document.getElementById(`qfeedback-${indexQuiz}`);
+            layerFeedback.classList.remove('hidden');
+            document.querySelectorAll(`input[name="q${indexQuiz}"]`).forEach(input => input.disabled = true);
+
+            if (checkedRadio.value === "correcto") {
+                layerFeedback.innerHTML = `<strong>¡Respuesta Correcta!</strong> ${explicacionesQuiz[indexQuiz]}`;
+                layerFeedback.classList.remove('error');
+                aciertosQuiz++;
+            } else {
+                layerFeedback.innerHTML = `<strong>Respuesta Incorrecta.</strong> ${explicacionesQuiz[indexQuiz]}`;
+                layerFeedback.classList.add('error');
+            }
+
+            document.getElementById('btn-check-quiz').classList.add('hidden');
+            document.getElementById('btn-next-quiz').classList.remove('hidden');
+            if (indexQuiz === totalQuiz) document.getElementById('btn-next-quiz').innerHTML = 'Pasar a la Etapa 3 <i class="fa-solid fa-arrow-right"></i>';
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub, layerFeedback]);
+        }
+
+        function pasarSiguientePreguntaQuiz() {
+            if (indexQuiz === totalQuiz) {
+                document.getElementById('level-2-container').classList.add('hidden');
+                document.getElementById('level-3-container').classList.remove('hidden');
+                if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                return;
+            }
+            document.getElementById(`qstep-${indexQuiz}`).classList.add('hidden');
+            indexQuiz++;
+            document.getElementById(`qstep-${indexQuiz}`).classList.remove('hidden');
+            
+            document.getElementById('quiz-progress').style.width = (indexQuiz / totalQuiz) * 100 + "%";
+            document.getElementById('quiz-counter').innerText = `Pregunta ${indexQuiz} de 3`;
+            
+            document.getElementById('btn-next-quiz').classList.add('hidden');
+            document.getElementById('btn-check-quiz').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // LÓGICA ETAPA 3: DEMOSTRACIÓN FORMAL
+        // ==========================================
+        function validarEtapa3() {
+            const select1 = document.getElementById('dem-1');
+            const select2 = document.getElementById('dem-2');
+            const select3 = document.getElementById('dem-3');
+
+            if (!select1.value || !select2.value || !select3.value) {
+                return swal("Desarrollo Incompleto", "Asegúrate de responder todos los pasos lógicos del menú desplegable.", "warning");
+            }
+
+            puntosAnaliticosN3 = 0;
+            const revisarSeleccion = (el, correcto) => {
+                if (el.value === correcto) {
+                    el.style.borderColor = "var(--success)";
+                    puntosAnaliticosN3++;
+                } else {
+                    el.style.borderColor = "var(--danger)";
+                }
+            };
+
+            revisarSeleccion(select1, "v2");
+            revisarSeleccion(select2, "v2");
+            revisarSeleccion(select3, "v1");
+
+            document.querySelectorAll('#level-3-container select').forEach(s => s.disabled = true);
+            document.getElementById('btn-eval-n3').classList.add('hidden');
+            document.getElementById('btn-finish-all').classList.remove('hidden');
+
+            if (puntosAnaliticosN3 === 3) {
+                swal("Demostración Correcta", "Has estructurado con éxito los pasos deductivos para la validación analítica formal.", "success");
+            } else {
+                swal("Errores en el Razonamiento", "La estructura lógica presenta algunas inconsistencias de signos o definiciones. Revisa las casillas en rojo.", "error");
+            }
+        }
+
+        // ==========================================
+        // PANEL FINAL DE EVALUACIÓN (ESTILO H5P)
+        // ==========================================
+        function mostrarCierreH5P() {
+            confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 } });
+
+            const cajaResumen = document.createElement('div');
+            cajaResumen.className = 'h5p-summary-box';
+            cajaResumen.innerHTML = `
+                <div class="summary-row">
+                    <span>Modelados geométricos fallidos (Etapa 1):</span>
+                    <span class="bold-val" style="color: ${fallosGeometria > 0 ? 'var(--danger)' : 'var(--success)'};">${fallosGeometria}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Corazones de estabilidad salvados:</span>
+                    <span class="bold-val">${vidas} / 3</span>
+                </div>
+                <div class="summary-row">
+                    <span>Aciertos conceptuales del Quiz (Etapa 2):</span>
+                    <span class="bold-val">${aciertosQuiz} / 3</span>
+                </div>
+                <div class="summary-row">
+                    <span>Aciertos analíticos en demostración (Etapa 3):</span>
+                    <span class="bold-val">${puntosAnaliticosN3} / 3</span>
+                </div>
+                <p style="text-align: center; font-weight: bold; margin-top: 20px; color: var(--azure-dark); font-size:16px;">
+                    ¡Módulo Informatizado de Sobreyectividad Terminado con Éxito!
+                </p>
+            `;
+
+            swal({
+                title: "Reporte Estadístico H5P",
+                content: cajaResumen,
+                icon: "success",
+                button: "Cerrar Actividad"
+            });
+        }
+    </script>
 </body>
-<!--  
-<body>
-  <div id="jxgbox"></div>
-  <div class="button-container">
-    <button id="validateButton">Validar Función Suprayectiva</button>
-    <button id="resetButton" class="reset-button">Reinicializar Escenario</button>
-  </div>
-</body>  -->
-
-
-
 
 </html>
