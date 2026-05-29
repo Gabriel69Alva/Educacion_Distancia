@@ -301,7 +301,7 @@
         }
 
         // ==========================================
-        // ETAPA 1: ALGORITMO DINÁMICO Y CONGELAMIENTO
+        // ETAPA 1: ALGORITMO DINÁMICO Y MEJORA VISUAL
         // ==========================================
         function ejecutarSimulacion() {
             if (!state.isActive) return;
@@ -332,15 +332,26 @@
 
             seq = board.create('curve', [[], []], { strokeColor: 'blue', strokeWidth: 3 });
             
-            txtLabelDynamic = board.create('text', [t * 0.05, w * 0.95, function () { 
+            // MEJORA: Letrero dinámico más grande y con contenedor de contraste blanco
+            txtLabelDynamic = board.create('text', [t * 0.05, w * 0.92, function () { 
                 let idx = seq.dataX.length - 1;
                 return idx >= 0 ? 'Día ' + seq.dataX[idx] + ': ' + seq.dataY[idx].toFixed(2) + ' kg' : ''; 
-            }], { strokeColor: 'blue', fontSize: 13, fontWeight: 'bold' });
+            }], { 
+                strokeColor: '#1e40af', 
+                fontSize: 16, 
+                fontWeight: 'bold',
+                cssStyle: 'background-color: rgba(255, 255, 255, 0.85); padding: 5px 10px; border-radius: 6px; border: 1px solid #bfdbfe; box-shadow: 0 2px 4px rgba(0,0,0,0.05);'
+            });
 
             asymptoteLine = board.create('functiongraph', [function (x) { return (x * 0) + (c / 40); }, 0, t], { strokeColor: 'red', dash: 2, strokeWidth: 2 });
             
+            // MEJORA: Letrero de la asíntota más grande, destacado y limpio
             txtAsymptoteLabel = board.create('text', [t * 0.5, (c / 40) + (w * 0.02), 'Asíntota de Equilibrio = ' + (c / 40).toFixed(1) + ' kg'], { 
-                strokeColor: 'red', fontSize: 12, fontWeight: 'bold', anchorX: 'middle' 
+                strokeColor: '#b91c1c', 
+                fontSize: 14, 
+                fontWeight: 'bold', 
+                anchorX: 'middle',
+                cssStyle: 'background-color: rgba(255, 255, 255, 0.85); padding: 4px 8px; border-radius: 6px; border: 1px solid #fecaca;'
             });
 
             ejecutarPasoAproximacion();
@@ -437,9 +448,6 @@
             document.getElementById("btn-summary-trigger").classList.add("hidden");
         }
 
-        // ==========================================
-        // REINICIO GLOBAL - CORREGIDO
-        // ==========================================
         function reiniciarMóduloGlobal() {
             clearTimeout(loopTimeout);
             
@@ -452,12 +460,10 @@
             metrics.scoreFormal = 0;
             metrics.startTime = Date.now();
 
-            // CORRECCIÓN: Vaciado absoluto de los campos de la Etapa 1
             document.getElementById("calorias").value = "";
             document.getElementById("peso").value = "";
             document.getElementById("dias").value = "";
 
-            // Habilitación física de inputs
             document.getElementById("calorias").disabled = false;
             document.getElementById("peso").disabled = false;
             document.getElementById("dias").disabled = false;
@@ -645,4 +651,3 @@
 </body>
 
 </html>
-
