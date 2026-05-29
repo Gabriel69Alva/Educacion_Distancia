@@ -150,17 +150,17 @@
                     
                     <div class="input-group">
                         <label for="calorias">Consumo diario (calorías):</label>
-                        <input id="calorias" type="number" placeholder="Ej. 2400" value="2500">
+                        <input id="calorias" type="number" placeholder="Ej. 2500">
                     </div>
                     
                     <div class="input-group">
                         <label for="peso">Peso inicial (kg):</label>
-                        <input id="peso" type="number" placeholder="Ej. 90" value="95">
+                        <input id="peso" type="number" placeholder="Ej. 95">
                     </div>
                     
                     <div class="input-group">
                         <label for="dias">Periodo de estudio (días):</label>
-                        <input id="dias" type="number" placeholder="Ej. 365" value="300">
+                        <input id="dias" type="number" placeholder="Ej. 300">
                     </div>
 
                     <button class="btn-action btn-primary" id="btn-calc" onclick="ejecutarSimulacion()">Calcular Peso</button>
@@ -264,7 +264,6 @@
             startTime: Date.now()
         };
 
-        // Variables operacionales del modelo de dieta
         var board;
         var seq, asymptoteLine;
         var txtLabelDynamic, txtAsymptoteLabel;
@@ -403,9 +402,6 @@
             }
         }
 
-        // ==========================================
-        // EXCLUSIVIDAD EN REINICIOS Y SANITIZACIÓN TOTAL (FIX)
-        // ==========================================
         function limpiarEstadosEtapa2() {
             currentQuizIndex = 1;
             metrics.aciertosQuiz = 0;
@@ -418,7 +414,7 @@
             document.querySelectorAll('.feedback-container').forEach(fb => {
                 fb.classList.add('hidden');
                 fb.innerHTML = "";
-                fb.classList.remove("wrong"); // Limpieza de clases erróneas residuales
+                fb.classList.remove("wrong");
             });
 
             document.getElementById("quiz-block-1").classList.remove("hidden");
@@ -435,12 +431,15 @@
                 select.selectedIndex = 0;
                 select.value = "";
                 select.disabled = false;
-                select.style.borderColor = "var(--border-color)"; // Restauración visual del contenedor
+                select.style.borderColor = "var(--border-color)";
             });
             document.getElementById("btn-eval-s3").classList.remove("hidden");
             document.getElementById("btn-summary-trigger").classList.add("hidden");
         }
 
+        // ==========================================
+        // REINICIO GLOBAL - CORREGIDO
+        // ==========================================
         function reiniciarMóduloGlobal() {
             clearTimeout(loopTimeout);
             
@@ -453,10 +452,12 @@
             metrics.scoreFormal = 0;
             metrics.startTime = Date.now();
 
-            document.getElementById("calorias").value = "2500";
-            document.getElementById("peso").value = "95";
-            document.getElementById("dias").value = "300";
+            // CORRECCIÓN: Vaciado absoluto de los campos de la Etapa 1
+            document.getElementById("calorias").value = "";
+            document.getElementById("peso").value = "";
+            document.getElementById("dias").value = "";
 
+            // Habilitación física de inputs
             document.getElementById("calorias").disabled = false;
             document.getElementById("peso").disabled = false;
             document.getElementById("dias").disabled = false;
@@ -469,7 +470,6 @@
             document.getElementById("state-msg").innerHTML = `<i class="fa-solid fa-calculator"></i> Introduce los parámetros biológicos iniciales y ejecuta la aproximación exponencial.`;
             document.getElementById("btn-next-s2").classList.add("hidden");
 
-            // Invocación explícita de sanitización estructurada de respuestas
             limpiarEstadosEtapa2();
             limpiarEstadosEtapa3();
 
