@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio de Cálculo: Teorema del Valor Intermedio</title>
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraph.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraphcore.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+        };
+    </script>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-body);
+            color: #334155;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: var(--bg-card);
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        h1 { color: var(--dark); font-weight: 700; text-align: center; margin-top: 0; font-size: 26px; }
+        h3 { font-size: 18px; font-weight: 600; color: var(--dark); margin-bottom: 15px; }
+        p { line-height: 1.6; font-size: 15px; }
+
+        .hidden { display: none !important; }
+
+        /* Status Bar y Vidas */
+        .status-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #eef2ff; padding: 15px 20px; border-radius: 12px;
+            border: 1px solid #c7d2fe; margin-bottom: 25px; font-weight: 600;
+            color: var(--primary);
+        }
+        .lives-box i { color: #10b981; font-size: 20px; margin-left: 5px; transition: all 0.3s; }
+        .lives-box i.lost { color: #cbd5e1; opacity: 0.4; transform: scale(0.8); }
+
+        /* Workspace Stage 1 */
+        .workspace { display: flex; gap: 25px; flex-wrap: wrap; }
+        .instructions-panel { width: 280px; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
+        .canvas-panel { flex: 1; min-width: 450px; }
+        .jxgbox-responsive { width: 100%; height: 500px; border-radius: 12px; border: 2px solid var(--border); background: #fff; }
+
+        ul.steps { padding-left: 20px; font-size: 14.5px; line-height: 1.6; margin-bottom: 20px; }
+        ul.steps li { margin-bottom: 8px; }
+
+        /* Botones */
+        .btn-action {
+            display: block; width: 100%; padding: 14px; border: none; border-radius: 8px;
+            font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s ease;
+            text-align: center; margin-top: 10px;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: #eef2ff; }
+        .btn-action:disabled { background: #cbd5e1; color: #94a3b8; cursor: not-allowed; border-color:#cbd5e1; }
+
+        /* Etapa 2: Quiz */
+        .quiz-card { background: #f8fafc; border: 1px solid var(--border); padding: 25px; border-radius: 12px; margin-bottom: 20px; }
+        .option-item {
+            display: flex; align-items: center; padding: 14px 15px; border: 1px solid var(--border);
+            margin-bottom: 10px; border-radius: 8px; cursor: pointer; background: #fff; transition: 0.2s;
+        }
+        .option-item:hover { border-color: var(--primary); background: #eef2ff; }
+        .option-item input { margin-right: 12px; transform: scale(1.2); cursor: pointer; }
+        .feedback { padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 14.5px; border-left: 5px solid var(--success); background: #ecfdf5; }
+        .feedback.wrong { border-left-color: var(--danger); background: #fef2f2; color: #991b1b; }
+
+        /* Etapa 3: Analítica */
+        .formal-box { background: #f8fafc; padding: 30px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; line-height: 2.2; font-size: 15.5px; text-align: justify; }
+        select.math-drop {
+            padding: 6px 12px; border: 2px solid var(--border); border-radius: 6px; font-size: 15px;
+            font-weight: 600; color: var(--primary); background: #fff; cursor: pointer; outline: none; margin: 0 5px;
+        }
+        select.math-drop:focus { border-color: var(--primary); }
+
+        /* Resumen Final */
+        .summary-wrapper { border: 2px solid var(--success); background: #ecfdf5; border-radius: 12px; padding: 25px; }
+        .stat-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #a7f3d0; font-size: 15px; font-weight: 500; }
+        .stat-row .val { font-weight: 700; color: var(--dark); }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div id="stage-1">
+            <h1>Actividad 1: Laboratorio de Gráficas</h1>
+            <p style="text-align: center; color: #64748b; margin-top:-5px;">Descubre qué condiciones son absolutamente necesarias para asegurar un cruce con el eje $X$.</p>
+
+            <div class="status-bar">
+                <div id="score-text">Configuraciones Exitosas: <span id="s1-score" style="font-size: 18px; font-weight: 700;">0</span> / 3</div>
+                <div class="lives-box" id="lives-container">
+                    <i class="fa-solid fa-clover" id="life1"></i>
+                    <i class="fa-solid fa-clover" id="life2"></i>
+                    <i class="fa-solid fa-clover" id="life3"></i>
+                </div>
+            </div>
+
+            <div class="workspace">
+                <div class="instructions-panel">
+                    <h3><i class="fa-solid fa-magnifying-glass"></i> Misión</h3>
+                    <ul class="steps">
+                        <li>Utiliza los puntos deslizables para manipular la curva.</li>
+                        <li>Tu objetivo es transformar el escenario hasta garantizar que el trazo tenga una intersección segura con la línea horizontal del centro ($y=0$).</li>
+                        <li>Al terminar de mover los puntos, presiona "Validar". Observa qué sucede si fallas, eso te dará pistas de las reglas matemáticas ocultas.</li>
+                    </ul>
+                    <button class="btn-action btn-primary" id="btn-validate" onclick="validarTVI()">Validar Función</button>
+                    <button class="btn-action btn-outline hidden" id="btn-reset-round" onclick="generarEscenarioAleatorio()">Siguiente Intento</button>
+                </div>
+
+                <div class="canvas-panel">
+                    <div id="jxgbox" class="jxgbox-responsive"></div>
+                </div>
+            </div>
+
+            <button class="btn-action btn-success hidden" id="btn-to-s2" onclick="irEtapa2()" style="max-width: 350px; margin: 25px auto 0;">Analizar Descubrimiento <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+        <div id="stage-2" class="hidden">
+            <h1>Etapa 2: Formalización del Descubrimiento</h1>
+            <p style="text-align: center; color: #64748b;">Las reglas que acabas de descubrir forman el Teorema del Valor Intermedio.</p>
+            
+            <h3 style="text-align: right; color: var(--primary);" id="quiz-counter">Pregunta 1 de 3</h3>
+
+            <div id="q1-block" class="quiz-card">
+                <h3 style="margin-top:0;">1. En la actividad anterior tuviste que unir dos pedazos separados de la gráfica. ¿Qué hipótesis matemática representa esta acción?</h3>
+                <label class="option-item"><input type="radio" name="q1" value="bad"> <span>A) La derivabilidad de la función.</span></label>
+                <label class="option-item"><input type="radio" name="q1" value="good"> <span>B) La continuidad de la función en todo el intervalo cerrado.</span></label>
+                <label class="option-item"><input type="radio" name="q1" value="bad"> <span>C) La simetría de la función.</span></label>
+                <div id="fb-q1" class="feedback hidden"></div>
+            </div>
+
+            <div id="q2-block" class="quiz-card hidden">
+                <h3 style="margin-top:0;">2. También tuviste que colocar los extremos en lados opuestos del eje central. Si $f(-3) = -4$ y $f(3) = 2$, y la función es continua, ¿qué podemos garantizar?</h3>
+                <label class="option-item"><input type="radio" name="q2" value="good"> <span>A) Que existe al menos un punto $c$ en el intervalo $(-3, 3)$ donde la función vale $0$.</span></label>
+                <label class="option-item"><input type="radio" name="q2" value="bad"> <span>B) Que la función cruza exactamente por el origen $(0,0)$.</span></label>
+                <label class="option-item"><input type="radio" name="q2" value="bad"> <span>C) Que la gráfica no tiene curvas y es una línea recta diagonal.</span></label>
+                <div id="fb-q2" class="feedback hidden"></div>
+            </div>
+
+            <div id="q3-block" class="quiz-card hidden">
+                <h3 style="margin-top:0;">3. El Teorema del Valor Intermedio no solo aplica para buscar ceros ($k=0$), sino para cualquier altura $k$. Si $f(a)$ y $f(b)$ son los extremos, ¿dónde debe estar la altura $k$?</h3>
+                <label class="option-item"><input type="radio" name="q3" value="bad"> <span>A) Debe ser igual al valor máximo de toda la función.</span></label>
+                <label class="option-item"><input type="radio" name="q3" value="bad"> <span>B) Debe estar por encima de $f(b)$.</span></label>
+                <label class="option-item"><input type="radio" name="q3" value="good"> <span>C) Debe ser un valor estrictamente entre $f(a)$ y $f(b)$.</span></label>
+                <div id="fb-q3" class="feedback hidden"></div>
+            </div>
+
+            <button class="btn-action btn-primary" id="btn-eval-quiz" onclick="evaluarPregunta()" style="max-width: 300px; margin: 0 auto;">Comprobar</button>
+            <button class="btn-action btn-outline hidden" id="btn-next-q" onclick="siguientePregunta()" style="max-width: 300px; margin: 0 auto;">Siguiente Pregunta</button>
+            <button class="btn-action btn-success hidden" id="btn-to-s3" onclick="irEtapa3()" style="max-width: 300px; margin: 0 auto;">Pasar a Etapa 3 <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+        <div id="stage-3" class="hidden">
+            <h1>Etapa 3: Aplicación Analítica</h1>
+            <p style="text-align: center; color: #64748b;">Completa la demostración formal para localizar la raíz de un polinomio usando tus conocimientos.</p>
+
+            <div class="formal-box">
+                Sea la función polinomial $f(x) = x^3 - x - 2$. Queremos demostrar que tiene al menos una raíz real en el intervalo $[1, 2]$. <br><br>
+                Primero, evaluamos la función en los extremos del intervalo:<br>
+                $f(1) = (1)^3 - 1 - 2 = -2$<br>
+                $f(2) = (2)^3 - 2 - 2 = 4$<br><br>
+                
+                Dado que la función es un polinomio, sabemos categóricamente que cumple la primera regla que descubriste; es decir, es 
+                <select id="drop-1" class="math-drop">
+                    <option value="">-- Selecciona --</option>
+                    <option value="discontinua">Discontinua</option>
+                    <option value="continua">Continua</option>
+                    <option value="lineal">Lineal</option>
+                </select> en todo su dominio.
+                Además, observamos que los signos en los extremos son opuestos, por lo que el valor $k=0$ está entre $f(1)$ y $f(2)$.<br><br>
+
+                Por lo tanto, según el Teorema del Valor Intermedio, podemos garantizar que existe al menos un número $c$ en el intervalo abierto 
+                <select id="drop-2" class="math-drop">
+                    <option value="">-- Selecciona --</option>
+                    <option value="v1">(-2, 4)</option>
+                    <option value="v2">(1, 2)</option>
+                    <option value="v3">(-3, 3)</option>
+                </select>
+                tal que 
+                <select id="drop-3" class="math-drop">
+                    <option value="">-- Selecciona --</option>
+                    <option value="v1">f(c) = 0</option>
+                    <option value="v2">f'(c) = 0</option>
+                    <option value="v3">f(c) = c</option>
+                </select>.
+            </div>
+
+            <button class="btn-action btn-primary" id="btn-eval-s3" onclick="evaluarEtapa3()" style="max-width: 300px; margin: 0 auto;">Validar Deducción</button>
+            <button class="btn-action btn-outline" onclick="reiniciarActividadCompleta()" style="max-width: 300px; margin: 15px auto 0;">Reiniciar Práctica Completa</button>
+        </div>
+
+    </div>
+
+    <script>
+        const jsConfetti = new JSConfetti();
+        
+        let state = {
+            vidas: 3,
+            funcionesCorrectas: 0,
+            quizIndex: 1,
+            erroresTotales: 0,
+            tiempoInicio: Date.now()
+        };
+
+        // Variables de JSXGraph
+        let board, curveLeft, curveRight;
+        let gLeft, gMid1, gMid2, gRight; // Gliders
+        let xAxisLine, rootPoints = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initBoard();
+        });
+
+        // ==========================================
+        // ETAPA 1: GRÁFICOS (DESCUBRIMIENTO)
+        // ==========================================
+        function initBoard() {
+            if (board) JXG.JSXGraph.freeBoard(board);
+
+            board = JXG.JSXGraph.initBoard('jxgbox', {
+                boundingbox: [-4, 5, 4, -5],
+                axis: true,
+                showCopyright: false,
+                pan: { enabled: false },
+                zoom: { enabled: false }
+            });
+
+            xAxisLine = board.create('line', [[0, 0], [1, 0]], { visible: false });
+
+            // Líneas verticales para confinar los puntos deslizables (evita que deje de ser función en X)
+            let l1 = board.create('line', [[-3, 0], [-3, 1]], { visible: false });
+            let l2 = board.create('line', [[0, 0], [0, 1]], { visible: false });
+            let l3 = board.create('line', [[0, 0], [0, 1]], { visible: false });
+            let l4 = board.create('line', [[3, 0], [3, 1]], { visible: false });
+
+            // Puntos de control visibles
+            gLeft = board.create('glider', [-3, 0, l1], { name: 'Extremo Izq', size: 5, color: '#4f46e5' });
+            gMid1 = board.create('glider', [0, 0, l2], { name: 'Punto', size: 5, color: '#ef4444' });
+            gMid2 = board.create('glider', [0, 0, l3], { name: 'Punto', size: 5, color: '#ef4444' });
+            gRight = board.create('glider', [3, 0, l4], { name: 'Extremo Der', size: 5, color: '#4f46e5' });
+
+            // Puntos invisibles para darle curvatura tipo Bezier sin usar controles extra complejos
+            let pCtrlL = board.create('point', [-1.5, 0], { visible: false });
+            let pCtrlR = board.create('point', [1.5, 0], { visible: false });
+
+            // Actualizamos los controles ocultos para que sigan el movimiento y curven la gráfica de forma amigable
+            board.on('update', () => {
+                pCtrlL.moveTo([-1.5, (gLeft.Y() + gMid1.Y()) / 2 + 1]); 
+                pCtrlR.moveTo([1.5, (gMid2.Y() + gRight.Y()) / 2 - 1]);
+
+                // Límite de la caja Y
+                [gLeft, gMid1, gMid2, gRight].forEach(pt => {
+                    if (pt.Y() > 4.5) pt.moveTo([pt.X(), 4.5]);
+                    if (pt.Y() < -4.5) pt.moveTo([pt.X(), -4.5]);
+                });
+            });
+
+            // Creamos dos curvas para simular la discontinuidad
+            curveLeft = board.create('curve', JXG.Math.Numerics.CatmullRomSpline([gLeft, pCtrlL, gMid1]), { strokeColor: '#0ea5e9', strokeWidth: 3 });
+            curveRight = board.create('curve', JXG.Math.Numerics.CatmullRomSpline([gMid2, pCtrlR, gRight]), { strokeColor: '#0ea5e9', strokeWidth: 3 });
+
+            generarEscenarioAleatorio();
+        }
+
+        function generarEscenarioAleatorio() {
+            // Genera configuraciones donde siempre hay algo mal para que el estudiante lo arregle
+            let saltoError = Math.random() > 0.5 ? 2.5 : -2.5; 
+            let signoMalo = Math.random() > 0.5 ? 1 : -1;
+
+            // Desconecta el centro intencionalmente
+            gMid1.moveTo([0, (Math.random() * 2) * signoMalo]);
+            gMid2.moveTo([0, gMid1.Y() + saltoError]);
+
+            // Coloca los extremos del mismo lado (mismo signo)
+            gLeft.moveTo([-3, signoMalo * (Math.random() * 2 + 1)]);
+            gRight.moveTo([3, signoMalo * (Math.random() * 2 + 1)]);
+
+            board.removeObject(rootPoints);
+            rootPoints = [];
+
+            [gLeft, gMid1, gMid2, gRight].forEach(pt => pt.setAttribute({ fixed: false }));
+
+            document.getElementById('btn-validate').disabled = false;
+            document.getElementById('btn-reset-round').classList.add('hidden');
+            board.update();
+        }
+
+        function validarTVI() {
+            // Evaluar las dos hipótesis
+            let diferenciaCentro = Math.abs(gMid1.Y() - gMid2.Y());
+            let esContinua = diferenciaCentro < 0.2; // Tolerancia visual para juntar los puntos
+            let signosOpuestos = (gLeft.Y() * gRight.Y()) < 0;
+
+            if (esContinua && signosOpuestos) {
+                // Junta los puntos perfectamente para que quede estético
+                gMid2.moveTo([0, gMid1.Y()]);
+                
+                state.funcionesCorrectas++;
+                document.getElementById('s1-score').innerText = state.funcionesCorrectas;
+
+                [gLeft, gMid1, gMid2, gRight].forEach(pt => pt.setAttribute({ fixed: true }));
+                document.getElementById('btn-validate').disabled = true;
+
+                if (state.funcionesCorrectas < 3) {
+                    swal("¡Descubrimiento Exitoso!", "Lograste unir la gráfica (continuidad) y pusiste extremos de signos opuestos. Esto fuerza matemáticamente el cruce.", "success");
+                    document.getElementById('btn-reset-round').classList.remove('hidden');
+                } else {
+                    swal("¡Reglas dominadas!", "Demostraste de manera práctica cómo funciona el Teorema del Valor Intermedio.", "success").then(() => {
+                        jsConfetti.addConfetti();
+                        document.getElementById('btn-to-s2').classList.remove('hidden');
+                    });
+                }
+            } else {
+                state.erroresTotales++;
+                restarVida();
+
+                // Sistema de pistas guiadas según el error del estudiante
+                if (!esContinua) {
+                    swal("Pista 1: El salto", "Observa el centro de la gráfica. Hay una ruptura. Si intentas dibujar esto en papel, tendrías que levantar el lápiz. ¿Qué debes hacer con esos dos puntos centrales rojos?", "warning");
+                } else if (!signosOpuestos) {
+                    swal("Pista 2: Las alturas", "Los puntos centrales ya están unidos, bien. Pero observa los extremos azules: ambos están del mismo lado de la línea horizontal del cero. ¿Podría la gráfica esquivar el cero? Intenta mover un extremo azul hacia el lado contrario.", "warning");
+                }
+            }
+        }
+
+        function restarVida() {
+            if (state.vidas > 0) {
+                document.getElementById(`life${state.vidas}`).classList.add('lost');
+                state.vidas--;
+            }
+            if (state.vidas === 0) {
+                document.getElementById('btn-validate').disabled = true;
+                swal("Se acabaron los intentos", "Debes volver a iniciar para aplicar los conceptos desde el principio.", "error").then(() => {
+                    reiniciarActividadCompleta();
+                });
+            }
+        }
+
+        // ==========================================
+        // ETAPA 2: CUESTIONARIO TEÓRICO
+        // ==========================================
+        const respuestasQ = { 1: "good", 2: "good", 3: "good" };
+        const feedbackText = {
+            1: "Exactamente. Unir los pedazos rotos de la gráfica representa la hipótesis de continuidad. Sin ella, la gráfica podría 'saltarse' el eje X sin tocarlo.",
+            2: "Correcto. El hecho de tener signos opuestos asegura que en algún momento, al conectar esos dos puntos de forma continua, el trazo tuvo que cruzar la altura cero.",
+            3: "¡Así es! Si no es un valor intermedio estrictamente encerrado entre las alturas de los extremos, la función no está obligada a cruzar por ahí."
+        };
+
+        function irEtapa2() {
+            document.getElementById('stage-1').classList.add('hidden');
+            document.getElementById('stage-2').classList.remove('hidden');
+            window.MathJax.typesetPromise();
+        }
+
+        function evaluarPregunta() {
+            let opciones = document.getElementsByName(`q${state.quizIndex}`);
+            let seleccion = null;
+            for (let opt of opciones) { if (opt.checked) seleccion = opt; }
+
+            if (!seleccion) {
+                swal("Selecciona una opción", "Debes elegir una respuesta antes de comprobar.", "info");
+                return;
+            }
+
+            opciones.forEach(opt => opt.disabled = true);
+            document.getElementById('btn-eval-quiz').classList.add('hidden');
+            
+            let fbDiv = document.getElementById(`fb-q${state.quizIndex}`);
+            fbDiv.classList.remove('hidden');
+
+            if (seleccion.value === "good") {
+                fbDiv.innerHTML = `<strong>¡Bien hecho!</strong> ${feedbackText[state.quizIndex]}`;
+                fbDiv.classList.remove("wrong");
+            } else {
+                state.erroresTotales++;
+                fbDiv.innerHTML = `<strong>Vuelve a pensarlo.</strong> ${feedbackText[state.quizIndex]}`;
+                fbDiv.classList.add("wrong");
+            }
+
+            if (state.quizIndex < 3) {
+                document.getElementById('btn-next-q').classList.remove('hidden');
+            } else {
+                document.getElementById('btn-to-s3').classList.remove('hidden');
+            }
+            window.MathJax.typesetPromise();
+        }
+
+        function siguientePregunta() {
+            document.getElementById(`q${state.quizIndex}-block`).classList.add('hidden');
+            state.quizIndex++;
+            document.getElementById(`q${state.quizIndex}-block`).classList.remove('hidden');
+            document.getElementById('quiz-counter').innerText = `Pregunta ${state.quizIndex} de 3`;
+            document.getElementById('btn-next-q').classList.add('hidden');
+            document.getElementById('btn-eval-quiz').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // ETAPA 3: DEDUCCIÓN FORMAL
+        // ==========================================
+        function irEtapa3() {
+            document.getElementById('stage-2').classList.add('hidden');
+            document.getElementById('stage-3').classList.remove('hidden');
+            window.MathJax.typesetPromise();
+        }
+
+        function evaluarEtapa3() {
+            const d1 = document.getElementById("drop-1");
+            const d2 = document.getElementById("drop-2");
+            const d3 = document.getElementById("drop-3");
+
+            if (!d1.value || !d2.value || !d3.value) {
+                swal("Aviso", "Selecciona todos los valores de las listas desplegables.", "warning");
+                return;
+            }
+
+            let aciertos = 0;
+            const check = (el, correct) => {
+                if (el.value === correct) { el.style.borderColor = "var(--success)"; aciertos++; } 
+                else { el.style.borderColor = "var(--danger)"; state.erroresTotales++; }
+            };
+
+            check(d1, "continua");
+            check(d2, "v2"); // (1, 2)
+            check(d3, "v1"); // f(c) = 0
+
+            d1.disabled = true; d2.disabled = true; d3.disabled = true;
+            document.getElementById('btn-eval-s3').classList.add('hidden');
+
+            if (aciertos === 3) {
+                jsConfetti.addConfetti();
+                swal("¡Demostración Válida!", "Has formalizado correctamente la existencia de la raíz conectando tus descubrimientos gráficos con la teoría.", "success").then(() => {
+                    mostrarResumenFinal();
+                });
+            } else {
+                swal("Revisa la demostración", "Hay inconsistencias lógicas en tu deducción formal (marcadas en rojo).", "error").then(() => {
+                    mostrarResumenFinal();
+                });
+            }
+        }
+
+        function mostrarResumenFinal() {
+            const tiempoTotal = Math.round((Date.now() - state.tiempoInicio) / 1000);
+            
+            const resumenHTML = document.createElement("div");
+            resumenHTML.className = "summary-wrapper";
+            resumenHTML.innerHTML = `
+                <div class="stat-row"><span>Tréboles Restantes:</span> <span class="val" style="color: ${state.vidas>0?'var(--success)':'var(--danger)'}">${state.vidas} / 3</span></div>
+                <div class="stat-row"><span>Escenarios Superados:</span> <span class="val">${state.funcionesCorrectas} / 3</span></div>
+                <div class="stat-row"><span>Total de Tropiezos (Pistas usadas):</span> <span class="val" style="color: ${state.erroresTotales>0?'var(--warning)':'var(--success)'}">${state.erroresTotales}</span></div>
+                <div class="stat-row" style="border:none;"><span>Tiempo de inmersión:</span> <span class="val">${tiempoTotal} seg</span></div>
+            `;
+
+            swal({
+                title: "Reporte Final de Misión",
+                content: resumenHTML,
+                icon: "info",
+                button: "Cerrar"
+            });
+        }
+
+        // ==========================================
+        // REINICIO GLOBAL DEL MÓDULO
+        // ==========================================
+        function reiniciarActividadCompleta() {
+            state.vidas = 3;
+            state.funcionesCorrectas = 0;
+            state.quizIndex = 1;
+            state.erroresTotales = 0;
+            state.tiempoInicio = Date.now();
+
+            // Etapa 1 UI
+            document.getElementById('s1-score').innerText = "0";
+            for(let i=1; i<=3; i++) document.getElementById(`life${i}`).classList.remove('lost');
+            document.getElementById('btn-to-s2').classList.add('hidden');
+            document.getElementById('btn-reset-round').classList.add('hidden');
+            document.getElementById('btn-validate').disabled = false;
+            initBoard();
+
+            // Etapa 2 UI
+            document.getElementById('quiz-counter').innerText = "Pregunta 1 de 3";
+            for(let i=1; i<=3; i++) {
+                document.getElementById(`q${i}-block`).classList.toggle('hidden', i!==1);
+                let fb = document.getElementById(`fb-q${i}`);
+                fb.classList.add('hidden'); fb.classList.remove('wrong'); fb.innerHTML = "";
+                document.getElementsByName(`q${i}`).forEach(opt => { opt.checked = false; opt.disabled = false; });
+            }
+            document.getElementById('btn-eval-quiz').classList.remove('hidden');
+            document.getElementById('btn-next-q').classList.add('hidden');
+            document.getElementById('btn-to-s3').classList.add('hidden');
+
+            // Etapa 3 UI
+            ['drop-1', 'drop-2', 'drop-3'].forEach(id => {
+                let el = document.getElementById(id);
+                el.value = ""; el.disabled = false; el.style.borderColor = "var(--border)";
+            });
+            document.getElementById('btn-eval-s3').classList.remove('hidden');
+
+            // Toggle Etapas
+            document.getElementById('stage-1').classList.remove('hidden');
+            document.getElementById('stage-2').classList.add('hidden');
+            document.getElementById('stage-3').classList.add('hidden');
+            
+            window.MathJax.typesetPromise();
+        }
+    </script>
+</body>
+</html>
