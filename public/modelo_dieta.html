@@ -5,52 +5,646 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modelo de consumo de calorías</title>
+    <title>Laboratorio de Biomatemáticas: Modelo Dinámico de Peso</title>
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
-    <link rel="stylesheet" href="./css/modelo_dieta.css">
-    <script type="text/javascript" charset="UTF-8"
-    src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+    <script type="text/javascript" charset="UTF-8" src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.18/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+        };
+    </script>
+
+    <style>
+        :root {
+            --primary: #0f172a;
+            --primary-hover: #1e293b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --azure-dark: #0369a1;
+            --azure-accent: #0ea5e9;
+            --azure-bg: #f0f9ff;
+            --border-color: #cbd5e1;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #e2e8f0;
+            color: #334155;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1050px;
+            width: 100%;
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        }
+
+        h1 { color: var(--primary); font-weight: 700; text-align: center; margin-bottom: 5px; font-size: 26px; }
+        h3 { font-size: 17px; font-weight: 600; margin-bottom: 12px; color: #1e293b; }
+        p { line-height: 1.6; font-size: 15px; }
+
+        .hidden { display: none !important; }
+
+        /* Barra de Estado y Vidas */
+        .status-bar {
+            display: flex; justify-content: space-between; align-items: center; 
+            background: var(--azure-bg); padding: 14px 20px; border-radius: 10px; 
+            font-weight: 600; color: var(--azure-dark); margin-bottom: 20px; 
+            border: 1px solid #bae6fd; font-size: 14.5px;
+        }
+        .badges-box i { color: #f43f5e; font-size: 18px; margin-left: 4px; transition: all 0.3s; }
+        .badges-box i.lost { color: #cbd5e1; opacity: 0.3; transform: scale(0.85); }
+
+        /* Estructura Bifurcada (Workspace) */
+        .workspace { display: flex; gap: 25px; margin-top: 15px; flex-wrap: wrap; }
+        .controls-panel { width: 280px; background: var(--bg-light); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .canvas-panel { flex: 1; min-width: 450px; }
+        
+        .jxgbox-responsive {
+            width: 100%; height: 480px; border-radius: 12px; 
+            border: 2px solid var(--border-color); background: #ffffff; overflow: hidden;
+        }
+
+        /* Elementos de Formulario Estilizados */
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13.5px; color: #475569; }
+        .input-group input {
+            width: 100%; padding: 10px; border: 2px solid var(--border-color); border-radius: 8px;
+            font-size: 14px; font-weight: bold; box-sizing: border-box; transition: all 0.2s; background: #fff;
+        }
+        .input-group input:focus { border-color: var(--azure-accent); outline: none; background: #fff; }
+        .input-group input:disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
+
+        /* Botonera */
+        .btn-action {
+            display: block; width: 100%; padding: 12px; border: none; border-radius: 8px;
+            font-size: 14.5px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+            text-align: center; margin-top: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover:not(:disabled) { background-color: var(--primary-hover); }
+        .btn-primary:disabled { background-color: #cbd5e1; color: #94a3b8; cursor: not-allowed; box-shadow: none; }
+        .btn-danger { background-color: var(--danger); color: white; }
+        .btn-danger:hover { background-color: #dc2626; }
+        .btn-success { background-color: var(--success); color: white; }
+        .btn-success:hover { background-color: #059669; }
+
+        /* Componentes H5P (Etapa 2) */
+        .progress-holder { width: 100%; background: #e2e8f0; border-radius: 8px; height: 6px; margin: 15px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--azure-accent); width: 50%; transition: 0.3s; }
+        .quiz-card { background: var(--bg-light); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px; margin-bottom: 15px; }
+        .option-item { display: flex; align-items: center; padding: 12px 15px; border: 1px solid var(--border-color); margin-bottom: 8px; border-radius: 8px; cursor: pointer; background: #fff; transition: 0.2s; }
+        .option-item:hover { border-color: var(--azure-accent); background: #f0fdf4; }
+        .option-item input { margin-right: 12px; transform: scale(1.1); }
+        .feedback-container { padding: 15px; border-radius: 8px; margin-top: 15px; background: #f1f5f9; border-left: 6px solid var(--azure-accent); font-size: 14.5px; line-height: 1.5; }
+        .feedback-container.wrong { border-left-color: var(--danger); background: #fef2f2; color: #991b1b; }
+
+        /* Capa Deductiva (Etapa 3) */
+        .formal-box { background: var(--bg-light); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; }
+        .text-line { margin-bottom: 22px; font-size: 15.5px; line-height: 2.4; text-align: justify; }
+        select.dropdown-math { margin: 0 8px; padding: 6px 10px; border: 2px solid var(--border-color); border-radius: 6px; font-size: 14px; font-weight: bold; color: var(--azure-dark); background: #ffffff; outline: none; cursor: pointer; display: inline-block; vertical-align: middle; }
+        select.dropdown-math:focus { border-color: var(--azure-accent); }
+        .math-gap { padding: 0 5px; display: inline-block; }
+
+        /* Bloque Resumen Final */
+        .summary-wrapper { border: 2px solid var(--azure-accent); background: #f0f9ff; border-radius: 12px; padding: 25px; margin-top: 15px; }
+        .stat-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px dashed #cbd5e1; font-size: 14.5px; font-weight: 500; }
+        .stat-row span.val-highlight { font-weight: 700; color: var(--azure-dark); }
+    </style>
 </head>
 
 <body>
-    <style>
 
-    </style>
-    <h1>Calcula tu peso en el tiempo</h1>
+    <div class="container">
 
-    <div class="wrapper">
-        <div class="one">
+        <div id="stage-1-block">
+            <h1>Etapa 1: Análisis Asintótico del Peso en el Tiempo</h1>
+            <p style="text-align: center; color: #64748b; margin-top: 0;">Explora de manera autónoma cómo las calorías consumidas determinan el límite de equilibrio de la masa corporal.</p>
 
-            <label for="calorias">Calorias</label>
-            <input id="calorias" type="text">
-            <br>
-            <label for="peso">Peso</label>
-            <input id="peso" type="text">
-            <br>
-            <label for="dias">Dias</label>
-            <input id="dias" type="text">
-            <br>
+            <div class="status-bar">
+                <div id="state-msg"><i class="fa-solid fa-calculator"></i> Introduce los parámetros biológicos iniciales y ejecuta la aproximación exponencial.</div>
+                <div class="badges-box">
+                    Salud Metabólica: 
+                    <i class="fa-solid fa-heart" id="heart1"></i>
+                    <i class="fa-solid fa-heart" id="heart2"></i>
+                    <i class="fa-solid fa-heart" id="heart3"></i>
+                </div>
+            </div>
 
-            <br>
-            <button onclick="onCalcular()">Calcula tu peso</button>
+            <div class="workspace">
+                <div class="controls-panel">
+                    <h3><i class="fa-solid fa-sliders"></i> Parámetros</h3>
+                    
+                    <div class="input-group">
+                        <label for="calorias">Consumo diario (calorías):</label>
+                        <input id="calorias" type="number" placeholder="Ej. 2400" value="2500">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="peso">Peso inicial (kg):</label>
+                        <input id="peso" type="number" placeholder="Ej. 90" value="95">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="dias">Periodo de estudio (días):</label>
+                        <input id="dias" type="number" placeholder="Ej. 365" value="300">
+                    </div>
 
-            <br>
-            <br>
-            <a class="modern-button modern-button:hover modern-button-a" href="./modelo_dieta.html"><span>Reinicio</span> </a>
-        
+                    <button class="btn-action btn-primary" id="btn-calc" onclick="ejecutarSimulacion()">Calcular Peso</button>
+                    <button class="btn-action btn-danger" onclick="reiniciarMóduloGlobal()">Reiniciar Actividad</button>
+                </div>
 
+                <div class="canvas-panel">
+                    <div class="jxgbox-responsive" id="box1"></div>
+                </div>
+            </div>
+
+            <button class="btn-action btn-success hidden" id="btn-next-s2" onclick="irAEtapa2()" style="max-width: 350px; margin: 25px auto 0 auto;">Avanzar a la Etapa 2 <i class="fa-solid fa-circle-arrow-right"></i></button>
         </div>
-        <div class="two">
-            <div id="box1" class="jxgbox" style="width:1100px; height:800px;"></div>
+
+        <div id="stage-2-block" class="hidden">
+            <h1>Etapa 2: Estabilidad y Comportamiento de Soluciones</h1>
+            <p style="text-align: center; color: #64748b;">Examina las propiedades de convergencia de la ecuación en diferencias finitas subyacente.</p>
+
+            <div class="progress-holder"><div class="progress-bar" id="h5p-progress"></div></div>
+            <p id="h5p-counter" style="text-align: right; font-weight: 600; color: var(--azure-dark); margin-top: 0;">Pregunta 1 de 2</p>
+
+            <div id="quiz-block-1" class="quiz-card">
+                <h3>1. Si el peso inicial de un paciente es exactamente igual a $\frac{C}{40}$ kg, ¿qué comportamiento registrará la curva de peso a lo largo de los días?</h3>
+                <label class="option-item"><input type="radio" name="q1" value="incorrecto"> <span>A) Decrecerá de manera exponencial debido a la tasa metabólica constante de $-0.0052$.</span></label>
+                <label class="option-item"><input type="radio" name="q1" value="correcto"> <span>B) Permanecerá estacionaria (constante), dado que el sistema nace en su propio punto de equilibrio asintótico.</span></label>
+                <label class="option-item"><input type="radio" name="q1" value="incorrecto"> <span>C) Oscilará periódicamente de forma amortiguada alrededor del plano coordenado.</span></label>
+                <div id="fb-q1" class="feedback-container hidden"></div>
+            </div>
+
+            <div id="quiz-block-2" class="quiz-card hidden">
+                <h3>2. ¿Cuál es el significado matemático y biológico del término $e^{-0.0052 \cdot n}$ conforme el número de días $n$ tiende a infinito?</h3>
+                <label class="option-item"><input type="radio" name="q2" value="incorrecto"> <span>A) Provoca que el peso tienda de forma indefinida a cero kg independientemente de la ingesta de calorías.</span></label>
+                <label class="option-item"><input type="radio" name="q2" value="incorrecto"> <span>B) Genera una divergencia parabólica que invalida el balance energético del modelo.</span></label>
+                <label class="option-item"><input type="radio" name="q2" value="correcto"> <span>C) Tiende a cero, anulando la desviación del peso inicial y permitiendo que la masa corporal converja al límite restrictivo.</span></label>
+                <div id="fb-q2" class="feedback-container hidden"></div>
+            </div>
+
+            <button class="btn-action btn-primary" id="btn-submit-quiz" onclick="comprobarRespuestaH5P()" style="max-width: 320px; margin: 0 auto;">Comprobar Opción</button>
+            <button class="btn-action btn-success hidden" id="btn-forward-quiz" onclick="avanzarCuestionarioH5P()" style="max-width: 320px; margin: 0 auto;">Siguiente Pregunta</button>
+        </div>
+
+        <div id="stage-3-block" class="hidden">
+            <h1>Etapa 3: Modelado Estructural y Límites de Control</h1>
+            <p style="text-align: center; color: #64748b;">Completa las sentencias formales del modelo bio-matemático de la dieta.</p>
+
+            <div class="formal-box">
+                <div class="text-line">
+                    Consideremos la sucesión del peso diario definida analíticamente por la ecuación continua 
+                    <span class="math-gap">$W(n) = \frac{C}{40} + \left(W_0 - \frac{C}{40}\right) e^{-0.0052 \cdot n}$</span>. Al aplicar el operador de límite al infinito sobre la variable temporal de los días, deducimos que 
+                    <span class="math-gap">$\lim_{n \to \infty} e^{-0.0052 \cdot n} =$</span> 
+                    <select id="drop-1" class="dropdown-math">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v1">1</option>
+                        <option value="v2">0</option>
+                        <option value="v3">\infty</option>
+                    </select>.
+                </div>
+                <div class="text-line">
+                    Por consiguiente, el comportamiento a largo plazo de la masa corporal resulta ser totalmente independiente de la condición del peso inicial <span class="math-gap">$W_0$</span>, estableciendo que 
+                    <span class="math-gap">$\lim_{n \to \infty} W(n) =$</span>
+                    <select id="drop-2" class="dropdown-math">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v1">C / 40</option>
+                        <option value="v2">W_0</option>
+                        <option value="v3">0</option>
+                    </select>.
+                </div>
+                <div class="text-line">
+                    Si un individuo consume de forma crónica un valor de calorías tal que su peso de equilibrio teórico se sitúe por debajo de su peso actual, la función exponencial modelará un comportamiento estrictamente 
+                    <select id="drop-3" class="dropdown-math">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v1">Creciente</option>
+                        <option value="v2">Decreciente</option>
+                        <option value="v3">Asintótico Vertical</option>
+                    </select>
+                    &nbsp; hacia la línea de saturación metabólica.
+                </div>
+            </div>
+
+            <button class="btn-action btn-primary" id="btn-eval-s3" onclick="validarEtapa3Deduccion()" style="max-width: 320px; margin: 0 auto;">Validar Solución Analítica</button>
+            <button class="btn-action btn-success hidden" id="btn-summary-trigger" onclick="desplegarPanelFinalMetabolismo()" style="max-width: 350px; margin: 15px auto 0 auto;">Obtener Reporte de Competencias <i class="fa-solid fa-graduation-cap"></i></button>
         </div>
 
     </div>
 
-    <script src="./js/dieta.js"> </script> </script>
+    <script>
+        // ==========================================
+        // VARIABLES DE ESTADO Y TELEMETRÍA DE RED
+        // ==========================================
+        let state = {
+            stamina: 3,
+            isActive: true,
+            runningAnimation: null
+        };
 
+        let metrics = {
+            intentosSimulacion: 0,
+            fallasConceptuales: 0,
+            aciertosQuiz: 0,
+            scoreFormal: 0,
+            startTime: Date.now()
+        };
 
+        // Variables operacionales del modelo de dieta
+        var board;
+        var seq, asymptoteLine;
+        var txtLabelDynamic, txtAsymptoteLabel;
+        var t, n, c, w;
+        var loopTimeout;
+
+        let currentQuizIndex = 1;
+        const totalQuizItems = 2;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            construirTableroLimpio(95, 300);
+        });
+
+        function construirTableroLimpio(pesoEstimado, diasEstimados) {
+            // Liberar memoria del lienzo si ya existía una instancia activa
+            if (board) {
+                JXG.JSXGraph.freeBoard(board);
+            }
+
+            let marginY = parseInt(pesoEstimado) || 80;
+            let maxX = parseInt(diasEstimados) || 300;
+
+            board = JXG.JSXGraph.initBoard('box1', {
+                boundingbox: [-0.1 * maxX, marginY + 40, maxX * 1.1, -15],
+                axis: true,
+                showCopyright: false,
+                pan: { enabled: false },
+                zoom: { enabled: false }
+            });
+        }
+
+        function refreshMathJaxLayout() {
+            if (window.MathJax && window.MathJax.typeset) {
+                window.MathJax.typeset();
+            }
+        }
+
+        // ==========================================
+        // ETAPA 1: ALGORITMO DINÁMICO Y CONGELAMIENTO
+        // ==========================================
+        function ejecutarSimulacion() {
+            if (!state.isActive) return;
+
+            const inputCalorias = document.getElementById("calorias");
+            const inputPeso = document.getElementById("peso");
+            const inputDias = document.getElementById("dias");
+
+            c = parseFloat(inputCalorias.value);
+            w = parseFloat(inputPeso.value);
+            t = parseInt(inputDias.value);
+
+            // Validaciones de integridad matemática
+            if (isNaN(c) || isNaN(w) || isNaN(t) || c <= 0 || w <= 0 || t <= 0) {
+                Swal.fire({
+                    title: "Valores Incompletos",
+                    text: "Por favor define magnitudes numéricas positivas válidas para inicializar el metabolismo.",
+                    icon: "warning",
+                    confirmButtonColor: "var(--warning)"
+                });
+                return;
+            }
+
+            metrics.intentosSimulacion++;
+            clearTimeout(loopTimeout);
+            n = 0;
+
+            // Reconfiguración adaptativa del sistema de ejes cartesianos
+            construirTableroLimpio(w > (c / 40) ? w : (c / 40), t);
+
+            // Instanciación de curvas asintóticas y de trayectorias
+            seq = board.create('curve', [[], []], { strokeColor: 'blue', strokeWidth: 3 });
+            
+            txtLabelDynamic = board.create('text', [t * 0.05, w * 0.95, function () { 
+                let idx = seq.dataX.length - 1;
+                return idx >= 0 ? 'Día ' + seq.dataX[idx] + ': ' + seq.dataY[idx].toFixed(2) + ' kg' : ''; 
+            }], { strokeColor: 'blue', fontSize: 13, fontWeight: 'bold' });
+
+            asymptoteLine = board.create('functiongraph', [function (x) { return (x * 0) + (c / 40); }, 0, t], { strokeColor: 'red', dash: 2, strokeWidth: 2 });
+            
+            txtAsymptoteLabel = board.create('text', [t * 0.5, (c / 40) + (w * 0.02), 'Asíntota de Equilibrio = ' + (c / 40).toFixed(1) + ' kg'], { 
+                strokeColor: 'red', fontSize: 12, fontWeight: 'bold', anchorX: 'middle' 
+            });
+
+            ejecutarPasoAproximacion();
+        }
+
+        function ejecutarPasoAproximacion() {
+            // Ecuación constitutiva: W(n) = (C/40) + (W0 - C/40)*e^(-0.0052*n)
+            var imagenPeso = ((c / 40) + ((w - (c / 40)) * (Math.exp(-0.0052 * n))));
+            
+            seq.dataX.push(n);
+            seq.dataY.push(imagenPeso);
+            n++;
+
+            board.update();
+
+            if (n <= t) {
+                loopTimeout = setTimeout(ejecutarPasoAproximacion, 30);
+            } else {
+                congelarMóduloParaReflexion();
+            }
+        }
+
+        function congelarMóduloParaReflexion() {
+            // Congelar controles físicos de entrada para inducir la observación analítica
+            document.getElementById("calorias").disabled = true;
+            document.getElementById("peso").disabled = true;
+            document.getElementById("dias").disabled = true;
+            document.getElementById("btn-calc").disabled = true;
+
+            document.getElementById("state-msg").innerHTML = `<i class="fa-solid fa-snowflake" style="color: #38bdf8;"></i> Escenario Congelado: Evalúa la convergencia exponencial antes de avanzar.`;
+            document.getElementById("btn-next-s2").classList.remove("hidden");
+
+            Swal.fire({
+                title: "Simulación Completada",
+                text: "El escenario se ha congelado para tu reflexión. Observa cómo, sin importar la distancia inicial, la curva es atraída de forma asintótica hacia la línea roja determinada por tus calorías consumidas.",
+                icon: "info",
+                confirmButtonColor: "var(--azure-dark)"
+            });
+        }
+
+        // ==========================================
+        // GESTIÓN DE GAMIFICACIÓN (SISTEMA DE VIDAS)
+        // ==========================================
+        function disminuirVidaMetabolica() {
+            if (state.stamina > 0) {
+                document.getElementById(`heart${state.stamina}`).classList.add('lost');
+                state.stamina--;
+            }
+
+            if (state.stamina === 0) {
+                state.isActive = false;
+                document.getElementById("btn-calc").disabled = true;
+                document.getElementById("state-msg").innerHTML = `<i class="fa-solid fa-heart-crack" style="color: var(--danger);"></i> Reserva energética agotada. Reajusta el laboratorio.`;
+                
+                Swal.fire({
+                    title: "Insuficiencia Metabólica",
+                    text: "Has agotado tus créditos de salud metabólica. Revisa los principios asintóticos y reinicia el laboratorio.",
+                    icon: "error",
+                    confirmButtonColor: "var(--danger)"
+                });
+            }
+        }
+
+        // ==========================================
+        // EXCLUSIVIDAD EN REINICIOS Y LIMPIEZA SPA
+        // ==========================================
+        function limpiarEstadosEtapa2() {
+            currentQuizIndex = 1;
+            metrics.aciertosQuiz = 0;
+
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+                radio.disabled = false;
+            });
+
+            document.querySelectorAll('.feedback-container').forEach(fb => {
+                fb.classList.add('hidden');
+                fb.innerHTML = "";
+            });
+
+            document.getElementById("quiz-block-1").classList.remove("hidden");
+            document.getElementById("quiz-block-2").classList.add("hidden");
+            document.getElementById("h5p-progress").style.width = "50%";
+            document.getElementById("h5p-counter").innerText = `Pregunta 1 de 2`;
+            document.getElementById("btn-submit-quiz").classList.remove("hidden");
+            document.getElementById("btn-forward-quiz").classList.add("hidden");
+        }
+
+        function limpiarEstadosEtapa3() {
+            metrics.scoreFormal = 0;
+            document.querySelectorAll("#stage-3-block select").forEach(select => {
+                select.selectedIndex = 0;
+                select.value = "";
+                select.disabled = false;
+                select.style.borderColor = "var(--border-color)";
+            });
+            document.getElementById("btn-eval-s3").classList.remove("hidden");
+            document.getElementById("btn-summary-trigger").classList.add("hidden");
+        }
+
+        function reiniciarMóduloGlobal() {
+            clearTimeout(loopTimeout);
+            
+            // Reestablecer variables de gamificación y entorno activo
+            state.stamina = 3;
+            state.isActive = true;
+
+            // Limpieza física de inputs de texto nativos
+            document.getElementById("calorias").value = "2500";
+            document.getElementById("peso").value = "95";
+            document.getElementById("dias").value = "300";
+
+            document.getElementById("calorias").disabled = false;
+            document.getElementById("peso").disabled = false;
+            document.getElementById("dias").disabled = false;
+            document.getElementById("btn-calc").disabled = false;
+
+            // Resetear íconos de vidas/corazones
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`heart${i}`).classList.remove('lost');
+            }
+
+            document.getElementById("state-msg").innerHTML = `<i class="fa-solid fa-calculator"></i> Introduce los parámetros biológicos iniciales y ejecuta la aproximación exponencial.`;
+            document.getElementById("btn-next-s2").classList.add("hidden");
+
+            // Limpieza modular de capas hijas
+            limpiarEstadosEtapa2();
+            limpiarEstadosEtapa3();
+
+            // Ocultamiento estructural de bloques SPA
+            document.getElementById("stage-2-block").classList.add("hidden");
+            document.getElementById("stage-3-block").classList.add("hidden");
+            document.getElementById("stage-1-block").classList.remove("hidden");
+
+            construirTableroLimpio(95, 300);
+            refreshMathJaxLayout();
+        }
+
+        // ==========================================
+        // ETAPA 2: COMPROBACIONES H5P CONCEPTUALES
+        // ==========================================
+        const feedbacksRespuestas = {
+            1: "Si la condición inicial coincide con el cociente constante, la diferencia de tasas se desvanece instantáneamente ($W_0 - C/40 = 0$), provocando que la derivada temporal sea nula y la masa se mantenga inalterada.",
+            2: "Como la base del exponente decrece de forma infinitesimal ($e^{-0.0052} < 1$), el factor temporal tiende asintóticamente a $0$ en horizontes amplios, eliminando cualquier perturbación inicial del peso de partida."
+        };
+
+        function irAEtapa2() {
+            limpiarEstadosEtapa2();
+            document.getElementById("stage-1-block").classList.add("hidden");
+            document.getElementById("stage-2-block").classList.remove("hidden");
+            refreshMathJaxLayout();
+        }
+
+        function comprobarRespuestaH5P() {
+            const selectedOpt = document.querySelector(`input[name="q${currentQuizIndex}"]:checked`);
+            if (!selectedOpt) {
+                Swal.fire({ title: "Acción Requerida", text: "Es indispensable proponer una alternativa conceptual antes de verificar.", icon: "warning" });
+                return;
+            }
+
+            const targetFeedbackBox = document.getElementById(`fb-q${currentQuizIndex}`);
+            targetFeedbackBox.classList.remove("hidden");
+            document.querySelectorAll(`input[name="q${currentQuizIndex}"]`).forEach(inp => inp.disabled = true);
+
+            if (selectedOpt.value === "correcto") {
+                targetFeedbackBox.innerHTML = `<strong>¡Correcto!</strong> ${feedbacksRespuestas[currentQuizIndex]}`;
+                targetFeedbackBox.classList.remove("wrong");
+                metrics.aciertosQuiz++;
+            } else {
+                targetFeedbackBox.innerHTML = `<strong>Incompleto.</strong> ${feedbacksRespuestas[currentQuizIndex]}`;
+                targetFeedbackBox.classList.add("wrong");
+                metrics.fallasConceptuales++;
+                disminuirVidaMetabolica();
+            }
+
+            document.getElementById("btn-submit-quiz").classList.add("hidden");
+            document.getElementById("btn-forward-quiz").classList.remove("hidden");
+
+            if (currentQuizIndex === totalQuizItems) {
+                document.getElementById("btn-forward-quiz").innerHTML = `Pasar a la Etapa 3 <i class="fa-solid fa-circle-arrow-right"></i>`;
+            }
+
+            refreshMathJaxLayout();
+        }
+
+        function avanzarCuestionarioH5P() {
+            if (!state.isActive) {
+                reiniciarMóduloGlobal();
+                return;
+            }
+
+            if (currentQuizIndex === totalQuizItems) {
+                irAEtapa3();
+                return;
+            }
+
+            document.getElementById(`quiz-block-${currentQuizIndex}`).classList.add("hidden");
+            currentQuizIndex++;
+            document.getElementById(`quiz-block-${currentQuizIndex}`).classList.remove("hidden");
+
+            document.getElementById("h5p-progress").style.width = (currentQuizIndex / totalQuizItems) * 100 + "%";
+            document.getElementById("h5p-counter").innerText = `Pregunta ${currentQuizIndex} de ${totalQuizItems}`;
+
+            document.getElementById("btn-forward-quiz").classList.add("hidden");
+            document.getElementById("btn-submit-quiz").classList.remove("hidden");
+        }
+
+        // ==========================================
+        // ETAPA 3: CONVERGENCIA FORMAL DEDUCTIVA
+        // ==========================================
+        function irAEtapa3() {
+            limpiarEstadosEtapa3();
+            document.getElementById("stage-2-block").classList.add("hidden");
+            document.getElementById("stage-3-block").classList.remove("hidden");
+            refreshMathJaxLayout();
+        }
+
+        function validarEtapa3Deduccion() {
+            const d1 = document.getElementById("drop-1");
+            const d2 = document.getElementById("drop-2");
+            const d3 = document.getElementById("drop-3");
+
+            if (!d1.value || !d2.value || !d3.value) {
+                Swal.fire({ title: "Estructura Incompleta", text: "Asigna valores a todos los operadores lógicos para contrastar el teorema.", icon: "warning" });
+                return;
+            }
+
+            metrics.scoreFormal = 0;
+            const verificarFiltro = (elemento, respuestaCorrecta) => {
+                if (elemento.value === respuestaCorrecta) {
+                    elemento.style.borderColor = "var(--success)";
+                    metrics.scoreFormal++;
+                } else {
+                    elemento.style.borderColor = "var(--danger)";
+                    metrics.fallasConceptuales++;
+                }
+            };
+
+            verificarFiltro(d1, "v2"); // Límite de e^(-kn) es 0
+            verificarFiltro(d2, "v1"); // Límite de W(n) es C/40
+            verificarFiltro(d3, "v2"); // Es decreciente si el peso de equilibrio es menor
+
+            document.querySelectorAll("#stage-3-block select").forEach(s => s.disabled = true);
+            document.getElementById("btn-eval-s3").classList.add("hidden");
+            document.getElementById("btn-summary-trigger").classList.remove("hidden");
+
+            if (metrics.scoreFormal === 3) {
+                Swal.fire({ title: "Estructura Válida", text: "Tus deducciones de límites de control son formalmente correctas.", icon: "success" });
+            } else {
+                Swal.fire({ title: "Inconsistencia Deductiva", text: "Ciertas relaciones operacionales son erróneas. Analízalas en rojo.", icon: "error" });
+            }
+        }
+
+        // ==========================================
+        // RESUMEN ANALÍTICO DE COMPETENCIAS
+        // ==========================================
+        function desplegarPanelFinalMetabolismo() {
+            const totalElapsedTime = ((Date.now() - metrics.startTime) / 1000).toFixed(1);
+
+            const panelHtml = document.createElement("div");
+            panelHtml.className = "summary-wrapper";
+            panelHtml.innerHTML = `
+                <div class="stat-row">
+                    <span>Simulaciones calculadas (Etapa 1):</span>
+                    <span class="val-highlight">${metrics.intentosSimulacion}</span>
+                </div>
+                <div class="stat-row">
+                    <span>Insignias de salud metabólica conservadas:</span>
+                    <span class="val-highlight" style="color: ${state.stamina > 1 ? 'var(--success)' : 'var(--danger)'};">${state.stamina} / 3</span>
+                </div>
+                <div class="stat-row">
+                    <span>Aciertos logrados en cuestionario (Etapa 2):</span>
+                    <span class="val-highlight">${metrics.aciertosQuiz} / 2</span>
+                </div>
+                <div class="stat-row">
+                    <span>Componentes deductivos e instituidos (Etapa 3):</span>
+                    <span class="val-highlight">${metrics.scoreFormal} / 3</span>
+                </div>
+                <div class="stat-row">
+                    <span>Fallas e inconsistencias totales en la sesión:</span>
+                    <span class="val-highlight" style="color: ${metrics.fallasConceptuales > 0 ? 'var(--danger)' : 'var(--success)'};">${metrics.fallasConceptuales}</span>
+                </div>
+                <div class="stat-row" style="border-bottom: none; margin-top: 12px;">
+                    <span>Tiempo global de experimentación biológica:</span>
+                    <span class="val-highlight">${totalElapsedTime} segundos</span>
+                </div>
+                <p style="text-align: center; font-weight: bold; margin-top: 25px; color: var(--success); font-size:15.5px;">
+                    <i class="fa-solid fa-square-check"></i> ¡Competencias en Comportamiento Asintótico Acreditadas!
+                </p>
+            `;
+
+            Swal.fire({
+                title: "Reporte de Desempeño y Telemetría",
+                html: panelHtml,
+                icon: "success",
+                confirmButtonText: "Finalizar Práctica"
+            });
+        }
+    </script>
 </body>
 
 </html>
