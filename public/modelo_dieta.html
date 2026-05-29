@@ -279,7 +279,6 @@
         });
 
         function construirTableroLimpio(pesoEstimado, diasEstimados) {
-            // Liberar memoria del lienzo si ya existía una instancia activa
             if (board) {
                 JXG.JSXGraph.freeBoard(board);
             }
@@ -316,7 +315,6 @@
             w = parseFloat(inputPeso.value);
             t = parseInt(inputDias.value);
 
-            // Validaciones de integridad matemática
             if (isNaN(c) || isNaN(w) || isNaN(t) || c <= 0 || w <= 0 || t <= 0) {
                 Swal.fire({
                     title: "Valores Incompletos",
@@ -331,10 +329,8 @@
             clearTimeout(loopTimeout);
             n = 0;
 
-            // Reconfiguración adaptativa del sistema de ejes cartesianos
             construirTableroLimpio(w > (c / 40) ? w : (c / 40), t);
 
-            // Instanciación de curvas asintóticas y de trayectorias
             seq = board.create('curve', [[], []], { strokeColor: 'blue', strokeWidth: 3 });
             
             txtLabelDynamic = board.create('text', [t * 0.05, w * 0.95, function () { 
@@ -352,7 +348,6 @@
         }
 
         function ejecutarPasoAproximacion() {
-            // Ecuación constitutiva: W(n) = (C/40) + (W0 - C/40)*e^(-0.0052*n)
             var imagenPeso = ((c / 40) + ((w - (c / 40)) * (Math.exp(-0.0052 * n))));
             
             seq.dataX.push(n);
@@ -369,7 +364,6 @@
         }
 
         function congelarMóduloParaReflexion() {
-            // Congelar controles físicos de entrada para inducir la observación analítica
             document.getElementById("calorias").disabled = true;
             document.getElementById("peso").disabled = true;
             document.getElementById("dias").disabled = true;
@@ -410,7 +404,7 @@
         }
 
         // ==========================================
-        // EXCLUSIVIDAD EN REINICIOS Y LIMPIEZA SPA
+        // EXCLUSIVIDAD EN REINICIOS Y SANITIZACIÓN TOTAL (FIX)
         // ==========================================
         function limpiarEstadosEtapa2() {
             currentQuizIndex = 1;
@@ -424,6 +418,7 @@
             document.querySelectorAll('.feedback-container').forEach(fb => {
                 fb.classList.add('hidden');
                 fb.innerHTML = "";
+                fb.classList.remove("wrong"); // Limpieza de clases erróneas residuales
             });
 
             document.getElementById("quiz-block-1").classList.remove("hidden");
@@ -440,7 +435,7 @@
                 select.selectedIndex = 0;
                 select.value = "";
                 select.disabled = false;
-                select.style.borderColor = "var(--border-color)";
+                select.style.borderColor = "var(--border-color)"; // Restauración visual del contenedor
             });
             document.getElementById("btn-eval-s3").classList.remove("hidden");
             document.getElementById("btn-summary-trigger").classList.add("hidden");
@@ -449,11 +444,15 @@
         function reiniciarMóduloGlobal() {
             clearTimeout(loopTimeout);
             
-            // Reestablecer variables de gamificación y entorno activo
             state.stamina = 3;
             state.isActive = true;
 
-            // Limpieza física de inputs de texto nativos
+            metrics.intentosSimulacion = 0;
+            metrics.fallasConceptuales = 0;
+            metrics.aciertosQuiz = 0;
+            metrics.scoreFormal = 0;
+            metrics.startTime = Date.now();
+
             document.getElementById("calorias").value = "2500";
             document.getElementById("peso").value = "95";
             document.getElementById("dias").value = "300";
@@ -463,7 +462,6 @@
             document.getElementById("dias").disabled = false;
             document.getElementById("btn-calc").disabled = false;
 
-            // Resetear íconos de vidas/corazones
             for (let i = 1; i <= 3; i++) {
                 document.getElementById(`heart${i}`).classList.remove('lost');
             }
@@ -471,11 +469,10 @@
             document.getElementById("state-msg").innerHTML = `<i class="fa-solid fa-calculator"></i> Introduce los parámetros biológicos iniciales y ejecuta la aproximación exponencial.`;
             document.getElementById("btn-next-s2").classList.add("hidden");
 
-            // Limpieza modular de capas hijas
+            // Invocación explícita de sanitización estructurada de respuestas
             limpiarEstadosEtapa2();
             limpiarEstadosEtapa3();
 
-            // Ocultamiento estructural de bloques SPA
             document.getElementById("stage-2-block").classList.add("hidden");
             document.getElementById("stage-3-block").classList.add("hidden");
             document.getElementById("stage-1-block").classList.remove("hidden");
@@ -584,9 +581,9 @@
                 }
             };
 
-            verificarFiltro(d1, "v2"); // Límite de e^(-kn) es 0
-            verificarFiltro(d2, "v1"); // Límite de W(n) es C/40
-            verificarFiltro(d3, "v2"); // Es decreciente si el peso de equilibrio es menor
+            verificarFiltro(d1, "v2");
+            verificarFiltro(d2, "v1");
+            verificarFiltro(d3, "v2");
 
             document.querySelectorAll("#stage-3-block select").forEach(s => s.disabled = true);
             document.getElementById("btn-eval-s3").classList.add("hidden");
@@ -648,3 +645,4 @@
 </body>
 
 </html>
+
