@@ -192,7 +192,7 @@
 
             <div id="quiz-block-2" class="quiz-card hidden">
                 <h3>2. ¿Cuál es el significado matemático y biológico del término $e^{-0.0052 \cdot n}$ conforme el número de días $n$ tiende a infinito?</h3>
-                <label class="option-item"><input type="radio" name="q2" value="incorrecto"> <span>A) Provoca que el peso tienda de forma indefinida a cero kg independientemente de la ingesta de calorías.</span></label>
+                <label class="option-item"><input type="radio" name="q2" value="incorrecto"> <span>A) Provoca que el peso tiende de forma indefinida a cero kg independientemente de la ingesta de calorías.</span></label>
                 <label class="option-item"><input type="radio" name="q2" value="incorrecto"> <span>B) Genera una divergencia parabólica que invalida el balance energético del modelo.</span></label>
                 <label class="option-item"><input type="radio" name="q2" value="correcto"> <span>C) Tiende a cero, anulando la desviación del peso inicial y permitiendo que la masa corporal converja al límite restrictivo.</span></label>
                 <div id="fb-q2" class="feedback-container hidden"></div>
@@ -301,7 +301,7 @@
         }
 
         // ==========================================
-        // ETAPA 1: ALGORITMO DINÁMICO Y MEJORA VISUAL
+        // ETAPA 1: ALGORITMO DINÁMICO Y ARQUITECTURA VISUAL
         // ==========================================
         function ejecutarSimulacion() {
             if (!state.isActive) return;
@@ -328,30 +328,40 @@
             clearTimeout(loopTimeout);
             n = 0;
 
-            construirTableroLimpio(w > (c / 40) ? w : (c / 40), t);
+            let esDecreciente = w > (c / 40);
+            construirTableroLimpio(esDecreciente ? w : (c / 40), t);
 
             seq = board.create('curve', [[], []], { strokeColor: 'blue', strokeWidth: 3 });
+
+            let maxYVisual = esDecreciente ? w : (c / 40);
             
-            // MEJORA: Letrero dinámico más grande y con contenedor de contraste blanco
-            txtLabelDynamic = board.create('text', [t * 0.05, w * 0.92, function () { 
+            // SOLUCIÓN EXTREMO IZQUIERDO: El letrero azul se queda fijo a la izquierda (t * 0.02) con anchor izquierdo
+            txtLabelDynamic = board.create('text', [t * 0.02, function () { 
+                return esDecreciente ? maxYVisual : (c / 40); 
+            }, function () { 
                 let idx = seq.dataX.length - 1;
                 return idx >= 0 ? 'Día ' + seq.dataX[idx] + ': ' + seq.dataY[idx].toFixed(2) + ' kg' : ''; 
             }], { 
                 strokeColor: '#1e40af', 
-                fontSize: 16, 
+                fontSize: 17, 
                 fontWeight: 'bold',
-                cssStyle: 'background-color: rgba(255, 255, 255, 0.85); padding: 5px 10px; border-radius: 6px; border: 1px solid #bfdbfe; box-shadow: 0 2px 4px rgba(0,0,0,0.05);'
+                anchorX: 'left',       // Alineación izquierda para que crezca hacia el centro
+                anchorY: 'bottom', 
+                offset: [0, esDecreciente ? 35 : 45],   // Separación generosa de la línea
+                cssStyle: 'background-color: rgba(255, 255, 255, 0.85); padding: 8px 12px; border-radius: 8px; border: 1px solid #bfdbfe; box-shadow: 0 2px 5px rgba(0,0,0,0.1);'
             });
 
             asymptoteLine = board.create('functiongraph', [function (x) { return (x * 0) + (c / 40); }, 0, t], { strokeColor: 'red', dash: 2, strokeWidth: 2 });
             
-            // MEJORA: Letrero de la asíntota más grande, destacado y limpio
-            txtAsymptoteLabel = board.create('text', [t * 0.5, (c / 40) + (w * 0.02), 'Asíntota de Equilibrio = ' + (c / 40).toFixed(1) + ' kg'], { 
+            // SOLUCIÓN EXTREMO DERECHO: El letrero rojo se manda al final de la gráfica (t * 0.95) con anchor derecho
+            txtAsymptoteLabel = board.create('text', [t * 0.95, (c / 40), 'Asíntota = ' + (c / 40).toFixed(1) + ' kg'], { 
                 strokeColor: '#b91c1c', 
-                fontSize: 14, 
+                fontSize: 15, 
                 fontWeight: 'bold', 
-                anchorX: 'middle',
-                cssStyle: 'background-color: rgba(255, 255, 255, 0.85); padding: 4px 8px; border-radius: 6px; border: 1px solid #fecaca;'
+                anchorX: 'right',      // Alineación derecha para que no se salga de la pantalla
+                anchorY: esDecreciente ? 'top' : 'bottom', 
+                offset: [0, esDecreciente ? -35 : 35],         
+                cssStyle: 'background-color: rgba(255, 255, 255, 0.85); padding: 6px 10px; border-radius: 8px; border: 1px solid #fecaca;'
             });
 
             ejecutarPasoAproximacion();
