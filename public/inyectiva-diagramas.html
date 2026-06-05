@@ -125,7 +125,7 @@
     <div class="container">
 
         <div id="level-1-container">
-            <h1>Etapa 1: Mapeo de Relaciones y Funciones</h1>
+            <h1>Etapa 1: Mapeo de relaciones y funciones</h1>
             <p style="text-align: center; color: #64748b; margin-bottom: 15px;">
                 Arrastra las puntas grises de las flechas desde el Dominio $A$ hasta los elementos del Codominio $B$ para cumplir la propiedad solicitada.
             </p>
@@ -160,7 +160,7 @@
         </div>
 
         <div id="level-2-container" class="hidden">
-            <h1>Etapa 2: Diagnóstico Conceptual (Estilo H5P)</h1>
+            <h1>Etapa 2: Diagnóstico conceptual</h1>
             <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Responde los reactivos teóricos basados en las propiedades de las estructuras de mapeo.</p>
 
             <div class="progress-container"><div class="progress-bar" id="quiz-progress"></div></div>
@@ -187,7 +187,7 @@
         </div>
 
         <div id="level-3-container" class="hidden">
-            <h1>Etapa 3: Estructuración Formal y Análisis</h1>
+            <h1>Etapa 3: Estructuración formal y análisis</h1>
             <p style="text-align: center; color: #64748b; margin-bottom: 25px;">
                 Completa los componentes lógicos del bloque deductivo para estructurar formalmente las propiedades de los conjuntos de correspondencia.
             </p>
@@ -236,8 +236,8 @@
         const totalQuiz = 2;
 
         const desafiosLvl1 = [
-            { tipo: "INYECTIVA", titulo: "Construye una función INYECTIVA (Cada destino recibe máximo una flecha)" },
-            { tipo: "SOBREYECTIVA", titulo: "Construye una función SOBREYECTIVA (Todos los destinos reciben al menos una flecha)" }
+            { tipo: "INYECTIVA", titulo: "Construye una función INYECTIVA" },
+            { tipo: "SOBREYECTIVA", titulo: "Construye una función SOBREYECTIVA" }
         ];
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -560,7 +560,7 @@
         }
 
         // ==========================================
-        // PANEL FINAL DE EVALUACIÓN (ESTILO H5P)
+        // PANEL FINAL DE EVALUACIÓN
         // ==========================================
         function mostrarCierreH5P() {
             confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 } });
@@ -590,7 +590,7 @@
             `;
 
             swal({
-                title: "Reporte de Competencias Estilo H5P",
+                title: "Reporte de Competencias",
                 content: cajaResumen,
                 icon: "success",
                 button: "Terminar Actividad"
