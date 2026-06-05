@@ -181,7 +181,7 @@
         </div>
 
         <div id="level-3-container" class="hidden">
-            <h1>Etapa 3: Estructuración Formal y Deducción</h1>
+            <h1>Etapa 3: Estructuración formal y deducción</h1>
             <p style="text-align: center; color: #64748b; margin-bottom: 25px;">
                 Completa las expresiones lógicas del bloque deductivo para validar formalmente los intervalos de negatividad de la estructura algebraica analizada.
             </p>
@@ -332,7 +332,7 @@
                 state.puntosGraficadosLvl1.push(pFallo);
 
                 Swal.fire({
-                    title: 'Ubicación Espacial Incorrecta',
+                    title: 'Ubicación espacial incorrecta',
                     text: 'Observa detenidamente la definición por comprensión de la actividad. ¿Qué tipo de componentes numéricos constituyen los elementos de A y en qué coordenadas o posiciones lógicas se representan?',
                     icon: 'error',
                     confirmButtonColor: 'var(--danger)'
@@ -517,11 +517,11 @@
             document.querySelectorAll(`input[name="q${indexQuiz}"]`).forEach(input => input.disabled = true);
 
             if (checkedRadio.value === "correcto") {
-                layerFeedback.innerHTML = `<strong>¡Respuesta Correcta!</strong> ${explicacionesQuiz[indexQuiz]}`;
+                layerFeedback.innerHTML = `<strong>¡Respuesta correcta!</strong> ${explicacionesQuiz[indexQuiz]}`;
                 layerFeedback.classList.remove('error');
                 aciertosQuiz++;
             } else {
-                layerFeedback.innerHTML = `<strong>Respuesta Incorrecta.</strong> ${explicacionesQuiz[indexQuiz]}`;
+                layerFeedback.innerHTML = `<strong>Respuesta incorrecta.</strong> ${explicacionesQuiz[indexQuiz]}`;
                 layerFeedback.classList.add('error');
             }
 
@@ -596,7 +596,7 @@
         }
 
         // ==========================================
-        // PANEL FINAL: REPORTE DE DESEMPEÑO H5P
+        // PANEL FINAL: REPORTE DE DESEMPEÑO FINAL
         // ==========================================
         function mostrarCierreH5P() {
             const cajaResumen = document.createElement('div');
@@ -624,7 +624,7 @@
             `;
 
             Swal.fire({
-                title: "Reporte Estadístico de Competencias H5P",
+                title: "Reporte estadístico de competencias",
                 html: cajaResumen,
                 icon: "success",
                 confirmButtonText: "Terminar Actividad"
