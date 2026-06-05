@@ -106,7 +106,7 @@
         .badge-max { background: #10b981; color: white; padding: 3px 8px; border-radius: 4px; }
         .badge-min { background: #ef4444; color: white; padding: 3px 8px; border-radius: 4px; }
 
-        /* ================= ETAPA 2 (H5P) ================= */
+        /* ================= ETAPA 2  ================= */
         .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 8px; margin: 20px 0; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--success); width: 25%; transition: 0.4s; }
         
@@ -136,7 +136,7 @@
     <div class="container">
 
         <div id="level-1-container">
-            <h1>Etapa 1: Análisis Geométrico</h1>
+            <h1>Etapa 1: Análisis geométrico</h1>
             <p style="text-align: center; color: #64748b; margin-bottom: 10px;">
                 El <strong>Teorema de Weierstrass</strong> garantiza que toda función continua en un intervalo cerrado tiene un Máximo y un Mínimo Absolutos.
             </p>
@@ -164,7 +164,7 @@
         </div>
 
         <div id="level-2-container" class="hidden">
-            <h1>Etapa 2: Cuestionario Teórico</h1>
+            <h1>Etapa 2: Cuestionario teórico</h1>
             <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Reconoce las hipótesis fundamentales del Teorema de Weierstrass.</p>
 
             <div class="progress-container"><div class="progress-bar" id="h5p-progress"></div></div>
@@ -207,7 +207,7 @@
         </div>
 
         <div id="level-3-container" class="hidden">
-            <h1>Etapa 3: Estructura Formal</h1>
+            <h1>Etapa 3: Estructura formal</h1>
             <p style="text-align: center; color: #64748b; margin-bottom: 30px;">
                 Ordena e identifica los conceptos lógicos que completan las premisas del teorema.
             </p>
@@ -394,7 +394,7 @@
         }
 
         // ==========================================
-        // LÓGICA ETAPA 2 - CUESTIONARIO H5P
+        // LÓGICA ETAPA 2 - CUESTIONARIO
         // ==========================================
         let preguntaActualN2 = 1;
         const totalN2 = 4;
@@ -515,12 +515,12 @@
                     <span class="accent">${aciertosTeoricosN3} / 5</span>
                 </div>
                 <p style="text-align: center; font-weight: bold; margin-top: 20px; color: var(--primary); font-size: 1.1em;">
-                    ${aciertosTeoricosN3 === 5 && lives === 3 ? '¡Desempeño Magistral, Ingeniero/a!' : '¡Simulador Finalizado con Éxito!'}
+                    ${aciertosTeoricosN3 === 5 && lives === 3 ? '¡Desempeño magistral, ingeniero/a!' : '¡Simulador finalizado con éxito!'}
                 </p>
             `;
 
             swal({
-                title: "¡Reporte Final de Desempeño!",
+                title: "¡Reporte final de desempeño!",
                 content: nodeSummary,
                 icon: "success",
                 button: "Cerrar Actividad"
