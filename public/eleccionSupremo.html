@@ -197,6 +197,11 @@
                     <p style="font-size: 13.5px; line-height: 1.5;">
                         <strong>Preservación de Signo:</strong> Al suponer por contradicción que la imagen de la frontera es negativa, se deduce que la función mantiene dicho comportamiento en un radio infinitesimal contiguo.
                     </p>
+
+                    <div id="instruccion-fase2" class="fase2-instruction hidden">
+                        <strong><i class="fa-solid fa-circle-play"></i> Segunda Fase:</strong><br><br>
+                        Ahora forma una vecindad al rededor de alfa moviendo el deslizador $\delta$, y posteriormente, marca en la vecindad formada un punto que rompa la condición del supremo para obtener una contradicción lógica.
+                    </div>
                 </div>
             </div>
 
@@ -436,6 +441,9 @@
                 document.getElementById('btn-validate-step1').classList.add('hidden');
                 document.getElementById('btn-validate-step3').classList.remove('hidden');
                 
+                // CAMBIO: Mostrar dinámicamente la nueva instrucción al entrar en Fase 2
+                document.getElementById('instruccion-fase2').classList.remove('hidden');
+                
                 triggerMathJax();
                 board.update();
             }
@@ -477,6 +485,9 @@
             document.getElementById('btn-validate-step3').classList.add('hidden');
             document.getElementById('state-indicator').innerHTML = `<i class="fa-solid fa-square-check"></i> Etapa 1 Superada con Éxito.`;
             document.getElementById('btn-go-to-n2').classList.remove('hidden');
+
+            // CAMBIO: Ocultar la instrucción una vez que superan con éxito la etapa
+            document.getElementById('instruccion-fase2').classList.add('hidden');
 
             // Cambio sutil sin colisiones: Se reubica el texto en formato alfa estrella por arriba
             alpha.setAttribute({
@@ -548,6 +559,9 @@
             document.getElementById('btn-validate-step1').classList.remove('hidden');
             document.getElementById('btn-validate-step3').classList.add('hidden');
             document.getElementById('btn-go-to-n2').classList.add('hidden');
+
+            // CAMBIO: Asegurar que la instrucción se oculte si deciden reiniciar el juego de cero
+            document.getElementById('instruccion-fase2').classList.add('hidden');
 
             for (let i = 1; i <= 2; i++) {
                 document.getElementById(`clover${i}`).classList.remove('lost');
@@ -693,7 +707,7 @@
                     <span class="bold-val">${state.lives} / 2</span>
                 </div>
                 <div class="summary-row">
-                    <span>Errores de interpretación teórica acumulados:</span>
+                    <span>Errores de interpretation teórica acumulados:</span>
                     <span class="bold-val" style="color: ${stats.erroresTeoria > 0 ? 'var(--danger)' : 'var(--success)'};">${stats.erroresTeoria}</span>
                 </div>
                 <div class="summary-row">
