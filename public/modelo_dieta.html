@@ -20,6 +20,9 @@
     </script>
 
     <style>
+        /* Corrección de parpadeo: Asegurar que los márgenes internos no alteren el ancho calculado */
+        * { box-sizing: border-box; }
+
         :root {
             --primary: #0f172a;
             --primary-hover: #1e293b;
@@ -69,13 +72,47 @@
         .badges-box i.lost { color: #cbd5e1; opacity: 0.3; transform: scale(0.85); }
 
         /* Estructura Bifurcada (Workspace) */
-        .workspace { display: flex; gap: 25px; margin-top: 15px; flex-wrap: wrap; }
-        .controls-panel { width: 280px; background: var(--bg-light); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); }
-        .canvas-panel { flex: 1; min-width: 450px; }
+        .workspace { 
+            display: flex; 
+            gap: 25px; 
+            margin-top: 15px; 
+            /* Eliminamos flex-wrap para evitar que el canvas intente saltar de línea cíclicamente */
+        }
+        
+        .controls-panel { 
+            width: 280px; 
+            flex-shrink: 0; /* Mantiene el ancho estable del panel de control */
+            background: var(--bg-light); 
+            padding: 20px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border-color); 
+        }
+        
+        .canvas-panel { 
+            flex: 1; 
+            min-width: 0; /* Evita desbordamientos y loops de redimensión del canvas */
+        }
         
         .jxgbox-responsive {
-            width: 100%; height: 480px; border-radius: 12px; 
-            border: 2px solid var(--border-color); background: #ffffff; overflow: hidden;
+            width: 100%; 
+            height: 480px; 
+            border-radius: 12px; 
+            border: 2px solid var(--border-color); 
+            background: #ffffff; 
+            overflow: hidden;
+        }
+
+        /* Media Query para forzar el diseño de columna limpia sin parpadeo de gráficos */
+        @media (max-width: 850px) {
+            .workspace {
+                flex-direction: column;
+            }
+            .controls-panel {
+                width: 100%;
+            }
+            .canvas-panel {
+                width: 100%;
+            }
         }
 
         /* Elementos de Formulario Estilizados */
