@@ -20,6 +20,9 @@
     </script>
 
     <style>
+        /* Corrección de parpadeo: Asegurar que el padding no afecte el ancho total */
+        * { box-sizing: border-box; }
+
         :root {
             --primary: #4f46e5;
             --primary-hover: #4338ca;
@@ -68,10 +71,47 @@
         .lives-box i.lost { color: #cbd5e1; opacity: 0.4; transform: scale(0.8); }
 
         /* Workspace Stage 1 */
-        .workspace { display: flex; gap: 25px; flex-wrap: wrap; }
-        .instructions-panel { width: 280px; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
-        .canvas-panel { flex: 1; min-width: 450px; }
-        .jxgbox-responsive { width: 100%; height: 500px; border-radius: 12px; border: 2px solid var(--border); background: #fff; }
+        .workspace { 
+            display: flex; 
+            gap: 25px; 
+            /* Eliminamos flex-wrap para controlar la ruptura manualmente y evitar parpadeos */
+        }
+        
+        .instructions-panel { 
+            width: 280px; 
+            flex-shrink: 0; /* Evita que el panel se encoja de más */
+            background: #f8fafc; 
+            padding: 20px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border); 
+        }
+        
+        .canvas-panel { 
+            flex: 1; 
+            min-width: 0; /* Permite que el contenedor se ajuste sin romper el flex */
+        }
+        
+        .jxgbox-responsive { 
+            width: 100%; 
+            height: 500px; 
+            border-radius: 12px; 
+            border: 2px solid var(--border); 
+            background: #fff; 
+            overflow: hidden; /* Mantiene los gráficos dentro de sus límites */
+        }
+
+        /* Media Query para forzar la columna limpia en pantallas pequeñas y evitar el loop de JSXGraph */
+        @media (max-width: 850px) {
+            .workspace {
+                flex-direction: column;
+            }
+            .instructions-panel {
+                width: 100%;
+            }
+            .canvas-panel {
+                width: 100%;
+            }
+        }
 
         ul.steps { padding-left: 20px; font-size: 14.5px; line-height: 1.6; margin-bottom: 20px; }
         ul.steps li { margin-bottom: 8px; }
