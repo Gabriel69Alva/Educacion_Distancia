@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escenario 3: Axiomas de Campo y Orden - Industrial</title>
+    <title>Escenario 3: Axiomas de Campo y Orden</title>
     
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -121,13 +121,13 @@
     <div class="container">
         
         <div id="level-1-container">
-            <h1>Estrategia de Axiomas</h1>
+            <h1>Etapa 1: Identificación de Axiomas</h1>
             <p style="text-align: center; color: #64748b;">Identifica <strong>únicamente</strong> los axiomas correspondientes a cada categoría.</p>
             
             <h2>1. Axiomas de Campo (Estructura)</h2>
             <div class="grid-axiomas" id="grid-campo"></div>
 
-            <h2>2. Axiomas de Orden (Cerradura)</h2>
+            <h2>2. Axiomas de Orden</h2>
             <div class="grid-axiomas" id="grid-orden"></div>
 
             <button class="btn-general" id="btn-validar-n1" onclick="verificarEtapa1()">Verificar Axiomas</button>
@@ -297,7 +297,7 @@
             aciertosN1 = err === 0 ? 2 : (err <= 2 ? 1 : 0); 
             
             if (err === 0) {
-                swal("¡Precisión Industrial!", "Identificaste correctamente la estructura lógica.", "success");
+                swal("¡Precisión correcta!", "Identificaste correctamente los axiomas de acuerdo con su categoría.", "success");
             } else {
                 swal("Atención", "Se detectaron errores (marcados en rojo). Revisa tus selecciones.", "warning");
             }
@@ -468,7 +468,7 @@
             document.getElementById('res-n2').innerText = aciertosN2 + "/3";
             document.getElementById('res-n3').innerText = aciertosN3 + "/4";
             
-            confetti({ particleCount: 300, spread: 120, origin: { y: 0.6 } });
+            confetti({ particleCount: 1500, spread: 220, origin: { y: 0.6 } });
         }
 
         // Reinicio
