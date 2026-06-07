@@ -212,7 +212,8 @@
         </div>
 
         <div id="resumen-final-container" class="hidden" style="text-align: center;">
-            <h1>Resultados de Ingeniería Pedagógica</h1>
+            <h1>Resultados de Ingeniería Didáctica</h1>
+            <h1 style="color: var(--primary);">¡Felicidades!</h1>
             <div style="display:flex; justify-content: space-around; margin: 40px 0; flex-wrap: wrap; gap: 20px;">
                 <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 120px; border: 1px solid var(--border-color);">
                     <p style="margin:0 0 10px 0; color: #64748b;">Etapa 1</p>
@@ -327,11 +328,11 @@
             document.querySelectorAll(`input[name="q${preguntaActual}"]`).forEach(el => el.disabled = true);
 
             if(s.value === "correcta") {
-                f.innerHTML = "<strong>¡Correcto!</strong> Parámetro validado con éxito.";
+                f.innerHTML = "<strong>¡Correcto!</strong> Elección correcta.";
                 f.classList.remove('error');
                 aciertosN2++;
             } else {
-                f.innerHTML = "<strong>Incorrecto.</strong> Revise la teoría axiomática.";
+                f.innerHTML = "<strong>Incorrecto.</strong> a la teoría axiomática.";
                 f.classList.add('error');
             }
 
@@ -468,7 +469,7 @@
             document.getElementById('res-n2').innerText = aciertosN2 + "/3";
             document.getElementById('res-n3').innerText = aciertosN3 + "/4";
             
-            confetti({ particleCount: 1500, spread: 220, origin: { y: 0.6 } });
+            confetti({ particleCount: 1500, spread: 360, origin: { y: 0.6 } });
         }
 
         // Reinicio
