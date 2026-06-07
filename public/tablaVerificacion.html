@@ -332,7 +332,7 @@
                 f.classList.remove('error');
                 aciertosN2++;
             } else {
-                f.innerHTML = "<strong>Incorrecto.</strong> revisa la información de la teoría axiomática.";
+                f.innerHTML = "<strong>Incorrecto.</strong> Revisa la información de la teoría axiomática.";
                 f.classList.add('error');
             }
 
@@ -469,7 +469,7 @@
             document.getElementById('res-n2').innerText = aciertosN2 + "/3";
             document.getElementById('res-n3').innerText = aciertosN3 + "/4";
             
-            confetti({ particleCount: 1500, spread: 360, origin: { y: 0.6 } });
+            confetti({ particleCount: 2000, spread: 180, origin: { y: 0.6 } });
         }
 
         // Reinicio
