@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escenario 3: Axiomas de Campo y Orden</title>
+    
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraph.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraphcore.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'],['\\(','\\)']]}});
+    </script>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        :root {
+            --primary: #004080;        
+            --primary-hover: #002d5a;
+            --success: #10b981;       
+            --danger: #ef4444;
+            --warning: #f59e0b;       
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 950px;
+            width: 100%;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .header-container {
+            display: flex; align-items: center; justify-content: center; position: relative;
+            margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid var(--border-color);
+        }
+        .header-logo { position: absolute; left: 0; height: 54px; object-fit: contain; }
+
+        h1 { color: var(--primary); font-weight: 700; text-align: center; margin: 0;}
+        h2 { border-left: 8px solid var(--success); padding-left: 15px; font-size: 20px; color: var(--primary); margin-top: 35px;}
+        h3 { font-size: 18px; margin-top: 0; color: var(--primary);}
+        
+        .hidden { display: none !important; }
+
+        .btn-general {
+            display: block; width: 100%; max-width: 300px; margin: 20px auto;
+            padding: 14px; background-color: var(--primary); color: white;
+            border: none; border-radius: 30px; font-size: 16px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .btn-general:hover:not(:disabled) { 
+            transform: scale(1.05); 
+            background-color: var(--primary-hover); 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+        }
+        .btn-general:disabled { background-color: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none;}
+        .btn-restart { background-color: var(--warning); }
+        .btn-restart:hover:not(:disabled) { background-color: #d97706; }
+        .btn-success { background-color: var(--success); }
+        .btn-success:hover:not(:disabled) { background-color: #059669; }
+
+        .status-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #e0f2fe; padding: 15px 20px; border-radius: 10px;
+            border: 1px solid #bae6fd; margin-bottom: 25px; font-weight: 600; color: var(--primary);
+        }
+        
+        .lives-box i { color: var(--success); font-size: 22px; margin-left: 5px; display: inline-block; position: relative;}
+        @keyframes loseLifeAnim {
+            0% { transform: scale(1); opacity: 1; color: var(--success); }
+            20% { transform: scale(1.8); color: var(--success); }
+            40% { transform: scale(0.9); color: var(--success); }
+            60% { transform: scale(1.4); color: var(--success); }
+            100% { transform: scale(0.6) translateY(300px) rotate(45deg); opacity: 0; color: #94a3b8; }
+        }
+        .lives-box i.lost { animation: loseLifeAnim 3s ease-in-out forwards; }
+
+        .workspace-layout { display: flex; gap: 20px; margin-top: 15px; }
+        .theory-side { width: 330px; flex-shrink: 0; background: var(--bg-light); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); }
+        .canvas-side { flex: 1; min-width: 0; }
+        
+        /* Contenedor explícito para JSXGraph para evitar que se colapse */
+        .jxgbox-wrapper { width: 100%; height: 400px; border-radius: 10px; border: 2px solid var(--border-color); overflow: hidden; background: #fff; }
+        
+        @media (max-width: 850px) {
+            .workspace-layout { flex-direction: column; }
+            .theory-side, .canvas-side { width: 100%; }
+        }
+
+        .options-container { display: flex; gap: 10px; margin-top: 15px; justify-content: center; flex-wrap: wrap; }
+        .math-option {
+            background: #fff; border: 2px solid var(--border-color); padding: 10px 15px;
+            border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; flex: 1; text-align: center;
+        }
+        .math-option:hover { border-color: var(--primary); background: #e0f2fe; }
+        .math-option.selected { border-color: var(--primary); background: var(--primary); color: white; }
+
+        .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 8px; margin: 30px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--success); width: 33.33%; transition: 0.4s; }
+
+        .h5p-option { 
+            display: flex; padding: 16px; border: 1px solid var(--border-color); 
+            margin-bottom: 12px; border-radius: 8px; cursor: pointer; background: var(--bg-light); transition: 0.2s;
+        }
+        .h5p-option:hover { border-color: var(--primary); background: #e0f2fe; }
+        .h5p-option input { margin-right: 15px; accent-color: var(--primary); cursor: pointer; transform: scale(1.2);}
+        .h5p-feedback { padding: 20px; border-radius: 8px; margin-top: 20px; background: #f1f5f9; border-left: 6px solid var(--primary); }
+        .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; }
+
+        .n3-section { background: var(--bg-light); padding: 30px; border-radius: 12px; margin-bottom: 30px; border: 1px solid var(--border-color);}
+        .drop-zone { display: inline-flex; align-items: center; justify-content: center; width: 155px; min-height: 30px; padding: 2px 4px; border-bottom: 2px solid var(--primary); vertical-align: middle; text-align: center; background: white; border-radius: 4px 4px 0 0;}
+        .drop-zone .draggable-word { font-size: 12px; padding: 4px 7px; box-shadow: none; max-width: 100%; white-space: normal; line-height: 1.15; }
+        .draggable-word { cursor: grab; font-weight: 600; font-size: 13px; background-color: var(--primary); color: white; border: none; padding: 6px 10px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: inline-block;}
+        .draggable-word:active { cursor: grabbing; }
+        
+        .sortable-item { 
+            background: #fff; border: 1px solid var(--border-color); 
+            padding: 15px; border-radius: 6px; cursor: grab; 
+            display: flex; align-items: center; gap: 15px; 
+            font-weight: 500; transition: background 0.2s;
+            margin-bottom: 10px;
+        }
+        .sortable-item:active { cursor: grabbing; }
+        .sortable-item.dragging { opacity: 0.4; background: #e2e8f0; }
+
+        .score-val { font-size: 28px; font-weight: 700; color: var(--primary); text-align: center;}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="header-container">
+            <img src="./img/logo-ciencias.jpg" alt="Logo Ciencias UNAM" class="header-logo" onerror="this.style.display='none'">
+            <h1 id="main-title">Etapa 1: El orden en la recta real</h1>
+        </header>
+
+        <div id="level-1-container">
+            <p style="text-align: center; color: #64748b; margin-top: -15px; margin-bottom: 25px;">Muestra el funcionamiento de los axiomas de orden y campo posicionando los elementos en la recta real.</p>
+            
+            <div class="status-bar">
+                <div id="s1-instructions"><i class="fa-solid fa-flag"></i> <b>Reto 1/3:</b> Preparando...</div>
+                <div class="lives-box">
+                    Vidas: 
+                    <i class="fa-solid fa-clover" id="life1"></i>
+                    <i class="fa-solid fa-clover" id="life2"></i>
+                    <i class="fa-solid fa-clover" id="life3"></i>
+                </div>
+            </div>
+
+            <div class="workspace-layout">
+                <div class="theory-side">
+                    <h3 style="margin-top:0; color: var(--primary);"><i class="fa-solid fa-circle-exclamation"></i> Desafío</h3>
+                    <div id="mission-text" style="font-size: 14.5px; line-height: 1.5; text-align: justify;">
+                        Cargando reto matemático...
+                    </div>
+
+                    <div id="math-options-container" class="options-container hidden"></div>
+
+                    <button class="btn-general" id="btn-validar-n1" onclick="validarGeometria()"><i class="fa-solid fa-check"></i> Validar Solución</button>
+                    <button class="btn-general btn-restart hidden" id="btn-retry-reto" onclick="cargarReto(state.retoActual)"><i class="fa-solid fa-rotate-right"></i> Reintentar Reto</button>
+                    <button class="btn-general btn-success hidden" id="btn-next-reto" onclick="avanzarReto()"><i class="fa-solid fa-arrow-right"></i> Continuar al siguiente reto</button>
+                    <button class="btn-general btn-restart hidden" id="btn-game-over" onclick="reiniciarEscenarioGlobal()"><i class="fa-solid fa-skull"></i> Reiniciar Escenario</button>
+                    <button class="btn-general btn-success hidden" id="btn-pasar-n2" onclick="iniciarEtapa2()">Continuar a Etapa 2 🚀</button>
+                </div>
+                
+                <div class="canvas-side">
+                    <div id="jxgbox" class="jxgbox-wrapper"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="level-2-container" class="hidden">
+            <div class="progress-container"><div class="progress-bar" id="h5p-progress"></div></div>
+            <p id="h5p-counter" style="text-align: right; font-weight: 600; color: var(--primary);">1/3</p>
+
+            <div id="step-1" class="quiz-step">
+                <h3>1. ¿Qué axioma justifica que $a + b = b + a$?</h3>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> Conmutatividad de la suma</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Asociatividad de la suma</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Neutro aditivo</label>
+                <div id="feedback-1" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-2" class="quiz-step hidden">
+                <h3>2. Si $x < y$ y $y < z \Rightarrow x < z$. ¿Qué axioma justifica que $x < z$?</h3>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Tricotomía</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Cerradura bajo suma</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> Transitividad</label>
+                <div id="feedback-2" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-3" class="quiz-step hidden">
+                <h3>3. ¿Qué axioma relaciona de forma simultánea la suma y el producto?</h3>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> Inverso multiplicativo</label>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> Distributividad</label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> Asociatividad</label>
+                <div id="feedback-3" class="h5p-feedback hidden"></div>
+            </div>
+
+            <button class="btn-general" id="btn-comprobar-quiz" onclick="comprobarPregunta()"><i class="fa-solid fa-clipboard-check"></i> Comprobar</button>
+            <button class="btn-general btn-success hidden" id="btn-siguiente-quiz" onclick="siguientePregunta()">Siguiente</button>
+        </div>
+
+        <div id="level-3-container" class="hidden">
+            <div class="n3-section">
+                <h3>A. Completar la Demostración</h3>
+                <p style="margin-bottom: 25px; color: #64748b;">Demuestra que $a \cdot 0 = 0$. Arrastra los axiomas correctos:</p>
+                <p style="line-height: 2.2;">
+                    1. $a \cdot 0 = a \cdot (0 + 0)$ por el <span class="drop-zone" data-expected="neutro"></span>.<br>
+                    2. $a \cdot 0 = a \cdot 0 + a \cdot 0$ aplicando la propiedad de <span class="drop-zone" data-expected="distributividad"></span>.<br>
+                    3. Sumamos el <span class="drop-zone" data-expected="inverso"></span>, $-(a \cdot 0)$, en ambos lados para obtener $0 = a \cdot 0$.
+                </p>
+            </div>
+
+            <div class="n3-section">
+                <h3>B. Demostración Guiada</h3>
+                <p style="margin-bottom: 25px; color: #64748b;">Demuestra que si $ab = 0$, entonces $a = 0$ o $b = 0$. (Supongamos $a \neq 0$):</p>
+                <p style="line-height: 2.2;">
+                    1. Multiplicamos por el <span class="drop-zone" data-expected="inv_mult"></span> de $a$: $a^{-1}(ab) = a^{-1}(0)$.<br>
+                    2. Por el Teorema A (demostrado arriba), sabemos que $a^{-1}(0) = 0$.<br>
+                    3. Aplicando <span class="drop-zone" data-expected="asoc"></span>: $(a^{-1}a)b = 0$.<br>
+                    4. Por definición, $1 \cdot b = 0$, y por el <span class="drop-zone" data-expected="neu_mult"></span>, $b = 0$.
+                </p>
+            </div>
+
+            <div id="banco-palabras" style="margin-top:20px; margin-bottom:30px; display:flex; gap:10px; flex-wrap: wrap; padding: 20px; background: #e2e8f0; border-radius: 8px;">
+                <h3 style="width: 100%; margin-bottom: 5px;">Banco de axiomas</h3>
+                <span class="draggable-word" draggable="true" data-value="neutro">Neutro aditivo</span>
+                <span class="draggable-word" draggable="true" data-value="distributividad">Distributividad</span>
+                <span class="draggable-word" draggable="true" data-value="inverso">Inverso aditivo</span>
+                <span class="draggable-word" draggable="true" data-value="inv_mult">Inverso multiplicativo</span>
+                <span class="draggable-word" draggable="true" data-value="asoc">Asociatividad</span>
+                <span class="draggable-word" draggable="true" data-value="neu_mult">Neutro multiplicativo</span>
+                <span class="draggable-word" draggable="true" data-value="falso">Cerradura</span>
+                <span class="draggable-word" draggable="true" data-value="falso">Conmutatividad</span>
+                <span class="draggable-word" draggable="true" data-value="falso">Unicidad del inverso</span>
+                <span class="draggable-word" draggable="true" data-value="falso">Tricotomía</span>
+            </div>
+
+            <div class="n3-section">
+                <h3>C. Ordenación Lógica</h3>
+                <p style="margin-bottom: 20px; color: #64748b;">Ordena los pasos lógicos para demostrar que si $a > 0$ y $b > 0$, entonces $a \cdot b > 0$:</p>
+                <div id="sortable-list" style="display: flex; flex-direction: column;">
+                    <div class="sortable-item" draggable="true" data-id="3"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Sabemos que $0 \cdot b = 0$ (Teorema previo)</div>
+                    <div class="sortable-item" draggable="true" data-id="1"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Por hipótesis $a > 0$ y $b > 0$</div>
+                    <div class="sortable-item" draggable="true" data-id="4"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Luego, $a \cdot b > 0$ (Aplicando Transitividad)</div>
+                    <div class="sortable-item" draggable="true" data-id="2"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Multiplicamos la primera desigualdad por $b$: $a \cdot b > 0 \cdot b$</div>
+                </div>
+            </div>
+
+            <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()"><i class="fa-solid fa-flag-checkered"></i> Evaluar Final</button>
+            <button class="btn-general btn-success hidden" id="btn-ir-resumen" onclick="mostrarResumen()">Ir al Resumen de Actividad <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+        <div id="resumen-final-container" class="hidden" style="text-align: center;">
+            <h1 style="color: var(--primary);">¡Felicidades!</h1>
+            <p style="color: #64748b;">Has completado el laboratorio axiomático.</p>
+            <div style="display:flex; justify-content: space-around; margin: 40px 0; flex-wrap: wrap; gap: 20px;">
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 1</p>
+                    <div class="score-val" id="res-n1">0/3</div>
+                </div>
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 2</p>
+                    <div class="score-val" id="res-n2">0/3</div>
+                </div>
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 3</p>
+                    <div class="score-val" id="res-n3">0/8</div>
+                </div>
+            </div>
+            <button class="btn-general btn-restart" onclick="reiniciarEscenarioGlobal()"><i class="fa-solid fa-rotate-left"></i> REINICIAR ESCENARIO</button>
+        </div>
+
+    </div>
+
+    <script>
+        let state = { vidas: 3, retoActual: 1, opcionSeleccionada: null };
+        let aciertosN1 = 0, aciertosN2 = 0, aciertosN3 = 0, preguntaActual = 1;
+        let board, pts = {}, helpers = [], dynamics = {};
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initBoard();
+        });
+
+        function initBoard() {
+            if (board) JXG.JSXGraph.freeBoard(board);
+
+            
+            board = JXG.JSXGraph.initBoard('jxgbox', {
+                boundingbox: [-7, 4, 7, -4], 
+                axis: true, 
+                showCopyright: false, 
+                pan: { enabled: false }, 
+                zoom: { enabled: false }
+            });
+
+            cargarReto(state.retoActual);
+        }
+
+        function cargarReto(num) {
+            document.getElementById('btn-retry-reto').classList.add('hidden');
+            document.getElementById('btn-next-reto').classList.add('hidden');
+            document.getElementById('btn-pasar-n2').classList.add('hidden');
+            document.getElementById('btn-validar-n1').classList.remove('hidden');
+            document.getElementById('btn-validar-n1').disabled = false;
+
+            for (let key in pts) { board.removeObject(pts[key]); }
+            helpers.forEach(obj => board.removeObject(obj));
+            pts = {}; helpers = []; dynamics = {};
+            state.opcionSeleccionada = null;
+            
+            const optionsContainer = document.getElementById('math-options-container');
+            optionsContainer.classList.add('hidden');
+            optionsContainer.innerHTML = "";
+
+            if (num === 1) {
+                document.getElementById('s1-instructions').innerHTML = `<i class="fa-solid fa-flag"></i> <b>Reto 1/3:</b> Deducción de Transitividad`;
+                document.getElementById('mission-text').innerHTML = `Si \\(\\varepsilon &lt; \\eta\\) y \\(\\eta &lt; \\omega\\), ¿qué puedes concluir?<br><br><strong>Ordena los puntos</strong> geométricamente en la recta real y <strong>selecciona la relación analítica</strong> correcta en la parte inferior.`;
+                
+                optionsContainer.style.flexDirection = "row";
+                optionsContainer.innerHTML = `
+                    <div class="math-option" onclick="selectOption(this, 'a<c')">\\(\\varepsilon &lt; \\omega\\)</div>
+                    <div class="math-option" onclick="selectOption(this, 'a>c')">\\(\\varepsilon &gt; \\omega\\)</div>
+                    <div class="math-option" onclick="selectOption(this, 'a=c')">\\(\\varepsilon = \\omega\\)</div>
+                `;
+                optionsContainer.classList.remove('hidden');
+                
+                let rA, rB, rC;
+                do {
+                    rA = Math.floor(Math.random() * 9) - 4;
+                    rB = Math.floor(Math.random() * 9) - 4;
+                    rC = Math.floor(Math.random() * 9) - 4;
+                } while (rA < rC || rA === rB || rB === rC || rA === rC);
+
+                pts.A = board.create('glider', [rA, 0, board.defaultAxes.x], { name: 'ε', color: '#ef4444', size: 4, snapToGrid: true, snapSizeX: 0.5 });
+                pts.B = board.create('glider', [rB, 0, board.defaultAxes.x], { name: 'η', color: '#10b981', size: 4, snapToGrid: true, snapSizeX: 0.5 });
+                pts.C = board.create('glider', [rC, 0, board.defaultAxes.x], { name: 'ω', color: '#38bdf8', size: 4, snapToGrid: true, snapSizeX: 0.5 });
+            } 
+            else if (num === 2) {
+                // =============== MODIFICACIONES DEL RETO 2 ===============
+                document.getElementById('s1-instructions').innerHTML = `<i class="fa-solid fa-flag"></i> <b>Reto 2/3:</b> Multiplicación por negativo`;
+                
+                optionsContainer.style.flexDirection = "column";
+                optionsContainer.innerHTML = `
+                    <div style="font-weight: 700; color: var(--primary); margin-bottom: 2px;">Conjetura:</div>
+                    <div class="math-option" style="font-size: 14px;" onclick="selectOption(this, 'ac<bc')">\\(\\eta &lt; \\varepsilon\\) y \\(\\omega &lt; 0\\) \\(\\Rightarrow\\) \\(\\eta\\omega &lt; \\varepsilon\\omega\\)</div>
+                    <div class="math-option" style="font-size: 14px;" onclick="selectOption(this, 'ac>bc')">\\(\\eta &lt; \\varepsilon\\) y \\(\\omega &lt; 0\\) \\(\\Rightarrow\\) \\(\\eta\\omega &gt; \\varepsilon\\omega\\)</div>
+                    <div class="math-option" style="font-size: 14px;" onclick="selectOption(this, 'ab>c')">\\(\\eta &lt; \\varepsilon\\) y \\(\\omega &lt; 0\\) \\(\\Rightarrow\\) \\(\\eta\\varepsilon &gt; \\omega\\)</div>
+                `;
+                optionsContainer.classList.remove('hidden');
+
+                let r1 = Math.floor(Math.random() * 2) + 1; // eta positivo
+                let r2 = r1 + Math.floor(Math.random() * 2) + 1; // epsilon mayor que eta
+                
+                // Valores estrictos de c
+                let cVals = [-2, -1.5, -1, -0.5];
+                let rC = cVals[Math.floor(Math.random() * cVals.length)];
+                
+                dynamics.a = r1; dynamics.b = r2; dynamics.c = rC;
+
+            
+                document.getElementById('mission-text').innerHTML = `Si fijamos \\(\\eta=${r1}\\), \\(\\varepsilon=${r2}\\) (\\(\\eta &lt; \\varepsilon\\)) y \\(\\omega=${rC}\\) (\\(\\omega &lt; 0\\)).<br><br><strong>Mueve los puntos \\(\\eta\\omega\\) y \\(\\varepsilon\\omega\\)</strong> a sus coordenadas exactas en la recta real. ¿Qué puedes deducir de este comportamiento?`;
+                
+                helpers.push(board.create('point', [r1, 0], { name: `η=${r1}`, size: 3, color: 'gray', fixed: true}));
+                helpers.push(board.create('point', [r2, 0], { name: `ε=${r2}`, size: 3, color: 'gray', fixed: true}));
+                
+                let rAC, rBC;
+                do {
+                    rAC = Math.floor(Math.random() * 9) - 4;
+                    rBC = Math.floor(Math.random() * 9) - 4;
+                } while (rAC >= rBC || rAC === (r1*rC) || rBC === (r2*rC));
+
+                pts.AC = board.create('glider', [rAC, 0, board.defaultAxes.x], { name: 'ηω', color: '#ef4444', size: 4, snapToGrid: true, snapSizeX: 0.5 });
+                pts.BC = board.create('glider', [rBC, 0, board.defaultAxes.x], { name: 'εω', color: '#38bdf8', size: 4, snapToGrid: true, snapSizeX: 0.5 });
+            }
+            else if (num === 3) {
+                document.getElementById('s1-instructions').innerHTML = `<i class="fa-solid fa-flag"></i> <b>Reto 3/3:</b> Inversos`;
+                optionsContainer.style.flexDirection = "row";
+                
+                let rA = Math.floor(Math.random() * 4) + 1; 
+                dynamics.a = rA;
+
+                document.getElementById('mission-text').innerHTML = `Dado $a = ${rA}$, <strong>posiciona</strong> los puntos de su inverso aditivo ($-a$) y su inverso multiplicativo ($a^{-1}$) en las coordenadas exactas.`;
+                
+                helpers.push(board.create('point', [rA, 0], { name: `a=${rA}`, size: 4, color: '#004080', fixed: true }));
+                
+                let rInvA, rInvM;
+                do {
+                    rInvA = Math.floor(Math.random() * 9) - 4;
+                    rInvM = Math.floor(Math.random() * 9) - 4;
+                } while (rInvA === -rA || rInvM === (1/rA) || rInvA === rInvM);
+
+                pts.InvA = board.create('glider', [rInvA, 0, board.defaultAxes.x], { name: '-a', color: '#ef4444', size: 4, snapToGrid: true, snapSizeX: 0.25 });
+                pts.InvM = board.create('glider', [rInvM, 0, board.defaultAxes.x], { name: 'a^{-1}', color: '#10b981', size: 4, snapToGrid: true, snapSizeX: 1/rA });
+            }
+
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+            document.getElementById('btn-validar-n1').innerText = "Validar Solución " + num + "/3";
+        }
+
+        function selectOption(elemento, valor) {
+            document.querySelectorAll('.math-option').forEach(el => el.classList.remove('selected'));
+            elemento.classList.add('selected');
+            state.opcionSeleccionada = valor;
+        }
+
+        function avanzarReto() {
+            if (state.retoActual < 3) {
+                state.retoActual++;
+                cargarReto(state.retoActual);
+            }
+        }
+
+        function validarGeometria() {
+            let esCorrecto = false;
+            let mensajeError = "";
+
+            if (state.retoActual === 1) {
+                let geometriaOK = (pts.A.X() < pts.B.X() && pts.B.X() < pts.C.X());
+                let analiticaOK = (state.opcionSeleccionada === 'a<c');
+                if (!geometriaOK && !analiticaOK) mensajeError = "Revisa el orden geométrico en la recta y la opción analítica.";
+                else if (!geometriaOK) mensajeError = "La analítica es correcta, pero el orden gráfico (ε, η, ω) está mal.";
+                else if (!analiticaOK) mensajeError = "Gráfico correcto, pero no seleccionaste la conclusión analítica correcta.";
+                esCorrecto = geometriaOK && analiticaOK;
+            } 
+            else if (state.retoActual === 2) {
+                let acReal = dynamics.a * dynamics.c;
+                let bcReal = dynamics.b * dynamics.c;
+                let ac_OK = Math.abs(pts.AC.X() - acReal) < 0.1;
+                let bc_OK = Math.abs(pts.BC.X() - bcReal) < 0.1;
+                
+                // Validación estricta para la opción correcta del Reto 2
+                let analiticaOK = (state.opcionSeleccionada === 'ac>bc');
+                
+                let geometriaOK = ac_OK && bc_OK;
+                
+                if (!geometriaOK && !analiticaOK) mensajeError = "Revisa las coordenadas exactas de ηω y εω, y selecciona la deducción analítica correcta.";
+                else if (!geometriaOK) mensajeError = `Posiciones incorrectas. Recuerda que ηω = ${dynamics.a}(${dynamics.c}) y εω = ${dynamics.b}(${dynamics.c}).`;
+                else if (!analiticaOK) mensajeError = "Las posiciones son correctas, pero no seleccionaste la deducción analítica correcta.";
+                
+                esCorrecto = geometriaOK && analiticaOK;
+            }
+            else if (state.retoActual === 3) {
+                let aReal = dynamics.a;
+                let invA_OK = Math.abs(pts.InvA.X() - (-aReal)) < 0.1;
+                let invM_OK = Math.abs(pts.InvM.X() - (1/aReal)) < 0.1;
+                esCorrecto = invA_OK && invM_OK;
+                
+                if (!invA_OK && !invM_OK) mensajeError = `Ambos inversos mal ubicados. El aditivo de ${aReal} suma 0, el multiplicativo da 1 al multiplicarlo por ${aReal}.`;
+                else if (!invA_OK) mensajeError = "El multiplicativo es correcto, pero el inverso aditivo (-a) está mal ubicado.";
+                else if (!invM_OK) mensajeError = "El aditivo es correcto, pero el inverso multiplicativo (1/a) está mal ubicado.";
+            }
+
+            if (esCorrecto) {
+                for (let key in pts) { pts[key].setAttribute({fixed: true}); }
+                document.querySelectorAll('.math-option').forEach(el => el.style.pointerEvents = 'none');
+                document.getElementById('btn-validar-n1').classList.add('hidden');
+                aciertosN1++;
+                swal("¡Precisión Exacta!", "Axioma demostrado correctamente. Observa el escenario antes de continuar.", "success").then(() => {
+                    if (state.retoActual < 3) {
+                        const nextButton = document.getElementById('btn-next-reto');
+                        nextButton.innerHTML = `<i class="fa-solid fa-arrow-right"></i> Continuar al Reto ${state.retoActual + 1}/3`;
+                        nextButton.classList.remove('hidden');
+                    } else {
+                        document.getElementById('btn-pasar-n2').classList.remove('hidden');
+                    }
+                });
+            } else {
+                for (let key in pts) { pts[key].setAttribute({fixed: true}); }
+                document.getElementById('btn-validar-n1').classList.add('hidden');
+                
+                restarVida(mensajeError);
+
+                if (state.vidas > 0) {
+                    document.getElementById('btn-retry-reto').classList.remove('hidden');
+                }
+            }
+        }
+
+        function restarVida(mensajeAyuda) {
+            if (state.vidas > 0) {
+                document.getElementById(`life${state.vidas}`).classList.add('lost');
+                state.vidas--;
+            }
+            if (state.vidas === 0) {
+                document.getElementById('btn-retry-reto').classList.add('hidden');
+                document.getElementById('btn-game-over').classList.remove('hidden');
+                swal({ title: "Tréboles Agotados", text: "Vidas agotadas en la etapa geométrica. Debes reiniciar.", icon: "error" });
+            } else {
+                swal("Axioma no cumplido", mensajeAyuda, "warning");
+            }
+        }
+
+        function reiniciarEscenarioGlobal() { location.reload(); }
+
+        // ================= ETAPA 2 Y 3 =================
+        function iniciarEtapa2() {
+            document.getElementById('main-title').innerText = "Etapa 2: Cuestionario Teórico";
+            document.getElementById('level-1-container').classList.add('hidden');
+            document.getElementById('level-2-container').classList.remove('hidden');
+            reiniciarCuestionarioEtapa2();
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function reiniciarCuestionarioEtapa2() {
+            preguntaActual = 1;
+            aciertosN2 = 0;
+            document.querySelectorAll('.quiz-step').forEach((step, index) => {
+                step.classList.toggle('hidden', index !== 0);
+            });
+            document.querySelectorAll('#level-2-container input[type="radio"]').forEach(input => {
+                input.checked = false;
+                input.disabled = false;
+            });
+            document.querySelectorAll('#level-2-container .h5p-feedback').forEach(feedback => {
+                feedback.innerHTML = "";
+                feedback.classList.add('hidden');
+                feedback.classList.remove('error');
+            });
+            document.getElementById('h5p-progress').style.width = "33.33%";
+            document.getElementById('h5p-counter').innerText = "1/3";
+            document.getElementById('btn-comprobar-quiz').classList.remove('hidden');
+            document.getElementById('btn-siguiente-quiz').classList.add('hidden');
+            document.getElementById('btn-siguiente-quiz').innerText = "Siguiente";
+        }
+
+        function comprobarPregunta() {
+            const s = document.querySelector(`input[name="q${preguntaActual}"]:checked`);
+            if(!s) { swal("Aviso", "Selecciona una opción.", "warning"); return; }
+            
+            const f = document.getElementById(`feedback-${preguntaActual}`);
+            f.classList.remove('hidden'); 
+            document.querySelectorAll(`input[name="q${preguntaActual}"]`).forEach(el => el.disabled = true);
+
+            if(s.value === "correcta") { f.innerHTML = "<strong>¡Correcto!</strong>"; f.classList.remove('error'); aciertosN2++; } 
+            else { f.innerHTML = "<strong>Incorrecto.</strong> Revisa la teoría axiomática."; f.classList.add('error'); }
+
+            document.getElementById('btn-comprobar-quiz').classList.add('hidden');
+            document.getElementById('btn-siguiente-quiz').classList.remove('hidden');
+            if (preguntaActual === 3) document.getElementById('btn-siguiente-quiz').innerText = "Pasar a Etapa 3";
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function siguientePregunta() {
+            if(preguntaActual === 3) {
+                document.getElementById('main-title').innerText = "Etapa 3: Rigor Formal";
+                document.getElementById('level-2-container').classList.add('hidden');
+                document.getElementById('level-3-container').classList.remove('hidden');
+                mezclarBancoAxiomas();
+                if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                return;
+            }
+            document.getElementById(`step-${preguntaActual}`).classList.add('hidden');
+            preguntaActual++;
+            document.getElementById(`step-${preguntaActual}`).classList.remove('hidden');
+            document.getElementById('h5p-progress').style.width = (preguntaActual/3)*100 + "%";
+            document.getElementById('h5p-counter').innerText = preguntaActual + "/3";
+            document.getElementById('btn-siguiente-quiz').classList.add('hidden');
+            document.getElementById('btn-comprobar-quiz').classList.remove('hidden');
+        }
+
+        function mezclarBancoAxiomas() {
+            const banco = document.getElementById('banco-palabras');
+            const axiomas = Array.from(banco.querySelectorAll('.draggable-word'));
+            for (let i = axiomas.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [axiomas[i], axiomas[j]] = [axiomas[j], axiomas[i]];
+            }
+            axiomas.forEach(axioma => banco.appendChild(axioma));
+        }
+
+        let draggedWord = null;
+        document.addEventListener("dragstart", e => { if(e.target.classList.contains('draggable-word')) draggedWord = e.target; });
+
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', e => e.preventDefault());
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                if (zone.hasChildNodes()) document.getElementById('banco-palabras').appendChild(zone.firstChild);
+                if (draggedWord) { zone.appendChild(draggedWord); draggedWord = null; }
+            });
+        });
+
+        const sortableList = document.getElementById('sortable-list');
+        let draggingListItem = null;
+
+        document.querySelectorAll('.sortable-item').forEach(item => {
+            item.addEventListener('dragstart', () => { draggingListItem = item; setTimeout(() => item.classList.add('dragging'), 0); });
+            item.addEventListener('dragend', () => { item.classList.remove('dragging'); draggingListItem = null; });
+        });
+
+        sortableList.addEventListener('dragover', e => {
+            e.preventDefault();
+            if(!draggingListItem) return; 
+            const afterElement = [...sortableList.querySelectorAll('.sortable-item:not(.dragging)')].reduce((closest, child) => {
+                const box = child.getBoundingClientRect(); const offset = e.clientY - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) return { offset: offset, element: child }; else return closest;
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+            if (afterElement == null) sortableList.appendChild(draggingListItem); else sortableList.insertBefore(draggingListItem, afterElement);
+        });
+
+        function evaluarEtapa3() {
+            let correctas = 0;
+            document.querySelectorAll('.draggable-word, .sortable-item').forEach(el => { el.setAttribute('draggable', 'false'); el.style.cursor = 'not-allowed'; });
+            
+            document.querySelectorAll('.drop-zone').forEach(z => {
+                if (z.hasChildNodes() && z.firstChild.dataset.value === z.dataset.expected) { correctas++; z.style.borderBottomColor = "var(--success)"; } 
+                else { z.style.borderBottomColor = "var(--danger)"; }
+            });
+
+            let orderCorrect = true;
+            document.querySelectorAll('.sortable-item').forEach((item, index) => {
+                if (parseInt(item.dataset.id) !== index + 1) { orderCorrect = false; item.style.borderColor = "var(--danger)"; item.style.backgroundColor = "#fef2f2"; } 
+                else { item.style.borderColor = "var(--success)"; item.style.backgroundColor = "#dcfce7"; }
+            });
+            if(orderCorrect) correctas++;
+
+            aciertosN3 = correctas;
+            document.getElementById('btn-evaluar-n3').classList.add('hidden');
+            document.getElementById('btn-ir-resumen').classList.remove('hidden');
+            swal("Evaluación completada", "Revisa tus aciertos en verde y errores en rojo.", "info");
+        }
+
+        function mostrarResumen() {
+            document.getElementById('main-title').innerText = "Resumen de Actividad";
+            document.getElementById('level-3-container').classList.add('hidden');
+            document.getElementById('resumen-final-container').classList.remove('hidden');
+            
+            document.getElementById('res-n1').innerText = aciertosN1 + "/3";
+            document.getElementById('res-n2').innerText = aciertosN2 + "/3";
+            document.getElementById('res-n3').innerText = aciertosN3 + "/8";
+            confetti({ particleCount: 2000, spread: 180, origin: { y: 0.6 } });
+        }
+    </script>
+</body>
+</html>
+
+
+
