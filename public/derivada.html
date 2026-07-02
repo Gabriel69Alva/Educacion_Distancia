@@ -139,12 +139,12 @@
     <div class="container">
 
         <div id="level-1-container">
-            <h1>Etapa 1: El Ojo del Tangencial</h1>
+            <h1>Etapa 1: Recta Tangente a la Gráfica</h1>
             <p style="text-align: center; color: #64748b; margin-bottom: 10px;">
                 La derivada de una función en un punto es, de forma exacta, el valor de la pendiente de su recta tangente en ese lugar.
             </p>
             <p class="legend">
-                Observa la curva fija y el punto marcado. Mueve el deslizador inferior para cambiar la pendiente de la recta roja hasta que sea <span class="target-badge">Perfectamente Tangente</span>.
+                Observa la curva fija y el punto marcado. Mueve el deslizador inferior para cambiar la pendiente de la recta roja hasta que sea <span class="target-badge">Tangente</span>
             </p>
 
             <div class="status-bar">
@@ -310,6 +310,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             brd = JXG.JSXGraph.initBoard('jxgbox', {
                 boundingbox: [-6, 6, 6, -6], axis: true, grid: true,
+                showCopyright: false,
                 pan: { enabled: false }, zoom: { enabled: false }, showNavigation: false
             });
             cargarNuevoReto();
@@ -337,7 +338,7 @@
 
             const indiceAleatorio = Math.floor(Math.random() * retos.length);
             retoActual = retos[indiceAleatorio];
-            document.getElementById('target-label').innerText = `Analizando: ${retoActual.desc} | Aciertos: ${score}/3 | Vidas: ${lives}/3`;
+            document.getElementById('target-label').innerText = ` | Aciertos: ${score}/3 | Vidas: ${lives}/3`;
 
             // Curva de la función
             curve = brd.create('functiongraph', [retoActual.f, -6, 6], {
@@ -350,7 +351,7 @@
                 name: 'P', size: 5, color: 'var(--purple)', fixed: true, layer: 5
             });
 
-            // PUNTO AUXILIAR DINÁMICO REACIVO AL SLIDER EXTERNO (Solución al refresco visual)
+            // PUNTO AUXILIAR DINÁMICO REACIVO AL SLIDER EXTERNO
             pUsuarioAux = brd.create('point', [
                 () => retoActual.x0 + 1,
                 () => retoActual.f(retoActual.x0) + parseFloat(document.getElementById('slope-slider').value)
@@ -446,10 +447,10 @@
         let preguntaActualN2 = 1;
         const totalN2 = 4;
         const feedbackN2 = {
-            1: "¡Correcto! Una secante cruza el cuerpo del gráfico uniendo dos coordenadas distintas, mientras que la tangente abraza el borde en un único punto representando la velocidad en ese microinstante.",
-            2: "Exacto. La variable $h$ representa el incremento o distancia en el eje horizontal. Al hacer que tienda a cero, los puntos de la secante se fusionan.",
-            3: "¡Muy bien! Una derivada negativa se traduce en una recta tangente con pendiente descendente, reflejando que la función original está perdiendo altura en esa zona.",
-            4: "Perfecto. Ese es el corazón del cálculo diferencial: el límite transforma la pendiente promedio de una secante común en la pendiente instantánea de la tangente."
+            1: "Una secante cruza el cuerpo del gráfico uniendo dos coordenadas distintas, mientras que la tangente abraza el borde en un único punto representando la velocidad en ese microinstante.",
+            2: "La variable $h$ representa el incremento o distancia en el eje horizontal. Al hacer que tienda a cero, los puntos de la secante se fusionan.",
+            3: "Una derivada negativa se traduce en una recta tangente con pendiente descendente, reflejando que la función original está perdiendo altura en esa zona.",
+            4: "El límite transforma la pendiente promedio de una secante común en la pendiente instantánea de la tangente."
         };
 
         function iniciarEtapa2() {
