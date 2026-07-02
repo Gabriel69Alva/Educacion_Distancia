@@ -4,582 +4,736 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratorio de Cálculo: Teorema del Valor Intermedio</title>
+    <title>Módulo Interactivo: Teorema del Valor Intermedio</title>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraph.css" />
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraphcore.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>
-        window.MathJax = {
-            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
-        };
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'],['\\(','\\)']]}});
     </script>
 
     <style>
-        /* Corrección de parpadeo: Asegurar que el padding no afecte el ancho total */
         * { box-sizing: border-box; }
 
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
+            --primary: #004080;
+            --primary-hover: #002d5a;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
-            --dark: #1e293b;
-            --bg-body: #f1f5f9;
-            --bg-card: #ffffff;
-            --border: #e2e8f0;
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+            --pink-intense: #ec4899;
         }
 
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background-color: var(--bg-body);
-            color: #334155;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: #f1f5f9; color: var(--text-dark); margin: 0; padding: 20px; display: flex; justify-content: center; }
 
-        .container {
-            max-width: 1000px;
-            width: 100%;
-            background: var(--bg-card);
-            padding: 35px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        }
+        .container { max-width: 1100px; width: 100%; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); overflow: hidden; }
 
-        h1 { color: var(--dark); font-weight: 700; text-align: center; margin-top: 0; font-size: 26px; }
-        h3 { font-size: 18px; font-weight: 600; color: var(--dark); margin-bottom: 15px; }
-        p { line-height: 1.6; font-size: 15px; }
+        .header-container { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid var(--border-color); min-height: 80px; }
+
+        h1 { color: var(--primary); font-weight: 700; text-align: center; margin: 0; }
+        h2 { border-left: 8px solid var(--success); padding-left: 15px; font-size: 15px; color: var(--primary); margin-top: 35px; }
+        h3 { font-size: 18px; margin-top: 0; color: var(--primary); }
 
         .hidden { display: none !important; }
 
-        /* Status Bar y Vidas */
-        .status-bar {
-            display: flex; justify-content: space-between; align-items: center;
-            background: #eef2ff; padding: 15px 20px; border-radius: 12px;
-            border: 1px solid #c7d2fe; margin-bottom: 25px; font-weight: 600;
-            color: var(--primary);
-        }
-        .lives-box i { color: #10b981; font-size: 20px; margin-left: 5px; transition: all 0.3s; }
-        .lives-box i.lost { color: #cbd5e1; opacity: 0.4; transform: scale(0.8); }
+        .btn-general { display: block; width: 100%; max-width: 300px; margin: 20px auto; padding: 14px; background-color: var(--primary); color: white; border: none; border-radius: 30px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .btn-general:hover:not(:disabled) { transform: scale(1.05); background-color: var(--primary-hover); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+        .btn-general:disabled { background-color: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-restart { background-color: var(--warning); }
+        .btn-restart:hover:not(:disabled) { background-color: #d97706; }
+        .btn-success { background-color: var(--success); }
+        .btn-success:hover:not(:disabled) { background-color: #059669; }
 
-        /* Workspace Stage 1 */
-        .workspace { 
-            display: flex; 
-            gap: 25px; 
-            /* Eliminamos flex-wrap para controlar la ruptura manualmente y evitar parpadeos */
+        .status-bar { display: flex; justify-content: space-between; align-items: center; background: #e0f2fe; padding: 15px 20px; border-radius: 10px; border: 1px solid #bae6fd; margin-bottom: 25px; font-weight: 600; color: var(--primary); }
+        .lives-box i { color: var(--success); font-size: 22px; margin-left: 5px; display: inline-block; position: relative; }
+
+        @keyframes loseLifeAnim {
+            0% { transform: scale(1); opacity: 1; color: var(--success); }
+            20% { transform: scale(1.8); color: var(--success); }
+            40% { transform: scale(0.9); color: var(--success); }
+            60% { transform: scale(1.4); color: var(--success); }
+            100% { transform: scale(0.6) translateY(300px) rotate(45deg); opacity: 0; color: #94a3b8; }
         }
+        .lives-box i.lost { animation: loseLifeAnim 3s ease-in-out forwards; }
+
+        .workspace-layout { display: flex; gap: 24px; margin-top: 15px; }
+        .theory-side { width: 350px; flex-shrink: 0; background: var(--bg-light); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        .canvas-side { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+        .jxgbox-wrapper { width: 100%; height: 400px; border-radius: 10px; border: 2px solid var(--border-color); overflow: hidden; background: #fff; position: relative; }
+
+        @media (max-width: 850px) { .workspace-layout { flex-direction: column; } .theory-side, .canvas-side { width: 100%; } }
+
+        .options-container { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .h5p-option { display: flex; padding: 14px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; background: #fff; transition: 0.2s; font-size: 14.5px; align-items: flex-start; line-height: 1.4; }
+        .fat-option { padding: 15px 20px !important; font-size: 14.5px; line-height: 1.6; align-items: center; }
+        .fat-option input { flex-shrink: 0; margin-top: 2px !important; }
+        .h5p-option:hover { border-color: var(--primary); background: #e0f2fe; }
+        .h5p-option input { margin-right: 12px; margin-top: 3px; accent-color: var(--primary); cursor: pointer; transform: scale(1.1); }
+
+        .h5p-feedback { padding: 20px; border-radius: 8px; margin-top: 20px; background: #f1f5f9; border-left: 6px solid var(--primary); }
+        .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; }
+
+        .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 8px; margin: 30px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--success); width: 33.33%; transition: 0.4s; }
+
+        .n3-section { background: var(--bg-light); padding: 30px; border-radius: 12px; margin-bottom: 30px; border: 1px solid var(--border-color); }
+        .banco-palabras { margin-top: 25px; display: flex; gap: 10px; flex-wrap: wrap; padding: 20px; background: #e2e8f0; border-radius: 8px; border: 1px dashed #94a3b8; }
+        .drop-zone { display: inline-flex; align-items: center; justify-content: center; width: 135px; min-height: 28px; padding: 2px 4px; border-bottom: 2px solid var(--primary); vertical-align: middle; text-align: center; background: white; border-radius: 4px 4px 0 0; }
+        .drop-zone .draggable-word { font-size: 12px; padding: 4px 7px; box-shadow: none; max-width: 100%; white-space: normal; line-height: 1.15; }
+        .draggable-word { cursor: grab; font-weight: 600; font-size: 13px; background-color: var(--primary); color: white; border: none; padding: 6px 10px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); display: inline-block; }
+        .draggable-word:active { cursor: grabbing; }
+
+        .sortable-item { background: #fff; border: 1px solid var(--border-color); padding: 15px; border-radius: 6px; cursor: grab; display: flex; align-items: center; gap: 15px; font-weight: 500; transition: background 0.2s; margin-bottom: 10px; }
+        .sortable-item:active { cursor: grabbing; }
+        .sortable-item.dragging { opacity: 0.4; background: #e2e8f0; }
+
+        select.inline-select { padding: 4px 8px; font-size: 14px; border: 1px solid var(--primary); border-radius: 4px; color: var(--primary); font-weight: 600; cursor: pointer; max-width: 100%; white-space: normal; background: #fff; }
         
-        .instructions-panel { 
-            width: 280px; 
-            flex-shrink: 0; /* Evita que el panel se encoja de más */
-            background: #f8fafc; 
-            padding: 20px; 
-            border-radius: 12px; 
-            border: 1px solid var(--border); 
-        }
-        
-        .canvas-panel { 
-            flex: 1; 
-            min-width: 0; /* Permite que el contenedor se ajuste sin romper el flex */
-        }
-        
-        .jxgbox-responsive { 
-            width: 100%; 
-            height: 500px; 
-            border-radius: 12px; 
-            border: 2px solid var(--border); 
-            background: #fff; 
-            overflow: hidden; /* Mantiene los gráficos dentro de sus límites */
-        }
-
-        /* Media Query para forzar la columna limpia en pantallas pequeñas y evitar el loop de JSXGraph */
-        @media (max-width: 850px) {
-            .workspace {
-                flex-direction: column;
-            }
-            .instructions-panel {
-                width: 100%;
-            }
-            .canvas-panel {
-                width: 100%;
-            }
-        }
-
-        ul.steps { padding-left: 20px; font-size: 14.5px; line-height: 1.6; margin-bottom: 20px; }
-        ul.steps li { margin-bottom: 8px; }
-
-        /* Botones */
-        .btn-action {
-            display: block; width: 100%; padding: 14px; border: none; border-radius: 8px;
-            font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s ease;
-            text-align: center; margin-top: 10px;
-        }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
-        .btn-success { background: var(--success); color: white; }
-        .btn-success:hover { background: #059669; }
-        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-        .btn-outline:hover { background: #eef2ff; }
-        .btn-action:disabled { background: #cbd5e1; color: #94a3b8; cursor: not-allowed; border-color:#cbd5e1; }
-
-        /* Etapa 2: Quiz */
-        .quiz-card { background: #f8fafc; border: 1px solid var(--border); padding: 25px; border-radius: 12px; margin-bottom: 20px; }
-        .option-item {
-            display: flex; align-items: center; padding: 14px 15px; border: 1px solid var(--border);
-            margin-bottom: 10px; border-radius: 8px; cursor: pointer; background: #fff; transition: 0.2s;
-        }
-        .option-item:hover { border-color: var(--primary); background: #eef2ff; }
-        .option-item input { margin-right: 12px; transform: scale(1.2); cursor: pointer; }
-        .feedback { padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 14.5px; border-left: 5px solid var(--success); background: #ecfdf5; }
-        .feedback.wrong { border-left-color: var(--danger); background: #fef2f2; color: #991b1b; }
-
-        /* Etapa 3: Analítica */
-        .formal-box { background: #f8fafc; padding: 30px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; line-height: 2.2; font-size: 15.5px; text-align: justify; }
-        select.math-drop {
-            padding: 6px 12px; border: 2px solid var(--border); border-radius: 6px; font-size: 15px;
-            font-weight: 600; color: var(--primary); background: #fff; cursor: pointer; outline: none; margin: 0 5px;
-        }
-        select.math-drop:focus { border-color: var(--primary); }
-
-        /* Resumen Final */
-        .summary-wrapper { border: 2px solid var(--success); background: #ecfdf5; border-radius: 12px; padding: 25px; }
-        .stat-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #a7f3d0; font-size: 15px; font-weight: 500; }
-        .stat-row .val { font-weight: 700; color: var(--dark); }
+        .score-val { font-size: 28px; font-weight: 700; color: var(--primary); text-align: center; }
     </style>
 </head>
 
 <body>
 
     <div class="container">
+        <header class="header-container">
+            <h1 id="main-title">Etapa 1: Condiciones Suficientes del TVI</h1>
+        </header>
 
-        <div id="stage-1">
-            <h1>Actividad 1: Laboratorio de gráficas</h1>
-            <p style="text-align: center; color: #64748b; margin-top:-5px;">Descubre qué condiciones son absolutamente necesarias para asegurar un cruce con el eje $X$.</p>
+        <div id="level-1-container">
+            <p style="text-align: center; color: #64748b; margin-top: -15px; margin-bottom: 25px; line-height: 1.6; font-size: 15px;">
+                Manipula las gráficas de acuerdo con la consigna de cada desafío.
+            </p>
 
             <div class="status-bar">
-                <div id="score-text">Configuraciones Exitosas: <span id="s1-score" style="font-size: 18px; font-weight: 700;">0</span> / 3</div>
-                <div class="lives-box" id="lives-container">
+                <div id="s1-instructions"><i class="fa-solid fa-flag"></i> <b>Desafío 1/5:</b> Preparando...</div>
+                <div class="lives-box">
+                    Vidas:
                     <i class="fa-solid fa-clover" id="life1"></i>
                     <i class="fa-solid fa-clover" id="life2"></i>
                     <i class="fa-solid fa-clover" id="life3"></i>
                 </div>
             </div>
 
-            <div class="workspace">
-                <div class="instructions-panel">
-                    <h3><i class="fa-solid fa-magnifying-glass"></i> Misión</h3>
-                    <ul class="steps">
-                        <li>Utiliza los puntos deslizables para manipular la curva.</li>
-                        <li>Tu objetivo es transformar el escenario hasta garantizar que el trazo tenga una intersección segura con la línea horizontal del centro ($y=0$).</li>
-                        <li>Al terminar de mover los puntos, presiona "Validar". Observa qué sucede si fallas, eso te dará pistas de las reglas matemáticas ocultas.</li>
-                    </ul>
-                    <button class="btn-action btn-primary" id="btn-validate" onclick="validarTVI()">Validar Función</button>
-                    <button class="btn-action btn-outline hidden" id="btn-reset-round" onclick="generarEscenarioAleatorio()">Siguiente Intento</button>
+            <div class="workspace-layout" id="main-layout">
+                <div class="theory-side" id="theory-panel">
+                    <h3 style="margin-top:0; color: var(--primary);"><i class="fa-solid fa-circle-exclamation"></i>
+                        Desafío</h3>
+                    <div id="mission-text"
+                        style="font-size: 14.5px; line-height: 1.5; text-align: justify; margin-bottom: 10px;">
+                        Cargando reto matemático...
+                    </div>
+
+                    <div id="math-options-container" class="options-container hidden"></div>
+
+                    <button class="btn-general" id="btn-validar-n1" onclick="validarGeometria()"><i class="fa-solid fa-check"></i> Validar Solución</button>
+                    <button class="btn-general btn-restart hidden" id="btn-retry-reto" onclick="reintentarReto()"><i class="fa-solid fa-rotate-right"></i> Reintentar Reto</button>
+                    <button class="btn-general btn-success hidden" id="btn-next-reto" onclick="avanzarReto()"><i class="fa-solid fa-arrow-right"></i> Continuar al siguiente desafío</button>
+                    <button class="btn-general btn-restart hidden" id="btn-game-over" onclick="reiniciarEscenarioGlobal()"><i class="fa-solid fa-skull"></i> Reiniciar Escenario</button>
+                    <button class="btn-general btn-success hidden" id="btn-pasar-n2" onclick="iniciarEtapa2()">Continuar a Etapa 2 🚀</button>
                 </div>
 
-                <div class="canvas-panel">
-                    <div id="jxgbox" class="jxgbox-responsive"></div>
+                <div class="canvas-side" id="canvas-panel">
+                    <div id="graph-container" style="position:relative; width: 100%;">
+                        <div id="jxgbox" class="jxgbox-wrapper"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="level-2-container" class="hidden">
+            <div class="progress-container"><div class="progress-bar" id="h5p-progress"></div></div>
+            <p id="h5p-counter" style="text-align: right; font-weight: 600; color: var(--primary);">1/3</p>
+
+            <div id="step-1" class="quiz-step">
+                <h3>1. Si $f$ es continua en $[a,b]$ y sabemos que $f(a)=-2$ y $f(b)=5$, ¿qué nos garantiza el Teorema del Valor Intermedio (TVI)?</h3>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> Que existe al menos un &nbsp; $c \in (a,b)$ &nbsp;tal que &nbsp;$f(c)=0$.</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Que la función cruza el eje X exactamente a la mitad del intervalo.</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Que la función será creciente en todo el intervalo &nbsp;$(a,b)$.</label>
+                <div id="feedback-1" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-2" class="quiz-step hidden">
+                <h3>2. ¿Por qué es importante que la función sea continua para aplicar el TVI?</h3>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Porque si no es continua, no se pueden calcular sus derivadas.</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> Porque si hay un salto o discontinuidad, la función podría pasar de valores negativos a positivos evadiendo el cero.</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Porque sin continuidad no se puede garantizar que la función sea monótona.</label>
+                <div id="feedback-2" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-3" class="quiz-step hidden">
+                <h3>3. El TVI no solo busca raíces ($f(c)=0$). Si $f(a)=10$ y $f(b)=20$, ¿qué valor $k$ está garantizado que la función alcance?</h3>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> Cualquier valor &nbsp; $k$ &nbsp; mayor a 20.</label>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> Cualquier valor &nbsp;$k$ &nbsp; comprendido entre 10 y 20.</label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> Solamente el valor promedio &nbsp;$k=15$.</label>
+                <div id="feedback-3" class="h5p-feedback hidden"></div>
+            </div>
+
+            <button class="btn-general" id="btn-comprobar-quiz" onclick="comprobarPregunta()"><i class="fa-solid fa-clipboard-check"></i> Comprobar</button>
+            <button class="btn-general btn-success hidden" id="btn-siguiente-quiz" onclick="siguientePregunta()">Siguiente</button>
+        </div>
+
+        <div id="level-3-container" class="hidden">
+            <div class="n3-section">
+                <h3>A. Ley de Conservación del Signo</h3>
+                <p style="margin-bottom:25px; color:#64748b;">Para demostrar el TVI necesitamos aplicar la ley de conservación del signo estudiada en el módulo anterior.
+                    <br>Arrastra los conceptos correctos para formular la ley de conservación del signo.</p>
+                <p style="line-height:2.2;">
+                    Sea $f$ una función <span class="drop-zone" data-expected="continua" data-bank="banco-palabras-A"></span> en un punto $c$. 
+                    Si $f(c) > 0$, entonces <span class="drop-zone" data-expected="existe" data-bank="banco-palabras-A"></span> $\delta > 0$ tal que <span class="drop-zone" data-expected="para_todo" data-bank="banco-palabras-A"></span> $x$ en el intervalo abierto $(c-\delta, c+\delta)$, 
+                    se cumple que $f(x)$ es estrictamente <span class="drop-zone" data-expected="positiva" data-bank="banco-palabras-A"></span>. 
+                    Esta propiedad se deriva directamente de la definición formal de continuidad de una función.
+                </p>
+                <div id="banco-palabras-A" class="banco-palabras">
+                    <h4 style="width: 100%; margin-top: 0; margin-bottom: 5px; color: var(--primary);"><i class="fa-solid fa-layer-group"></i> Banco de Conceptos (Parte A)</h4>
+                    <span class="draggable-word" draggable="true" data-value="continua">Continua</span>
+                    <span class="draggable-word" draggable="true" data-value="existe">Existe</span>
+                     <span class="draggable-word" draggable="true" data-value="para_todo">Para todo</span>
+                    <span class="draggable-word" draggable="true" data-value="positiva">Positiva</span>
+                    <span class="draggable-word" draggable="true" data-value="falso">Decreciente</span>
+                    <span class="draggable-word" draggable="true" data-value="falso">Creciente</span>
                 </div>
             </div>
 
-            <button class="btn-action btn-success hidden" id="btn-to-s2" onclick="irEtapa2()" style="max-width: 350px; margin: 25px auto 0;">Analizar Descubrimiento <i class="fa-solid fa-arrow-right"></i></button>
+            <div class="n3-section">
+                <h3>B. Demostración del TVI (Interacción guiada)</h3>
+                <p style="margin-bottom:25px; color:#64748b;">Arrastra los conceptos para completar la demostración y elige la contradicción lógica en cada caso.</p>
+
+                <p style="line-height:2.2;"> <strong>Demostración.</strong> Sea $\alpha = \sup A$, en donde $A = \{x \in [a,b] : f(x) \lt 0\}$. Supongamos $ a \lt  \alpha \lt  b $. El caso $a=\alpha$ y $b= \alpha$ son análogos. La idea es demostrar que $f(\alpha) = 0.$</p>
+
+                <p style="line-height:2.2; background: #eff6ff; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                    <strong>Caso 1.</strong> Supongamos que $f(\alpha) \lt 0$.
+                    Observa que $f$ satisface las hipótesis del lema de conservación del signo, es decir, $f$ es continua en $\alpha$ y $f(\alpha) \lt 0$.
+                    De manera que existe una vecindad de radio $\delta$ con centro en $\alpha$ tal que para toda $x\in (\alpha-\delta,\alpha+\delta)$ ocurre que <span class="drop-zone" data-expected="f_negativa" data-bank="banco-palabras-B"></span>.
+                    En particular,<span class="drop-zone" data-expected="existe" data-bank="banco-palabras-B"></span> $\beta\in(\alpha,\alpha+\delta)$ tal que <span class="drop-zone" data-expected="f(beta)_negativa" data-bank="banco-palabras-B"></span>.
+                    <br>
+                    <strong>¿Por qué esto es una contradicción?</strong><br>
+                    <select id="select-contra-1" class="inline-select tex2jax_ignore" autocomplete="off">
+                        <option value="">-- Elige la razón --</option>
+                        <option value="falso1">Porque el valor f(β) debería ser obligatoriamente positivo, contradiciendo que α es cota superior (supremo).</option>
+                        <option value="correcto">Porque β ∈ A y β > α, contradiciendo que α es cota superior (supremo).</option>
+                        <option value="falso2">Porque β se encuentra fuera del intervalo inicial [a,b], contradiciendo que α es cota superior (supremo).</option>
+                    </select>
+                </p>
+
+                <p style="line-height:2.2; background: #eff6ff; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                    <strong>Caso 2.</strong> Supongamos que $f(\alpha)>0$. Observa que $f$ satisface las hipótesis del lema de conservación del signo, es decir, $f$ es continua en $\alpha$ y $f(\alpha) > 0$.
+                    De manera que, existe una vecindad de radio $\delta$ con centro en $\alpha$ tal que <span class="drop-zone" data-expected="para_toda" data-bank="banco-palabras-B"></span> $x\in(\alpha-\delta,\alpha+\delta)$ se satisface que <span class="drop-zone" data-expected="f_positiva" data-bank="banco-palabras-B"></span>.
+                    Así, se tiene que $(\alpha-\delta,\alpha+\delta)\cap A=$ <span class="drop-zone" data-expected="vacío" data-bank="banco-palabras-B"></span>.
+                    <br><strong>¿Por qué esto es una contradicción?</strong><br>
+                    <select id="select-contra-2" class="inline-select tex2jax_ignore" autocomplete="off">
+                        <option value="">-- Elige la razón --</option>
+                        <option value="falso1">Porque el conjunto A por definición no puede ser vacío en ningún caso, de lo contrario no existe un supremo.</option>
+                        <option value="falso2">Porque α debe pertenecer obligatoriamente al conjunto A, de lo contrario, α no sería el supremo de A.</option>
+                        <option value="correcto">Porque α - δ sería una cota superior de A más chica que α, contradiciendo que α es la menor de las cotas superiores.</option>
+                    </select>
+                </p>
+
+                <div id="banco-palabras-B" class="banco-palabras">
+                    <h4 style="width: 100%; margin-top: 0; margin-bottom: 5px; color: var(--primary);"><i class="fa-solid fa-layer-group"></i> Banco de Conceptos (Parte B)</h4>
+                    <span class="draggable-word" draggable="true" data-value="f_negativa">$f(x) \lt 0$</span>
+                    <span class="draggable-word" draggable="true" data-value="existe">Existe</span>
+                    <span class="draggable-word" draggable="true" data-value="f(beta)_negativa">$f(\beta) \lt 0$</span>
+                    <span class="draggable-word" draggable="true" data-value="para_toda">Para todo</span>
+                    <span class="draggable-word" draggable="true" data-value="f_positiva">$f(x) \gt 0$</span>
+                    <span class="draggable-word" draggable="true" data-value="vacío">$\emptyset$</span>
+                    <span class="draggable-word" draggable="true" data-value="falso">$\alpha$</span>
+                    <span class="draggable-word" draggable="true" data-value="falso">Cero</span>
+                    <span class="draggable-word" draggable="true" data-value="falso">$A$</span>
+                </div>
+            </div>
+
+            <div class="n3-section">
+                <h3>C. Ordenación Lógica</h3>
+                <p style="margin-bottom: 20px; color: #64748b;">Ordena los pasos lógicos clave que usaste para demostrar el Teorema del Valor Intermedio (Versión teorema de Bolzano):</p>
+                <div id="sortable-list" style="display: flex; flex-direction: column;">
+                    <div class="sortable-item" draggable="true" data-id="2"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Observar que el conjunto $A$ no es vacío y está acotado superiormente</div>
+                    <div class="sortable-item" draggable="true" data-id="4"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Aplicar el lema de conservación del signo a $f(\alpha) \lt 0$ y $f(\beta) \gt 0$</div>
+                    <div class="sortable-item" draggable="true" data-id="1"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Construir el conjunto auxiliar $A = \{x \in [a,b] : f(x) \lt 0\}$</div>
+                    <div class="sortable-item" draggable="true" data-id="3"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Tomar $\alpha = \sup A$ (el supremo del conjunto)</div>
+                    <div class="sortable-item" draggable="true" data-id="5"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Reconocer una contradicción con la definición del supremo</div>
+                    <div class="sortable-item" draggable="true" data-id="6"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Concluir por reducción al absurdo que $f(\alpha) = 0$</div>
+                </div>
+            </div>
+
+            <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()"><i class="fa-solid fa-flag-checkered"></i> Evaluar Final</button>
+            <button class="btn-general btn-success hidden" id="btn-ir-resumen" onclick="mostrarResumen()">Ir al Resumen de Actividad <i class="fa-solid fa-arrow-right"></i></button>
         </div>
 
-        <div id="stage-2" class="hidden">
-            <h1>Etapa 2: Formalización del descubrimiento</h1>
-            <p style="text-align: center; color: #64748b;">Las reglas que acabas de descubrir forman el Teorema del Valor Intermedio.</p>
-            
-            <h3 style="text-align: right; color: var(--primary);" id="quiz-counter">Pregunta 1 de 3</h3>
-
-            <div id="q1-block" class="quiz-card">
-                <h3 style="margin-top:0;">1. En la actividad anterior tuviste que unir dos pedazos separados de la gráfica. ¿Qué hipótesis matemática representa esta acción?</h3>
-                <label class="option-item"><input type="radio" name="q1" value="bad"> <span>A) La derivabilidad de la función.</span></label>
-                <label class="option-item"><input type="radio" name="q1" value="good"> <span>B) La continuidad de la función en todo el intervalo cerrado.</span></label>
-                <label class="option-item"><input type="radio" name="q1" value="bad"> <span>C) La simetría de la función.</span></label>
-                <div id="fb-q1" class="feedback hidden"></div>
+        <div id="resumen-final-container" class="hidden" style="text-align: center;">
+            <h1 style="color: var(--primary);">¡Módulo Completado!</h1>
+            <p style="color: #64748b;">Has Completado el Módulo Teórico del Teorema del Valor Intermedio.</p>
+            <div style="display:flex; justify-content: space-around; margin: 40px 0; flex-wrap: wrap; gap: 20px;">
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 1 (Gráficas)</p>
+                    <div class="score-val" id="res-n1">0/5</div>
+                </div>
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 2 (Teoría)</p>
+                    <div class="score-val" id="res-n2">0/3</div>
+                </div>
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 3 (Rigor)</p>
+                    <div class="score-val" id="res-n3">0/13</div>
+                </div>
             </div>
-
-            <div id="q2-block" class="quiz-card hidden">
-                <h3 style="margin-top:0;">2. También tuviste que colocar los extremos en lados opuestos del eje central. Si $f(-3) = -4$ y $f(3) = 2$, y la función es continua, ¿qué podemos garantizar?</h3>
-                <label class="option-item"><input type="radio" name="q2" value="good"> <span>A) Que existe al menos un punto $c$ en el intervalo $(-3, 3)$ donde la función vale $0$.</span></label>
-                <label class="option-item"><input type="radio" name="q2" value="bad"> <span>B) Que la función cruza exactamente por el origen $(0,0)$.</span></label>
-                <label class="option-item"><input type="radio" name="q2" value="bad"> <span>C) Que la gráfica no tiene curvas y es una línea recta diagonal.</span></label>
-                <div id="fb-q2" class="feedback hidden"></div>
-            </div>
-
-            <div id="q3-block" class="quiz-card hidden">
-                <h3 style="margin-top:0;">3. El Teorema del Valor Intermedio no solo aplica para buscar ceros ($k=0$), sino para cualquier altura $k$. Si $f(a)$ y $f(b)$ son los extremos, ¿dónde debe estar la altura $k$?</h3>
-                <label class="option-item"><input type="radio" name="q3" value="bad"> <span>A) Debe ser igual al valor máximo de toda la función.</span></label>
-                <label class="option-item"><input type="radio" name="q3" value="bad"> <span>B) Debe estar por encima de $f(b)$.</span></label>
-                <label class="option-item"><input type="radio" name="q3" value="good"> <span>C) Debe ser un valor estrictamente entre $f(a)$ y $f(b)$.</span></label>
-                <div id="fb-q3" class="feedback hidden"></div>
-            </div>
-
-            <button class="btn-action btn-primary" id="btn-eval-quiz" onclick="evaluarPregunta()" style="max-width: 300px; margin: 0 auto;">Comprobar</button>
-            <button class="btn-action btn-outline hidden" id="btn-next-q" onclick="siguientePregunta()" style="max-width: 300px; margin: 0 auto;">Siguiente Pregunta</button>
-            <button class="btn-action btn-success hidden" id="btn-to-s3" onclick="irEtapa3()" style="max-width: 300px; margin: 0 auto;">Pasar a Etapa 3 <i class="fa-solid fa-arrow-right"></i></button>
-        </div>
-
-        <div id="stage-3" class="hidden">
-            <h1>Etapa 3: Aplicación analítica</h1>
-            <p style="text-align: center; color: #64748b;">Completa la demostración formal para localizar la raíz de un polinomio usando tus conocimientos.</p>
-
-            <div class="formal-box">
-                Sea la función polinomial $f(x) = x^3 - x - 2$. Queremos demostrar que tiene al menos una raíz real en el intervalo $[1, 2]$. <br><br>
-                Primero, evaluamos la función en los extremos del intervalo:<br>
-                $f(1) = (1)^3 - 1 - 2 = -2$<br>
-                $f(2) = (2)^3 - 2 - 2 = 4$<br><br>
-                
-                Dado que la función es un polinomio, sabemos categóricamente que cumple la primera regla que descubriste; es decir, es 
-                <select id="drop-1" class="math-drop">
-                    <option value="">-- Selecciona --</option>
-                    <option value="discontinua">Discontinua</option>
-                    <option value="continua">Continua</option>
-                    <option value="lineal">Lineal</option>
-                </select> en todo su dominio.
-                Además, observamos que los signos en los extremos son opuestos, por lo que el valor $k=0$ está entre $f(1)$ y $f(2)$.<br><br>
-
-                Por lo tanto, según el Teorema del Valor Intermedio, podemos garantizar que existe al menos un número $c$ en el intervalo abierto 
-                <select id="drop-2" class="math-drop">
-                    <option value="">-- Selecciona --</option>
-                    <option value="v1">(-2, 4)</option>
-                    <option value="v2">(1, 2)</option>
-                    <option value="v3">(-3, 3)</option>
-                </select>
-                tal que 
-                <select id="drop-3" class="math-drop">
-                    <option value="">-- Selecciona --</option>
-                    <option value="v1">f(c) = 0</option>
-                    <option value="v2">f'(c) = 0</option>
-                    <option value="v3">f(c) = c</option>
-                </select>.
-            </div>
-
-            <button class="btn-action btn-primary" id="btn-eval-s3" onclick="evaluarEtapa3()" style="max-width: 300px; margin: 0 auto;">Validar Deducción</button>
-            <button class="btn-action btn-outline" onclick="reiniciarActividadCompleta()" style="max-width: 300px; margin: 15px auto 0;">Reiniciar Práctica Completa</button>
+            <button class="btn-general btn-restart" onclick="reiniciarEscenarioGlobal()"><i class="fa-solid fa-rotate-left"></i> REINICIAR ESCENARIO</button>
         </div>
 
     </div>
 
     <script>
-        const jsConfetti = new JSConfetti();
-        
-        let state = {
-            vidas: 3,
-            funcionesCorrectas: 0,
-            quizIndex: 1,
-            erroresTotales: 0,
-            tiempoInicio: Date.now()
-        };
+        let state = { vidas: 3, retoActual: 1 };
+        let aciertosN1 = 0, aciertosN2 = 0, aciertosN3 = 0, preguntaActual = 1;
+        let board;
+        let gLeft, gMid, gRight;
+        let boardObjects = {}; 
 
-        // Variables de JSXGraph
-        let board, curveLeft, curveRight;
-        let gLeft, gMid1, gMid2, gRight; // Gliders
-        let xAxisLine, rootPoints = [];
-
+        // LIMPIAR CASILLAS AL CARGAR LA PÁGINA (Evita el caché del navegador y autocompletados)
         document.addEventListener('DOMContentLoaded', () => {
-            initBoard();
+            document.querySelectorAll('select').forEach(s => s.value = "");
+            cargarReto(state.retoActual);
         });
 
-        // ==========================================
-        // ETAPA 1: GRÁFICOS (DESCUBRIMIENTO)
-        // ==========================================
-        function initBoard() {
-            if (board) JXG.JSXGraph.freeBoard(board);
+        const retosTVI = [
+            {
+                num: 1,
+                text: "Mueve los puntos de control (extremos o centro) de modo que la función evada (no cruce) el eje X ¿Qué propiedades matemáticas modificaste en la gráfica?",
+                correct: ['b', 'd'],
+                bbox: [-4, 6, 4, -6],
+                options: `
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> La continuidad de &nbsp; $f$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> El cambio de signo en alguno de los valores extremos del intervalo.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> La pérdida necesaria de la inyectividad.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> El valor de &nbsp; $f(0)$.</label>
+                `,
+                drawCustom: (brd) => {
+                    gLeft = brd.create('glider', [-3, -4, brd.create('line', [[-3,0],[-3,1]], {visible:false})], {name: 'A', color: '#4f46e5', size: 4});
+                    gMid = brd.create('glider', [0, 0, brd.create('line', [[0,0],[0,1]], {visible:false})], {name: 'B', color: '#4f46e5', size: 4});
+                    gRight = brd.create('glider', [3, 4, brd.create('line', [[3,0],[3,1]], {visible:false})], {name: 'C', color: '#4f46e5', size: 4});
+                    brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([gLeft, gMid, gRight]), {strokeColor: '#ec4899', strokeWidth: 3});
+                    brd.create('line', [[-10,0], [10,0]], {strokeColor: '#334155', strokeWidth: 1, dash: 2}); 
+                },
+                validate: () => {
+                    let y1 = gLeft.Y(), y2 = gMid.Y(), y3 = gRight.Y();
+                    return ((y1 > 0 && y2 > 0 && y3 > 0) || (y1 < 0 && y2 < 0 && y3 < 0));
+                },
+                hint: "Para evadir el eje, los tres puntos de la curva deben ser todos positivos o todos negativos."
+            },
+            {
+                num: 2,
+                text: "Mueve la posición de la raíz (el punto rojo) verticalmente para evadir el cruce con el eje X ¿Qué sucede con la gráfica de la función?",
+                correct: ['a', 'b', 'c'],
+                bbox: [0, 6, 6, -6],
+                options: `
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> Se vuelve discontinua.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> Se pierde la monotonía de &nbsp; $f$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> $f(3) > 0 \\text{ o } f(3) < 0$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> Cambia el signo de los valores en los extremos del intervalo.</label>
+                `,
+                drawCustom: (brd) => {
+                    brd.create('line', [[-10,0], [10,0]], {strokeColor: '#334155', strokeWidth: 1, dash: 2}); 
+                    let pA = brd.create('point', [1, -4], {fixed: true, name: '$f(1)$', size: 3, color: '#004080'});
+                    let pC = brd.create('point', [5, 4], {fixed: true, name: '$f(5)$', size: 3, color: '#004080'});
+                    brd.create('point', [3, 0], {fixed: true, name: '', size: 3, fillColor: 'white', strokeColor: '#004080'});
+                    brd.create('segment', [pA, [2.95, -0.1]], {strokeColor: '#004080', strokeWidth: 3});
+                    brd.create('segment', [[3.05, 0.1], pC], {strokeColor: '#004080', strokeWidth: 3});
+                    gMid = brd.create('glider', [3, 0, brd.create('line', [[3,0],[3,1]], {visible:false})], {name: '$f(3)$', color: '#ef4444', size: 5});
+                },
+                validate: () => {
+                    return Math.abs(gMid.Y()) > 0.5;
+                },
+                hint: "Mueve el punto rojo central (raíz) sobre la vertical."
+            },
+            {
+                num: 3,
+                text: "¿Qué propiedad matemática impide que la gráfica de esta función tenga una raíz? (Mueve los extremos, el punto central y puntos huecos y descubre qué sucede con la gráfica).",
+                correct: ['a'],
+                bbox: [0, 5, 5, -3],
+                options: `
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> La discontinuidad en los extremos del intervalo.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> $f$ &nbsp; siempre es positiva.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> $f(1)>0 \\text{ o } f(4)<0$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> $f$ &nbsp; no está definida en &nbsp; $[1,4]$.</label>
+                `,
+                drawCustom: (brd) => {
+                    brd.create('line', [[-10,0], [10,0]], {strokeColor: '#334155', strokeWidth: 1, dash: 2}); 
 
-            board = JXG.JSXGraph.initBoard('jxgbox', {
-                boundingbox: [-4, 5, 4, -5],
-                axis: true,
-                showCopyright: false,
-                pan: { enabled: false },
-                zoom: { enabled: false }
-            });
+                    let sLeftPos = brd.create('segment', [[1, 0.05], [1, 10]], {visible:false});
+                    let sRightNeg = brd.create('segment', [[4, -0.05], [4, -10]], {visible:false});
+                    let sRightPos = brd.create('segment', [[4, 0.05], [4, 10]], {visible:false});
+                    let sMidPos = brd.create('segment', [[2.5, 0.05], [2.5, 10]], {visible:false});
+                    
+                    gLeft = brd.create('glider', [1, 1, sLeftPos], {name: '$f(1)$', color: '#ef4444', size: 4});
+                    gRight = brd.create('glider', [4, -1, sRightNeg], {name: '$f(4)$', color: '#ef4444', size: 4});
+                    
+                    let pC1 = brd.create('glider', [1, 2, sLeftPos], {name: '', fillColor: 'white', strokeColor: '#4f46e5', size: 4});
+                    let pMid = brd.create('glider', [2.5, 3, sMidPos], {name: '', color: '#4f46e5', size: 4});
+                    let pC2 = brd.create('glider', [4, 2, sRightPos], {name: '', fillColor: 'white', strokeColor: '#4f46e5', size: 4});
+                    
+                    brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([pC1, pMid, pC2]), {strokeColor: '#4f46e5', strokeWidth: 3});
+                    
+                    boardObjects.gliders = [gLeft, gRight, pC1, pMid, pC2];
+                    boardObjects.gliders.forEach(g => { g.initY = g.Y(); });
+                },
+                validate: () => {
+                    let allMoved = boardObjects.gliders.every(g => Math.abs(g.Y() - g.initY) > 0.1);
+                    let cl1 = boardObjects.gliders[2].Y() > 0; 
+                    let cl2 = boardObjects.gliders[4].Y() > 0; 
+                    let ex1 = boardObjects.gliders[0].Y() > 0; 
+                    let ex2 = boardObjects.gliders[1].Y() < 0; 
+                    return allMoved && cl1 && cl2 && ex1 && ex2;
+                },
+                hint: "Asegúrate de elegir la respuesta correcta y de MOVER FÍSICAMENTE TODOS los puntos (los extremos rojos y los huecos) de su posición inicial para observar la restricción."
+            },
+            {
+                num: 4,
+                text: "¿Qué propiedad matemática impide que la gráfica de esta función tenga una raíz? (Mueve el punto central y los extremos para observar qué sucede con la gráfica).",
+                correct: ['b'],
+                bbox: [-2, 5, 5, -2],
+                options: `
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> La continuidad de &nbsp;$f$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> $f$ &nbsp; es positiva en $[-1,4]$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> El intervalo no es abierto.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> $f$ &nbsp;no es discontinua en &nbsp;$[-1,4]$.</label>
+                `,
+                drawCustom: (brd) => {
+                    brd.create('line', [[-10,0], [10,0]], {strokeColor: '#334155', strokeWidth: 1, dash: 2}); 
 
-            xAxisLine = board.create('line', [[0, 0], [1, 0]], { visible: false });
+                    let sPos1 = brd.create('segment', [[-1, 0.05], [-1, 10]], {visible:false});
+                    let sPos2 = brd.create('segment', [[1.5, 0.05], [1.5, 10]], {visible:false});
+                    let sPos3 = brd.create('segment', [[4, 0.05], [4, 10]], {visible:false});
 
-            // Líneas verticales para confinar los puntos deslizables (evita que deje de ser función en X)
-            let l1 = board.create('line', [[-3, 0], [-3, 1]], { visible: false });
-            let l2 = board.create('line', [[0, 0], [0, 1]], { visible: false });
-            let l3 = board.create('line', [[0, 0], [0, 1]], { visible: false });
-            let l4 = board.create('line', [[3, 0], [3, 1]], { visible: false });
+                    gLeft = brd.create('glider', [-1, 2, sPos1], {name: '$f(-1)$', color: '#4f46e5', size: 4});
+                    gMid = brd.create('glider', [1.5, 1, sPos2], {name: '', color: '#4f46e5', size: 4});
+                    gRight = brd.create('glider', [4, 3, sPos3], {name: '$f(4)$', color: '#4f46e5', size: 4});
+                    brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([gLeft, gMid, gRight]), {strokeColor: '#4f46e5', strokeWidth: 3});
+                    
+                    boardObjects.gliders = [gLeft, gMid, gRight];
+                    boardObjects.gliders.forEach(g => { g.initY = g.Y(); });
+                },
+                validate: () => {
+                    let allMoved = boardObjects.gliders.every(g => Math.abs(g.Y() - g.initY) > 0.1);
+                    let allPositive = boardObjects.gliders.every(g => g.Y() > 0);
+                    return allMoved && allPositive;
+                },
+                hint: "Asegúrate de contestar la consigna y de MOVER FÍSICAMENTE el punto central y los extremos de acuerdo con tus opciones elegidas."
+            },
+            {
+                num: 5,
+                text: "Basado en lo anterior, ¿cuáles son las condiciones SUFICIENTES para que $f$ obligatoriamente cruce el eje X? (Selecciona las opciones y aplícalas a la gráfica de $f$).",
+                correct: ['a', 'c'],
+                bbox: [-4, 5, 4, -5],
+                options: `
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> $f$ es continua en &nbsp; $[a, b]$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> $f$ &nbsp; está definida en un intervalo arbitrario.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> Hay cambio de signo en los valores extremos del intervalo.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> Basta con que $f$ &nbsp; sea continua en &nbsp; $(a, b)$.</label>
+                `,
+                drawCustom: (brd) => {
+                    brd.create('line', [[-10,0], [10,0]], {strokeColor: '#334155', strokeWidth: 1, dash: 2}); 
+                    brd.create('text', [-3, -0.5, "a"], {fontSize: 16});
+                    brd.create('text', [3, -0.5, "b"], {fontSize: 16});
 
-            // Puntos de control visibles
-            gLeft = board.create('glider', [-3, 0, l1], { name: 'Extremo Izq', size: 5, color: '#4f46e5' });
-            gMid1 = board.create('glider', [0, 0, l2], { name: 'Punto', size: 5, color: '#ef4444' });
-            gMid2 = board.create('glider', [0, 0, l3], { name: 'Punto', size: 5, color: '#ef4444' });
-            gRight = board.create('glider', [3, 0, l4], { name: 'Extremo Der', size: 5, color: '#4f46e5' });
+                    gLeft = brd.create('glider', [-3, 3, brd.create('line', [[-3,0],[-3,1]], {visible:false})], {name: 'f(a)', color: '#4f46e5', size: 4});
+                    let gIn1 = brd.create('glider', [0, 2, brd.create('line', [[0,0],[0,1]], {visible:false})], {name: 'P1', color: '#ef4444', size: 4});
+                    let gIn2 = brd.create('glider', [0, -2, brd.create('line', [[0,0],[0,1]], {visible:false})], {name: 'P2', color: '#ef4444', size: 4});
+                    gRight = brd.create('glider', [3, 1, brd.create('line', [[3,0],[3,1]], {visible:false})], {name: 'f(b)', color: '#4f46e5', size: 4});
+                    
+                    let pC1 = brd.create('point', [-1.5, 3], {visible:false});
+                    let pC2 = brd.create('point', [1.5, -2], {visible:false});
 
-            // Puntos invisibles para darle curvatura tipo Bezier sin usar controles extra complejos
-            let pCtrlL = board.create('point', [-1.5, 0], { visible: false });
-            let pCtrlR = board.create('point', [1.5, 0], { visible: false });
-
-            // Actualizamos los controles ocultos para que sigan el movimiento y curven la gráfica de forma amigable
-            board.on('update', () => {
-                pCtrlL.moveTo([-1.5, (gLeft.Y() + gMid1.Y()) / 2 + 1]); 
-                pCtrlR.moveTo([1.5, (gMid2.Y() + gRight.Y()) / 2 - 1]);
-
-                // Límite de la caja Y
-                [gLeft, gMid1, gMid2, gRight].forEach(pt => {
-                    if (pt.Y() > 4.5) pt.moveTo([pt.X(), 4.5]);
-                    if (pt.Y() < -4.5) pt.moveTo([pt.X(), -4.5]);
-                });
-            });
-
-            // Creamos dos curvas para simular la discontinuidad
-            curveLeft = board.create('curve', JXG.Math.Numerics.CatmullRomSpline([gLeft, pCtrlL, gMid1]), { strokeColor: '#0ea5e9', strokeWidth: 3 });
-            curveRight = board.create('curve', JXG.Math.Numerics.CatmullRomSpline([gMid2, pCtrlR, gRight]), { strokeColor: '#0ea5e9', strokeWidth: 3 });
-
-            generarEscenarioAleatorio();
-        }
-
-        function generarEscenarioAleatorio() {
-            // Genera configuraciones donde siempre hay algo mal para que el estudiante lo arregle
-            let saltoError = Math.random() > 0.5 ? 2.5 : -2.5; 
-            let signoMalo = Math.random() > 0.5 ? 1 : -1;
-
-            // Desconecta el centro intencionalmente
-            gMid1.moveTo([0, (Math.random() * 2) * signoMalo]);
-            gMid2.moveTo([0, gMid1.Y() + saltoError]);
-
-            // Coloca los extremos del mismo lado (mismo signo)
-            gLeft.moveTo([-3, signoMalo * (Math.random() * 2 + 1)]);
-            gRight.moveTo([3, signoMalo * (Math.random() * 2 + 1)]);
-
-            board.removeObject(rootPoints);
-            rootPoints = [];
-
-            [gLeft, gMid1, gMid2, gRight].forEach(pt => pt.setAttribute({ fixed: false }));
-
-            document.getElementById('btn-validate').disabled = false;
-            document.getElementById('btn-reset-round').classList.add('hidden');
-            board.update();
-        }
-
-        function validarTVI() {
-            // Evaluar las dos hipótesis
-            let diferenciaCentro = Math.abs(gMid1.Y() - gMid2.Y());
-            let esContinua = diferenciaCentro < 0.2; // Tolerancia visual para juntar los puntos
-            let signosOpuestos = (gLeft.Y() * gRight.Y()) < 0;
-
-            if (esContinua && signosOpuestos) {
-                // Junta los puntos perfectamente para que quede estético
-                gMid2.moveTo([0, gMid1.Y()]);
-                
-                state.funcionesCorrectas++;
-                document.getElementById('s1-score').innerText = state.funcionesCorrectas;
-
-                [gLeft, gMid1, gMid2, gRight].forEach(pt => pt.setAttribute({ fixed: true }));
-                document.getElementById('btn-validate').disabled = true;
-
-                if (state.funcionesCorrectas < 3) {
-                    swal("¡Descubrimiento Exitoso!", "Lograste unir la gráfica (continuidad) y pusiste extremos de signos opuestos. Esto fuerza matemáticamente el cruce.", "success");
-                    document.getElementById('btn-reset-round').classList.remove('hidden');
-                } else {
-                    swal("¡Reglas dominadas!", "Demostraste de manera práctica cómo funciona el Teorema del Valor Intermedio.", "success").then(() => {
-                        jsConfetti.addConfetti();
-                        document.getElementById('btn-to-s2').classList.remove('hidden');
+                    brd.on('update', () => {
+                        pC1.moveTo([-1.5, (gLeft.Y() + gIn1.Y())/2 + 1]);
+                        pC2.moveTo([1.5, (gIn2.Y() + gRight.Y())/2 - 1]);
                     });
-                }
-            } else {
-                state.erroresTotales++;
-                restarVida();
 
-                // Sistema de pistas guiadas según el error del estudiante
-                if (!esContinua) {
-                    swal("Pista 1: El salto", "Observa el centro de la gráfica. Hay una ruptura. Si intentas dibujar esto en papel, tendrías que levantar el lápiz. ¿Qué debes hacer con esos dos puntos centrales rojos?", "warning");
-                } else if (!signosOpuestos) {
-                    swal("Pista 2: Las alturas", "Los puntos centrales ya están unidos, bien. Pero observa los extremos azules: ambos están del mismo lado de la línea horizontal del cero. ¿Podría la gráfica esquivar el cero? Intenta mover un extremo azul hacia el lado contrario.", "warning");
-                }
+                    brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([gLeft, pC1, gIn1]), {strokeColor: '#0ea5e9', strokeWidth: 3});
+                    brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([gIn2, pC2, gRight]), {strokeColor: '#0ea5e9', strokeWidth: 3});
+
+                    boardObjects.gIn1 = gIn1; 
+                    boardObjects.gIn2 = gIn2;
+                    boardObjects.gLeft = gLeft;
+                    boardObjects.gRight = gRight;
+                },
+                validate: () => {
+                    let dist = Math.abs(boardObjects.gIn1.Y() - boardObjects.gIn2.Y());
+                    let signosOp = (boardObjects.gLeft.Y() * boardObjects.gRight.Y()) < 0;
+                    if (dist < 0.3 && signosOp) {
+                        boardObjects.gIn2.moveTo([0, boardObjects.gIn1.Y()]); 
+                        return true;
+                    }
+                    return false;
+                },
+                hint: "Mueve los puntos centrales rojos y los extremos azules de acuerdo a las condiciones suficientes que elegiste)."
+            }
+        ];
+
+        function cargarReto(num) {
+            document.getElementById('btn-retry-reto').classList.add('hidden');
+            document.getElementById('btn-next-reto').classList.add('hidden');
+            document.getElementById('btn-pasar-n2').classList.add('hidden');
+            document.getElementById('btn-validar-n1').classList.remove('hidden');
+
+            let r = retosTVI[num - 1];
+            document.getElementById('s1-instructions').innerHTML = `<i class="fa-solid fa-flag"></i> <b>Desafío ${num}/5:</b> Análisis gráfico`;
+            document.getElementById('mission-text').innerHTML = r.text;
+
+            const optionsContainer = document.getElementById('math-options-container');
+            if (r.options) {
+                optionsContainer.innerHTML = r.options;
+                optionsContainer.classList.remove('hidden');
+            } else {
+                optionsContainer.innerHTML = "";
+                optionsContainer.classList.add('hidden');
+            }
+
+            if (board) JXG.JSXGraph.freeBoard(board);
+            board = JXG.JSXGraph.initBoard('jxgbox', {
+                boundingbox: r.bbox,
+                axis: true, showCopyright: false, pan: { enabled: false }, zoom: { enabled: false }, keepaspectratio: true
+            });
+            boardObjects = {};
+            r.drawCustom(board);
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function avanzarReto() {
+            if (state.retoActual < 5) {
+                state.retoActual++;
+                cargarReto(state.retoActual);
             }
         }
 
-        function restarVida() {
+        function reintentarReto() {
+            cargarReto(state.retoActual);
+        }
+
+        function validarGeometria() {
+            let r = retosTVI[state.retoActual - 1];
+            let isValidGraphics = true;
+            let isOptionsCorrect = true;
+
+            if (r.validate) {
+                isValidGraphics = r.validate();
+            }
+
+            if (r.options) {
+                let selected = Array.from(document.querySelectorAll('input[name="ch-opt"]:checked')).map(cb => cb.value);
+                if (selected.length === 0) {
+                    return swal("Atención", "Debes seleccionar al menos una opción.", "warning");
+                }
+                isOptionsCorrect = selected.length === r.correct.length && selected.every(val => r.correct.includes(val));
+            }
+
+            if (isOptionsCorrect && isValidGraphics) {
+                document.querySelectorAll('#level-1-container .h5p-option').forEach(el => el.style.pointerEvents = 'none');
+                document.getElementById('btn-validar-n1').classList.add('hidden');
+
+                aciertosN1++;
+                swal("¡Correcto!", "Has superado el desafío.", "success").then(() => {
+                    if (state.retoActual < 5) {
+                        const nextBtn = document.getElementById('btn-next-reto');
+                        nextBtn.innerHTML = `<i class="fa-solid fa-arrow-right"></i> Continuar al Desafío ${state.retoActual + 1}/5`;
+                        nextBtn.classList.remove('hidden');
+                    } else {
+                        document.getElementById('btn-pasar-n2').classList.remove('hidden');
+                    }
+                });
+            } else {
+                document.querySelectorAll('input[name="ch-opt"]').forEach(el => el.disabled = true);
+                document.getElementById('btn-validar-n1').classList.add('hidden');
+                document.getElementById('btn-retry-reto').classList.remove('hidden');
+
+                let msg = "Acción incorrecta. ";
+                if (!isOptionsCorrect && !isValidGraphics) msg = "Tanto la configuración gráfica como las opciones seleccionadas son incorrectas. Revisa bien las condiciones teóricas.";
+                else if (!isOptionsCorrect) msg = "La gráfica es correcta, pero las opciones seleccionadas no lo son.";
+                else if (!isValidGraphics) msg = r.hint || "La parte gráfica no cumple con la condición solicitada.";
+
+                restarVida(msg);
+            }
+        }
+
+        function restarVida(mensajeAyuda) {
             if (state.vidas > 0) {
                 document.getElementById(`life${state.vidas}`).classList.add('lost');
                 state.vidas--;
             }
             if (state.vidas === 0) {
-                document.getElementById('btn-validate').disabled = true;
-                swal("Se acabaron los intentos", "Debes volver a iniciar para aplicar los conceptos desde el principio.", "error").then(() => {
-                    reiniciarActividadCompleta();
-                });
+                document.getElementById('btn-retry-reto').classList.add('hidden');
+                document.getElementById('btn-game-over').classList.remove('hidden');
+                swal({ title: "Tréboles Agotados", text: "Has perdido tus intentos en la etapa gráfica. Por favor reinicia.", icon: "error" });
+            } else {
+                swal("Casi lo tienes", mensajeAyuda, "warning");
             }
         }
 
-        // ==========================================
-        // ETAPA 2: CUESTIONARIO TEÓRICO
-        // ==========================================
-        const respuestasQ = { 1: "good", 2: "good", 3: "good" };
-        const feedbackText = {
-            1: "Exactamente. Unir los pedazos rotos de la gráfica representa la hipótesis de continuidad. Sin ella, la gráfica podría 'saltarse' el eje X sin tocarlo.",
-            2: "Correcto. El hecho de tener signos opuestos asegura que en algún momento, al conectar esos dos puntos de forma continua, el trazo tuvo que cruzar la altura cero.",
-            3: "¡Así es! Si no es un valor intermedio estrictamente encerrado entre las alturas de los extremos, la función no está obligada a cruzar por ahí."
-        };
+        function reiniciarEscenarioGlobal() { location.reload(); }
 
-        function irEtapa2() {
-            document.getElementById('stage-1').classList.add('hidden');
-            document.getElementById('stage-2').classList.remove('hidden');
-            window.MathJax.typesetPromise();
+        // ================= ETAPA 2 Y 3 =================
+        function iniciarEtapa2() {
+            document.getElementById('main-title').innerText = "Etapa 2: Cuestionario Teórico";
+            document.getElementById('level-1-container').classList.add('hidden');
+            document.getElementById('level-2-container').classList.remove('hidden');
+            reiniciarCuestionarioEtapa2();
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         }
 
-        function evaluarPregunta() {
-            let opciones = document.getElementsByName(`q${state.quizIndex}`);
-            let seleccion = null;
-            for (let opt of opciones) { if (opt.checked) seleccion = opt; }
+        function reiniciarCuestionarioEtapa2() {
+            preguntaActual = 1;
+            aciertosN2 = 0;
+            document.querySelectorAll('.quiz-step').forEach((step, index) => {
+                step.classList.toggle('hidden', index !== 0);
+            });
+            document.querySelectorAll('#level-2-container input[type="radio"]').forEach(input => {
+                input.checked = false; input.disabled = false;
+            });
+            document.querySelectorAll('#level-2-container .h5p-feedback').forEach(feedback => {
+                feedback.innerHTML = ""; feedback.classList.add('hidden'); feedback.classList.remove('error');
+            });
+            document.getElementById('h5p-progress').style.width = "33.33%";
+            document.getElementById('h5p-counter').innerText = "1/3";
+            document.getElementById('btn-comprobar-quiz').classList.remove('hidden');
+            document.getElementById('btn-siguiente-quiz').classList.add('hidden');
+            document.getElementById('btn-siguiente-quiz').innerText = "Siguiente";
+        }
 
-            if (!seleccion) {
-                swal("Selecciona una opción", "Debes elegir una respuesta antes de comprobar.", "info");
-                return;
-            }
+        function comprobarPregunta() {
+            const s = document.querySelector(`input[name="q${preguntaActual}"]:checked`);
+            if (!s) { swal("Aviso", "Selecciona una opción.", "warning"); return; }
 
-            opciones.forEach(opt => opt.disabled = true);
-            document.getElementById('btn-eval-quiz').classList.add('hidden');
-            
-            let fbDiv = document.getElementById(`fb-q${state.quizIndex}`);
-            fbDiv.classList.remove('hidden');
+            const f = document.getElementById(`feedback-${preguntaActual}`);
+            f.classList.remove('hidden');
+            document.querySelectorAll(`input[name="q${preguntaActual}"]`).forEach(el => el.disabled = true);
 
-            if (seleccion.value === "good") {
-                fbDiv.innerHTML = `<strong>¡Bien hecho!</strong> ${feedbackText[state.quizIndex]}`;
-                fbDiv.classList.remove("wrong");
-            } else {
-                state.erroresTotales++;
-                fbDiv.innerHTML = `<strong>Vuelve a pensarlo.</strong> ${feedbackText[state.quizIndex]}`;
-                fbDiv.classList.add("wrong");
-            }
+            if (s.value === "correcta") { f.innerHTML = "<strong>¡Correcto!</strong> Interpretación teórica perfecta."; f.classList.remove('error'); aciertosN2++; }
+            else { f.innerHTML = "<strong>Incorrecto.</strong> Repasa las condiciones teóricas."; f.classList.add('error'); }
 
-            if (state.quizIndex < 3) {
-                document.getElementById('btn-next-q').classList.remove('hidden');
-            } else {
-                document.getElementById('btn-to-s3').classList.remove('hidden');
-            }
-            window.MathJax.typesetPromise();
+            document.getElementById('btn-comprobar-quiz').classList.add('hidden');
+            document.getElementById('btn-siguiente-quiz').classList.remove('hidden');
+            if (preguntaActual === 3) document.getElementById('btn-siguiente-quiz').innerText = "Pasar a Etapa 3";
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         }
 
         function siguientePregunta() {
-            document.getElementById(`q${state.quizIndex}-block`).classList.add('hidden');
-            state.quizIndex++;
-            document.getElementById(`q${state.quizIndex}-block`).classList.remove('hidden');
-            document.getElementById('quiz-counter').innerText = `Pregunta ${state.quizIndex} de 3`;
-            document.getElementById('btn-next-q').classList.add('hidden');
-            document.getElementById('btn-eval-quiz').classList.remove('hidden');
-        }
-
-        // ==========================================
-        // ETAPA 3: DEDUCCIÓN FORMAL
-        // ==========================================
-        function irEtapa3() {
-            document.getElementById('stage-2').classList.add('hidden');
-            document.getElementById('stage-3').classList.remove('hidden');
-            window.MathJax.typesetPromise();
-        }
-
-        function evaluarEtapa3() {
-            const d1 = document.getElementById("drop-1");
-            const d2 = document.getElementById("drop-2");
-            const d3 = document.getElementById("drop-3");
-
-            if (!d1.value || !d2.value || !d3.value) {
-                swal("Aviso", "Selecciona todos los valores de las listas desplegables.", "warning");
+            if (preguntaActual === 3) {
+                document.getElementById('main-title').innerText = "Etapa 3: Rigor Formal (TVI)";
+                document.getElementById('level-2-container').classList.add('hidden');
+                document.getElementById('level-3-container').classList.remove('hidden');
+                mezclarBancoAxiomas();
+                if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
                 return;
             }
-
-            let aciertos = 0;
-            const check = (el, correct) => {
-                if (el.value === correct) { el.style.borderColor = "var(--success)"; aciertos++; } 
-                else { el.style.borderColor = "var(--danger)"; state.erroresTotales++; }
-            };
-
-            check(d1, "continua");
-            check(d2, "v2"); // (1, 2)
-            check(d3, "v1"); // f(c) = 0
-
-            d1.disabled = true; d2.disabled = true; d3.disabled = true;
-            document.getElementById('btn-eval-s3').classList.add('hidden');
-
-            if (aciertos === 3) {
-                jsConfetti.addConfetti();
-                swal("¡Demostración Válida!", "Has formalizado correctamente la existencia de la raíz conectando tus descubrimientos gráficos con la teoría.", "success").then(() => {
-                    mostrarResumenFinal();
-                });
-            } else {
-                swal("Revisa la demostración", "Hay inconsistencias lógicas en tu deducción formal (marcadas en rojo).", "error").then(() => {
-                    mostrarResumenFinal();
-                });
-            }
+            document.getElementById(`step-${preguntaActual}`).classList.add('hidden');
+            preguntaActual++;
+            document.getElementById(`step-${preguntaActual}`).classList.remove('hidden');
+            document.getElementById('h5p-progress').style.width = (preguntaActual / 3) * 100 + "%";
+            document.getElementById('h5p-counter').innerText = preguntaActual + "/3";
+            document.getElementById('btn-siguiente-quiz').classList.add('hidden');
+            document.getElementById('btn-comprobar-quiz').classList.remove('hidden');
         }
 
-        function mostrarResumenFinal() {
-            const tiempoTotal = Math.round((Date.now() - state.tiempoInicio) / 1000);
-            
-            const resumenHTML = document.createElement("div");
-            resumenHTML.className = "summary-wrapper";
-            resumenHTML.innerHTML = `
-                <div class="stat-row"><span>Tréboles Restantes:</span> <span class="val" style="color: ${state.vidas>0?'var(--success)':'var(--danger)'}">${state.vidas} / 3</span></div>
-                <div class="stat-row"><span>Escenarios Superados:</span> <span class="val">${state.funcionesCorrectas} / 3</span></div>
-                <div class="stat-row"><span>Total de Tropiezos (Pistas usadas):</span> <span class="val" style="color: ${state.erroresTotales>0?'var(--warning)':'var(--success)'}">${state.erroresTotales}</span></div>
-                <div class="stat-row" style="border:none;"><span>Tiempo de inmersión:</span> <span class="val">${tiempoTotal} seg</span></div>
-            `;
-
-            swal({
-                title: "Reporte Final de Misión",
-                content: resumenHTML,
-                icon: "info",
-                button: "Cerrar"
+        function mezclarBancoAxiomas() {
+            ['banco-palabras-A', 'banco-palabras-B'].forEach(bankId => {
+                const banco = document.getElementById(bankId);
+                const axiomas = Array.from(banco.querySelectorAll('.draggable-word'));
+                for (let i = axiomas.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [axiomas[i], axiomas[j]] = [axiomas[j], axiomas[i]];
+                }
+                axiomas.forEach(axioma => banco.appendChild(axioma));
             });
         }
 
-        // ==========================================
-        // REINICIO GLOBAL DEL MÓDULO
-        // ==========================================
-        function reiniciarActividadCompleta() {
-            state.vidas = 3;
-            state.funcionesCorrectas = 0;
-            state.quizIndex = 1;
-            state.erroresTotales = 0;
-            state.tiempoInicio = Date.now();
+        let draggedWord = null;
+        document.addEventListener("dragstart", e => { if (e.target.classList.contains('draggable-word')) draggedWord = e.target; });
 
-            // Etapa 1 UI
-            document.getElementById('s1-score').innerText = "0";
-            for(let i=1; i<=3; i++) document.getElementById(`life${i}`).classList.remove('lost');
-            document.getElementById('btn-to-s2').classList.add('hidden');
-            document.getElementById('btn-reset-round').classList.add('hidden');
-            document.getElementById('btn-validate').disabled = false;
-            initBoard();
-
-            // Etapa 2 UI
-            document.getElementById('quiz-counter').innerText = "Pregunta 1 de 3";
-            for(let i=1; i<=3; i++) {
-                document.getElementById(`q${i}-block`).classList.toggle('hidden', i!==1);
-                let fb = document.getElementById(`fb-q${i}`);
-                fb.classList.add('hidden'); fb.classList.remove('wrong'); fb.innerHTML = "";
-                document.getElementsByName(`q${i}`).forEach(opt => { opt.checked = false; opt.disabled = false; });
-            }
-            document.getElementById('btn-eval-quiz').classList.remove('hidden');
-            document.getElementById('btn-next-q').classList.add('hidden');
-            document.getElementById('btn-to-s3').classList.add('hidden');
-
-            // Etapa 3 UI
-            ['drop-1', 'drop-2', 'drop-3'].forEach(id => {
-                let el = document.getElementById(id);
-                el.value = ""; el.disabled = false; el.style.borderColor = "var(--border)";
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', e => e.preventDefault());
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                let existingWord = zone.querySelector('.draggable-word');
+                if (draggedWord) {
+                    if (existingWord === draggedWord) return;
+                    if (existingWord) {
+                        let bankOriginId = zone.dataset.bank;
+                        document.getElementById(bankOriginId).appendChild(existingWord);
+                    }
+                    zone.appendChild(draggedWord);
+                    draggedWord = null;
+                }
             });
-            document.getElementById('btn-eval-s3').classList.remove('hidden');
+        });
 
-            // Toggle Etapas
-            document.getElementById('stage-1').classList.remove('hidden');
-            document.getElementById('stage-2').classList.add('hidden');
-            document.getElementById('stage-3').classList.add('hidden');
-            
-            window.MathJax.typesetPromise();
+        const sortableList = document.getElementById('sortable-list');
+        let draggingListItem = null;
+
+        document.querySelectorAll('.sortable-item').forEach(item => {
+            item.addEventListener('dragstart', () => { draggingListItem = item; setTimeout(() => item.classList.add('dragging'), 0); });
+            item.addEventListener('dragend', () => { item.classList.remove('dragging'); draggingListItem = null; });
+        });
+
+        sortableList.addEventListener('dragover', e => {
+            e.preventDefault();
+            if (!draggingListItem) return;
+            const afterElement = [...sortableList.querySelectorAll('.sortable-item:not(.dragging)')].reduce((closest, child) => {
+                const box = child.getBoundingClientRect(); const offset = e.clientY - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) return { offset: offset, element: child }; else return closest;
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+            if (afterElement == null) sortableList.appendChild(draggingListItem); else sortableList.insertBefore(draggingListItem, afterElement);
+        });
+
+        function evaluarEtapa3() {
+            let correctas = 0;
+            document.querySelectorAll('.draggable-word, .sortable-item').forEach(el => { el.setAttribute('draggable', 'false'); el.style.cursor = 'not-allowed'; });
+            document.querySelectorAll('.inline-select').forEach(el => { el.disabled = true; });
+
+            document.querySelectorAll('.drop-zone').forEach(z => {
+                let placedWord = z.querySelector('.draggable-word');
+                if (placedWord && placedWord.dataset.value === z.dataset.expected) { correctas++; z.style.borderBottomColor = "var(--success)"; }
+                else { z.style.borderBottomColor = "var(--danger)"; }
+            });
+
+            let s1 = document.getElementById('select-contra-1');
+            if(s1.value === 'correcto') { correctas++; s1.style.borderColor = "var(--success)"; s1.style.backgroundColor = "#dcfce7"; } else { s1.style.borderColor = "var(--danger)"; s1.style.backgroundColor = "#fef2f2"; }
+
+            let s2 = document.getElementById('select-contra-2');
+            if(s2.value === 'correcto') { correctas++; s2.style.borderColor = "var(--success)"; s2.style.backgroundColor = "#dcfce7"; } else { s2.style.borderColor = "var(--danger)"; s2.style.backgroundColor = "#fef2f2"; }
+
+            let orderCorrect = true;
+            document.querySelectorAll('.sortable-item').forEach((item, index) => {
+                if (parseInt(item.dataset.id) !== index + 1) { orderCorrect = false; item.style.borderColor = "var(--danger)"; item.style.backgroundColor = "#fef2f2"; }
+                else { item.style.borderColor = "var(--success)"; item.style.backgroundColor = "#dcfce7"; }
+            });
+            if (orderCorrect) correctas++;
+
+            aciertosN3 = correctas;
+            document.getElementById('btn-evaluar-n3').classList.add('hidden');
+            document.getElementById('btn-ir-resumen').classList.remove('hidden');
+            swal("Evaluación completada", "Revisa tus aciertos y errores marcados.", "info");
+        }
+
+        function mostrarResumen() {
+            document.getElementById('main-title').innerText = "Resumen de Actividad";
+            document.getElementById('level-3-container').classList.add('hidden');
+            document.getElementById('resumen-final-container').classList.remove('hidden');
+
+            document.getElementById('res-n1').innerText = aciertosN1 + "/5";
+            document.getElementById('res-n2').innerText = aciertosN2 + "/3";
+            document.getElementById('res-n3').innerText = aciertosN3 + "/13";
+            confetti({ particleCount: 2000, spread: 180, origin: { y: 0.6 } });
         }
     </script>
 </body>
+
 </html>
