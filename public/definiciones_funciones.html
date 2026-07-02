@@ -33,7 +33,7 @@
     <!-- Enlace a las fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
 
-    <!-- MathJax v3 Setup (SOLO UNA VEZ y Correcto) -->
+    <!-- MathJax v3 Setup (SOLO UNA VEZ) -->
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
         // Configuración para MathJax 3: Define los delimitadores inline
@@ -162,14 +162,14 @@
                 <div id="card-front" class="card-face card-front">
                     <h2 id="question-text" class="text-2xl font-bold mb-6 text-gray-100 text-center">Cargando pregunta...</h2>
                     <div id="options-container" class="w-full">
-                        <!-- Opciones de respuesta generadas por JS -->
+                        <!-- Opciones de respuesta-->
                     </div>
                 </div>
 
                 <!-- Reverso de la Tarjeta (Resultado y Explicación) -->
                 <div id="card-back" class="card-face card-back text-center p-6 flex flex-col items-center justify-center">
                     <div id="result-icon-container" class="result-icon mb-4">
-                        <!-- Icono (Check o X) generado por JS -->
+                        <!-- Icono (Check o X) -->
                     </div>
                     <p id="result-message" class="text-3xl font-extrabold mb-3 text-white">¡Respuesta Correcta!</p>
                     <div class="text-explanation text-base text-left w-full text-gray-100">
@@ -209,8 +209,7 @@
         }
 
         // -----------------------------------------------------------
-        // 1. DATOS DEL QUIZ (Preguntas, Opciones, Respuestas, Explicaciones)
-        // Se corrigieron los caracteres de escape (\) en las opciones con código matemático.
+        // Definición de las preguntas y respuestas
         // -----------------------------------------------------------
 
         const quizData = [
@@ -323,10 +322,10 @@
         }
 
         /**
-         * Maneja el clic en una opción de respuesta.
-         * @param {string} selectedOption - La opción seleccionada por el usuario.
-         * @param {Object} currentQ - El objeto de la pregunta actual.
-         * @param {HTMLElement} selectedDiv - El div de la opción seleccionada.
+         * Maneja el clic en una respuesta.
+         * @param {string} selectedOption - La respuesta seleccionada.
+         * @param {Object} currentQ - Los datos de la pregunta actual.
+         * @param {HTMLElement} selectedDiv - El div de la respuesta seleccionada.
          */
         function handleAnswerClick(selectedOption, currentQ, selectedDiv) {
             if (isCardFlipped || isGameDisabled) return;
