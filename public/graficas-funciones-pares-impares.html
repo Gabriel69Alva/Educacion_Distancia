@@ -20,13 +20,13 @@
 
     <style>
         :root {
-            --primary: #0f172a;
+            --primary: #102655;
             --primary-hover: #1e293b;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
             --azure-accent: #38bdf8;
-            --azure-bg: #e0f7fa;
+            --azure-bg: #dfeefb;
             --azure-border: #b2ebf2;
             --bg-light: #f8fafc;
             --text-dark: #334155;
@@ -49,77 +49,272 @@
             background: #fff;
             padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 25px rgba(23, 73, 200, 0.05);
         }
 
-        h1 { color: var(--primary); font-weight: 700; text-align: center; margin-bottom: 5px; }
-        h2 { border-left: 8px solid var(--azure-accent); padding-left: 15px; font-size: 20px; color: var(--primary); margin-top: 35px; }
-        h3 { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: var(--text-dark); line-height: 1.4; }
-        p { line-height: 1.6; }
-        
-        .hidden { display: none !important; }
+        h1 {
+            color: var(--primary);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        h2 {
+            border-left: 8px solid var(--azure-accent);
+            padding-left: 15px;
+            font-size: 20px;
+            color: var(--primary);
+            margin-top: 35px;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        .hidden {
+            display: none !important;
+        }
 
         /* Botones Modernizados */
         .btn-general {
-            display: block; width: 100%; max-width: 360px; margin: 20px auto; padding: 14px;
-            background-color: var(--primary); color: white; border: none; border-radius: 30px;
-            font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            text-align: center; text-decoration: none;
+            display: block;
+            width: 100%;
+            max-width: 360px;
+            margin: 20px auto;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-align: center;
+            text-decoration: none;
         }
-        .btn-general:hover:not(:disabled) { 
-            transform: scale(1.02); 
+
+        .btn-general:hover:not(:disabled) {
+            transform: scale(1.02);
             background-color: var(--primary-hover);
-            box-shadow: 0 6px 15px rgba(15, 23, 42, 0.2);
+            box-shadow: 0 6px 15px rgba(38, 90, 210, 0.2);
         }
-        .btn-general:disabled { background-color: #94a3b8; cursor: not-allowed; }
-        .btn-success { background-color: var(--success); }
-        .btn-success:hover:not(:disabled) { background-color: #0d9668; box-shadow: 0 6px 15px rgba(16, 185, 129, 0.2); }
-        .btn-secondary { background-color: #64748b; }
-        .btn-secondary:hover:not(:disabled) { background-color: #475569; }
+
+        .btn-general:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background-color: #0d9668;
+            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: #64748b;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background-color: #475569;
+        }
 
         /* ================= ETAPA 1 ================= */
-        .jxgbox-square { width: 500px; height: 500px; margin: 0 auto 20px auto; border-radius: 8px; border: 1px solid var(--border-color); background: #fff; cursor: crosshair; }
-        .status-bar { display: flex; justify-content: space-between; align-items: center; background: var(--azure-bg); padding: 15px 25px; border-radius: 8px; font-weight: 600; color: #006064; margin-bottom: 20px; border: 1px solid var(--azure-border); }
-        .lives { display: flex; align-items: center; gap: 5px; }
-        .lives i { color: var(--success); font-size: 22px; display: inline-block; transition: all 0.3s; }
-        .lives i.lost { animation: cloverPopFall 4.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
-
-        @keyframes cloverPopFall {
-            0% { transform: scale(1) rotate(0deg); color: var(--success); }
-            15% { transform: scale(1.6) rotate(-20deg); color: var(--danger); filter: drop-shadow(0 0 8px rgba(239,68,68,0.6)); }
-            30% { transform: scale(1.2) rotate(30deg); color: var(--danger); opacity: 0.9; }
-            100% { transform: scale(0.4) translateY(350px) rotate(720deg); opacity: 0; color: var(--danger); }
+        .jxgbox-square {
+            width: 500px;
+            height: 500px;
+            margin: 0 auto 20px auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: #fff;
+            cursor: crosshair;
         }
 
-        .slider-section { max-width: 650px; margin: 20px auto; background: var(--bg-light); padding: 15px 20px; border-radius: 10px; border: 1px solid var(--border-color); display: flex; justify-content: space-around; gap: 15px; }
-        .slider-row { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-        .slider-label { font-size: 13px; font-weight: 600; color: var(--text-dark); text-align: center; }
-        
-        .slider-control-container { display: flex; align-items: center; justify-content: center; gap: 12px; }
-        .btn-micro { background-color: var(--azure-accent); color: white; border: none; border-radius: 50%; width: 34px; height: 34px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .btn-micro:hover:not(:disabled) { background-color: #0ea5e9; transform: scale(1.05); }
-        .btn-micro:disabled { background-color: #cbd5e1; cursor: not-allowed; }
-        
-        .slider-value { font-size: 16px; font-weight: 700; font-family: monospace; color: #0f172a; background: #fff; padding: 4px 12px; border: 1px solid var(--border-color); border-radius: 6px; min-width: 70px; text-align: center; }
-        .badge-info { background: var(--azure-bg); color: #006064; padding: 6px 16px; border-radius: 20px; font-size: 15px; font-weight: bold; display: inline-block; margin-bottom: 15px; border: 1px solid var(--azure-border); }
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--azure-bg);
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #092a4b;
+            margin-bottom: 20px;
+            border: 1px solid var(--azure-border);
+        }
+
+        .lives {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .lives i {
+            color: var(--success);
+            font-size: 22px;
+            display: inline-block;
+            transition: all 0.5s;
+        }
+
+        .lives i.lost {
+            animation: cloverPopFall 5.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+        }
+
+        @keyframes cloverPopFall {
+            0% {
+                transform: scale(1) rotate(0deg);
+                color: var(--success);
+            }
+
+            15% {
+                transform: scale(1.5) rotate(-20deg);
+                color: var(--success);
+                filter: drop-shadow(0 0 8px rgba(68, 239, 97, 0.6));
+            }
+
+            30% {
+                transform: scale(1.2) rotate(30deg);
+                color: var(--success);
+                opacity: 0.9;
+            }
+
+            100% {
+                transform: scale(0.4) translateY(350px) rotate(720deg);
+                opacity: 0;
+                color: var(--success);
+            }
+        }
+
+        .badge-info {
+            background: var(--azure-bg);
+            color: #006064;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+            border: 1px solid var(--azure-border);
+        }
 
         /* ================= ETAPA 2 ================= */
-        .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 8px; margin: 20px 0; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--azure-accent); width: 25%; transition: 0.4s; }
-        .h5p-option { display: flex; align-items: center; padding: 16px; border: 1px solid var(--border-color); margin-bottom: 12px; border-radius: 8px; cursor: pointer; background: var(--bg-light); transition: 0.2s; }
-        .h5p-option:hover { border-color: #94a3b8; background: #f1f5f9; }
-        .h5p-option input { margin-right: 15px; transform: scale(1.2); cursor: pointer; }
-        .h5p-feedback { padding: 20px; border-radius: 8px; margin-top: 20px; background: #f1f5f9; border-left: 6px solid var(--azure-accent); font-size: 15px; }
-        .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; color: #991b1b; }
+        .progress-container {
+            width: 100%;
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--azure-accent);
+            width: 25%;
+            transition: 0.4s;
+        }
+
+        .h5p-option {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            background: var(--bg-light);
+            transition: 0.2s;
+        }
+
+        .h5p-option:hover {
+            border-color: #94a3b8;
+            background: #f1f5f9;
+        }
+
+        .h5p-option input {
+            margin-right: 15px;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .h5p-feedback {
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            background: #f1f5f9;
+            border-left: 6px solid var(--azure-accent);
+            font-size: 15px;
+        }
+
+        .h5p-feedback.error {
+            border-left-color: var(--danger);
+            background: #fef2f2;
+            color: #991b1b;
+        }
 
         /* ================= ETAPA 3 ================= */
-        .n3-section { background: var(--bg-light); padding: 25px; border-radius: 12px; margin-bottom: 25px; border: 1px solid var(--border-color); }
-        select.math-input { padding: 6px 10px; border: 2px solid var(--border-color); border-radius: 6px; font-size: 15px; font-weight: bold; color: #006064; outline: none; margin: 0 6px; cursor: pointer; }
-        .step-row { display: flex; align-items: center; margin-bottom: 12px; font-size: 16px; flex-wrap: wrap; line-height: 2; }
+        .n3-section {
+            background: var(--bg-light);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+        }
 
-        .summary-card { text-align: left; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; margin-top: 15px; }
-        .summary-item { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }
-        .summary-item span.accent { font-weight: bold; color: #006064; }
+        select.math-input {
+            padding: 6px 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #006064;
+            outline: none;
+            margin: 0 6px;
+            cursor: pointer;
+        }
+
+        .step-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 16px;
+            flex-wrap: wrap;
+            line-height: 2;
+        }
+
+        .summary-card {
+            text-align: left;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 15px;
+            border-bottom: 1px dashed #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .summary-item span.accent {
+            font-weight: bold;
+            color: #006064;
+        }
     </style>
 </head>
 
@@ -128,114 +323,124 @@
     <div class="container">
 
         <div id="level-1-container">
-            <h1>Etapa 1: Laboratorio de simetría geométrica</h1>
+            <h1>Etapa 1: Simetría Geométrica</h1>
             <p style="text-align: center; color: #64748b; margin-bottom: 15px;">
-                <strong>Instrucciones:</strong> Toca y arrastra directamente los puntos celestes <span style="color:#38bdf8; font-weight:bold;">B'</span> y <span style="color:#7dd3fc; font-weight:bold;">C'</span> en la gráfica con tu mouse para posicionar la simetría correspondiente. Usa los botones de precisión ($\pm$) situados abajo si necesitas realizar micro-ajustes finos.
+                <strong>Instrucciones:</strong> Toca y arrastra directamente los puntos <span
+                    style="color:#38bdf8; font-weight:bold;">B'</span> y <span
+                    style="color:#7dd3fc; font-weight:bold;">C'</span> en la gráfica con tu mouse para posicionar la
+                simetría correspondiente.
             </p>
-            
+
             <div style="text-align: center;">
                 <span class="badge-info" id="challenge-badge">Cargando reto...</span>
             </div>
 
             <div class="status-bar">
                 <div class="lives">
-                    Tréboles de guía: 
+                    Tréboles de guía:
                     <i class="fa-solid fa-clover" id="life1"></i>
                     <i class="fa-solid fa-clover" id="life2"></i>
                     <i class="fa-solid fa-clover" id="life3"></i>
                 </div>
                 <div style="font-weight: bold;" id="target-label">Objetivo: 1 / 4</div>
-                <div>Aciertos Logrados: <span id="score-text" style="font-size: 20px; color: var(--success); font-weight: bold;">0</span> / 4</div>
+                <div>Aciertos Logrados: <span id="score-text"
+                        style="font-size: 20px; color: var(--success); font-weight: bold;">0</span> / 4</div>
             </div>
 
             <div id="box" class="jxgbox-square"></div>
 
-            <div class="slider-section">
-                <div class="slider-row">
-                    <div class="slider-label"><i class="fa-solid fa-hand-pointer" style="color: #0ea5e9;"></i> Ordenada de $B'$ ($x = -1$)</div>
-                    <div class="slider-control-container">
-                        <button class="btn-micro" id="btn-sub-b" onclick="ajustarPunto('b', -0.01)"><i class="fa-solid fa-minus"></i></button>
-                        <div class="slider-value">y = <span id="val-b">0.000</span></div>
-                        <button class="btn-micro" id="btn-add-b" onclick="ajustarPunto('b', 0.01)"><i class="fa-solid fa-plus"></i></button>
-                    </div>
-                </div>
-
-                <div class="slider-row">
-                    <div class="slider-label"><i class="fa-solid fa-hand-pointer" style="color: #0284c7;"></i> Ordenada de $C'$ ($x = -2$)</div>
-                    <div class="slider-control-container">
-                        <button class="btn-micro" id="btn-sub-c" onclick="ajustarPunto('c', -0.01)"><i class="fa-solid fa-minus"></i></button>
-                        <div class="slider-value">y = <span id="val-c">0.000</span></div>
-                        <button class="btn-micro" id="btn-add-c" onclick="ajustarPunto('c', 0.01)"><i class="fa-solid fa-plus"></i></button>
-                    </div>
-                </div>
-            </div>
-
             <div class="btn-row" style="text-align: center;">
                 <button class="btn-general" id="btn-validate" onclick="validarSimetria()">Validar Configuración</button>
-                <button class="btn-general btn-success hidden" id="btn-siguiente-grafica" onclick="cargarNuevoReto()">Siguiente Reto <i class="fa-solid fa-arrow-right"></i></button>
-                <button class="btn-general btn-secondary hidden" id="btn-corregir-grafica" onclick="habilitarCorreccion()">Corregir Intento Actual <i class="fa-solid fa-pen-to-square"></i></button>
-                <button class="btn-general btn-danger hidden" id="btn-reset-lvl1" onclick="reiniciarNivel1()">Reiniciar Etapa 1</button>
+                <button class="btn-general btn-success hidden" id="btn-siguiente-grafica"
+                    onclick="cargarNuevoReto()">Siguiente Reto <i class="fa-solid fa-arrow-right"></i></button>
+                <button class="btn-general btn-secondary hidden" id="btn-corregir-grafica"
+                    onclick="habilitarCorreccion()">Corregir Intento Actual <i
+                        class="fa-solid fa-pen-to-square"></i></button>
+                <button class="btn-general btn-danger hidden" id="btn-reset-lvl1" onclick="reiniciarNivel1()">Reiniciar
+                    Etapa 1</button>
             </div>
-            
-            <button class="btn-general btn-success hidden" id="btn-pasar-n2" onclick="iniciarEtapa2()">Continuar a Etapa 2 <i class="fa-solid fa-rocket"></i></button>
+
+            <button class="btn-general btn-success hidden" id="btn-pasar-n2" onclick="iniciarEtapa2()">Continuar a Etapa
+                2 <i class="fa-solid fa-rocket"></i></button>
         </div>
 
         <div id="level-2-container" class="hidden">
             <h1>Etapa 2: Diagnóstico conceptual</h1>
-            <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Demuestra tu dominio sobre el comportamiento analítico y gráfico de las simetrías calculistas.</p>
+            <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Muestra tu dominio sobre el
+                comportamiento analítico y gráfico de las simetrías de funciones pares e impares.</p>
 
-            <div class="progress-container"><div class="progress-bar" id="h5p-progress"></div></div>
+            <div class="progress-container">
+                <div class="progress-bar" id="h5p-progress"></div>
+            </div>
             <p id="h5p-counter" style="text-align: right; font-weight: 600; color: var(--azure-accent);">1/4</p>
 
             <div id="step-1" class="quiz-step">
-                <h3>1. Si una función continua no nula es estrictamente impar, ¿cuál de las siguientes afirmaciones geométricas es obligatoriamente verdadera respecto a su gráfica?</h3>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>A) Debe ser simétrica respecto al eje de las ordenadas (Eje Y).</span></label>
-                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> <span>B) Debe cruzar por el origen de coordenadas $(0,0)$, puesto que $f(0) = -f(0) \implies f(0) = 0$.</span></label>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>C) Sus asíntotas horizontales deben reflejarse de forma estrictamente positiva.</span></label>
+                <h3>1. Si una función es impar y está definida en $x=0$, ¿cuál de las siguientes afirmaciones
+                    geométricas es verdadera respecto a su gráfica?</h3>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>Debe ser simétrica
+                        respecto al eje de las ordenadas (Eje Y).</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> <span>Debe cruzar por
+                        $(0,0)$, puesto que $f(0) = -f(-0)$ implica que $f(0) = 0$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>Debe ser simétrica respecto al eje de las abscisas (Eje X).</span></label>
                 <div id="feedback-1" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-2" class="quiz-step hidden">
-                <h3>2. Supongamos que $f(x)$ y $g(x)$ son dos funciones definidas en todo $\mathbb{R}$ tales que ambas son funciones impares. ¿Cómo se clasifica algebraicamente la función suma $h(x) = f(x) + g(x)$?</h3>
-                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> <span>A) Es una función Impar, ya que $h(-x) = f(-x) + g(-x) = -f(x) - g(x) = -h(x)$.</span></label>
-                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>B) Es una función Par, debido a la anulación de signos operativos internos.</span></label>
-                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>C) Pierde la simetría por completo convirtiéndose en una función no simétrica.</span></label>
+                <h3>2. Supongamos que $f(x)$ y $g(x)$ son dos funciones definidas en todo $\mathbb{R}$ tales que ambas
+                    son funciones impares. ¿Cómo se clasifica la función suma $h(x) = f(x) + g(x)$?</h3>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> <span>Es una función Impar,
+                        ya que $h(-x) = f(-x) + g(-x) = -f(x) - g(x) = -h(x)$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>Es una función Par,
+                        debido a la anulación de signos internos.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>Pierde todo tipo de
+                        simetría convirtiéndose en una función no simétrica.</span></label>
                 <div id="feedback-2" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-3" class="quiz-step hidden">
-                <h3>3. Analiza la estructura analítica de la expresión $f(x) = x^4 + 3x^1 - 5$. ¿Qué tipo de comportamiento presenta en términos de paridad?</h3>
-                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>A) Es puramente Par por poseer un exponente de orden cuatro.</span></label>
-                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>B) Es Impar dado el impacto dominante de la constante aritmética terminal.</span></label>
-                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> <span>C) No es ni par ni impar, ya que coexisten potencias de naturaleza par ($x^4$, $x^0$) con potencias impares ($x^1$).</span></label>
+                <h3>3. Analiza la estructura analítica de la expresión $f(x) = x^4 + 3x^1 - 5$. ¿Qué tipo de
+                    comportamiento presenta en términos de paridad?</h3>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>Es Par por tener un
+                        exponente de orden cuatro.</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>Es Impar dado que
+                        tiene un exponente de grado impar ($x^1$).</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> <span>No es par ni impar,
+                        ya que coexisten potencias de naturaleza par como ($x^4$, $x^0$) y  una potencia impar
+                        ($x^1$).</span></label>
                 <div id="feedback-3" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-4" class="quiz-step hidden">
-                <h3>4. ¿Qué ocurre algebraicamente al realizar el producto multiplicativo de dos funciones que son individualmente impares?</h3>
-                <label class="h5p-option"><input type="radio" name="q4" value="correcta"> <span>A) El producto resulta en una función Par, debido a que $(-1) \cdot (-1) = 1$.</span></label>
-                <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>B) Se mantiene estrictamente Impar a lo largo de todo el dominio compartido.</span></label>
-                <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>C) La función resultante se vuelve periódica de forma asintótica.</span></label>
+                <h3>4. ¿Qué ocurre algebraicamente al realizar el producto de dos funciones que son ambas impares?</h3>
+                <label class="h5p-option"><input type="radio" name="q4" value="correcta"> <span>El producto resulta
+                        en una función Par, debido a que $(-1) \cdot (-1) = 1$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>Se mantiene
+                        estrictamente Impar a lo largo de todo el dominio compartido.</span></label>
+                <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>No se puede
+                        garantizar la paridad o imparidad de la nueva función al realizar el producto.</span></label>
                 <div id="feedback-4" class="h5p-feedback hidden"></div>
             </div>
 
-            <button class="btn-general" id="btn-comprobar-quiz" onclick="comprobarPregunta()">Comprobar Respuesta</button>
-            <button class="btn-general hidden btn-success" id="btn-siguiente-quiz" onclick="siguientePregunta()">Siguiente Pregunta</button>
+            <button class="btn-general" id="btn-comprobar-quiz" onclick="comprobarPregunta()">Comprobar
+                Respuesta</button>
+            <button class="btn-general hidden btn-success" id="btn-siguiente-quiz"
+                onclick="siguientePregunta()">Siguiente Pregunta</button>
         </div>
 
         <div id="level-3-container" class="hidden">
-            <h1>Etapa 3: Demostración analítica formal</h1>
+            <h1>Etapa 3: Demostración analítica</h1>
             <p style="text-align: center; color: #64748b; margin-bottom: 30px;">
-                Completa los pasos analíticos rellenando los espacios de selección para estructurar las pruebas formales de paridad.
+                Completa los pasos analíticos y lógicos rellenando los espacios de selección para estructurar las demostraciones
+                de paridad e imparidad.
             </p>
 
             <div class="n3-section">
                 <h3 style="color: #006064;">Prueba 1: Demostrar que $f(x) = 3x^4 - x^2 + 5$ es una Función PAR</h3>
                 <div class="step-row">
-                    Evaluamos la función introduciendo un argumento negativo generalizado: &nbsp;$f(-x) = 3(-x)^4 - (-x)^2 + 5$.
+                    Evaluamos la función introduciendo &nbsp; $-x$: &nbsp;$f(-x) = 3(-x)^4 - (-x)^2 + 5$.
                 </div>
                 <div class="step-row">
-                    Al aplicar las leyes de los exponentes sabemos que cualquier base negativa elevada a una potencia par se vuelve positiva, por ende:
+                    Al simplificar, obtenemos:
                 </div>
                 <div class="step-row">
                     $f(-x) =$&nbsp;
@@ -247,23 +452,37 @@
                     </select>
                 </div>
                 <div class="step-row">
-                    Como se observa directamente, la expresión resultante es idéntica a la inicial, concluyendo formalmente que &nbsp;
+                    Por lo tanto,&nbsp;
                     <select id="proof1-2" class="math-input">
                         <option value="">-- Selecciona --</option>
                         <option value="v1">f(-x) = f(x)</option>
                         <option value="v2">f(-x) = -f(x)</option>
+                        <option value="v3">f(x) = -f(x)</option>
                     </select>
-                    &nbsp;, lo cual define una función de tipo **PAR**.
+
                 </div>
+
+                <div class="step-row">
+                    Esto significa que &nbsp;$f$ &nbsp; es:&nbsp;
+                    <select id="proof1-3" class="math-input">
+                        <option value="">-- Selecciona --</option>
+                        <option value="v3"> Par</option>
+                        <option value="v2">f es impar</option>
+                        <option value="v1">f no es par ni es impar</option>
+                    </select>
+
+                </div>
+
             </div>
 
             <div class="n3-section">
                 <h3 style="color: #006064;">Prueba 2: Demostrar que $g(x) = 2x^3 - 7x$ es una Función IMPAR</h3>
                 <div class="step-row">
-                    Evaluamos sustituyendo el argumento por su opuesto simétrico: &nbsp;$g(-x) = 2(-x)^3 - 7(-x)$.
+                    Evaluamos sustituyendo &nbsp; $-x$: &nbsp;$g(-x) = 2(-x)^3 - 7(-x)$.
                 </div>
                 <div class="step-row">
-                    Dado que las potencias de orden impar preservan el signo negativo de la base, simplificamos los términos:
+                    Dado que las potencias de orden impar preservan el signo negativo de la base, simplificamos los
+                    términos:
                 </div>
                 <div class="step-row">
                     $g(-x) =$&nbsp;
@@ -271,22 +490,25 @@
                         <option value="">-- Selecciona --</option>
                         <option value="v1">-2x³ + 7x</option>
                         <option value="v2">-2x³ - 7x</option>
-                        <option value="v3">2x³ + 7x</option>
+                        <option value="v3">2x³ - 7x</option>
                     </select>
                 </div>
                 <div class="step-row">
-                    Factorizando el signo negativo exterior común, observamos que &nbsp;$-2x^3 + 7x = -(2x^3 - 7x) = -g(x)$. Por consiguiente, se demuestra la condición teórica fundamental &nbsp;
+                    Factorizando el signo negativo exterior común, observamos que &nbsp;$-2x^3 + 7x = -(2x^3 - 7x)$. Por consiguiente, &nbsp;
                     <select id="proof2-2" class="math-input">
                         <option value="">-- Selecciona --</option>
                         <option value="v1">g(-x) = g(x)</option>
-                        <option value="g(-x) = -g(x)">g(-x) = -g(x)</option>
+                        <option value="v2">g(-x) = -g(x)</option>
+                        <option value="v3">g(x) = -g(x)</option>
                     </select>
-                    &nbsp;, ratificando que es una función de paridad **IMPAR**.
+                    &nbsp;, ratificando que es una función **IMPAR**.
                 </div>
             </div>
 
             <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()">Validar Demostraciones</button>
-            <button class="btn-general hidden btn-success" id="btn-finalizar-actividad" onclick="finalizarTodo()">Finalizar Actividad Completa <i class="fa-solid fa-graduation-cap"></i></button>
+            <button class="btn-general hidden btn-success" id="btn-finalizar-actividad"
+                onclick="finalizarTodo()">Finalizar Actividad Completa <i
+                    class="fa-solid fa-graduation-cap"></i></button>
         </div>
 
     </div>
@@ -296,7 +518,7 @@
         let aciertosQuizN2 = 0;
         let aciertosTeoricosN3 = 0;
 
-        window.onload = function() {
+        window.onload = function () {
             document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
             document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
             reiniciarNivel1();
@@ -306,25 +528,26 @@
         // LÓGICA ETAPA 1 - SIMETRÍA INTERACTIVA
         // ==========================================
         let lives = 3;
-        let score = 0; 
+        let score = 0;
         let board, splineCurve;
         let pA, pB, pC, pBPrime, pCPrime;
 
         const retos = [
-            { tipo: "PAR",   a_y: 1.20, b_y: 0.50, c_y: 1.80, desc: "Reto 1: Construye una Función PAR (Simetría Eje Y)" },
-            { tipo: "PAR",   a_y: -0.60, b_y: 1.40, c_y: -0.80, desc: "Reto 2: Construye una Función PAR (Simetría Eje Y)" },
-            { tipo: "IMPAR", a_y: 0.00,  b_y: 1.00, c_y: 0.50, desc: "Reto 3: Construye una Función IMPAR (Simetría al Origen)" },
-            { tipo: "IMPAR", a_y: 0.00,  b_y: -1.20, c_y: 1.50, desc: "Reto 4: Construye una Función IMPAR (Simetría al Origen)" }
+            { tipo: "PAR", a_y: 1.20, b_y: 0.50, c_y: 1.80, desc: "Reto 1: Construye una Función PAR (Simetría Eje Y)" },
+            { tipo: "PAR", a_y: -0.60, b_y: 1.40, c_y: -0.80, desc: "Reto 2: Construye una Función PAR (Simetría Eje Y)" },
+            { tipo: "IMPAR", a_y: 0.00, b_y: 1.00, c_y: 0.50, desc: "Reto 3: Construye una Función IMPAR (Simetría al Origen)" },
+            { tipo: "IMPAR", a_y: 0.00, b_y: -1.20, c_y: 1.50, desc: "Reto 4: Construye una Función IMPAR (Simetría al Origen)" }
         ];
 
         document.addEventListener('DOMContentLoaded', function () {
-            board = JXG.JSXGraph.initBoard('box', { 
-                boundingbox: [-2.5, 2.5, 2.5, -2.5], 
-                axis: true, 
+            board = JXG.JSXGraph.initBoard('box', {
+                boundingbox: [-2.5, 2.5, 2.5, -2.5],
+                axis: true,
                 grid: true,
-                pan: { enabled: false }, 
-                zoom: { enabled: false }, 
-                showNavigation: false 
+                ShowCopyright: false,
+                pan: { enabled: false },
+                zoom: { enabled: false },
+                showNavigation: false
             });
 
             cargarNuevoReto();
@@ -339,8 +562,8 @@
             document.getElementById('btn-pasar-n2').classList.add('hidden');
             document.getElementById('btn-siguiente-grafica').classList.add('hidden');
             document.getElementById('btn-corregir-grafica').classList.add('hidden');
-            
-            for(let i=1; i<=3; i++) {
+
+            for (let i = 1; i <= 3; i++) {
                 let clv = document.getElementById(`life${i}`);
                 if (clv) clv.classList.remove('lost');
             }
@@ -362,11 +585,8 @@
             document.getElementById('target-label').innerText = `Objetivo: ${score + 1} / 4`;
             document.getElementById('challenge-badge').innerText = r.desc;
 
-            document.getElementById('val-b').innerText = "0.000";
-            document.getElementById('val-c').innerText = "0.000";
-
             board.suspendUpdate();
-            
+
             if (splineCurve) board.removeObject(splineCurve);
             if (pA) board.removeObject(pA);
             if (pB) board.removeObject(pB);
@@ -388,16 +608,14 @@
             });
 
             // Forzar magnetismo sobre el eje vertical en el evento drag
-            pBPrime.on('drag', function() {
+            pBPrime.on('drag', function () {
                 let y = Math.max(-2.2, Math.min(2.2, pBPrime.Y()));
                 pBPrime.moveTo([-1, y]);
-                document.getElementById('val-b').innerText = y.toFixed(3);
             });
 
-            pCPrime.on('drag', function() {
+            pCPrime.on('drag', function () {
                 let y = Math.max(-2.2, Math.min(2.2, pCPrime.Y()));
                 pCPrime.moveTo([-2, y]);
-                document.getElementById('val-c').innerText = y.toFixed(3);
             });
 
             // Spline continuo
@@ -409,26 +627,15 @@
             board.update();
         }
 
-        function ajustarPunto(punto, delta) {
-            board.suspendUpdate();
-            if (punto === 'b') {
-                let y = Math.max(-2.2, Math.min(2.2, pBPrime.Y() + delta));
-                pBPrime.moveTo([-1, y]);
-                document.getElementById('val-b').innerText = y.toFixed(3);
-            } else {
-                let y = Math.max(-2.2, Math.min(2.2, pCPrime.Y() + delta));
-                pCPrime.moveTo([-2, y]);
-                document.getElementById('val-c').innerText = y.toFixed(3);
-            }
-            board.unsuspendUpdate();
-            board.update();
-        }
-
         function toggleBotonesPrecision(deshabilitar) {
-            document.getElementById('btn-sub-b').disabled = deshabilitar;
-            document.getElementById('btn-add-b').disabled = deshabilitar;
-            document.getElementById('btn-sub-c').disabled = deshabilitar;
-            document.getElementById('btn-add-c').disabled = deshabilitar;
+            let b1 = document.getElementById('btn-sub-b');
+            let b2 = document.getElementById('btn-add-b');
+            let b3 = document.getElementById('btn-sub-c');
+            let b4 = document.getElementById('btn-add-c');
+            if (b1) b1.disabled = deshabilitar;
+            if (b2) b2.disabled = deshabilitar;
+            if (b3) b3.disabled = deshabilitar;
+            if (b4) b4.disabled = deshabilitar;
         }
 
         function validarSimetria() {
@@ -444,8 +651,8 @@
             let esCorrecto = (Math.abs(actualB - metaB) <= tolerancia) && (Math.abs(actualC - metaC) <= tolerancia);
 
             // --- CONGELAR ESCENARIO COMPLETO ---
-            pBPrime.setAttribute({fixed: true});
-            pCPrime.setAttribute({fixed: true});
+            pBPrime.setAttribute({ fixed: true });
+            pCPrime.setAttribute({ fixed: true });
             toggleBotonesPrecision(true);
             document.getElementById('btn-validate').classList.add('hidden');
 
@@ -458,7 +665,7 @@
                     swal("¡Simetría Lograda!", `Has modelado la curva de forma óptima para una función ${r.tipo}. Observa el resultado y presiona 'Siguiente Reto' cuando estés listo.`, "success");
                 } else {
                     document.getElementById('btn-pasar-n2').classList.remove('hidden');
-                    swal("Fase Geométrica Completada", "Perfecto. Has configurado todas las curvas reflexivas con total acierto.", "success");
+                    swal("Fase Geométrica Completada", "Perfecto. Has terminado la etapa geométrica.", "success");
                 }
             } else {
                 totalErroresGeometricos++;
@@ -469,7 +676,7 @@
 
                 if (lives === 0) {
                     document.getElementById('btn-reset-lvl1').classList.remove('hidden');
-                    swal("Guías Agotadas", "Has agotado las oportunidades de estabilidad gráfica. Analiza la gráfica congelada y reinicia la etapa.", "error");
+                    swal("Tréboles Agotados.", "Analiza la gráfica congelada y reinicia la etapa.", "error");
                 } else {
                     document.getElementById('btn-corregir-grafica').classList.remove('hidden');
                     swal("Asimetría Detectada", `La curva no cumple con las condiciones de una función ${r.tipo}.\n\nExamina con calma las posiciones erróneas. Al pulsar 'Corregir Intento Actual' podrás mover la gráfica de nuevo.`, "warning");
@@ -479,10 +686,10 @@
 
         function habilitarCorreccion() {
             // --- DESCONGELAR ESCENARIO PARA REINTENTO ---
-            pBPrime.setAttribute({fixed: false});
-            pCPrime.setAttribute({fixed: false});
+            pBPrime.setAttribute({ fixed: false });
+            pCPrime.setAttribute({ fixed: false });
             toggleBotonesPrecision(false);
-            
+
             document.getElementById('btn-corregir-grafica').classList.add('hidden');
             document.getElementById('btn-validate').classList.remove('hidden');
         }
@@ -493,10 +700,10 @@
         let preguntaActualN2 = 1;
         const totalN2 = 4;
         const feedbackN2 = {
-            1: "¡Correcto! Por definición de paridad impar, si evaluamos en $x = 0$, obtenemos $f(0) = -f(0) \\implies 2f(0) = 0 \\implies f(0) = 0$. Por tanto, si la función es continua, cruzará obligatoriamente por el origen.",
-            2: "¡Excelente! Evaluando el argumento opuesto: $h(-x) = f(-x) + g(-x)$. Al ser ambas impares se extraen los signos: $-f(x) - g(x) = -(f(x) + g(x)) = -h(x)$. Sigue siendo impar.",
-            3: "¡Exacto! Coexisten exponentes de naturaleza par ($x^4$ y la constante $5x^0$) junto a una potencia impar ($3x^1$). Esto rompe por completo la homogeneidad simétrica.",
-            4: "¡Es correcto! Multiplicar dos expresiones impares extrae dos signos negativos, que por reglas operativas algebraicas $(-1) \\cdot (-1) = 1$, mutando el producto global en Par."
+            1: "Por definición de función impar, si evaluamos en $x = 0$, obtenemos $f(0) = -f(0) \\implies 2f(0) = 0 \\implies f(0) = 0$. Por tanto, si la función está definida en $x = 0$, cruzará obligatoriamente por $(0,0)$.",
+            2: "Evaluando el inverso aditivo de $x$, se tiene $h(-x) = f(-x) + g(-x)$. Al ser ambas impares se extraen los signos: $-f(x) - g(x) = -(f(x) + g(x)) = -h(x)$. Por lo tanto, $h$ es impar.",
+            3: "Coexisten exponentes de naturaleza par ($x^4$ y la constante $5x^0$) junto a una potencia impar ($3x^1$). Esto rompe por completo cualquier tipo de simetría.",
+            4: "Al multiplicar dos expresiones impares se extraen dos signos negativos, lo que produce un producto Par."
         };
 
         function iniciarEtapa2() {
@@ -514,7 +721,7 @@
             document.querySelectorAll(`input[name="q${preguntaActualN2}"]`).forEach(el => el.disabled = true);
 
             if (s.value === "correcta") {
-                f.innerHTML = `<strong>¡Excelente Deducción!</strong> ${feedbackN2[preguntaActualN2]}`;
+                f.innerHTML = `<strong>¡Excelente!</strong> ${feedbackN2[preguntaActualN2]}`;
                 f.classList.remove('error');
                 aciertosQuizN2++;
             } else {
@@ -540,7 +747,7 @@
             document.getElementById(`step-${preguntaActualN2}`).classList.remove('hidden');
             document.getElementById('h5p-progress').style.width = (preguntaActualN2 / totalN2) * 100 + "%";
             document.getElementById('h5p-counter').innerText = `${preguntaActualN2}/${totalN2}`;
-            
+
             document.getElementById('btn-siguiente-quiz').classList.add('hidden');
             document.getElementById('btn-comprobar-quiz').classList.remove('hidden');
         }
@@ -551,10 +758,13 @@
         function evaluarEtapa3() {
             const p1_1 = document.getElementById('proof1-1');
             const p1_2 = document.getElementById('proof1-2');
+            const p1_3 = document.getElementById('proof1-3');
             const p2_1 = document.getElementById('proof2-1');
             const p2_2 = document.getElementById('proof2-2');
+            
+           
 
-            if (!p1_1.value || !p1_2.value || !p2_1.value || !p2_2.value) {
+            if (!p1_1.value || !p1_2.value || !p1_3.value || !p2_1.value || !p2_2.value) {
                 return swal("Casillas Vacías", "Por favor completa todas las selecciones deductivas para evaluar la estructura.", "warning");
             }
 
@@ -568,15 +778,19 @@
                 }
             };
 
+            // Validación de las selecciones correctas pK_J en donde "k" indica el número de ejercicio global y "J" indica el número de
+            //de párrafo o bloque de selectores. Por ejemplo, p2_1 corresponde a la respuesta correcta del primer selector o bloque del segundo ejercicio de demostración.
+
             validarSeleccion(p1_1, "v2"); // 3x⁴ - x² + 5
             validarSeleccion(p1_2, "v1"); // f(-x) = f(x)
+            validarSeleccion(p1_3, "v3"); // Par 
             validarSeleccion(p2_1, "v1"); // -2x³ + 7x
-            validarSeleccion(p2_2, "g(-x) = -g(x)"); // g(-x) = -g(x)
+            validarSeleccion(p2_2, "v2"); // g(-x) = -g(x)
 
             document.querySelectorAll('#level-3-container select').forEach(el => el.disabled = true);
 
-            if (aciertosTeoricosN3 === 4) {
-                swal("¡Demostraciones Validadas!", "Has completado los desarrollos algebraicos con estricto rigor analítico formal.", "success");
+            if (aciertosTeoricosN3 === 5) {
+                swal("¡Demostraciones Validadas!", "Has completado los desarrollos algebraicos con rigor analítico.", "success");
             } else {
                 swal("Inconsistencias en el Desarrollo", "Algunos pasos deductivos contienen errores de signos o de definición teórica. Examina las casillas marcadas.", "error");
             }
@@ -586,8 +800,8 @@
         }
 
         function finalizarTodo() {
-            confetti({ particleCount: 250, spread: 110, origin: { y: 0.6 } });
-            
+            confetti({ particleCount: 1500, spread: 110, origin: { y: 0.6 } });
+
             const nodeSummary = document.createElement('div');
             nodeSummary.className = 'summary-card';
             nodeSummary.innerHTML = `
@@ -605,7 +819,7 @@
                 </div>
                 <div class="summary-item">
                     <span>Pasos formales correctos (Etapa 3):</span>
-                    <span class="accent">${aciertosTeoricosN3} / 4</span>
+                    <span class="accent">${aciertosTeoricosN3} / 5</span>
                 </div>
                 <p style="text-align: center; font-weight: bold; margin-top: 20px; color: #006064;">
                     ¡Módulo académico de simetría de funciones finalizado!
@@ -623,5 +837,3 @@
 </body>
 
 </html>
-
-
