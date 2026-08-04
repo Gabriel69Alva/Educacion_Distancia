@@ -51,31 +51,10 @@
             position: relative;
         }
 
-        /* --- ESTILOS PARA LA CABECERA CON LOGO --- */
-        .cabecera-escenario {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 10px;
-        }
-
-        .logo-escenario {
-            width: 180px;
-            height: auto;
-        }
-
-        .cabecera-escenario h1 {
-            margin: 0;
-            color: var(--primary);
-            font-weight: 700;
-            text-align: left;
-        }
-
-
         h1 {
             color: var(--primary);
             font-weight: 700;
+            font-size: 30px;
             text-align: center;
         }
 
@@ -202,7 +181,6 @@
             transform-origin: center;
         }
 
-        /* Animación ralentizada a 2.5s para apreciar la caída del trébol */
         .lives i.lost {
             animation: cloverPopFall 3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
         }
@@ -247,27 +225,6 @@
             font-size: 14px;
             margin-bottom: 15px;
             font-weight: bold;
-        }
-
-        .badge-max {
-            background: var(--success);
-            color: white;
-            padding: 3px 8px;
-            border-radius: 4px;
-        }
-
-        .badge-min {
-            background: var(--danger);
-            color: white;
-            padding: 3px 8px;
-            border-radius: 4px;
-        }
-
-        .badge-inf {
-            background: var(--purple);
-            color: white;
-            padding: 3px 8px;
-            border-radius: 4px;
         }
 
         /* ================= ETAPA 2 ================= */
@@ -363,7 +320,6 @@
             margin-right: 8px;
         }
 
-        /* Resumen */
         .summary-card {
             text-align: left;
             background: #f8fafc;
@@ -395,7 +351,6 @@
 
         <div id="level-1-container">
             <header class="cabecera-escenario">
-                <img src="./img/logo-ciencias.jpg" alt=" " class="logo-escenario">
                 <h1>Etapa 1: Análisis de Gráficas</h1>
             </header>
             
@@ -415,7 +370,7 @@
                     <i class="fa-solid fa-clover" id="life2"></i>
                     <i class="fa-solid fa-clover" id="life3"></i>
                 </div>
-                <div>Funciones analizadas: <span id="score-text" style="font-size: 20px;">0</span> / 3</div>
+                <div>Aciertos: <span id="score-text" style="font-size: 20px;">0</span> / 3</div>
             </div>
 
             <div id="jxgbox" class="jxgbox-large"></div>
@@ -433,7 +388,6 @@
 
         <div id="level-2-container" class="hidden">
              <header class="cabecera-escenario">
-                <img src="./img/logo-ciencias.jpg" alt=" " class="logo-escenario">
                 <h1>Etapa 2: Cuestionario Teórico</h1>
             </header>
             
@@ -448,22 +402,20 @@
             <div id="step-1" class="quiz-step">
                 <h3>1. Si al evaluar la primera derivada obtenemos $f'(c) = 0$, ¿qué significa esto geométricamente en
                     el punto $x = c$?</h3>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>A) Que la función
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>Que la función
                         cruza el eje X en ese punto.</span></label>
-                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> <span>B) Que existe un punto
+                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> <span>Que existe un punto
                         crítico (la recta tangente es horizontal).</span></label>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>C) Que la función tiene un valor máximo o un mínimo local en ese punto.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>Que la función tiene un valor máximo o un mínimo local en ese punto.</span></label>
                 <div id="feedback-1" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-2" class="quiz-step hidden">
                 <h3>2. Según el Criterio de la Segunda Derivada, si tienes un punto crítico $c$ y resulta que $f''(c) >
                     0$, ¿qué hay en la gráfica?</h3>
-                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> <span>A) Un mínimo local,
-                        porque la función es cóncava hacia arriba (como una sonrisa).</span></label>
-                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>B) Un máximo local,
-                        porque el valor positivo indica un pico.</span></label>
-                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>C) Un punto de
+                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> <span>Un mínimo local.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>Un máximo local.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>Un punto de
                         inflexión.</span></label>
                 <div id="feedback-2" class="h5p-feedback hidden"></div>
             </div>
@@ -471,22 +423,21 @@
             <div id="step-3" class="quiz-step hidden">
                 <h3>3. ¿Qué condición matemática se utiliza principalmente para encontrar candidatos a Puntos de
                     Inflexión?</h3>
-                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>A) Igualar la primera
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>Igualar la primera
                         derivada a cero: $f'(x) = 0$.</span></label>
-                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>B) Evaluar la función
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>Evaluar la función
                         original en cero: $f(0)$.</span></label>
-                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> <span>C) Igualar la segunda
+                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> <span>Igualar la segunda
                         derivada a cero: $f''(x) = 0$.</span></label>
                 <div id="feedback-3" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-4" class="quiz-step hidden">
-                <h3>4. Si en un intervalo completo $(a, b)$ se cumple que $f'(x) > 0$, podemos asegurar que en ese intervalo la función es:</h3>
-                <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>A)
-                        Decreciente (va de bajada).</span></label>
-                <label class="h5p-option"><input type="radio" name="q4" value="correcta"> <span>B) Creciente (va de
+                <h3>4. Si en un intervalo abierto $(a, b)$ se cumple que $f'(x) > 0$, podemos asegurar que en ese intervalo la función es:</h3>
+                <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>Decreciente (va de bajada).</span></label>
+                <label class="h5p-option"><input type="radio" name="q4" value="correcta"> <span>Creciente (va de
                         subida).</span></label>
-                <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>C) Cóncava hacia
+                <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>Cóncava hacia
                         abajo.</span></label>
                 <div id="feedback-4" class="h5p-feedback hidden"></div>
             </div>
@@ -499,7 +450,6 @@
 
         <div id="level-3-container" class="hidden">
             <header class="cabecera-escenario">
-                <img src="./img/logo-ciencias.jpg" alt=" " class="logo-escenario">
                 <h1>Etapa 3: Aplicación de conocimientos</h1>
             </header>
             
@@ -512,10 +462,10 @@
                 <h3 style="color: var(--primary);">Paso 1: Primera Derivada (Puntos Críticos)</h3>
                 <div class="step-row" style="line-height: 2;">
                     Calculamos &nbsp;$f'(x) = 3x^2 - 6x$&nbsp;. Para encontrar los puntos críticos, igualamos a cero:
-                    &nbsp;$3x(x - 2) = 0$&nbsp;.
+                    &nbsp;$f'(x) = 0$&nbsp;.
                 </div>
                 <div class="step-row">
-                    Esto nos arroja dos posibles candidatos en el eje X: &nbsp;$x = 0$&nbsp; y &nbsp;
+                    Esto nos arroja dos posibles candidatos en el eje X: &nbsp;$x_{1} = 0$&nbsp; y &nbsp;$x_{2} = ?$&nbsp;:
                     <select id="ans3-1" class="math-input">
                         <option value="">--</option>
                         <option value="1">x = 1</option>
@@ -531,20 +481,23 @@
                     Calculamos la segunda derivada: &nbsp;$f''(x) = 6x - 6$.
                 </div>
                 <div class="step-row">
-                    Evaluamos el candidato &nbsp;$x = 0$: &nbsp;$f''(0) = -6.$ Al ser menor que cero, la gráfica es cóncava hacia abajo, por lo que en &nbsp;$x = 0$&nbsp; hay un &nbsp;
+                    Evaluamos el candidato &nbsp;$x_{1} = 0$: &nbsp;$f''(0) = -6.$
+                    <br><br>Al ser menor que cero, la gráfica es cóncava hacia abajo, por lo que en &nbsp;$x = 0$&nbsp; hay un &nbsp;
                     <select id="ans3-2" class="math-input">
                         <option value="">-- Selecciona --</option>
                         <option value="minimo">Mínimo Local</option>
                         <option value="maximo">Máximo Local</option>
+                        <option value="inflexion">Punto de Inflexión</option>
                     </select>
                     
                 </div>
                 <div class="step-row">
-                    Evaluamos el otro candidato: &nbsp;$f''(2) = 6.$ Al ser mayor que cero, la gráfica es cóncava hacia arriba, por lo que en &nbsp;$x = 2$&nbsp; hay un &nbsp;
+                    Evaluamos el otro candidato &nbsp;$x_{2}$: &nbsp;$f''(x_{2}) = ?$. Por lo que en &nbsp;$x_{2}$&nbsp; hay un &nbsp;
                     <select id="ans3-3" class="math-input">
                         <option value="">-- Selecciona --</option>
                         <option value="minimo">Mínimo Local</option>
                         <option value="maximo">Máximo Local</option>
+                        <option value="inflexion">Punto de Inflexión</option>
                     </select>
                     
                 </div>
@@ -553,7 +506,7 @@
             <div class="n3-section">
                 <h3 style="color: var(--primary);">Paso 3: Punto de Inflexión</h3>
                 <div class="step-row" style="line-height: 2;">
-                    Para encontrar el candidato a punto de inflexión (donde cambia la concavidad), igualamos la segunda derivada a cero: &nbsp;$6x
+                    Para encontrar el candidato a punto de inflexión (donde cambia la concavidad), igualamos la segunda derivada a cero: &nbsp;$f''(x) = 6x
                     - 6 = 0$&nbsp;.
                 </div>
                 <div class="step-row">
@@ -564,7 +517,8 @@
                         <option value="1">x = 1</option>
                         <option value="2">x = 2</option>
                     </select>
-                    Para garantizar que efectivamente es un punto de inflexión, podríamos evaluar un valor a la izquierda y otro a la derecha de este candidato para verificar el cambio de signo en la segunda derivada.
+                    <br>
+                    <strong>Nota:</strong> Para garantizar que efectivamente es un punto de inflexión, debes evaluar un valor a la izquierda y otro a la derecha del candidato para verificar el cambio de signo en la segunda derivada.
                 </div>
             </div>
 
@@ -572,6 +526,10 @@
             <button class="btn-general hidden btn-success" id="btn-finalizar-actividad"
                 onclick="finalizarTodo()">Finalizar Actividad <i class="fa-solid fa-rocket"></i></button>
         </div>
+        <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+            &copy; 2026, JGHA & DMA<br>
+        </p>
+        </footer>
 
     </div>
 
@@ -589,14 +547,18 @@
         // LÓGICA ETAPA 1 - JXGGRAPH
         // ==========================================
         let lives = 3;
-        let score = 0; // Registra cuántas funciones han sido ya analizadas (máx 3)
+        let score = 0; 
         let brd, curve, pMaxUser, pMinUser, pInfUser;
 
+        // Se agregó un abanico más grande de gráficas con distintos puntos de inflexión
         const retos = [
             { f: (x) => (x * x * x) / 3 - x, max: -1, min: 1, inf: 0 },
             { f: (x) => -(x * x * x) / 3 + x, max: 1, min: -1, inf: 0 },
             { f: (x) => (x * x * x) / 4 - 3 * x, max: -2, min: 2, inf: 0 },
-            { f: (x) => -(x * x * x) / 4 + 3 * x, max: 2, min: -2, inf: 0 }
+            { f: (x) => Math.pow(x - 1, 3) / 3 - (x - 1), max: 0, min: 2, inf: 1 },
+            { f: (x) => Math.pow(x + 1, 3) / 3 - (x + 1), max: -2, min: 0, inf: -1 },
+            { f: (x) => -(Math.pow(x - 2, 3)) / 3 + (x - 2), max: 3, min: 1, inf: 2 },
+            { f: (x) => Math.pow(x + 2, 3) / 4 - 3 * (x + 2), max: -4, min: 0, inf: -2 }
         ];
 
         let retoActual = null;
@@ -614,7 +576,6 @@
         function cargarNuevoReto() {
             if (score >= 3) return;
 
-            // Restablecer interfaz de validación
             document.getElementById('btn-validate').classList.remove('hidden');
             let btnSig = document.getElementById('btn-siguiente-grafica');
             if (btnSig) btnSig.classList.add('hidden');
@@ -633,24 +594,24 @@
             retoActual = nuevoReto;
 
             curve = brd.create('functiongraph', [retoActual.f, -5, 5], {
-                strokeColor: '#004080', strokeWidth: 3, layer: 5
+                strokeColor: '#004080', strokeWidth: 2.5, layer: 5
             });
 
             pMaxUser = brd.create('glider', [0.5, retoActual.f(0.5), curve], {
-                name: 'Máx', size: 4.5, color: '#10b981', face: 'o'
+                name: 'Máx', size: 3.5, color: '#10b981', face: 'o'
             });
             pMinUser = brd.create('glider', [-0.5, retoActual.f(-0.5), curve], {
-                name: 'Mín', size: 4.5, color: '#ef4444', face: 'o'
+                name: 'Mín', size: 3.5, color: '#ef4444', face: 'o'
             });
             pInfUser = brd.create('glider', [1.5, retoActual.f(1.5), curve], {
-                name: 'Inflexión', size: 4, color: '#8b5cf6', face: 'o'
+                name: 'Inflexión', size: 3.5, color: '#8b5cf6', face: 'o'
             });
 
             brd.unsuspendUpdate();
         }
 
         window.validarPuntos = function () {
-            const tol = 0.3;
+            const tol = 0.05;
             const userMax = pMaxUser.X();
             const userMin = pMinUser.X();
             const userInf = pInfUser.X();
@@ -659,26 +620,25 @@
             const minCorrecto = Math.abs(userMin - retoActual.min) < tol;
             const infCorrecto = Math.abs(userInf - retoActual.inf) < tol;
 
-            // Congelar SIEMPRE los puntos al validar (correcto o incorrecto)
             pMaxUser.setAttribute({ fixed: true });
             pMinUser.setAttribute({ fixed: true });
             pInfUser.setAttribute({ fixed: true });
 
             document.getElementById('btn-validate').classList.add('hidden');
-            score++;
-            document.getElementById('score-text').innerText = score;
 
             if (maxCorrecto && minCorrecto && infCorrecto) {
-                // RESPUESTA CORRECTA
+                // SÓLO SUMA PUNTAJE SI ES CORRECTO
+                score++;
+                document.getElementById('score-text').innerText = score;
+                
                 if (score < 3) {
                     document.getElementById('btn-siguiente-grafica').classList.remove('hidden');
-                    swal("¡Perfecto!", "Identificaste correctamente los puntos máximo, mínimo y de inflexión. Analiza la gráfica congelada y presiona 'Siguiente Gráfica' para continuar.", "success");
+                    swal("¡Perfecto!", "Identificaste correctamente los puntos máximo, mínimo y de inflexión. Observa la gráfica congelada y presiona 'Siguiente Gráfica' para continuar.", "success");
                 } else {
                     document.getElementById('btn-pasar-n2').classList.remove('hidden');
-                    swal("¡Etapa Superada!", "¡Excelente! Tienes un gran ojo clínico para el análisis gráfico.", "success");
+                    swal("¡Etapa Superada!", "¡Excelente! Has logrado 3 análisis correctos y tienes un gran ojo clínico para el análisis gráfico.", "success");
                 }
             } else {
-                // RESPUESTA INCORRECTA
                 totalErroresVisuales++;
                 if (lives > 0) {
                     document.getElementById(`life${lives}`).classList.add('lost');
@@ -688,13 +648,9 @@
                 if (lives === 0) {
                     swal("Sin intentos", "Has perdido todos tus tréboles. Recarga la página para volver a intentar el módulo.", "error");
                 } else {
-                    if (score < 3) {
-                        document.getElementById('btn-siguiente-grafica').classList.remove('hidden');
-                        swal("Puntos Incorrectos", "Observa con calma dónde se ubican las crestas, valles y el cambio de curvatura en la gráfica inmóvil.\n\nPierdes un trébol. Presiona 'Siguiente Gráfica' cuando estés listo.", "error");
-                    } else {
-                        document.getElementById('btn-pasar-n2').classList.remove('hidden');
-                        swal("Etapa Concluida", "Observa la posición real de los elementos analizados en el lienzo antes de continuar a los conceptos teóricos.", "warning");
-                    }
+                    // Muestra el botón de siguiente para permitir que lo siga intentando si tiene vidas
+                    document.getElementById('btn-siguiente-grafica').classList.remove('hidden');
+                    swal("Puntos Incorrectos", "Observa con calma dónde se ubican los puntos máximo, mínimo y de inflexión en la gráfica congelada.", "error");
                 }
             }
         };
@@ -706,9 +662,9 @@
         const totalN2 = 4;
         const feedbackN2 = {
             1: "Un valor de cero en la derivada indica que la pendiente es nula; es un candidato perfecto para ser máximo o mínimo local, pero no necesariamente lo es.",
-            2: "Si $f''(x) > 0$, la curva 'sonríe' (cóncava hacia arriba), por lo que el punto crítico descansa en el fondo (un mínimo).",
-            3: "Un punto de inflexión es el lugar donde la concavidad cambia, lo cual ocurre cuando la aceleración o segunda derivada pasa por cero.",
-            4: "Si la tasa de cambio (derivada) es positiva de forma constante, significa que la función va escalando hacia valores mayores."
+            2: "Si $f''(x) > 0$, la curva es cóncava hacia arriba, por lo que el punto crítico es un mínimo.",
+            3: "Un punto de inflexión es el lugar donde la concavidad cambia, lo cual ocurre cuando la segunda derivada pasa de positiva a negativa o viceversa.",
+            4: "Si la derivada es positiva, significa que la función es estrictamente creciente."
         };
 
         function iniciarEtapa2() {
@@ -787,9 +743,9 @@
             document.querySelectorAll('#level-3-container select').forEach(el => el.disabled = true);
 
             if (aciertosTeoricosN3 === 4) {
-                swal("¡Cálculos Perfectos!", "Has aplicado la metodología analítica sin errores.", "success");
+                swal("¡Cálculos Perfectos!", "Has realizado el procedimiento sin errores.", "success");
             } else {
-                swal("Revisa tus cálculos", "Recuerda la regla de signos de la segunda derivada.", "error");
+                swal("Revisa tus cálculos", "Recuerda el criterio de la segunda derivada.", "error");
             }
 
             document.getElementById('btn-evaluar-n3').classList.add('hidden');
@@ -803,7 +759,7 @@
             nodeSummary.className = 'summary-card';
             nodeSummary.innerHTML = `
                 <div class="summary-item">
-                    <span>Tréboles Restantes:</span>
+                    <span>Tréboles de Vida Restantes:</span>
                     <span class="accent">${lives} / 3</span>
                 </div>
                 <div class="summary-item">
@@ -824,7 +780,7 @@
             `;
 
             swal({
-                title: "¡Reporte Final de Aplicaciones!",
+                title: "¡Reporte Final!",
                 content: nodeSummary,
                 icon: "success",
                 button: "Cerrar Actividad"
