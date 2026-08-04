@@ -30,7 +30,7 @@
             --text-dark: #334155;
             --border-color: #79acef;
             --azure-accent: #0ea5e9;
-            --azure-dark: #0f172a;
+            --azure-dark: #243a6d;
             --azure-border: #cbd5e1;
         }
 
@@ -60,21 +60,21 @@
         .cabecera-escenario {
             display: flex;
             align-items: center;
-            gap: 20px;
+            justify-content: center;
             margin-bottom: 20px;
         }
 
         .logo-escenario {
-            width: 165px;
+            width: 0px;
             height: auto;
         }
 
         .cabecera-escenario h1 {
             color: var(--primary);
             font-weight: 700;
-            text-align: left;
+            text-align: center;
             margin: 0;
-            font-size: 26px;
+            font-size: 25px;
         }
 
         h2 { border-left: 6px solid var(--azure-accent); padding-left: 12px; font-size: 20px; color: var(--primary); margin-top: 30px; }
@@ -150,7 +150,7 @@
 
         <div id="level-1-container">
             <header class="cabecera-escenario">
-                <img src="./img/logo-ciencias.jpg" alt="Logo Facultad de Ciencias UNAM" class="logo-escenario">
+                <img src="" alt="" class="logo-escenario">
                 <h1>Etapa 1: Interpretación Geométrica de Funciones Sobreyectivas</h1>
             </header>
             
@@ -193,7 +193,7 @@
 
         <div id="level-2-container" class="hidden">
             <header class="cabecera-escenario">
-                <img src="./img/logo-ciencias.jpg" alt="Logo Facultad de Ciencias UNAM" class="logo-escenario">
+                <img src="" alt="" class="logo-escenario">
                 <h1>Etapa 2: Diagnóstico Conceptual</h1>
             </header>
 
@@ -215,7 +215,7 @@
             </div>
 
             <div id="qstep-2" class="quiz-block hidden">
-                <h3>2. Analiza la función polinomial $f: \mathbb{R} \rightarrow \mathbb{R}$ definida por $f(x)=x^3-4x$. ¿Es esta función sobreyectiva sobre todo el conjunto de los números reales?</h3>
+                <h3>2. Analiza la función $f: \mathbb{R} \rightarrow \mathbb{R}$ definida por $f(x)=x^3-4x$. ¿Es esta función sobreyectiva sobre todo el conjunto de los números reales?</h3>
                 <label class="h5p-option"><input type="radio" name="q2" value="correcto"> <span>A) Sí, porque al ser un polinomio de grado impar sus límites a \(-\infty\) y $+\infty$ cubren a todo el conjunto de los números reales.</span></label>
                 <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>B) No, ya que los mínimos locales impiden que la gráfica descienda por debajo de los valores reales.</span></label>
                 <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>C) No, debido a que corta al eje horizontal en tres raíces reales definidas.</span></label>
@@ -236,7 +236,7 @@
 
         <div id="level-3-container" class="hidden">
             <header class="cabecera-escenario">
-                <img src="./img/logo-ciencias.jpg" alt="Logo Facultad de Ciencias UNAM" class="logo-escenario">
+                <img src="" alt="" class="logo-escenario">
                 <h1>Etapa 3: Demostración de Sobreyectividad</h1>
             </header>
 
@@ -255,11 +255,11 @@
                         <option value="v2">y ∈ R</option>
                         <option value="v3">$x \in \text{dom}(f)$</option>
                     </select>
-                    existe un pre-elemento en el dominio tal que se cumpla la ecuación &nbsp; $f(x) = y$.
+                    existe un elemento en el dominio tal que se cumple la ecuación &nbsp; $f(x) = y$.
                 </div>
 
                 <div class="step-row">
-                    Planteamos la igualdad algebraica sustituyendo la regla de correspondencia: &nbsp; $3x - 5 = y$ .
+                    Planteamos la igualdad sustituyendo la regla de correspondencia: &nbsp; $3x - 5 = y$ .
                 </div>
 
                 <div class="step-row">
@@ -291,6 +291,11 @@
 
             <button class="btn-general hidden btn-success" id="btn-finish-all" onclick="mostrarCierreH5P()">Generar Reporte de Competencias <i class="fa-solid fa-graduation-cap"></i></button>
         </div>
+        <footer>
+        <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+            &copy; 2026, JGHA & DMA<br>
+        </p>
+        </footer>
     </div>
 
     <script>
@@ -456,7 +461,7 @@
                 p4.on('drag', () => p4.moveTo([4, Math.max(retoActual.codoMin, Math.min(retoActual.codoMax, p4.Y()))]));
 
                 controlPoints.push(p1, p2, p3, p4);
-                functionCurve = tablero.create('curve', JXG.Math.Numerics.bezier(controlPoints), { strokeColor: '#0f172a', strokeWidth: 3.5 });
+                functionCurve = tablero.create('curve', JXG.Math.Numerics.bezier(controlPoints), { strokeColor: '#0f172a', strokeWidth: 3 });
             } else {
                 let p1 = tablero.create('point', [-4, y1], { name: 'A1', size: 3, color: 'darkblue' });
                 let p2 = tablero.create('point', [0, y2], { name: 'A2', size: 3, color: 'darkblue', layer: 8 }); 
@@ -470,8 +475,8 @@
 
                 controlPoints.push(p1, p2, p3, p4);
                 
-                functionCurve = tablero.create('segment', [p1, p2], { strokeColor: 'darkblue', strokeWidth: 3.5, fixed: true });
-                curveBranch2 = tablero.create('segment', [p3, p4], { strokeColor: 'darkblue', strokeWidth: 3.5, layer: 6, fixed: true });
+                functionCurve = tablero.create('segment', [p1, p2], { strokeColor: 'darkblue', strokeWidth: 3, fixed: true });
+                curveBranch2 = tablero.create('segment', [p3, p4], { strokeColor: 'darkblue', strokeWidth: 3, layer: 6, fixed: true });
             }
 
             tablero.unsuspendUpdate();
@@ -615,7 +620,7 @@
         let indexQuiz = 1;
         const totalQuiz = 3;
         const explicacionesQuiz = {
-            1: "Una función es sobreyectiva si cada elemento del codominio posee al menos una preimagen en el dominio, lo que implica algebraicamente que el rango o imagen sea idéntico al codominio.",
+            1: "Una función es sobreyectiva si cada elemento del codominio posee al menos una preimagen en el dominio, lo que implica que el rango o imagen sea idéntico al codominio.",
             2: "Los polinomios de grado impar (como las funciones cúbicas) tienden a \\(-\\infty\\) por un extremo y a \\(+\\infty\\) por el otro. Estas funciones cubren a todo el conjunto de los números reales.",
             3: "Si una función genera valores únicamente en el rango $[0, 5]$, la forma matemática directa de convertirla en sobreyectiva es simplemente disminuir el codominio a $[0, 5]$."
         };
@@ -709,7 +714,7 @@
         // PANEL FINAL DE EVALUACIÓN Y REINICIO GLOBAL
         // ==========================================
         function mostrarCierreH5P() {
-            confetti({ particleCount: 1200, spread: 90, origin: { y: 0.6 } });
+            confetti({ particleCount: 2000, spread: 120, origin: { y: 0.6 } });
 
             const cajaResumen = document.createElement('div');
             cajaResumen.className = 'h5p-summary-box';
