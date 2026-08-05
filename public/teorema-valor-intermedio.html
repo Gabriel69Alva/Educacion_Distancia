@@ -19,7 +19,9 @@
     </script>
 
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         :root {
             --primary: #004080;
@@ -33,73 +35,381 @@
             --pink-intense: #ec4899;
         }
 
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: #f1f5f9; color: var(--text-dark); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
 
-        .container { max-width: 1100px; width: 100%; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); overflow: hidden; }
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
 
-        .header-container { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid var(--border-color); min-height: 80px; }
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            min-height: 80px;
+        }
 
-        h1 { color: var(--primary); font-weight: 700; text-align: center; margin: 0; }
-        h2 { border-left: 8px solid var(--success); padding-left: 15px; font-size: 15px; color: var(--primary); margin-top: 35px; }
-        h3 { font-size: 18px; margin-top: 0; color: var(--primary); }
+        h1 {
+            color: var(--primary);
+            font-weight: 700;
+            text-align: center;
+            margin: 0;
+        }
 
-        .hidden { display: none !important; }
+        h2 {
+            border-left: 8px solid var(--success);
+            padding-left: 15px;
+            font-size: 15px;
+            color: var(--primary);
+            margin-top: 35px;
+        }
 
-        .btn-general { display: block; width: 100%; max-width: 300px; margin: 20px auto; padding: 14px; background-color: var(--primary); color: white; border: none; border-radius: 30px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-        .btn-general:hover:not(:disabled) { transform: scale(1.05); background-color: var(--primary-hover); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
-        .btn-general:disabled { background-color: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
-        .btn-restart { background-color: var(--warning); }
-        .btn-restart:hover:not(:disabled) { background-color: #d97706; }
-        .btn-success { background-color: var(--success); }
-        .btn-success:hover:not(:disabled) { background-color: #059669; }
+        h3 {
+            font-size: 18px;
+            margin-top: 0;
+            color: var(--primary);
+        }
 
-        .status-bar { display: flex; justify-content: space-between; align-items: center; background: #e0f2fe; padding: 15px 20px; border-radius: 10px; border: 1px solid #bae6fd; margin-bottom: 25px; font-weight: 600; color: var(--primary); }
-        .lives-box i { color: var(--success); font-size: 22px; margin-left: 5px; display: inline-block; position: relative; }
+        .hidden {
+            display: none !important;
+        }
+
+        .btn-general {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-general:hover:not(:disabled) {
+            transform: scale(1.05);
+            background-color: var(--primary-hover);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-general:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-restart {
+            background-color: var(--warning);
+        }
+
+        .btn-restart:hover:not(:disabled) {
+            background-color: #d97706;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background-color: #059669;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #e0f2fe;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px solid #bae6fd;
+            margin-bottom: 25px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .lives-box i {
+            color: var(--success);
+            font-size: 22px;
+            margin-left: 5px;
+            display: inline-block;
+            position: relative;
+        }
 
         @keyframes loseLifeAnim {
-            0% { transform: scale(1); opacity: 1; color: var(--success); }
-            20% { transform: scale(1.8); color: var(--success); }
-            40% { transform: scale(0.9); color: var(--success); }
-            60% { transform: scale(1.4); color: var(--success); }
-            100% { transform: scale(0.6) translateY(300px) rotate(45deg); opacity: 0; color: #94a3b8; }
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                color: var(--success);
+            }
+
+            20% {
+                transform: scale(1.8);
+                color: var(--success);
+            }
+
+            40% {
+                transform: scale(0.9);
+                color: var(--success);
+            }
+
+            60% {
+                transform: scale(1.4);
+                color: var(--success);
+            }
+
+            100% {
+                transform: scale(0.6) translateY(300px) rotate(45deg);
+                opacity: 0;
+                color: #94a3b8;
+            }
         }
-        .lives-box i.lost { animation: loseLifeAnim 3s ease-in-out forwards; }
 
-        .workspace-layout { display: flex; gap: 24px; margin-top: 15px; }
-        .theory-side { width: 350px; flex-shrink: 0; background: var(--bg-light); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); display: flex; flex-direction: column; }
-        .canvas-side { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+        .lives-box i.lost {
+            animation: loseLifeAnim 3s ease-in-out forwards;
+        }
 
-        .jxgbox-wrapper { width: 100%; height: 400px; border-radius: 10px; border: 2px solid var(--border-color); overflow: hidden; background: #fff; position: relative; }
+        .workspace-layout {
+            display: flex;
+            gap: 24px;
+            margin-top: 15px;
+        }
 
-        @media (max-width: 850px) { .workspace-layout { flex-direction: column; } .theory-side, .canvas-side { width: 100%; } }
+        .theory-side {
+            width: 350px;
+            flex-shrink: 0;
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
 
-        .options-container { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-        .h5p-option { display: flex; padding: 14px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; background: #fff; transition: 0.2s; font-size: 14.5px; align-items: flex-start; line-height: 1.4; }
-        .fat-option { padding: 15px 20px !important; font-size: 14.5px; line-height: 1.6; align-items: center; }
-        .fat-option input { flex-shrink: 0; margin-top: 2px !important; }
-        .h5p-option:hover { border-color: var(--primary); background: #e0f2fe; }
-        .h5p-option input { margin-right: 12px; margin-top: 3px; accent-color: var(--primary); cursor: pointer; transform: scale(1.1); }
+        .canvas-side {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
 
-        .h5p-feedback { padding: 20px; border-radius: 8px; margin-top: 20px; background: #f1f5f9; border-left: 6px solid var(--primary); }
-        .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; }
+        .jxgbox-wrapper {
+            width: 100%;
+            height: 400px;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            overflow: hidden;
+            background: #fff;
+            position: relative;
+        }
 
-        .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 8px; margin: 30px 0; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--success); width: 33.33%; transition: 0.4s; }
+        @media (max-width: 850px) {
+            .workspace-layout {
+                flex-direction: column;
+            }
 
-        .n3-section { background: var(--bg-light); padding: 30px; border-radius: 12px; margin-bottom: 30px; border: 1px solid var(--border-color); }
-        .banco-palabras { margin-top: 25px; display: flex; gap: 10px; flex-wrap: wrap; padding: 20px; background: #e2e8f0; border-radius: 8px; border: 1px dashed #94a3b8; }
-        .drop-zone { display: inline-flex; align-items: center; justify-content: center; width: 135px; min-height: 28px; padding: 2px 4px; border-bottom: 2px solid var(--primary); vertical-align: middle; text-align: center; background: white; border-radius: 4px 4px 0 0; }
-        .drop-zone .draggable-word { font-size: 12px; padding: 4px 7px; box-shadow: none; max-width: 100%; white-space: normal; line-height: 1.15; }
-        .draggable-word { cursor: grab; font-weight: 600; font-size: 13px; background-color: var(--primary); color: white; border: none; padding: 6px 10px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); display: inline-block; }
-        .draggable-word:active { cursor: grabbing; }
+            .theory-side,
+            .canvas-side {
+                width: 100%;
+            }
+        }
 
-        .sortable-item { background: #fff; border: 1px solid var(--border-color); padding: 15px; border-radius: 6px; cursor: grab; display: flex; align-items: center; gap: 15px; font-weight: 500; transition: background 0.2s; margin-bottom: 10px; }
-        .sortable-item:active { cursor: grabbing; }
-        .sortable-item.dragging { opacity: 0.4; background: #e2e8f0; }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
 
-        select.inline-select { padding: 4px 8px; font-size: 14px; border: 1px solid var(--primary); border-radius: 4px; color: var(--primary); font-weight: 600; cursor: pointer; max-width: 100%; white-space: normal; background: #fff; }
-        
-        .score-val { font-size: 28px; font-weight: 700; color: var(--primary); text-align: center; }
+        .h5p-option {
+            display: flex;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            background: #fff;
+            transition: 0.2s;
+            font-size: 14.5px;
+            align-items: flex-start;
+            line-height: 1.4;
+        }
+
+        .fat-option {
+            padding: 15px 20px !important;
+            font-size: 14.5px;
+            line-height: 1.6;
+            align-items: center;
+        }
+
+        .fat-option input {
+            flex-shrink: 0;
+            margin-top: 2px !important;
+        }
+
+        .h5p-option:hover {
+            border-color: var(--primary);
+            background: #e0f2fe;
+        }
+
+        .h5p-option input {
+            margin-right: 12px;
+            margin-top: 3px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            transform: scale(1.1);
+        }
+
+        .h5p-feedback {
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            background: #f1f5f9;
+            border-left: 6px solid var(--primary);
+        }
+
+        .h5p-feedback.error {
+            border-left-color: var(--danger);
+            background: #fef2f2;
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 8px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--success);
+            width: 33.33%;
+            transition: 0.4s;
+        }
+
+        .n3-section {
+            background: var(--bg-light);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .banco-palabras {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            border: 1px dashed #94a3b8;
+        }
+
+        .drop-zone {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 135px;
+            min-height: 28px;
+            padding: 2px 4px;
+            border-bottom: 2px solid var(--primary);
+            vertical-align: middle;
+            text-align: center;
+            background: white;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .drop-zone .draggable-word {
+            font-size: 12px;
+            padding: 4px 7px;
+            box-shadow: none;
+            max-width: 100%;
+            white-space: normal;
+            line-height: 1.15;
+        }
+
+        .draggable-word {
+            cursor: grab;
+            font-weight: 600;
+            font-size: 13px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+
+        .draggable-word:active {
+            cursor: grabbing;
+        }
+
+        .sortable-item {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 6px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+            transition: background 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .sortable-item:active {
+            cursor: grabbing;
+        }
+
+        .sortable-item.dragging {
+            opacity: 0.4;
+            background: #e2e8f0;
+        }
+
+        select.inline-select {
+            padding: 4px 8px;
+            font-size: 14px;
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            max-width: 100%;
+            white-space: normal;
+            background: #fff;
+        }
+
+        .score-val {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -111,7 +421,8 @@
         </header>
 
         <div id="level-1-container">
-            <p style="text-align: center; color: #64748b; margin-top: -15px; margin-bottom: 25px; line-height: 1.6; font-size: 15px;">
+            <p
+                style="text-align: center; color: #64748b; margin-top: -15px; margin-bottom: 25px; line-height: 1.6; font-size: 15px;">
                 Manipula las gráficas de acuerdo con la consigna de cada desafío.
             </p>
 
@@ -136,11 +447,17 @@
 
                     <div id="math-options-container" class="options-container hidden"></div>
 
-                    <button class="btn-general" id="btn-validar-n1" onclick="validarGeometria()"><i class="fa-solid fa-check"></i> Validar Solución</button>
-                    <button class="btn-general btn-restart hidden" id="btn-retry-reto" onclick="reintentarReto()"><i class="fa-solid fa-rotate-right"></i> Reintentar Reto</button>
-                    <button class="btn-general btn-success hidden" id="btn-next-reto" onclick="avanzarReto()"><i class="fa-solid fa-arrow-right"></i> Continuar al siguiente desafío</button>
-                    <button class="btn-general btn-restart hidden" id="btn-game-over" onclick="reiniciarEscenarioGlobal()"><i class="fa-solid fa-skull"></i> Reiniciar Escenario</button>
-                    <button class="btn-general btn-success hidden" id="btn-pasar-n2" onclick="iniciarEtapa2()">Continuar a Etapa 2 🚀</button>
+                    <button class="btn-general" id="btn-validar-n1" onclick="validarGeometria()"><i
+                            class="fa-solid fa-check"></i> Validar Solución</button>
+                    <button class="btn-general btn-restart hidden" id="btn-retry-reto" onclick="reintentarReto()"><i
+                            class="fa-solid fa-rotate-right"></i> Reintentar Reto</button>
+                    <button class="btn-general btn-success hidden" id="btn-next-reto" onclick="avanzarReto()"><i
+                            class="fa-solid fa-arrow-right"></i> Continuar al siguiente desafío</button>
+                    <button class="btn-general btn-restart hidden" id="btn-game-over"
+                        onclick="reiniciarEscenarioGlobal()"><i class="fa-solid fa-skull"></i> Reiniciar
+                        Escenario</button>
+                    <button class="btn-general btn-success hidden" id="btn-pasar-n2" onclick="iniciarEtapa2()">Continuar
+                        a Etapa 2 🚀</button>
                 </div>
 
                 <div class="canvas-side" id="canvas-panel">
@@ -152,53 +469,76 @@
         </div>
 
         <div id="level-2-container" class="hidden">
-            <div class="progress-container"><div class="progress-bar" id="h5p-progress"></div></div>
+            <div class="progress-container">
+                <div class="progress-bar" id="h5p-progress"></div>
+            </div>
             <p id="h5p-counter" style="text-align: right; font-weight: 600; color: var(--primary);">1/3</p>
 
             <div id="step-1" class="quiz-step">
-                <h3>1. Si $f$ es continua en $[a,b]$ y sabemos que $f(a)=-2$ y $f(b)=5$, ¿qué nos garantiza el Teorema del Valor Intermedio (TVI)?</h3>
-                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> Que existe al menos un &nbsp; $c \in (a,b)$ &nbsp;tal que &nbsp;$f(c)=0$.</label>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Que la función cruza el eje X exactamente a la mitad del intervalo.</label>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Que la función será creciente en todo el intervalo &nbsp;$(a,b)$.</label>
+                <h3>1. Si $f$ es continua en $[a,b]$ y sabemos que $f(a)=-2$ y $f(b)=5$, ¿qué nos garantiza el Teorema
+                    del Valor Intermedio (TVI)?</h3>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> Que existe al menos un &nbsp;
+                    $c \in (a,b)$ &nbsp;tal que &nbsp;$f(c)=0$.</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Que la función cruza el eje
+                    X exactamente a la mitad del intervalo.</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Que la función será
+                    creciente en todo el intervalo &nbsp;$(a,b)$.</label>
                 <div id="feedback-1" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-2" class="quiz-step hidden">
                 <h3>2. ¿Por qué es importante que la función sea continua para aplicar el TVI?</h3>
-                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Porque si no es continua, no se pueden calcular sus derivadas.</label>
-                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> Porque si hay un salto o discontinuidad, la función podría pasar de valores negativos a positivos evadiendo el cero.</label>
-                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Porque sin continuidad no se puede garantizar que la función sea monótona.</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Porque si no es continua, no
+                    se pueden calcular sus derivadas para saber su comportamiento.</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> Porque si hay un salto o
+                    discontinuidad, la función podría pasar de valores negativos a positivos evadiendo el cero.</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Porque sin continuidad no se
+                    puede garantizar que la función sea monótona.</label>
                 <div id="feedback-2" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-3" class="quiz-step hidden">
-                <h3>3. El TVI no solo busca raíces ($f(c)=0$). Si $f(a)=10$ y $f(b)=20$, ¿qué valor $k$ está garantizado que la función alcance?</h3>
-                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> Cualquier valor &nbsp; $k$ &nbsp; mayor a 20.</label>
-                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> Cualquier valor &nbsp;$k$ &nbsp; comprendido entre 10 y 20.</label>
-                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> Solamente el valor promedio &nbsp;$k=15$.</label>
+                <h3>3. El TVI no solo busca raíces ($f(c)=0$). Si $f(a)=10$ y $f(b)=20$, ¿qué valor $k$ está garantizado
+                    que la función alcance?</h3>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> Cualquier valor &nbsp; $k$
+                    &nbsp; mayor a 20.</label>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> Cualquier valor &nbsp;$k$
+                    &nbsp; comprendido entre 10 y 20.</label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> Solamente el valor promedio
+                    &nbsp;$k=15$.</label>
                 <div id="feedback-3" class="h5p-feedback hidden"></div>
             </div>
 
-            <button class="btn-general" id="btn-comprobar-quiz" onclick="comprobarPregunta()"><i class="fa-solid fa-clipboard-check"></i> Comprobar</button>
-            <button class="btn-general btn-success hidden" id="btn-siguiente-quiz" onclick="siguientePregunta()">Siguiente</button>
+            <button class="btn-general" id="btn-comprobar-quiz" onclick="comprobarPregunta()"><i
+                    class="fa-solid fa-clipboard-check"></i> Comprobar</button>
+            <button class="btn-general btn-success hidden" id="btn-siguiente-quiz"
+                onclick="siguientePregunta()">Siguiente</button>
         </div>
 
         <div id="level-3-container" class="hidden">
             <div class="n3-section">
                 <h3>A. Ley de Conservación del Signo</h3>
-                <p style="margin-bottom:25px; color:#64748b;">Para demostrar el TVI necesitamos aplicar la ley de conservación del signo estudiada en el módulo anterior.
-                    <br>Arrastra los conceptos correctos para formular la ley de conservación del signo.</p>
+                <p style="margin-bottom:25px; color:#64748b;">Para demostrar el TVI necesitamos aplicar la ley de
+                    conservación del signo estudiada en el módulo anterior.
+                    <br>Arrastra los conceptos correctos para formular la ley de conservación del signo.
+                </p>
                 <p style="line-height:2.2;">
-                    Sea $f$ una función <span class="drop-zone" data-expected="continua" data-bank="banco-palabras-A"></span> en un punto $c$. 
-                    Si $f(c) > 0$, entonces <span class="drop-zone" data-expected="existe" data-bank="banco-palabras-A"></span> $\delta > 0$ tal que <span class="drop-zone" data-expected="para_todo" data-bank="banco-palabras-A"></span> $x$ en el intervalo abierto $(c-\delta, c+\delta)$, 
-                    se cumple que $f(x)$ es estrictamente <span class="drop-zone" data-expected="positiva" data-bank="banco-palabras-A"></span>. 
+                    Sea $f$ una función <span class="drop-zone" data-expected="continua"
+                        data-bank="banco-palabras-A"></span> en un punto $c$.
+                    Si $f(c) > 0$, entonces <span class="drop-zone" data-expected="existe"
+                        data-bank="banco-palabras-A"></span> $\delta > 0$ tal que <span class="drop-zone"
+                        data-expected="para_todo" data-bank="banco-palabras-A"></span> $x$ en el intervalo abierto
+                    $(c-\delta, c+\delta)$,
+                    se cumple que $f(x)$ es <span class="drop-zone" data-expected="positiva"
+                        data-bank="banco-palabras-A"></span>.
                     Esta propiedad se deriva directamente de la definición formal de continuidad de una función.
                 </p>
                 <div id="banco-palabras-A" class="banco-palabras">
-                    <h4 style="width: 100%; margin-top: 0; margin-bottom: 5px; color: var(--primary);"><i class="fa-solid fa-layer-group"></i> Banco de Conceptos (Parte A)</h4>
+                    <h4 style="width: 100%; margin-top: 0; margin-bottom: 5px; color: var(--primary);"><i
+                            class="fa-solid fa-layer-group"></i> Banco de Conceptos (Parte A)</h4>
                     <span class="draggable-word" draggable="true" data-value="continua">Continua</span>
                     <span class="draggable-word" draggable="true" data-value="existe">Existe</span>
-                     <span class="draggable-word" draggable="true" data-value="para_todo">Para todo</span>
+                    <span class="draggable-word" draggable="true" data-value="para_todo">Para todo</span>
                     <span class="draggable-word" draggable="true" data-value="positiva">Positiva</span>
                     <span class="draggable-word" draggable="true" data-value="falso">Decreciente</span>
                     <span class="draggable-word" draggable="true" data-value="falso">Creciente</span>
@@ -207,40 +547,62 @@
 
             <div class="n3-section">
                 <h3>B. Demostración del TVI (Interacción guiada)</h3>
-                <p style="margin-bottom:25px; color:#64748b;">Arrastra los conceptos para completar la demostración y elige la contradicción lógica en cada caso.</p>
+                <p style="margin-bottom:25px; color:#64748b;">Arrastra los conceptos para completar la demostración y
+                    elige la contradicción lógica a la que se llega en cada caso.</p>
 
-                <p style="line-height:2.2;"> <strong>Demostración.</strong> Sea $\alpha = \sup A$, en donde $A = \{x \in [a,b] : f(x) \lt 0\}$. Supongamos $ a \lt  \alpha \lt  b $. El caso $a=\alpha$ y $b= \alpha$ son análogos. La idea es demostrar que $f(\alpha) = 0.$</p>
+                <p style="line-height:2.2;"> <strong>Demostración.</strong> Sea $\alpha = \sup A$, en donde $A = \{x \in
+                    [a,b] : f(x) \lt 0\}$. Supongamos $ a \lt \alpha \lt b $. El caso $a=\alpha$ y $b= \alpha$ son
+                    análogos. La idea es demostrar que $f(\alpha) = 0.$</p>
 
-                <p style="line-height:2.2; background: #eff6ff; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                <p
+                    style="line-height:2.2; background: #eff6ff; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;">
                     <strong>Caso 1.</strong> Supongamos que $f(\alpha) \lt 0$.
-                    Observa que $f$ satisface las hipótesis del lema de conservación del signo, es decir, $f$ es continua en $\alpha$ y $f(\alpha) \lt 0$.
-                    De manera que existe una vecindad de radio $\delta$ con centro en $\alpha$ tal que para toda $x\in (\alpha-\delta,\alpha+\delta)$ ocurre que <span class="drop-zone" data-expected="f_negativa" data-bank="banco-palabras-B"></span>.
-                    En particular,<span class="drop-zone" data-expected="existe" data-bank="banco-palabras-B"></span> $\beta\in(\alpha,\alpha+\delta)$ tal que <span class="drop-zone" data-expected="f(beta)_negativa" data-bank="banco-palabras-B"></span>.
+                    Observa que $f$ satisface las hipótesis del lema de conservación del signo, es decir, $f$ es
+                    continua en $\alpha$ y $f(\alpha) \lt 0$.
+                    De manera que existe una vecindad de radio $\delta$ con centro en $\alpha$ tal que para toda $x\in
+                    (\alpha-\delta,\alpha+\delta)$ ocurre que <span class="drop-zone" data-expected="f_negativa"
+                        data-bank="banco-palabras-B"></span>.
+                    En particular<span class="drop-zone" data-expected="existe" data-bank="banco-palabras-B"></span>
+                    $\beta\in(\alpha,\alpha+\delta)$ tal que <span class="drop-zone" data-expected="f(beta)_negativa"
+                        data-bank="banco-palabras-B"></span>.
                     <br>
                     <strong>¿Por qué esto es una contradicción?</strong><br>
                     <select id="select-contra-1" class="inline-select tex2jax_ignore" autocomplete="off">
                         <option value="">-- Elige la razón --</option>
-                        <option value="falso1">Porque el valor f(β) debería ser obligatoriamente positivo, contradiciendo que α es cota superior (supremo).</option>
-                        <option value="correcto">Porque β ∈ A y β > α, contradiciendo que α es cota superior (supremo).</option>
-                        <option value="falso2">Porque β se encuentra fuera del intervalo inicial [a,b], contradiciendo que α es cota superior (supremo).</option>
+                        <option value="falso1">Porque el valor f(β) debería ser positivo, contradiciendo que α es cota
+                            superior (supremo).</option>
+                        <option value="correcto">Porque β ∈ A y β > α, contradiciendo que α es cota superior (supremo).
+                        </option>
+                        <option value="falso2">Porque β se encuentra fuera del intervalo inicial [a,b], contradiciendo
+                            que α es cota superior (supremo).</option>
                     </select>
                 </p>
 
-                <p style="line-height:2.2; background: #eff6ff; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;">
-                    <strong>Caso 2.</strong> Supongamos que $f(\alpha)>0$. Observa que $f$ satisface las hipótesis del lema de conservación del signo, es decir, $f$ es continua en $\alpha$ y $f(\alpha) > 0$.
-                    De manera que, existe una vecindad de radio $\delta$ con centro en $\alpha$ tal que <span class="drop-zone" data-expected="para_toda" data-bank="banco-palabras-B"></span> $x\in(\alpha-\delta,\alpha+\delta)$ se satisface que <span class="drop-zone" data-expected="f_positiva" data-bank="banco-palabras-B"></span>.
-                    Así, se tiene que $(\alpha-\delta,\alpha+\delta)\cap A=$ <span class="drop-zone" data-expected="vacío" data-bank="banco-palabras-B"></span>.
+                <p
+                    style="line-height:2.2; background: #eff6ff; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                    <strong>Caso 2.</strong> Supongamos que $f(\alpha)>0$. Observa que $f$ satisface las hipótesis del
+                    lema de conservación del signo, es decir, $f$ es continua en $\alpha$ y $f(\alpha) > 0$.
+                    De manera que, existe una vecindad de radio $\delta$ con centro en $\alpha$ tal que <span
+                        class="drop-zone" data-expected="para_toda" data-bank="banco-palabras-B"></span>
+                    $x\in(\alpha-\delta,\alpha+\delta)$ se satisface que <span class="drop-zone"
+                        data-expected="f_positiva" data-bank="banco-palabras-B"></span>.
+                    Así, se tiene que $(\alpha-\delta,\alpha+\delta)\cap A=$ <span class="drop-zone"
+                        data-expected="vacío" data-bank="banco-palabras-B"></span>.
                     <br><strong>¿Por qué esto es una contradicción?</strong><br>
                     <select id="select-contra-2" class="inline-select tex2jax_ignore" autocomplete="off">
                         <option value="">-- Elige la razón --</option>
-                        <option value="falso1">Porque el conjunto A por definición no puede ser vacío en ningún caso, de lo contrario no existe un supremo.</option>
-                        <option value="falso2">Porque α debe pertenecer obligatoriamente al conjunto A, de lo contrario, α no sería el supremo de A.</option>
-                        <option value="correcto">Porque α - δ sería una cota superior de A más chica que α, contradiciendo que α es la menor de las cotas superiores.</option>
+                        <option value="falso1">Porque el conjunto A por definición no puede ser vacío en ningún caso, de
+                            lo contrario no existe un supremo.</option>
+                        <option value="falso2">Porque α debe pertenecer obligatoriamente al conjunto A, de lo contrario,
+                            α no sería el supremo de A.</option>
+                        <option value="correcto">Porque α - δ sería una cota superior de A más chica que α,
+                            contradiciendo que α es la menor de las cotas superiores.</option>
                     </select>
                 </p>
 
                 <div id="banco-palabras-B" class="banco-palabras">
-                    <h4 style="width: 100%; margin-top: 0; margin-bottom: 5px; color: var(--primary);"><i class="fa-solid fa-layer-group"></i> Banco de Conceptos (Parte B)</h4>
+                    <h4 style="width: 100%; margin-top: 0; margin-bottom: 5px; color: var(--primary);"><i
+                            class="fa-solid fa-layer-group"></i> Banco de Conceptos (Parte B)</h4>
                     <span class="draggable-word" draggable="true" data-value="f_negativa">$f(x) \lt 0$</span>
                     <span class="draggable-word" draggable="true" data-value="existe">Existe</span>
                     <span class="draggable-word" draggable="true" data-value="f(beta)_negativa">$f(\beta) \lt 0$</span>
@@ -255,40 +617,63 @@
 
             <div class="n3-section">
                 <h3>C. Ordenación Lógica</h3>
-                <p style="margin-bottom: 20px; color: #64748b;">Ordena los pasos lógicos clave que usaste para demostrar el Teorema del Valor Intermedio (Versión teorema de Bolzano):</p>
+                <p style="margin-bottom: 20px; color: #64748b;">Ordena los pasos lógicos clave que usaste para demostrar
+                    el Teorema del Valor Intermedio (Versión teorema de Bolzano):</p>
                 <div id="sortable-list" style="display: flex; flex-direction: column;">
-                    <div class="sortable-item" draggable="true" data-id="2"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Observar que el conjunto $A$ no es vacío y está acotado superiormente</div>
-                    <div class="sortable-item" draggable="true" data-id="4"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Aplicar el lema de conservación del signo a $f(\alpha) \lt 0$ y $f(\beta) \gt 0$</div>
-                    <div class="sortable-item" draggable="true" data-id="1"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Construir el conjunto auxiliar $A = \{x \in [a,b] : f(x) \lt 0\}$</div>
-                    <div class="sortable-item" draggable="true" data-id="3"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Tomar $\alpha = \sup A$ (el supremo del conjunto)</div>
-                    <div class="sortable-item" draggable="true" data-id="5"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Reconocer una contradicción con la definición del supremo</div>
-                    <div class="sortable-item" draggable="true" data-id="6"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Concluir por reducción al absurdo que $f(\alpha) = 0$</div>
+                    <div class="sortable-item" draggable="true" data-id="2"><i class="fa-solid fa-sort"
+                            style="color: var(--primary);"></i> Observar que el conjunto $A$ no es vacío y está acotado
+                        superiormente</div>
+                    <div class="sortable-item" draggable="true" data-id="4"><i class="fa-solid fa-sort"
+                            style="color: var(--primary);"></i> Aplicar el lema de conservación del signo a $f(\alpha)
+                        \lt 0$ y $f(\beta) \gt 0$</div>
+                    <div class="sortable-item" draggable="true" data-id="1"><i class="fa-solid fa-sort"
+                            style="color: var(--primary);"></i> Construir el conjunto auxiliar $A = \{x \in [a,b] : f(x)
+                        \lt 0\}$</div>
+                    <div class="sortable-item" draggable="true" data-id="3"><i class="fa-solid fa-sort"
+                            style="color: var(--primary);"></i> Tomar $\alpha = \sup A$ (el supremo del conjunto)</div>
+                    <div class="sortable-item" draggable="true" data-id="5"><i class="fa-solid fa-sort"
+                            style="color: var(--primary);"></i> Reconocer una contradicción con la definición del
+                        supremo</div>
+                    <div class="sortable-item" draggable="true" data-id="6"><i class="fa-solid fa-sort"
+                            style="color: var(--primary);"></i> Concluir por reducción al absurdo que $f(\alpha) = 0$
+                    </div>
                 </div>
             </div>
 
-            <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()"><i class="fa-solid fa-flag-checkered"></i> Evaluar Final</button>
-            <button class="btn-general btn-success hidden" id="btn-ir-resumen" onclick="mostrarResumen()">Ir al Resumen de Actividad <i class="fa-solid fa-arrow-right"></i></button>
+            <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()"><i
+                    class="fa-solid fa-flag-checkered"></i> Evaluar Final</button>
+            <button class="btn-general btn-success hidden" id="btn-ir-resumen" onclick="mostrarResumen()">Ir al Resumen
+                de Actividad <i class="fa-solid fa-arrow-right"></i></button>
         </div>
 
         <div id="resumen-final-container" class="hidden" style="text-align: center;">
             <h1 style="color: var(--primary);">¡Módulo Completado!</h1>
             <p style="color: #64748b;">Has Completado el Módulo Teórico del Teorema del Valor Intermedio.</p>
             <div style="display:flex; justify-content: space-around; margin: 40px 0; flex-wrap: wrap; gap: 20px;">
-                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                <div
+                    style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
                     <p style="margin:0 0 10px 0; color: #64748b;">Etapa 1 (Gráficas)</p>
                     <div class="score-val" id="res-n1">0/5</div>
                 </div>
-                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                <div
+                    style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
                     <p style="margin:0 0 10px 0; color: #64748b;">Etapa 2 (Teoría)</p>
                     <div class="score-val" id="res-n2">0/3</div>
                 </div>
-                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                <div
+                    style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
                     <p style="margin:0 0 10px 0; color: #64748b;">Etapa 3 (Rigor)</p>
                     <div class="score-val" id="res-n3">0/13</div>
                 </div>
             </div>
-            <button class="btn-general btn-restart" onclick="reiniciarEscenarioGlobal()"><i class="fa-solid fa-rotate-left"></i> REINICIAR ESCENARIO</button>
+            <button class="btn-general btn-restart" onclick="reiniciarEscenarioGlobal()"><i
+                    class="fa-solid fa-rotate-left"></i> REINICIAR ESCENARIO</button>
         </div>
+        <footer>
+            <p style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+                &copy; 2026, JGHA & DMA<br>
+            </p>
+        </footer>
 
     </div>
 
@@ -297,7 +682,7 @@
         let aciertosN1 = 0, aciertosN2 = 0, aciertosN3 = 0, preguntaActual = 1;
         let board;
         let gLeft, gMid, gRight;
-        let boardObjects = {}; 
+        let boardObjects = {};
 
         // LIMPIAR CASILLAS AL CARGAR LA PÁGINA (Evita el caché del navegador y autocompletados)
         document.addEventListener('DOMContentLoaded', () => {
@@ -308,27 +693,64 @@
         const retosTVI = [
             {
                 num: 1,
-                text: "Mueve los puntos de control (extremos o centro) de modo que la función evada (no cruce) el eje X ¿Qué propiedades matemáticas modificaste en la gráfica?",
+                text: "Mueve los puntos de control (extremos o centro) de modo que la función no cruce el eje X ¿Qué propiedades se modifican de manera obligatoria en la gráfica?",
                 correct: ['b', 'd'],
                 bbox: [-4, 6, 4, -6],
                 options: `
                     <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> La continuidad de &nbsp; $f$.</label>
                     <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> El cambio de signo en alguno de los valores extremos del intervalo.</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> La pérdida necesaria de la inyectividad.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> La pérdida de la inyectividad de la función.</label>
                     <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> El valor de &nbsp; $f(0)$.</label>
                 `,
-                drawCustom: (brd) => {
-                    gLeft = brd.create('glider', [-3, -4, brd.create('line', [[-3,0],[-3,1]], {visible:false})], {name: 'A', color: '#4f46e5', size: 4});
-                    gMid = brd.create('glider', [0, 0, brd.create('line', [[0,0],[0,1]], {visible:false})], {name: 'B', color: '#4f46e5', size: 4});
-                    gRight = brd.create('glider', [3, 4, brd.create('line', [[3,0],[3,1]], {visible:false})], {name: 'C', color: '#4f46e5', size: 4});
-                    brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([gLeft, gMid, gRight]), {strokeColor: '#ec4899', strokeWidth: 3});
-                    brd.create('line', [[-10,0], [10,0]], {strokeColor: '#334155', strokeWidth: 1, dash: 2}); 
+                /*drawCustom: (brd) => {
+                    gLeft = brd.create('glider', [-3, -4, brd.create('line', [[-3, 0], [-3, 1]], { visible: false })], { name: 'A', color: '#4f46e5', size: 4 });
+                    gMid = brd.create('glider', [0, 0, brd.create('line', [[0, 0], [0, 1]], { visible: false })], { name: 'B', color: '#4f46e5', size: 4 });
+                    gRight = brd.create('glider', [3, 4, brd.create('line', [[3, 0], [3, 1]], { visible: false })], { name: 'C', color: '#4f46e5', size: 4 });
+                    brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([gLeft, gMid, gRight]), { strokeColor: '#4f46e5', strokeWidth: 3 });
+                    brd.create('line', [[-10, 0], [10, 0]], { strokeColor: '#334155', strokeWidth: 1, dash: 2 });
                 },
                 validate: () => {
                     let y1 = gLeft.Y(), y2 = gMid.Y(), y3 = gRight.Y();
-                    return ((y1 > 0 && y2 > 0 && y3 > 0) || (y1 < 0 && y2 < 0 && y3 < 0));
+                    return ((y1 > 0.2 && y2 > 0.2 && y3 > 0.2) || (y1 < -0.2 && y2 < -0.2 && y3 < -0.2)) && ((y1 > 0.2 && y2 > 0.2 && y3 > 0.2) || (y1 < -0.2 && y2 < -0.2 && y3 < -0.2));
                 },
-                hint: "Para evadir el eje, los tres puntos de la curva deben ser todos positivos o todos negativos."
+                */
+
+                drawCustom: (brd) => {
+                    gLeft = brd.create('glider', [-3, -4, brd.create('line', [[-3, 0], [-3, 1]], { visible: false })], { name: 'A', color: 'purple', size: 2.5 });
+                    gMid = brd.create('glider', [0, 0, brd.create('line', [[0, 0], [0, 1]], { visible: false })], { name: 'B', color: 'purple', size: 2.5 });
+                    gRight = brd.create('glider', [3, 4, brd.create('line', [[3, 0], [3, 1]], { visible: false })], { name: 'C', color: 'purple', size: 2.5 });
+
+                    // Guardamos la curva en una variable accesible para la validación
+                    myCurve = brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([gLeft, gMid, gRight]), { strokeColor: '#4f46e5', strokeWidth: 3 });
+
+                    brd.create('line', [[-10, 0], [10, 0]], { strokeColor: '#334155', strokeWidth: 1, dash: 2 });
+                },
+                validate: () => {
+                    // Si la curva aún no existe por algún motivo, no validamos como correcto
+                    if (typeof myCurve === 'undefined') return false;
+
+                    let allPositive = true;
+                    let allNegative = true;
+
+                    // Recorremos el parámetro t de 0 a 2 con un paso fino (0.02) para evaluar 100 puntos de la curva
+                    for (let t = 0; t <= 2; t += 0.02) {
+                        let y = myCurve.Y(t);
+
+                        // Si algún punto cae por debajo del margen positivo, ya no es puramente positiva
+                        if (y <= 0.1) {
+                            allPositive = false;
+                        }
+                        // Si algún punto sube por encima del margen negativo, ya no es puramente negativa
+                        if (y >= -0.1) {
+                            allNegative = false;
+                        }
+                    }
+
+                    // La validación pasa si toda la curva es completamente positiva o completamente negativa
+                    return allPositive || allNegative;
+                },
+
+                hint: "Para evadir el eje, los puntos de la curva deben ser todos positivos o todos negativos."
             },
             {
                 num: 2,
@@ -342,83 +764,84 @@
                     <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> Cambia el signo de los valores en los extremos del intervalo.</label>
                 `,
                 drawCustom: (brd) => {
-                    brd.create('line', [[-10,0], [10,0]], {strokeColor: '#334155', strokeWidth: 1, dash: 2}); 
-                    let pA = brd.create('point', [1, -4], {fixed: true, name: '$f(1)$', size: 3, color: '#004080'});
-                    let pC = brd.create('point', [5, 4], {fixed: true, name: '$f(5)$', size: 3, color: '#004080'});
-                    brd.create('point', [3, 0], {fixed: true, name: '', size: 3, fillColor: 'white', strokeColor: '#004080'});
-                    brd.create('segment', [pA, [2.95, -0.1]], {strokeColor: '#004080', strokeWidth: 3});
-                    brd.create('segment', [[3.05, 0.1], pC], {strokeColor: '#004080', strokeWidth: 3});
-                    gMid = brd.create('glider', [3, 0, brd.create('line', [[3,0],[3,1]], {visible:false})], {name: '$f(3)$', color: '#ef4444', size: 5});
+                    brd.create('line', [[-10, 0], [10, 0]], { strokeColor: '#334155', strokeWidth: 1, dash: 2, visible: false });
+                    let pA = brd.create('point', [1, -4], { fixed: true, name: '$f(1)$', size: 3, color: '#004080' });
+                    let pC = brd.create('point', [5, 4], { fixed: true, name: '$f(5)$', size: 3, color: '#004080' });
+                    brd.create('point', [3, 0], { fixed: true, name: '', size: 3, fillColor: 'white', strokeColor: '#004080' });
+                    brd.create('segment', [pA, [2.95, -0.1]], { strokeColor: '#004080', strokeWidth: 3 });
+                    brd.create('segment', [[3.05, 0.1], pC], { strokeColor: '#004080', strokeWidth: 3 });
+                    gMid = brd.create('glider', [3, 0, brd.create('line', [[3, 0], [3, 1]], { visible: false })], { name: '$f(3)$', color: '#ef4444', size: 2.7 });
                 },
+
                 validate: () => {
-                    return Math.abs(gMid.Y()) > 0.5;
+                    return Math.abs(gMid.Y()) > 0.1;
                 },
                 hint: "Mueve el punto rojo central (raíz) sobre la vertical."
             },
             {
                 num: 3,
-                text: "¿Qué propiedad matemática impide que la gráfica de esta función tenga una raíz? (Mueve los extremos, el punto central y puntos huecos y descubre qué sucede con la gráfica).",
+                text: "¿Qué propiedad impide que la gráfica de esta función tenga una raíz en el intervalo $(1, 4)$? (Mueve los extremos, el punto central y puntos huecos y descubre qué sucede con la gráfica).",
                 correct: ['a'],
                 bbox: [0, 5, 5, -3],
                 options: `
                     <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> La discontinuidad en los extremos del intervalo.</label>
                     <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> $f$ &nbsp; siempre es positiva.</label>
                     <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> $f(1)>0 \\text{ o } f(4)<0$.</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> $f$ &nbsp; no está definida en &nbsp; $[1,4]$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> La función no está definida en los extremos del intervalo.</label>
                 `,
                 drawCustom: (brd) => {
-                    brd.create('line', [[-10,0], [10,0]], {strokeColor: '#334155', strokeWidth: 1, dash: 2}); 
+                    brd.create('line', [[-10, 0], [10, 0]], { strokeColor: '#334155', strokeWidth: 1, dash: 2 });
 
-                    let sLeftPos = brd.create('segment', [[1, 0.05], [1, 10]], {visible:false});
-                    let sRightNeg = brd.create('segment', [[4, -0.05], [4, -10]], {visible:false});
-                    let sRightPos = brd.create('segment', [[4, 0.05], [4, 10]], {visible:false});
-                    let sMidPos = brd.create('segment', [[2.5, 0.05], [2.5, 10]], {visible:false});
-                    
-                    gLeft = brd.create('glider', [1, 1, sLeftPos], {name: '$f(1)$', color: '#ef4444', size: 4});
-                    gRight = brd.create('glider', [4, -1, sRightNeg], {name: '$f(4)$', color: '#ef4444', size: 4});
-                    
-                    let pC1 = brd.create('glider', [1, 2, sLeftPos], {name: '', fillColor: 'white', strokeColor: '#4f46e5', size: 4});
-                    let pMid = brd.create('glider', [2.5, 3, sMidPos], {name: '', color: '#4f46e5', size: 4});
-                    let pC2 = brd.create('glider', [4, 2, sRightPos], {name: '', fillColor: 'white', strokeColor: '#4f46e5', size: 4});
-                    
-                    brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([pC1, pMid, pC2]), {strokeColor: '#4f46e5', strokeWidth: 3});
-                    
+                    let sLeftPos = brd.create('segment', [[1, 0.5], [1, 10]], { visible: false });
+                    let sRightNeg = brd.create('segment', [[4, -0.5], [4, -10]], { visible: false });
+                    let sRightPos = brd.create('segment', [[4, 0.5], [4, 10]], { visible: false });
+                    let sMidPos = brd.create('segment', [[2.5, 0.5], [2.5, 10]], { visible: false });
+
+                    gLeft = brd.create('glider', [1, 1, sLeftPos], { name: '$f(1)$', color: 'darkblue', size: 4, layer: 9 });
+                    gRight = brd.create('glider', [4, -1, sRightNeg], { name: '$f(4)$', color: 'darkblue', size: 4 });
+
+                    let pC1 = brd.create('glider', [1, 2, sLeftPos], { name: '', fillColor: 'white', strokeColor: '#4f46e5', size: 4 });
+                    let pMid = brd.create('glider', [2.5, 3, sMidPos], { name: '', color: '#4f46e5', size: 4 });
+                    let pC2 = brd.create('glider', [4, 2, sRightPos], { name: '', fillColor: 'white', strokeColor: '#4f46e5', size: 4 });
+
+                    brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([pC1, pMid, pC2]), { strokeColor: '#4f46e5', strokeWidth: 3, layer: 3 });
+
                     boardObjects.gliders = [gLeft, gRight, pC1, pMid, pC2];
                     boardObjects.gliders.forEach(g => { g.initY = g.Y(); });
                 },
                 validate: () => {
                     let allMoved = boardObjects.gliders.every(g => Math.abs(g.Y() - g.initY) > 0.1);
-                    let cl1 = boardObjects.gliders[2].Y() > 0; 
-                    let cl2 = boardObjects.gliders[4].Y() > 0; 
-                    let ex1 = boardObjects.gliders[0].Y() > 0; 
-                    let ex2 = boardObjects.gliders[1].Y() < 0; 
+                    let cl1 = boardObjects.gliders[2].Y() > 0;
+                    let cl2 = boardObjects.gliders[4].Y() > 0;
+                    let ex1 = boardObjects.gliders[0].Y() > 0;
+                    let ex2 = boardObjects.gliders[1].Y() < 0;
                     return allMoved && cl1 && cl2 && ex1 && ex2;
                 },
-                hint: "Asegúrate de elegir la respuesta correcta y de MOVER FÍSICAMENTE TODOS los puntos (los extremos rojos y los huecos) de su posición inicial para observar la restricción."
+                hint: "Asegúrate de elegir la respuesta correcta y de MOVER FÍSICAMENTE TODOS los puntos (los extremos, el punto central y los puntos huecos) de su posición inicial para observar la restricción."
             },
             {
                 num: 4,
-                text: "¿Qué propiedad matemática impide que la gráfica de esta función tenga una raíz? (Mueve el punto central y los extremos para observar qué sucede con la gráfica).",
+                text: "¿Qué propiedad impide que la gráfica de esta función tenga una raíz en el intervalo $(-1, 4)$? (Mueve el punto central y los extremos para observar qué sucede con la gráfica).",
                 correct: ['b'],
                 bbox: [-2, 5, 5, -2],
                 options: `
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> La continuidad de &nbsp;$f$.</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> $f$ &nbsp; es positiva en $[-1,4]$.</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> El intervalo no es abierto.</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> $f$ &nbsp;no es discontinua en &nbsp;$[-1,4]$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> La continuidad de &nbsp;$f$ &nbsp;en &nbsp;$[-1,4]$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> $f$ &nbsp; es positiva en &nbsp; $[-1,4]$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> Que &nbsp;$f$ &nbsp;no sea inyectiva.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> Que &nbsp;$f$ &nbsp;no sea decreciente.</label>
                 `,
                 drawCustom: (brd) => {
-                    brd.create('line', [[-10,0], [10,0]], {strokeColor: '#334155', strokeWidth: 1, dash: 2}); 
 
-                    let sPos1 = brd.create('segment', [[-1, 0.05], [-1, 10]], {visible:false});
-                    let sPos2 = brd.create('segment', [[1.5, 0.05], [1.5, 10]], {visible:false});
-                    let sPos3 = brd.create('segment', [[4, 0.05], [4, 10]], {visible:false});
 
-                    gLeft = brd.create('glider', [-1, 2, sPos1], {name: '$f(-1)$', color: '#4f46e5', size: 4});
-                    gMid = brd.create('glider', [1.5, 1, sPos2], {name: '', color: '#4f46e5', size: 4});
-                    gRight = brd.create('glider', [4, 3, sPos3], {name: '$f(4)$', color: '#4f46e5', size: 4});
-                    brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([gLeft, gMid, gRight]), {strokeColor: '#4f46e5', strokeWidth: 3});
-                    
+                    let sPos1 = brd.create('segment', [[-1, 0.5], [-1, 10]], { visible: false });
+                    let sPos2 = brd.create('segment', [[1.5, 0.5], [1.5, 10]], { visible: false });
+                    let sPos3 = brd.create('segment', [[4, 0.5], [4, 10]], { visible: false });
+
+                    gLeft = brd.create('glider', [-1, 2, sPos1], { name: '$f(-1)$', color: 'darkblue', size: 4 });
+                    gMid = brd.create('glider', [1.5, 1, sPos2], { name: '', color: 'darkblue', size: 4 });
+                    gRight = brd.create('glider', [4, 3, sPos3], { name: '$f(4)$', color: 'darkblue', size: 4 });
+                    brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([gLeft, gMid, gRight]), { strokeColor: 'darkblue', strokeWidth: 3 });
+
                     boardObjects.gliders = [gLeft, gMid, gRight];
                     boardObjects.gliders.forEach(g => { g.initY = g.Y(); });
                 },
@@ -431,37 +854,38 @@
             },
             {
                 num: 5,
-                text: "Basado en lo anterior, ¿cuáles son las condiciones SUFICIENTES para que $f$ obligatoriamente cruce el eje X? (Selecciona las opciones y aplícalas a la gráfica de $f$).",
+                text: "Basado en lo anterior, ¿cuáles son las condiciones SUFICIENTES para que $f$ tenga una raíz en el intervalo $[-3,3]$? (Selecciona las opciones y aplícalas a la gráfica de $f$).",
                 correct: ['a', 'c'],
                 bbox: [-4, 5, 4, -5],
                 options: `
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> $f$ es continua en &nbsp; $[a, b]$.</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> $f$ &nbsp; está definida en un intervalo arbitrario.</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> Hay cambio de signo en los valores extremos del intervalo.</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> Basta con que $f$ &nbsp; sea continua en &nbsp; $(a, b)$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> $f$ &nbsp; debe ser continua en &nbsp;$[-3, 3]$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> La función debe ser decreciente en el intervalo.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> Debe existir un cambio de signo en los valores extremos del intervalo.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> $f$ &nbsp; debe ser inyectiva en &nbsp; $[-3, 3]$.</label>
                 `,
-                drawCustom: (brd) => {
-                    brd.create('line', [[-10,0], [10,0]], {strokeColor: '#334155', strokeWidth: 1, dash: 2}); 
-                    brd.create('text', [-3, -0.5, "a"], {fontSize: 16});
-                    brd.create('text', [3, -0.5, "b"], {fontSize: 16});
 
-                    gLeft = brd.create('glider', [-3, 3, brd.create('line', [[-3,0],[-3,1]], {visible:false})], {name: 'f(a)', color: '#4f46e5', size: 4});
-                    let gIn1 = brd.create('glider', [0, 2, brd.create('line', [[0,0],[0,1]], {visible:false})], {name: 'P1', color: '#ef4444', size: 4});
-                    let gIn2 = brd.create('glider', [0, -2, brd.create('line', [[0,0],[0,1]], {visible:false})], {name: 'P2', color: '#ef4444', size: 4});
-                    gRight = brd.create('glider', [3, 1, brd.create('line', [[3,0],[3,1]], {visible:false})], {name: 'f(b)', color: '#4f46e5', size: 4});
-                    
-                    let pC1 = brd.create('point', [-1.5, 3], {visible:false});
-                    let pC2 = brd.create('point', [1.5, -2], {visible:false});
+                drawCustom: (brd) => {
+                    brd.create('segment', [[-3, 0], [3, 0]], { color: 'deeppink', strokeColor: 'deeppink', strokeWidth: 4, dash: 0, layer: 1, visible: true });
+                    brd.create('text', [-3.3, -0.25, '$-3$'], { fontSize: 11, color: 'black' });
+                    brd.create('text', [2.9, -0.25, '$3$'], { fontSize: 11, color: 'black' });
+
+                    gLeft = brd.create('glider', [-3, 3, brd.create('line', [[-3, 0], [-3, 1]], { visible: false })], { name: '$f(a)$', color: 'darkblue', size: 4 });
+                    let gIn1 = brd.create('glider', [0, 2, brd.create('line', [[0, 0], [0, 1]], { visible: false })], { name: '$P1$', color: 'darkblue', size: 4, layer: 9 });
+                    let gIn2 = brd.create('glider', [0, -2, brd.create('line', [[0, 0], [0, 1]], { visible: false })], { name: '$P2$', fillColor: 'white', strokeColor: 'darkblue', size: 4, layer: 5 });
+                    gRight = brd.create('glider', [3, 1, brd.create('line', [[3, 0], [3, 1]], { visible: false })], { name: '$f(b)$', color: 'darkblue', size: 4 });
+
+                    let pC1 = brd.create('point', [-1.5, 3], { visible: false });
+                    let pC2 = brd.create('point', [1.5, -2], { visible: false });
 
                     brd.on('update', () => {
-                        pC1.moveTo([-1.5, (gLeft.Y() + gIn1.Y())/2 + 1]);
-                        pC2.moveTo([1.5, (gIn2.Y() + gRight.Y())/2 - 1]);
+                        pC1.moveTo([-1.5, (gLeft.Y() + gIn1.Y()) / 2 + 1]);
+                        pC2.moveTo([1.5, (gIn2.Y() + gRight.Y()) / 2 - 1]);
                     });
 
-                    brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([gLeft, pC1, gIn1]), {strokeColor: '#0ea5e9', strokeWidth: 3});
-                    brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([gIn2, pC2, gRight]), {strokeColor: '#0ea5e9', strokeWidth: 3});
+                    brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([gLeft, pC1, gIn1]), { strokeColor: '#0ea5e9', strokeWidth: 3, layer: 3 });
+                    brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([gIn2, pC2, gRight]), { strokeColor: '#0ea5e9', strokeWidth: 3, layer: 3 });
 
-                    boardObjects.gIn1 = gIn1; 
+                    boardObjects.gIn1 = gIn1;
                     boardObjects.gIn2 = gIn2;
                     boardObjects.gLeft = gLeft;
                     boardObjects.gRight = gRight;
@@ -470,12 +894,12 @@
                     let dist = Math.abs(boardObjects.gIn1.Y() - boardObjects.gIn2.Y());
                     let signosOp = (boardObjects.gLeft.Y() * boardObjects.gRight.Y()) < 0;
                     if (dist < 0.3 && signosOp) {
-                        boardObjects.gIn2.moveTo([0, boardObjects.gIn1.Y()]); 
+                        boardObjects.gIn2.moveTo([0, boardObjects.gIn1.Y()]);
                         return true;
                     }
                     return false;
                 },
-                hint: "Mueve los puntos centrales rojos y los extremos azules de acuerdo a las condiciones suficientes que elegiste)."
+                hint: "Mueve los puntos centrales y los extremos de acuerdo con tus opciones elegidas."
             }
         ];
 
@@ -705,10 +1129,10 @@
             });
 
             let s1 = document.getElementById('select-contra-1');
-            if(s1.value === 'correcto') { correctas++; s1.style.borderColor = "var(--success)"; s1.style.backgroundColor = "#dcfce7"; } else { s1.style.borderColor = "var(--danger)"; s1.style.backgroundColor = "#fef2f2"; }
+            if (s1.value === 'correcto') { correctas++; s1.style.borderColor = "var(--success)"; s1.style.backgroundColor = "#dcfce7"; } else { s1.style.borderColor = "var(--danger)"; s1.style.backgroundColor = "#fef2f2"; }
 
             let s2 = document.getElementById('select-contra-2');
-            if(s2.value === 'correcto') { correctas++; s2.style.borderColor = "var(--success)"; s2.style.backgroundColor = "#dcfce7"; } else { s2.style.borderColor = "var(--danger)"; s2.style.backgroundColor = "#fef2f2"; }
+            if (s2.value === 'correcto') { correctas++; s2.style.borderColor = "var(--success)"; s2.style.backgroundColor = "#dcfce7"; } else { s2.style.borderColor = "var(--danger)"; s2.style.backgroundColor = "#fef2f2"; }
 
             let orderCorrect = true;
             document.querySelectorAll('.sortable-item').forEach((item, index) => {
@@ -731,7 +1155,7 @@
             document.getElementById('res-n1').innerText = aciertosN1 + "/5";
             document.getElementById('res-n2').innerText = aciertosN2 + "/3";
             document.getElementById('res-n3').innerText = aciertosN3 + "/13";
-            confetti({ particleCount: 2000, spread: 180, origin: { y: 0.6 } });
+            confetti({ particleCount: 2000, spread: 180, origin: { y: 0.1 } });
         }
     </script>
 </body>
