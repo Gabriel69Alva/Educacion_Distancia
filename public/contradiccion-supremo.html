@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ley de Conservación del Signo y Elección del Supremo</title>
+
+    <link rel="stylesheet" type="text/css" href="https://jsxgraph.org/distrib/jsxgraph.css" />
+    <script src="https://jsxgraph.org/distrib/jsxgraphcore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.18/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+        };
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #11327f;
+            --primary-hover: #1e293b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --azure-accent: #38bdf8;
+            --azure-dark: #0284c7;
+            --azure-bg: #e0f7fa;
+            --azure-border: #b2ebf2;
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: #fff;
+            padding: 35px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 26px;
+        }
+
+        h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+            text-align: left;
+        }
+
+        p {
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Botonera */
+        .btn-general {
+            display: block;
+            width: 100%;
+            max-width: 320px;
+            margin: 15px auto;
+            padding: 13px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
+        }
+
+        .btn-general:hover:not(:disabled) {
+            transform: translateY(-2px);
+            background-color: var(--primary-hover);
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.25);
+        }
+
+        .btn-general:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background-color: #059669;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background-color: #dc2626;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: #fff;
+        }
+
+        .btn-warning:hover:not(:disabled) {
+            background-color: #d97706;
+        }
+
+        /* Layout de dos columnas para Etapa 1 */
+        .workspace-layout {
+            display: flex;
+            gap: 25px;
+            margin-top: 20px;
+            flex-direction: row; 
+            align-items: flex-start;
+        }
+
+        .canvas-side {
+            flex: 1.3;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .theory-side {
+            flex: 1;
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            height: fit-content;
+        }
+
+        /* Letreros de interacción interactivos y didácticos */
+        .letrero-interaccion {
+            background-color: #fff7ed;
+            color: #9a3412;
+            padding: 15px;
+            border-left: 5px solid #f97316;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 20px;
+            border-radius: 6px;
+            animation: fadeIn 0.5s ease-in-out, pulso 2s infinite;
+        }
+
+        @keyframes pulso {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 850px) {
+            .workspace-layout {
+                flex-direction: column;
+            }
+            .theory-side, .canvas-side {
+                width: 100%;
+            }
+        }
+
+        .jxgbox-wrapper {
+            width: 100%;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgb(252, 250, 250);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #006064;
+            margin-bottom: 15px;
+            border: 1px solid var(--azure-border);
+            font-size: 14px;
+        }
+
+        .lives-box i {
+            color: #22c55e;
+            font-size: 18px;
+            margin-right: 3px;
+            transition: all 0.3s;
+        }
+
+        .lives-box i.lost {
+            color: var(--border-color);
+            opacity: 0.3;
+            transform: scale(0.8);
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 6px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--azure-accent);
+            width: 50%;
+            transition: 0.4s;
+        }
+
+        .h5p-option {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            background: var(--bg-light);
+            transition: 0.2s;
+        }
+
+        .h5p-option:hover {
+            border-color: var(--azure-accent);
+            background: #f0fdfa;
+        }
+
+        .h5p-option input {
+            margin-right: 12px;
+            transform: scale(1.1);
+        }
+
+        .h5p-feedback {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            background: #f1f5f9;
+            border-left: 6px solid var(--azure-accent);
+            font-size: 14.5px;
+        }
+
+        .h5p-feedback.error {
+            border-left-color: var(--danger);
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .n3-section {
+            background: var(--bg-light);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .step-row {
+            margin-bottom: 25px;
+            font-size: 15.5px;
+            line-height: 2.3;
+            text-align: justify;
+        }
+
+        .math-spacer {
+            padding: 0 4px;
+            display: inline-block;
+        }
+
+        /* Custom Dropdown para soportar MathJax */
+        .custom-select {
+            display: inline-block;
+            position: relative;
+            vertical-align: middle;
+            font-family: inherit;
+            user-select: none;
+            margin: 0 5px;
+        }
+
+        .select-selected {
+            background-color: #fff;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            min-width: 150px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--azure-dark);
+            transition: 0.2s;
+        }
+
+        .select-selected:hover {
+            border-color: var(--azure-accent);
+        }
+
+        .select-items {
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 99;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .select-items div {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--bg-light);
+            text-align: center;
+        }
+
+        .select-items div:hover {
+            background-color: var(--azure-bg);
+        }
+
+        .select-hide {
+            display: none;
+        }
+
+        .h5p-summary-box {
+            border: 2px solid var(--azure-accent);
+            background: #f0f9ff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #cbd5e1;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .summary-row span.bold-val {
+            font-weight: 700;
+            color: var(--azure-dark);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div id="level-1-container">
+            <h1>Etapa 1: Análisis geométrico de una contradicción</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 15px;">
+                Este escenario permite visualizar conceptos involucrados en un paso clave del Caso 1 en una demostración por contradicción del Teorema del Valor Intermedio, la cual hace uso del conjunto auxiliar $A = \{x \in [a,b]: f(x) < 0\}$.
+    
+            </p>
+
+            <div class="status-bar">
+                <div class="lives-box">
+                    Tréboles de vida:
+                    <i class="fa-solid fa-clover" id="clover1"></i>
+                    <i class="fa-solid fa-clover" id="clover2"></i>
+                </div>
+                <div style="font-weight: bold;" id="state-indicator"><i class="fa-solid fa-circle-info"></i> Fase Inicial: Ubicación del supremo de $A$.</div>
+            </div>
+
+            <div class="workspace-layout">
+                
+                <!-- IZQUIERDA: TEORÍA -->
+                <div class="theory-side">
+                    <h3 style="margin-top:0; color: var(--primary); border-bottom: 2px solid var(--azure-accent); padding-bottom: 5px;">
+                        <i class="fa-solid fa-book"></i> Teorema del Valor Intermedio
+                    </h3>
+
+                    <!-- FASE 1: Demostración -->
+                    <div id="texto-fase1">
+                        <p style="font-size: 14px; line-height: 1.6;">
+                            Se quiere demostrar que si $f$ es continua en $[a,b]$ y $f(a) < 0$ y $f(b) > 0$, entonces existe un punto $\alpha \in (a,b)$ tal que $f(\alpha) = 0$. <br><br>
+                            <strong>Demostración.</strong> Sea $\alpha = \sup A$. Supongamos que $a < \alpha < b$. La idea es demostrar que $f(\alpha)=0$. 
+                        </p>
+                        <!-- Letrero de Interacción 1 -->
+                        <div id="letrero-1" class="letrero-interaccion">
+                            <strong>📍 Interacción Requerida:</strong><br><br>Encuentra el supremo de $A$ representado por el intervalo o unión de intervalos azules en el registro geométrico.
+                        </div>
+                    </div>
+
+                    <!-- FASE 2: Caso 1, Parte 1 (Inicialmente oculto) -->
+                    <div id="texto-fase2" class="hidden">
+                        <p style="font-size: 14px; line-height: 1.6;">
+                            <strong>Caso 1.</strong> Supongamos que $f(\alpha) < 0$. Observa que $f$ satisface las
+                            hipótesis del lema de la conservación del signo, es decir, $f$ es continua en
+                            $\alpha$ y $f(\alpha) < 0$; de manera que, existe
+                            una vecindad de radio $\delta$ con centro en $\alpha$ tal que para toda $x \in
+                            (\alpha - \delta, \alpha + \delta)$ se tiene que $f(x) < 0$.
+                        </p>
+                        <!-- Letrero de Interacción 2 -->
+                        <div id="letrero-2" class="letrero-interaccion">
+                            <strong>📍 Interacción Requerida:</strong><br><br>Mueve el deslizador $\delta$ del registro geométrico para crear una vecindad de centro en $\alpha$ como lo indica la Ley de Conservación del signo.  
+                        </div>
+                    </div>
+
+                    <!-- FASE 3: Caso 1, Parte 2 (Inicialmente oculto) -->
+                    <div id="texto-fase3" class="hidden">
+                        <p style="font-size: 14px; line-height: 1.6;">
+                            <strong>Observación.</strong> En particular, existe $\beta \in (\alpha, \alpha + \delta)$ tal que $f(\beta) < 0$. <br> ¿Por qué esto es una contradicción? 
+                        </p>
+                        
+                        <!-- Letrero de Interacción 3 -->
+                        <div id="letrero-3" class="letrero-interaccion">
+                            <strong>📍 Interacción Requerida:</strong><br><br>Localiza el punto de contradicción $\beta$ haciendo clic en la vecindad amarilla.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DERECHA: GEOMETRÍA -->
+                <div class="canvas-side">
+                    <div class="jxgbox-wrapper">
+                        <!-- Reducido el bounding box Y para centrar verticalmente el eje -->
+                        <div id="boxSupremoDerecha" style="width: 100%; height: 500px;"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CONTROLES (BOTONES DINÁMICOS) -->
+            <div style="text-align: center; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
+                <!-- Botones Fase 1 -->
+                <button class="btn-general btn-warning hidden" id="btn-retry-step1" onclick="reintentarFaseAlpha()">Reintentar Posición</button>
+                <button class="btn-general btn-success" id="btn-validate-step1" onclick="validarFaseAlpha()">Validar Posición Seleccionada</button>
+
+                <!-- Botones Fase 2 -->
+                <button class="btn-general btn-warning hidden" id="btn-retry-step2" onclick="reintentarFaseVecindad()">Reintentar Vecindad</button>
+                <button class="btn-general btn-success hidden" id="btn-validate-step2" onclick="validarFaseVecindad()">Validar Vecindad</button>
+
+                <!-- Botones Fase 3 -->
+                <button class="btn-general btn-warning hidden" id="btn-retry-step3" onclick="reintentarFaseContradiccion()">Reintentar Punto</button>
+                <button class="btn-general btn-success hidden" id="btn-validate-step3" onclick="validarFaseContradiccion()">Validar Punto de Contradicción</button>
+                
+                <!-- Botón Reinicio -->
+                <button class="btn-general btn-danger" id="btn-reset-game" onclick="reiniciarJuegoGlobal()">Reiniciar Actividad</button>
+            </div>
+
+            <button class="btn-general btn-success hidden" id="btn-go-to-n2" onclick="activarEtapa2()">Avanzar a la Etapa 2 <i class="fa-solid fa-angles-right"></i></button>
+        </div>
+
+        <div id="level-2-container" class="hidden">
+            <h1>Etapa 2: Diagnóstico conceptual</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Analiza la Ley de Conservación del Signo, la aplicación del supremo y la estructura lógica de la contradicción.</p>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="quiz-progress"></div>
+            </div>
+            <p id="quiz-counter" style="text-align: right; font-weight: 600; color: var(--azure-dark); margin-top:0;">Pregunta 1 de 2</p>
+
+            <div id="qstep-1" class="quiz-block">
+                <h3>1. Bajo la hipótesis de que $f$ es continuua en $\alpha$ y $f(\alpha) < 0$, ¿qué nos garantiza la Ley de Conservación del Signo?</h3>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>Que la función se anula en una vecindad de radio $\alpha \pm \delta$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcto"> <span>La existencia de una vecindad $(\alpha - \delta, \alpha + \delta)$ donde las imágenes siguen siendo menores que cero.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>La existencia de una vecindad $(\alpha - \delta, \alpha + \delta)$ donde $f$ es continua.</span></label>
+                <div id="qfeedback-1" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="qstep-2" class="quiz-block hidden">
+                <h3>2. ¿Por qué el hallazgo de un punto $\beta$ a la derecha de $\alpha$ tal que $f(\beta) < 0$ contradice la definición del supremo de $A$?</h3>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcto"> <span>Porque β∈A, al satisfacer la propiedad que define al conjunto A. Sin embargo, β>α, lo cual contradice que α sea una cota superior de A.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>Porque como \(\alpha\) es una cota superior de \(A\), entonces necesariamente \(\beta \notin A\).</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>Porque \(\beta > \alpha\) demuestra que \(\alpha\) no pertenece al conjunto \(A\).</span></label>
+                <div id="qfeedback-2" class="h5p-feedback hidden"></div>
+            </div>
+
+            <button class="btn-general" id="btn-check-quiz" onclick="verificarPreguntaQuiz()">Comprobar Respuesta</button>
+            <button class="btn-general hidden btn-success" id="btn-next-quiz" onclick="pasarSiguientePreguntaQuiz()">Siguiente Pregunta</button>
+        </div>
+
+        <div id="level-3-container" class="hidden">
+            <h1>Etapa 3: Estructura formal y deducción</h1>
+            <p style="text-align: center; color: #64748b; margin-bottom: 25px;">
+                Completa los enunciados para demostrar el Teorema del Valor Intermedio.
+                <br>
+                <strong>Nota:</strong> La demostración solo abarca el Caso 1, es decir, la suposición de que $f(\alpha) < 0$. El Caso 2, donde $f(\alpha) > 0$, es análogo y se deja como ejercicio.
+            </p>
+
+            <div class="n3-section">
+                <div class="step-row">
+                    Sea el conjunto acotado superiormente <span class="math-spacer">$A = \{x \in [a,b] \mid f(x) < 0\}$</span> y sea <span class="math-spacer">$\alpha = \sup(A)$</span>. Supongamos por el contrario que <span class="math-spacer">$f(\alpha) < 0$</span>. Dado que <span class="math-spacer">$f$</span> es continua en $\alpha$, la ley de conservación del signo asegura la existencia de una vecindad de radio <span class="math-spacer">$\delta > 0$</span> tal que para todo elemento de la vecindad se cumple que:
+
+                    <div class="custom-select" id="dem-1" data-value="">
+                        <div class="select-selected">-- Selecciona --</div>
+                        <div class="select-items select-hide">
+                            <div data-value="v1">$f(x) > 0$</div>
+                            <div data-value="v2">$f(x) < 0$</div>
+                        </div>
+                    </div> .
+                </div>
+                <div class="step-row">
+                    Al ser una vecindad abierta, podemos seleccionar un punto arbitrario <span class="math-spacer">$\beta$</span> tal que:
+
+                    <div class="custom-select" id="dem-2" data-value="">
+                        <div class="select-selected">-- Selecciona --</div>
+                        <div class="select-items select-hide">
+                            <div data-value="v1">$\alpha < \beta < \alpha + \delta$</div>
+                            <div data-value="v2">$\alpha - \delta < \beta < \alpha$</div>
+                        </div>
+                    </div> .
+                </div>
+                <div class="step-row">
+                    Puesto que <span class="math-spacer">$f(\beta) < 0$</span>, concluimos que <span class="math-spacer">$\beta \in A$</span>. Esto contradice que <span class="math-spacer">$\alpha$</span> sea una
+
+                    <div class="custom-select" id="dem-3" data-value="">
+                        <div class="select-selected">-- Selecciona --</div>
+                        <div class="select-items select-hide">
+                            <div data-value="v1">Cota inferior</div>
+                            <div data-value="v2">Cota superior</div>
+                        </div>
+                    </div>
+                    &nbsp; de &nbsp; <span class="math-spacer">$A$</span>, demostrando que $f(\alpha)$ no puede ser negativo (y por Caso 2, tampoco puede ser positivo). Por lo tanto, $f(\alpha) = 0$, concluyendo la demostración del Teorema del Valor Intermedio. 
+                </div>
+            </div>
+
+            <button class="btn-general" id="btn-eval-n3" onclick="validarEtapa3()">Validar Solución Formal</button>
+            <button class="btn-general hidden btn-success" id="btn-finish-all" onclick="mostrarCierreH5P()">Generar Reporte de Competencias <i class="fa-solid fa-graduation-cap"></i></button>
+        </div>
+         <footer>
+        <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+            &copy; 2026, JGHA & DMA<br>
+        </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURACIÓN Y ESTADÍSTICAS DE JUEGO
+        // ==========================================
+        let state = {
+            lives: 2,
+            gameActive: true
+        };
+
+        let stats = {
+            intentosAlpha: 0,
+            erroresTeoria: 0,
+            intentosPuntoX: 0,
+            tiempoInicio: Date.now()
+        };
+
+        let board;
+        let puntoFinalSupremo, ultimoLimiteX;
+        let alpha, sliderDelta, pIzq, pDer, vecindad;
+        let puntoContradiccion = null;
+        let faseActual = 1;
+
+        let indexQuiz = 1;
+        const totalQuiz = 2;
+        let aciertosQuiz = 0;
+        let puntosAnaliticosN3 = 0;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            inicializarTableroJSX();
+            initLevel1Graphic();
+            setupCustomDropdowns();
+        });
+
+        function inicializarTableroJSX() {
+            board = JXG.JSXGraph.initBoard("boxSupremoDerecha", {
+                boundingbox: [-1, 1.5, 7, -1.5],
+                axis: true,
+                showCopyright: false,
+                pan: { enabled: false },
+                zoom: { enabled: false }
+            });
+
+            board.on('down', procesarClickTablero);
+        }
+
+        function triggerMathJax() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise().catch((err) => console.log(err.message));
+            } else if (window.MathJax && window.MathJax.typeset) {
+                window.MathJax.typeset();
+            }
+        }
+
+        // ==========================================
+        // GENERACIÓN INTERACTIVA DE INTERVALOS
+        // ==========================================
+        function initLevel1Graphic() {
+            faseActual = 1;
+            puntoContradiccion = null;
+
+            Object.values(board.objects).forEach(obj => {
+                board.removeObject(obj);
+            });
+
+            let inicio = 0.5;
+            const numIntervalos = Math.floor(Math.random() * 2) + 1;
+
+            for (let i = 0; i < numIntervalos; i++) {
+                let ancho = 1 + Math.random() * 1.5;
+                let fin = inicio + ancho;
+                if (i === numIntervalos - 1) {
+                    let p1 = board.create('point', [inicio, 0], { visible: false });
+                    puntoFinalSupremo = board.create('point', [fin, 0], { visible: false });
+                    ultimoLimiteX = fin;
+                    board.create('segment', [p1, puntoFinalSupremo], {
+                        strokeColor: '#3498db', strokeWidth: 8
+                    });
+
+                    // Escritura del conjunto A usando MathJax, centrado respecto al deslizador (x=2.5)
+                    let midX = 2.5; 
+                    board.create('text', [midX, 0.4, '$A = \\{x \\in [a,b] : f(x) < 0\\}$'], {
+                        fixed: true, fontSize: 18, fontWeight: 'bold', anchorX: 'middle', strokeColor: '#1e3a8a'
+                    });
+                } else {
+                    board.create('segment', [[inicio, 0], [fin, 0]], { strokeColor: '#3498db', strokeWidth: 8 });
+                }
+                inicio = fin + 0.8;
+            }
+
+            let axisLine = board.create('line', [[0, 0], [7, 0]], { visible: true, strokeColor: 'black', layer: 0, strokeWidth: 1 });
+            alpha = board.create('glider', [1, 0, axisLine], {
+                name: 'α', color: 'purple', size: 5, label: { fontWeight: 'bold', fontSize: 21, color: 'purple', offset: [0, 20] }
+            });
+
+            // Se inicializa en 0 para forzar al alumno a moverlo
+            sliderDelta = board.create('slider', [[1, -0.7], [4, -0.7], [0, 0, 1]], {
+                name: 'δ', visible: false, strokeColor: 'var(--warning)',  fillColor: 'var(--warning)', label: {showValue: false}
+            });
+
+            pIzq = board.create('point', [() => alpha.X() - sliderDelta.Value(), 0], { visible: false });
+            pDer = board.create('point', [() => alpha.X() + sliderDelta.Value(), 0], { visible: false });
+            vecindad = board.create('segment', [pIzq, pDer], {
+                strokeColor: 'var(--warning)', strokeWidth: 8, opacity: 0.99, visible: false
+            });
+
+            setTimeout(triggerMathJax, 100);
+            board.update();
+        }
+
+        // ==========================================
+        // DROPDOWNS PERSONALIZADOS PARA MATHJAX
+        // ==========================================
+        function setupCustomDropdowns() {
+            document.querySelectorAll('.custom-select').forEach(customSelect => {
+                const selectedDiv = customSelect.querySelector('.select-selected');
+                const itemsDiv = customSelect.querySelector('.select-items');
+
+                selectedDiv.addEventListener('click', function (e) {
+                    if (customSelect.classList.contains('disabled')) return;
+                    e.stopPropagation();
+                    closeAllSelect(this);
+                    itemsDiv.classList.toggle('select-hide');
+                });
+
+                itemsDiv.querySelectorAll('div').forEach(item => {
+                    item.addEventListener('click', function (e) {
+                        selectedDiv.innerHTML = this.innerHTML;
+                        customSelect.dataset.value = this.dataset.value;
+                        itemsDiv.classList.add('select-hide');
+                        selectedDiv.style.borderColor = "var(--border-color)";
+                        triggerMathJax();
+                    });
+                });
+            });
+
+            document.addEventListener('click', closeAllSelect);
+        }
+
+        function closeAllSelect(elmnt) {
+            document.querySelectorAll('.select-items').forEach(items => {
+                if (elmnt !== items.previousElementSibling) {
+                    items.classList.add('select-hide');
+                }
+            });
+        }
+
+        function disableCustomDropdowns() {
+            document.querySelectorAll('.custom-select').forEach(el => el.classList.add('disabled'));
+        }
+
+        function enableCustomDropdowns() {
+            document.querySelectorAll('.custom-select').forEach(el => el.classList.remove('disabled'));
+        }
+
+        // ==========================================
+        // MANEJO DE VIDAS 
+        // ==========================================
+        function reducirVidaClover() {
+            if (state.lives > 0) {
+                document.getElementById(`clover${state.lives}`).classList.add('lost');
+                state.lives--;
+            }
+
+            if (state.lives === 0) {
+                state.gameActive = false;
+                faseActual = 0;
+                document.getElementById('btn-validate-step1').classList.add('hidden');
+                document.getElementById('btn-retry-step1').classList.add('hidden');
+                document.getElementById('btn-validate-step2').classList.add('hidden');
+                document.getElementById('btn-retry-step2').classList.add('hidden');
+                document.getElementById('btn-validate-step3').classList.add('hidden');
+                document.getElementById('btn-retry-step3').classList.add('hidden');
+                document.getElementById('state-indicator').innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color: var(--danger);"></i> Tréboles agotados. El sistema requiere reinicio.`;
+
+                Swal.fire({
+                    title: 'Tréboles Marchitos',
+                    text: 'Te has quedado sin tréboles en esta etapa. Examina las definiciones y reinicia la actividad.',
+                    icon: 'error',
+                    confirmButtonColor: 'var(--danger)'
+                });
+            }
+        }
+
+        // ==========================================
+        // FASE 1: VALIDAR SUPREMO
+        // ==========================================
+        function validarFaseAlpha() {
+            if (!state.gameActive) return;
+
+            if (Math.abs(alpha.X() - ultimoLimiteX) > 0.08) {
+                stats.intentosAlpha++;
+                reducirVidaClover();
+
+                if (state.lives > 0) {
+                    document.getElementById('btn-validate-step1').classList.add('hidden');
+                    document.getElementById('btn-retry-step1').classList.remove('hidden');
+
+                    Swal.fire({
+                        title: 'Ubicación Incorrecta',
+                        text: 'El punto actual no es correcto. Reajusta la posición del punto.',
+                        icon: 'warning',
+                        confirmButtonColor: 'var(--warning)'
+                    });
+                }
+            } else {
+                alpha.setAttribute({ fixed: true });
+                faseActual = 2;
+
+                sliderDelta.setAttribute({ visible: true });
+                vecindad.setAttribute({ visible: true });
+
+                document.getElementById('state-indicator').innerHTML = `<i class="fa-solid fa-circle-nodes"></i> Segunda Fase: Búsqueda de una vecindad.`;
+
+                // Botones
+                document.getElementById('btn-validate-step1').classList.add('hidden');
+                document.getElementById('btn-retry-step1').classList.add('hidden');
+                document.getElementById('btn-validate-step2').classList.remove('hidden');
+
+                // Letreros
+                document.getElementById('letrero-1').classList.add('hidden');
+                document.getElementById('texto-fase2').classList.remove('hidden');
+
+                triggerMathJax();
+                board.update();
+            }
+        }
+
+        function reintentarFaseAlpha() {
+            document.getElementById('btn-retry-step1').classList.add('hidden');
+            document.getElementById('btn-validate-step1').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // FASE 2: VALIDAR VECINDAD
+        // ==========================================
+        function validarFaseVecindad() {
+            if (!state.gameActive) return;
+
+            // Si el deslizador apenas se movió
+            if (sliderDelta.Value() < 0.1) {
+                reducirVidaClover();
+
+                if (state.lives > 0) {
+                    document.getElementById('btn-validate-step2').classList.add('hidden');
+                    document.getElementById('btn-retry-step2').classList.remove('hidden');
+
+                    Swal.fire({
+                        title: 'Vecindad Inexistente',
+                        text: 'El radio δ actual es nulo o demasiado pequeño. Incrementa el valor del deslizador para formar una vecindad visible.',
+                        icon: 'warning',
+                        confirmButtonColor: 'var(--warning)'
+                    });
+                }
+            } else {
+                faseActual = 3;
+
+                document.getElementById('state-indicator').innerHTML = `<i class="fa-solid fa-hand-pointer"></i> Tercera Fase: Identificación del punto de contradicción.`;
+
+                // Botones
+                document.getElementById('btn-validate-step2').classList.add('hidden');
+                document.getElementById('btn-retry-step2').classList.add('hidden');
+                document.getElementById('btn-validate-step3').classList.remove('hidden');
+
+                // Letreros
+                document.getElementById('letrero-2').classList.add('hidden');
+                document.getElementById('texto-fase3').classList.remove('hidden');
+
+                triggerMathJax();
+                board.update();
+            }
+        }
+
+        function reintentarFaseVecindad() {
+            document.getElementById('btn-retry-step2').classList.add('hidden');
+            document.getElementById('btn-validate-step2').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // FASE 3: VALIDAR PUNTO DE CONTRADICCIÓN
+        // ==========================================
+        function procesarClickTablero(e) {
+            // Solo procesa clics si estamos en la fase 3 
+            if (faseActual !== 3 || sliderDelta.Value() < 0.05 || !state.gameActive) return;
+
+            let coords = getMouseCoords(e);
+            let xClick = coords.usrCoords[1];
+            let yClick = coords.usrCoords[2];
+
+            if (Math.abs(yClick) < 0.6 && xClick >= pIzq.X() && xClick <= pDer.X()) {
+                if (puntoContradiccion) board.removeObject(puntoContradiccion);
+                puntoContradiccion = board.create('point', [xClick, 0], {
+                    name: 'β', color: 'red', size: 4.5, label: { fontWeight: 'bold', color: 'red', offset: [0, -18], fontSize: 18 }
+                });
+            }
+        }
+
+        function validarFaseContradiccion() {
+            if (!state.gameActive) return;
+
+            if (!puntoContradiccion || puntoContradiccion.X() <= alpha.X()) {
+                stats.intentosPuntoX++;
+                reducirVidaClover();
+
+                if (state.lives > 0) {
+                    document.getElementById('btn-validate-step3').classList.add('hidden');
+                    document.getElementById('btn-retry-step3').classList.remove('hidden');
+
+                    Swal.fire({
+                        title: 'Punto Inadecuado',
+                        text: 'El elemento propuesto no contradice la propiedad de cota superior. Necesitas un valor en una región alternativa de la vecindad.',
+                        icon: 'warning',
+                        confirmButtonColor: 'var(--warning)'
+                    });
+                }
+                return;
+            }
+
+            faseActual = 4; // Finalizada Etapa 1
+            document.getElementById('btn-validate-step3').classList.add('hidden');
+            document.getElementById('btn-retry-step3').classList.add('hidden');
+            document.getElementById('letrero-3').classList.add('hidden'); // Ocultar el último letrero
+
+            document.getElementById('state-indicator').innerHTML = `<i class="fa-solid fa-square-check"></i> Etapa 1 Superada con Éxito.`;
+            document.getElementById('btn-go-to-n2').classList.remove('hidden');
+
+            alpha.setAttribute({
+                color: 'orange',
+                name: 'α*',
+                label: { offset: [0, 20], color: 'orange', fontWeight: 'bold', fontSize: 20 }
+            });
+            puntoFinalSupremo.moveTo([puntoContradiccion.X(), 0], 1200, { effect: '<>' });
+
+            Swal.fire({
+                title: 'Contradicción Descubierta',
+                text: 'Has mostrado geométricamente que el supuesto supremo es menor que un elemento que pertenece al conjunto.',
+                icon: 'success',
+                confirmButtonColor: 'var(--success)'
+            });
+        }
+
+        function reintentarFaseContradiccion() {
+            document.getElementById('btn-retry-step3').classList.add('hidden');
+            document.getElementById('btn-validate-step3').classList.remove('hidden');
+        }
+
+        function getMouseCoords(e) {
+            let cPos = board.getCoordsTopLeftCorner(e), absPos = JXG.getPosition(e);
+            return new JXG.Coords(JXG.COORDS_BY_SCREEN, [absPos[0] - cPos[0], absPos[1] - cPos[1]], board);
+        }
+
+        // ==========================================
+        // CLEANUP DE ETAPAS Y REINICIO
+        // ==========================================
+        function resetearEtapa2() {
+            indexQuiz = 1;
+            aciertosQuiz = 0;
+
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+                radio.disabled = false;
+            });
+
+            document.querySelectorAll('.h5p-feedback').forEach(fb => {
+                fb.classList.add('hidden');
+                fb.innerHTML = "";
+            });
+
+            document.getElementById('qstep-1').classList.remove('hidden');
+            document.getElementById('qstep-2').classList.add('hidden');
+
+            document.getElementById('quiz-progress').style.width = "50%";
+            document.getElementById('quiz-counter').innerText = `Pregunta 1 de 2`;
+            document.getElementById('btn-check-quiz').classList.remove('hidden');
+            document.getElementById('btn-next-quiz').classList.add('hidden');
+        }
+
+        function resetearEtapa3() {
+            puntosAnaliticosN3 = 0;
+            enableCustomDropdowns();
+            document.querySelectorAll('.custom-select').forEach(select => {
+                select.dataset.value = "";
+                const display = select.querySelector('.select-selected');
+                display.innerHTML = "-- Selecciona --";
+                display.style.borderColor = "var(--border-color)";
+            });
+            document.getElementById('btn-eval-n3').classList.remove('hidden');
+            document.getElementById('btn-finish-all').classList.add('hidden');
+        }
+
+        function reiniciarJuegoGlobal() {
+            state.lives = 2;
+            state.gameActive = true;
+            stats.intentosAlpha = 0;
+            stats.erroresTeoria = 0;
+            stats.intentosPuntoX = 0;
+
+            document.getElementById('state-indicator').innerHTML = `<i class="fa-solid fa-circle-info"></i> Fase Inicial: Ubicación del supremo del conjunto $A$.`;
+            
+            // Reset de botones Fase 1, 2, 3
+            document.getElementById('btn-validate-step1').classList.remove('hidden');
+            document.getElementById('btn-retry-step1').classList.add('hidden');
+            document.getElementById('btn-validate-step2').classList.add('hidden');
+            document.getElementById('btn-retry-step2').classList.add('hidden');
+            document.getElementById('btn-validate-step3').classList.add('hidden');
+            document.getElementById('btn-retry-step3').classList.add('hidden');
+            document.getElementById('btn-go-to-n2').classList.add('hidden');
+            
+            // Restablecer Fases Visuales
+            document.getElementById('letrero-1').classList.remove('hidden');
+            document.getElementById('texto-fase2').classList.add('hidden');
+            document.getElementById('letrero-2').classList.remove('hidden');
+            document.getElementById('texto-fase3').classList.add('hidden');
+            document.getElementById('letrero-3').classList.remove('hidden');
+
+            for (let i = 1; i <= 2; i++) {
+                document.getElementById(`clover${i}`).classList.remove('lost');
+            }
+
+            resetearEtapa2();
+            resetearEtapa3();
+
+            document.getElementById('level-2-container').classList.add('hidden');
+            document.getElementById('level-3-container').classList.add('hidden');
+            document.getElementById('level-1-container').classList.remove('hidden');
+
+            initLevel1Graphic();
+        }
+
+        // ==========================================
+        // LÓGICA ETAPA 2: EVALUACIÓN CONCEPTUAL
+        // ==========================================
+        const retroalimentacionesTeoricas = {
+            1: "La continuidad local asegura que $f(x)$ es negativa en una vecindad alrededor de $\\alpha$,",
+            2: "Al verificar la condición ($f(\\beta) < 0$), se tiene que $\\beta$ está en $A$. Como $\\beta$ se encuentra a la derecha de $\\alpha$, entonces $\\alpha$ no sería una cota superior de $A$."
+        };
+
+        function activarEtapa2() {
+            resetearEtapa2();
+            document.getElementById('level-1-container').classList.add('hidden');
+            document.getElementById('level-2-container').classList.remove('hidden');
+            triggerMathJax();
+        }
+
+        function verificarPreguntaQuiz() {
+            const checkedRadio = document.querySelector(`input[name="q${indexQuiz}"]:checked`);
+            if (!checkedRadio) {
+                Swal.fire({ title: "Selección Requerida", text: "Elige una opción antes de proceder con la comprobación.", icon: "warning" });
+                return;
+            }
+
+            const layerFeedback = document.getElementById(`qfeedback-${indexQuiz}`);
+            layerFeedback.classList.remove('hidden');
+            document.querySelectorAll(`input[name="q${indexQuiz}"]`).forEach(input => input.disabled = true);
+
+            if (checkedRadio.value === "correcto") {
+                layerFeedback.innerHTML = `<strong>¡Validación Exitosa!</strong> ${retroalimentacionesTeoricas[indexQuiz]}`;
+                layerFeedback.classList.remove('error');
+                aciertosQuiz++;
+            } else {
+                layerFeedback.innerHTML = `<strong>Inconsistencia Detectada.</strong> ${retroalimentacionesTeoricas[indexQuiz]}`;
+                layerFeedback.classList.add('error');
+                stats.erroresTeoria++;
+            }
+
+            document.getElementById('btn-check-quiz').classList.add('hidden');
+            document.getElementById('btn-next-quiz').classList.remove('hidden');
+
+            if (indexQuiz === totalQuiz) {
+                document.getElementById('btn-next-quiz').innerHTML = 'Pasar a la Etapa 3 <i class="fa-solid fa-angles-right"></i>';
+            }
+
+            triggerMathJax();
+        }
+
+        function pasarSiguientePreguntaQuiz() {
+            if (indexQuiz === totalQuiz) {
+                activarEtapa3();
+                return;
+            }
+            document.getElementById(`qstep-${indexQuiz}`).classList.add('hidden');
+            indexQuiz++;
+            document.getElementById(`qstep-${indexQuiz}`).classList.remove('hidden');
+
+            document.getElementById('quiz-progress').style.width = (indexQuiz / totalQuiz) * 100 + "%";
+            document.getElementById('quiz-counter').innerText = `Pregunta ${indexQuiz} de ${totalQuiz}`;
+
+            document.getElementById('btn-next-quiz').classList.add('hidden');
+            document.getElementById('btn-check-quiz').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // LÓGICA ETAPA 3: FORMALIZACIÓN ANALÍTICA
+        // ==========================================
+        function activarEtapa3() {
+            resetearEtapa3();
+            document.getElementById('level-2-container').classList.add('hidden');
+            document.getElementById('level-3-container').classList.remove('hidden');
+            triggerMathJax();
+        }
+
+        function validarEtapa3() {
+            const select1 = document.getElementById('dem-1');
+            const select2 = document.getElementById('dem-2');
+            const select3 = document.getElementById('dem-3');
+
+            if (!select1.dataset.value || !select2.dataset.value || !select3.dataset.value) {
+                Swal.fire({ title: "Estructura Incompleta", text: "Asigna valores a todos los selectores para verificar la demostración formal.", icon: "warning" });
+                return;
+            }
+
+            puntosAnaliticosN3 = 0;
+            const verificarCaja = (el, correcto) => {
+                const display = el.querySelector('.select-selected');
+                if (el.dataset.value === correcto) {
+                    display.style.borderColor = "var(--success)";
+                    display.style.color = "var(--success)";
+                    puntosAnaliticosN3++;
+                } else {
+                    display.style.borderColor = "var(--danger)";
+                    display.style.color = "var(--danger)";
+                }
+            };
+
+            verificarCaja(select1, "v2");
+            verificarCaja(select2, "v1");
+            verificarCaja(select3, "v2");
+
+            disableCustomDropdowns();
+            document.getElementById('btn-eval-n3').classList.add('hidden');
+            document.getElementById('btn-finish-all').classList.remove('hidden');
+
+            if (puntosAnaliticosN3 === 3) {
+                Swal.fire({ title: "Etapa Formal Concluida", text: "El teorema se ha demostrado formalmente.", icon: "success" });
+            } else {
+                Swal.fire({ title: "Incoherencia Deductiva", text: "Ciertas sentencias rompen la secuencia lógica de la demostración. Revísalas en rojo.", icon: "error" });
+            }
+        }
+
+        // ==========================================
+        // PANEL DE ESTADÍSTICAS
+        // ==========================================
+        function mostrarCierreH5P() {
+            const tiempoFinal = ((Date.now() - stats.tiempoInicio) / 1000).toFixed(1);
+
+            const cajaResumen = document.createElement('div');
+            cajaResumen.className = 'h5p-summary-box';
+            cajaResumen.innerHTML = `
+                <div class="summary-row">
+                    <span>Fallas al identificar el Supremo (Etapa 1):</span>
+                    <span class="bold-val">${stats.intentosAlpha}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Fallas al ubicar el punto de contradicción:</span>
+                    <span class="bold-val">${stats.intentosPuntoX}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tréboles conservados al final:</span>
+                    <span class="bold-val">${state.lives} / 2</span>
+                </div>
+                <div class="summary-row">
+                    <span>Errores de interpretación teórica acumulados:</span>
+                    <span class="bold-val" style="color: ${stats.erroresTeoria > 0 ? 'var(--danger)' : 'var(--success)'};">${stats.erroresTeoria}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Aciertos en cuestionario conceptual (Etapa 2):</span>
+                    <span class="bold-val">${aciertosQuiz} / 2</span>
+                </div>
+                <div class="summary-row">
+                    <span>Cajas deductivas analizadas con éxito (Etapa 3):</span>
+                    <span class="bold-val">${puntosAnaliticosN3} / 3</span>
+                </div>
+                <div class="summary-row" style="border-bottom: none; margin-top: 10px;">
+                    <span>Tiempo total del experimento de frontera:</span>
+                    <span class="bold-val" style="color: var(--azure-dark);">${tiempoFinal} segundos</span>
+                </div>
+                <p style="text-align: center; font-weight: bold; margin-top: 25px; color: var(--success); font-size:16px;">
+                    <i class="fa-solid fa-circle-check"></i> ¡Módulo Finalizado!
+                </p>
+            `;
+
+            Swal.fire({
+                title: "Reporte de Desempeño",
+                html: cajaResumen,
+                icon: "success",
+                confirmButtonText: "Finalizar Práctica"
+            });
+        }
+    </script>
+</body>
+
+</html>
