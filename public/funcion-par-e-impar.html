@@ -77,7 +77,7 @@
         .btn-general {
             display: block;
             width: 100%;
-            max-width: 340px; /* Incrementado ligeramente para que quede centrado */
+            max-width: 340px; 
             margin: 30px auto;
             padding: 14px;
             background-color: var(--primary);
@@ -146,7 +146,7 @@
         .classification-zone {
             flex: 1;
             min-height: 200px;
-            border: 2px dashed var(--border-color);
+            border: 2px solid var(--border-color);
             background: var(--bg-light);
             border-radius: 12px;
             padding: 20px;
@@ -211,7 +211,6 @@
             transform: scale(1.2);
         }
 
-        /* Ajuste de márgenes para el texto y las fórmulas */
         .option-text {
             margin-left: 8px;
             display: inline-block;
@@ -240,6 +239,19 @@
             border-radius: 12px;
             margin-bottom: 30px;
             border: 1px solid var(--border-color);
+        }
+
+        .bank-container {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 25px;
+            padding: 20px;
+            background: white;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            min-height: 50px;
         }
 
         .formal-proof-p {
@@ -275,6 +287,7 @@
             align-items: center;
             justify-content: center;
             transition: background 0.2s;
+            user-select: none;
         }
 
         .draggable-word:active {
@@ -286,6 +299,7 @@
             cursor: default;
             pointer-events: none;
             opacity: 0.9;
+            background-color: #64748b;
         }
 
         .score-val {
@@ -294,16 +308,14 @@
             color: var(--primary);
         }
 
-        /* --- Ajuste premium para agrandar el cohete --- */
         .btn-general i.fa-rocket {
-            font-size: 1.8rem;                /* Tamaño maximizado impactante */
-            vertical-align: middle;           /* Centrado vertical perfecto */
-            margin-left: 12px;                /* Separación del texto */
-            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transición suave */
+            font-size: 1.8rem;
+            vertical-align: middle;
+            margin-left: 12px;
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             color: #ffffff;
         }
 
-        /* Efecto de despegue dinámico en el Hover del botón */
         .btn-general:hover i.fa-rocket {
             transform: translateX(6px) translateY(-5px) scale(1.15);
         }
@@ -317,7 +329,7 @@
         <div id="level-1-container">
             <h1>Etapa 1: Clasificación de simetría</h1>
             <p style="text-align: center; color: #64748b; margin-bottom: 30px;">Arrastra cada función al contenedor que
-                corresponde según su simetría analítica.</p>
+                corresponde según su clasificación (Par o Impar).</p>
 
             <div class="cards-container" id="function-cards">
                 <div class="function-card" draggable="true" id="f1" data-type="par">$f(x) = x^2$</div>
@@ -348,7 +360,7 @@
             <p id="h5p-counter" style="text-align: right; font-weight: 600; color: var(--primary);">1/4</p>
 
             <div id="step-1" class="quiz-step">
-                <h3>1. ¿Cuál es la condición analítica fundamental para que una función sea considerada par?</h3>
+                <h3>1. ¿Cuál es la condición matemática para que una función sea considerada par?</h3>
                 <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span
                         class="option-text">$f(x) = -f(x)$</span></label>
                 <label class="h5p-option"><input type="radio" name="q1" value="correcta"> <span
@@ -414,13 +426,22 @@
                     Demuestra cómo es el producto $h(x) = f(x)g(x)$:</p>
 
                 <p class="formal-proof-p">
-                    1. Evaluamos $h(-x) = f(-x)g(-x)$.<br>
-                    2. Como $f$ es par, sabemos que $f(-x) =$ <span class="drop-zone" data-expected="fx"></span>.<br>
-                    3. Como $g$ es impar, sabemos que $g(-x) =$ <span class="drop-zone" data-expected="-gx"></span>.<br>
-                    4. Sustituyendo: $h(-x) = (f(x))(-g(x)) = -f(x)g(x) = -h(x)$.<br>
-                    5. Por lo tanto, el producto $h(x)$ es una función <span class="drop-zone"
+                    Evaluamos $h(-x) = f(-x)g(-x)$.<br>
+                    Como $f$ es par, sabemos que $f(-x) =$ <span class="drop-zone" data-expected="fx"></span>.<br>
+                    Como $g$ es impar, sabemos que $g(-x) =$ <span class="drop-zone" data-expected="-gx"></span>.<br>
+                    Sustituyendo: $h(-x) = (f(x))(-g(x)) = -f(x)g(x) = -h(x)$.<br>
+                    Por lo tanto, el producto $h(x)$ es una función <span class="drop-zone"
                         data-expected="impar"></span>.
                 </p>
+
+                <div class="bank-container" id="banco-a">
+                    <span class="draggable-word" draggable="true" data-value="fx" data-bank="banco-a">$f(x)$</span>
+                    <span class="draggable-word" draggable="true" data-value="-gx" data-bank="banco-a">$-g(x)$</span>
+                    <span class="draggable-word" draggable="true" data-value="impar" data-bank="banco-a">Impar</span>
+                    <!-- Señuelos -->
+                    <span class="draggable-word" draggable="true" data-value="-fx" data-bank="banco-a">$-f(x)$</span>
+                    <span class="draggable-word" draggable="true" data-value="par" data-bank="banco-a">Par</span>
+                </div>
             </div>
 
             <div class="n3-section">
@@ -429,25 +450,22 @@
                     es la suma $s(x) = p(x) + q(x)$:</p>
 
                 <p class="formal-proof-p">
-                    1. Evaluamos $s(-x) = p(-x) + q(-x)$.<br>
-                    2. Por la definición de función par, esto se reescribe como: <span class="drop-zone"
+                    Evaluamos $s(-x) = p(-x) + q(-x)$.<br>
+                    Por la definición de función par, esto se reescribe como: <span class="drop-zone"
                         data-expected="px"></span> + <span class="drop-zone" data-expected="qx"></span>.<br>
-                    3. Agrupando, obtenemos que $s(-x) = s(x)$.<br>
-                    4. Esto demuestra axiomáticamente que la suma es <span class="drop-zone"
+                    Agrupando, obtenemos que $s(-x) = s(x)$.<br>
+                    Esto demuestra que la suma es <span class="drop-zone"
                         data-expected="par"></span>.
                 </p>
-            </div>
 
-            <div id="banco-palabras"
-                style="display:flex; gap:12px; flex-wrap: wrap; justify-content: center; margin-top: 20px; padding: 20px; background: white; border: 1px dashed #cbd5e1; border-radius: 8px;">
-                <span class="draggable-word" draggable="true" data-value="fx">$f(x)$</span>
-                <span class="draggable-word" draggable="true" data-value="-gx">$-g(x)$</span>
-                <span class="draggable-word" draggable="true" data-value="impar">Impar</span>
-                <span class="draggable-word" draggable="true" data-value="px">$p(x)$</span>
-                <span class="draggable-word" draggable="true" data-value="qx">$q(x)$</span>
-                <span class="draggable-word" draggable="true" data-value="par">Par</span>
-                <span class="draggable-word" draggable="true" data-value="cero">Cero</span>
-                <span class="draggable-word" draggable="true" data-value="-fx">$-f(x)$</span>
+                <div class="bank-container" id="banco-b">
+                    <span class="draggable-word" draggable="true" data-value="px" data-bank="banco-b">$p(x)$</span>
+                    <span class="draggable-word" draggable="true" data-value="qx" data-bank="banco-b">$q(x)$</span>
+                    <span class="draggable-word" draggable="true" data-value="par" data-bank="banco-b">Par</span>
+                    <!-- Señuelos -->
+                    <span class="draggable-word" draggable="true" data-value="-px" data-bank="banco-b">$-p(x)$</span>
+                    <span class="draggable-word" draggable="true" data-value="impar" data-bank="banco-b">Impar</span>
+                </div>
             </div>
 
             <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()">Evaluar Demostraciones</button>
@@ -456,9 +474,9 @@
         </div>
 
         <div id="resumen-final-container" class="hidden" style="text-align: center;">
-            <h1>Resultados de Ingeniería Pedagógica</h1>
+            <h1>Resultados</h1>
             <p style="text-align: center; color: #64748b; margin-bottom: 30px;">Aquí tienes el desempeño en el análisis
-                de simetría analítica.</p>
+                de simetría.</p>
             <div style="display:flex; justify-content: space-around; margin: 40px 0; flex-wrap: wrap; gap: 20px;">
                 <div
                     style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 140px; border: 1px solid var(--border-color);">
@@ -479,8 +497,13 @@
                     <div class="score-val" id="res-n3">0/6</div>
                 </div>
             </div>
-            <button class="btn-general btn-restart" onclick="reiniciarActividad()">REINICIAR ESCENARIO 5</button>
+            <button class="btn-general btn-restart" onclick="reiniciarActividad()">REINICIAR ESCENARIO</button>
         </div>
+        <footer>
+        <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+            &copy; 2026, JGHA & DMA<br>
+        </p>
+        </footer>
 
     </div>
 
@@ -496,6 +519,21 @@
             const cardsContainer = document.getElementById('function-cards');
             const cards = Array.from(cardsContainer.querySelectorAll('.function-card'));
             cards.sort(() => Math.random() - 0.5).forEach(c => cardsContainer.appendChild(c));
+
+            // Barajar los bancos independientes de la Etapa 3 al iniciar/reiniciar
+            mezclarBancos();
+        }
+
+        function mezclarBancos() {
+            ['banco-a', 'banco-b'].forEach(id => {
+                const bank = document.getElementById(id);
+                if (bank) {
+                    const items = Array.from(bank.querySelectorAll('.draggable-word'));
+                    items.sort(() => Math.random() - 0.5);
+                    bank.innerHTML = '';
+                    items.forEach(item => bank.appendChild(item));
+                }
+            });
         }
 
         // ==========================================
@@ -526,7 +564,6 @@
                 zone.classList.remove('drag-over');
                 const id = e.dataTransfer.getData('text/plain');
                 const card = document.getElementById(id);
-                // Evitar que mueva elementos bloqueados
                 if (card && card.draggable) {
                     zone.appendChild(card);
                 }
@@ -554,7 +591,6 @@
                     card.style.backgroundColor = "#fef2f2";
                 }
 
-                // CANDADO: Bloquear tarjeta una vez evaluada
                 card.draggable = false;
                 card.classList.add('locked');
             });
@@ -582,7 +618,7 @@
         // ==========================================
         const feedbackRespuestas = {
             1: "Por definición, una función par cumple que $f(x) = f(-x)$.",
-            2: "Exacto. Las funciones impares tienen simetría rotacional (central) respecto al origen $(0,0)$.",
+            2: "Las funciones impares tienen simetría respecto al origen $(0,0)$.",
             3: "Si $f(x)=f(-x)$ y $f(x)=-f(-x)$, entonces $f(x)=-f(x) \\Rightarrow 2f(x)=0 \\Rightarrow f(x)=0$.",
             4: "Si sumas dos funciones pares: $h(-x) = f(-x)+g(-x) = f(x)+g(x) = h(x)$. Por tanto, la suma es par."
         };
@@ -632,7 +668,7 @@
         }
 
         // ==========================================
-        // LÓGICA ETAPA 3
+        // LÓGICA ETAPA 3 (Rediseñada con Bancos Independientes)
         // ==========================================
         let draggedWord = null;
 
@@ -646,28 +682,52 @@
             zone.addEventListener('dragover', e => e.preventDefault());
             zone.addEventListener('drop', e => {
                 e.preventDefault();
-                // Si la zona ya tiene algo, regresarlo al banco (solo si no está bloqueado)
-                if (zone.hasChildNodes() && zone.firstChild.draggable) {
-                    document.getElementById('banco-palabras').appendChild(zone.firstChild);
+                if (!draggedWord) return;
+
+                const section = zone.closest('.n3-section');
+                const targetBank = section.querySelector('.bank-container');
+
+                // Validar que el bloque pertenezca a la demostración correspondiente
+                if (draggedWord.dataset.bank !== targetBank.id) {
+                    swal("Acción no permitida", "Este bloque pertenece a otra demostración.", "warning");
+                    return;
                 }
-                if (draggedWord && draggedWord.classList.contains('draggable-word')) {
-                    zone.appendChild(draggedWord);
+
+                // Si la zona ya tiene una opción colocada, regresarla a su banco de origen
+                if (zone.hasChildNodes() && zone.firstChild.draggable) {
+                    targetBank.appendChild(zone.firstChild);
+                }
+
+                zone.appendChild(draggedWord);
+                draggedWord = null;
+            });
+        });
+
+        document.querySelectorAll('.bank-container').forEach(bank => {
+            bank.addEventListener('dragover', e => e.preventDefault());
+            bank.addEventListener('drop', e => {
+                e.preventDefault();
+                // Regresar elemento únicamente a su propio banco contenedor
+                if (draggedWord && draggedWord.dataset.bank === bank.id) {
+                    bank.appendChild(draggedWord);
                     draggedWord = null;
                 }
             });
         });
 
-        const bancoPalabras = document.getElementById('banco-palabras');
-        bancoPalabras.addEventListener('dragover', e => e.preventDefault());
-        bancoPalabras.addEventListener('drop', e => {
-            e.preventDefault();
-            if (draggedWord && draggedWord.classList.contains('draggable-word')) {
-                bancoPalabras.appendChild(draggedWord);
-                draggedWord = null;
-            }
-        });
-
         function evaluarEtapa3() {
+            let completado = true;
+            document.querySelectorAll('.drop-zone').forEach(z => {
+                if (!z.hasChildNodes()) {
+                    completado = false;
+                }
+            });
+
+            if (!completado) {
+                swal("Demostración Incompleta", "Por favor, coloca un bloque en cada uno de los espacios vacíos antes de evaluar.", "warning");
+                return;
+            }
+
             let correctas = 0;
             document.querySelectorAll('.drop-zone').forEach(z => {
                 if (z.hasChildNodes() && z.firstChild.dataset.value === z.dataset.expected) {
@@ -680,7 +740,6 @@
                 }
             });
 
-            // CANDADO: Bloquear todas las palabras arrastrables
             document.querySelectorAll('.draggable-word').forEach(word => {
                 word.draggable = false;
                 word.classList.add('locked');
@@ -701,7 +760,7 @@
             document.getElementById('res-n2').innerText = aciertosN2 + "/4";
             document.getElementById('res-n3').innerText = aciertosN3 + "/6";
 
-            confetti({ particleCount: 300, spread: 120, origin: { y: 0.6 } });
+            confetti({ particleCount: 2000, spread: 80, origin: { y: 0.6 } });
         }
 
         function reiniciarActividad() { location.reload(); }
