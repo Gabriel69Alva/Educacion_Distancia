@@ -192,7 +192,7 @@
             <h1>Etapa 3: Demostración analítica</h1>
             <p style="text-align: center; color: #64748b; margin-bottom: 30px;">
                 Utiliza la definición formal para demostrar si las siguientes funciones son inyectivas.<br>
-                <strong>Regla de oro:</strong> Partimos de suponer que $f(a) = f(b)$. Si tras despejar llegamos a que <strong>$a = b$</strong>, es inyectiva.
+                <strong>Nota:</strong> Partimos de suponer que $f(a) = f(b)$. Si tras despejar llegamos a que <strong>$a = b$</strong>, es inyectiva.
             </p>
 
             <div class="n3-section">
@@ -250,6 +250,11 @@
             <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()">Evaluar Demostraciones</button>
             <button class="btn-general hidden btn-success" id="btn-finalizar-actividad" onclick="finalizarTodo()">Finalizar Actividad <i class="fa-solid fa-rocket"></i></button>
         </div>
+        <footer>
+        <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+            &copy; 2026, JGHA & DMA<br>
+        </p>
+        </footer>
 
     </div>
 
@@ -274,7 +279,7 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             brd = JXG.JSXGraph.initBoard('jxgbox', {
-                boundingbox: [-6, 6, 6, -6], axis: true, grid: true,
+                boundingbox: [-6, 6, 6, -6], axis: true, grid: true, ShowCopyright: false,
                 pan: { enabled: false }, zoom: { enabled: false }, showNavigation: false
             });
 
@@ -405,7 +410,7 @@
                 document.getElementById(`life${lives}`).classList.add('lost');
                 lives--;
                 totalErroresVisuales++;
-                swal(titulo, `${msg}\n\nPierdes un trébol de la suerte. Te quedan ${lives}.`, "error");
+                swal(titulo, `${msg}\n\nPierdes un trébol. Te quedan ${lives}.`, "error");
                 
                 if (lives === 0) {
                     document.getElementById('btn-validate').disabled = true;
@@ -433,9 +438,9 @@
         let preguntaActualN2 = 1;
         const totalN2 = 3;
         const feedbackN2 = {
-            1: "Correcto. $x^3$ siempre crece y pasa la prueba de la línea horizontal. Las otras repiten valores de Y (por ejemplo, $(-2)^2 = 2^2 = 4$).",
-            2: "Exacto. La línea horizontal verifica que ningún valor del codominio (eje Y) sea tomado más de una vez por la función.",
-            3: "¡Muy bien! Esa es exactamente la AWS de que cada salida proviene de una única entrada."
+            1: "$x^3$ siempre crece y pasa la prueba de la línea horizontal. Las otras repiten valores de Y (por ejemplo, $(-2)^2 = 2^2 = 4$).",
+            2: "La línea horizontal verifica que ningún valor del codominio (eje Y) sea tomado más de una vez por la función.",
+            3: "La definición es la contrapositiva de la definición original de función inyectiva."
         };
 
         function iniciarEtapa2() {
@@ -540,12 +545,12 @@
                     <span class="accent">${aciertosAlgebraN3} / 5</span>
                 </div>
                 <p style="text-align: center; font-weight: bold; margin-top: 15px; color: var(--primary);">
-                    ${aciertosAlgebraN3 === 5 && lives === 3 ? '¡Desempeño impecable, Ingeniero/a!' : '¡Análisis concluido con éxito!'}
+                    ${aciertosAlgebraN3 === 5 && lives === 3 ? '¡Desempeño impecable!' : '¡Análisis concluido con éxito!'}
                 </p>
             `;
 
             swal({
-                title: "¡Reporte de daños y aciertos!",
+                title: "¡Reporte Final!",
                 content: nodeSummary,
                 icon: "success",
                 button: "Finalizar Todo"
