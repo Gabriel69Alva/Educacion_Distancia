@@ -5,25 +5,138 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Definición de Límite con Deslizador</title>
     
+    <!-- JSXGraph -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
     
+    <!-- SweetAlert y FontAwesome -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- MathJax -->
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f0f4f8; color: #333; }
-        .container { max-width: 950px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
-        h1 { color: #0284c7; text-align: center; }
-        .instruction { text-align: center; color: #666; margin-bottom: 20px; }
-        .formula-box { background: #e0f2fe; padding: 15px; border-radius: 8px; text-align: center; font-size: 1.2em; margin-bottom: 20px; color: #0369a1; font-weight: bold; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            padding: 20px; 
+            background-color: #f0f4f8; 
+            color: #333; 
+        }
         
-        .control-group { margin-bottom: 15px; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; }
-        .control-group label { font-weight: bold; margin-right: 10px; color: #0f172a; }
-        input[type="number"] { width: 80px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 1em; }
+        /* Contenedor principal ampliado para acomodar dos columnas */
+        .container { 
+            max-width: 1250px; 
+            margin: auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1); 
+        }
         
-        button { padding: 8px 16px; background-color: #0284c7; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        h1 { 
+            color: #011d63; 
+            text-align: center; 
+            margin-bottom: 30px; 
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+        }
+
+        /* Estructura de dos columnas */
+        .layout-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .left-panel {
+            flex: 1 1 35%;
+            min-width: 320px;
+        }
+
+        .right-panel {
+            flex: 1 1 60%;
+            min-width: 320px;
+        }
+        
+        /* Tarjeta de instrucciones */
+        .instructions-card {
+            display: flex;
+            align-items: flex-start;
+            background: #f8fafc;
+            border-left: 5px solid #0284c7;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-top: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .instructions-icon {
+            font-size: 2.2em;
+            color: #0284c7;
+            margin-right: 15px;
+            margin-top: 5px;
+        }
+        .instructions-list {
+            margin: 0;
+            padding-left: 20px;
+            color: #475569;
+            font-size: 0.95em;
+        }
+        .instructions-list li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .formula-box { 
+            background: #dfeef8; 
+            padding: 15px; 
+            border-radius: 8px; 
+            text-align: center; 
+            font-size: 1.2em; 
+            margin-bottom: 20px; 
+            color: #042267; 
+            font-weight: bold; 
+        }
+        
+        .control-group { 
+            margin-bottom: 15px; 
+            padding: 15px; 
+            background: #f8fafc; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 8px; 
+        }
+        .control-group label { 
+            font-weight: bold; 
+            margin-right: 10px; 
+            color: #0f172a; 
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="number"] { 
+            width: 100px; 
+            padding: 8px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 4px; 
+            font-size: 1em; 
+            margin-bottom: 10px;
+        }
+        
+        button { 
+            padding: 10px 16px; 
+            background-color: #0284c7; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: 0.2s; 
+            width: 100%;
+            margin-top: 5px;
+        }
         button:hover { background-color: #0369a1; }
         .btn-success { background-color: #10b981; }
         .btn-success:hover { background-color: #059669; }
@@ -32,45 +145,105 @@
         .btn-info { background-color: #6366f1; }
         .btn-info:hover { background-color: #4f46e5; }
         
-        #jxgbox { width: 100%; height: 500px; border: 1px solid #cbd5e1; border-radius: 8px; margin-top: 20px; background-color: #ffffff; }
-        .flex-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        #jxgbox { 
+            width: 100%; 
+            height: 600px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 8px; 
+            background-color: #ffffff; 
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+        }
+
+        .flex-col {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Media Queries para Tabletas y Móviles */
+        @media (max-width: 900px) {
+            .layout-wrapper {
+                flex-direction: column;
+            }
+            .left-panel, .right-panel {
+                width: 100%;
+                flex: none;
+            }
+            #jxgbox {
+                height: 450px; 
+            }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Análisis geométrico de límites</h1>
-    <p class="instruction">Fija un punto de análisis, calcula el límite teórico y ajusta el deslizador para encontrar la vecindad de radio que cumple la definición.</p>
+    
+    <div class="layout-wrapper">
+        <!-- PANEL IZQUIERDO: Instrucciones y Controles -->
+        <div class="left-panel">
+            
+            <div class="instructions-card">
+                <div class="instructions-icon">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div>
+                    <h3 style="margin-top: 0; color: #0f172a; margin-bottom: 10px;">Instrucciones:</h3>
+                    <ol class="instructions-list">
+                        <li>Fija un punto de análisis en X, introduce esta información en la casilla correspondiente.</li>
+                        <li>Calcula el límite esperado, introduce esta información en la casilla correspondientes y haz clic en el botón "Validar Límite".</li>
+                        <li>Forma una vecindad de radio épsilon alrededor del límite analizado (franja de tolerancia de épsilon).</li>
+                        <li>Mueve el deslizador que aparecerá bajo el escenario y forma una vecindad de radio delta de modo que al aplicar la función, todos sus puntos caigan en la vecindad de épsilon. Haz clic en el botón "Validar vecindad delta".</li>
+                        <li>Repite el proceso las veces que consideres necesario haciendo clic en el botón "Siguiente ejercicio".</li>
+                        <li>Para terminar, haz clic en el botón "Ya comprendí la idea intuitiva".</li>
+                    </ol>
+                </div>
+            </div>
 
-    <div class="formula-box" id="formula-display">
-        Cargando función...
+            <div class="control-group flex-col" id="step1">
+                <div>
+                    <label>1. Punto de análisis en X:</label>
+                    <input type="number" id="inputPunto" value="" step="0.5" onchange="reiniciarYFijarPunto()">
+                </div>
+                <div>
+                    <label>2. Límite esperado (en Y):</label>
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                        <input type="number" id="inputLimite" value="" step="0.01" placeholder="Ej: 3">
+                        <button onclick="validarLimite()" style="margin-top: 0;">Validar Límite</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="controlesEpsilon" class="control-group flex-col" style="display: none;">
+                <div>
+                    <label>3. Franja de tolerancia (Épsilon):</label>
+                    <input type="number" id="inputEpsilon" value="" min="0.1" max="1" step="0.1" placeholder="Ej: 0.5" onchange="dibujarEpsilon()">
+                </div>
+                <div id="controlesDelta" style="display: none; flex-direction: column; gap: 10px;">
+                    <button id="btnValidarDelta" class="btn-success" onclick="validarDelta()" style="display: none;">4. Validar vecindad delta</button>
+                    <button id="btnSiguiente" class="btn-warning" onclick="cargarSiguienteFuncion()" style="display: none;">5. Siguiente ejercicio ➔</button>
+                    <button class="btn-info" onclick="finalizarJuego()">6. ¡Ya comprendí la idea intuitiva!</button>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- PANEL DERECHO: Fórmula y Escenario JSXGraph -->
+        <div class="right-panel">
+            <div class="formula-box" id="formula-display">
+                Cargando función...
+            </div>
+            
+            <div id="jxgbox"></div>
+        </div>
     </div>
-
-    <div class="control-group flex-row" id="step1">
-        <div>
-            <label>1. Punto de análisis en X:</label>
-            <input type="number" id="inputPunto" value="2" step="0.5" onchange="reiniciarYFijarPunto()">
-        </div>
-        <div>
-            <label>2. Límite esperado (en Y):</label>
-            <input type="number" id="inputLimite" value="" step="0.01">
-            <button onclick="validarLimite()">Validar Límite</button>
-        </div>
-    </div>
-
-    <div id="controlesEpsilon" class="control-group flex-row" style="display: none;">
-        <div>
-            <label>3. Franja de tolerancia (Épsilon):</label>
-            <input type="number" id="inputEpsilon" value="" min="0.1" max="3" step="0.1" placeholder="Ej: 1.0" onchange="dibujarEpsilon()">
-        </div>
-        <div id="controlesDelta" style="display: none; gap: 10px;">
-            <button class="btn-success" onclick="validarDelta()">4. Validar vecindad Delta</button>
-            <button id="btnSiguiente" class="btn-warning" onclick="cargarSiguienteFuncion()" style="display: none;">Siguiente Función ➔</button>
-            <button class="btn-info" onclick="finalizarJuego()">¡Ya comprendí la idea intuitiva!</button>
-        </div>
-    </div>
-
-    <div id="jxgbox"></div>
+    <footer>
+        <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+            &copy; 2026, JGHA & DMA<br>
+        </p>
+    </footer>
 </div>
 
 <script>
@@ -102,15 +275,18 @@
         funcionActiva = catalogoFunciones[indiceFuncionActual];
 
         // Restablecer interfaz
-        document.getElementById("inputPunto").value = funcionActiva.defaultP;
-        document.getElementById("inputLimite").value = "";
+        let inputPunto = document.getElementById("inputPunto");
+        inputPunto.value = "";
+        inputPunto.placeholder = "Ej: " + funcionActiva.defaultP; 
         
-        // 1. Limpiar completamente la casilla Épsilon y ocultar el botón Siguiente
+        document.getElementById("inputLimite").value = "";
         document.getElementById("inputEpsilon").value = ""; 
-        document.getElementById("btnSiguiente").style.display = "none";
         
         document.getElementById("controlesEpsilon").style.display = "none";
         document.getElementById("controlesDelta").style.display = "none";
+        
+        document.getElementById("btnValidarDelta").style.display = "none"; 
+        document.getElementById("btnSiguiente").style.display = "none";
         
         // Renderizar fórmula
         const formulaDisplay = document.getElementById("formula-display");
@@ -123,17 +299,28 @@
     function initBoard() {
         if (board) JXG.JSXGraph.freeBoard(board);
         
-        board = JXG.JSXGraph.initBoard('jxgbox', { boundingbox: [-1, 10, 10, -1], axis: true, showNavigation: true });
-        funcionGraph = board.create('functiongraph', [funcionActiva.f, 0.1, 9.5], { strokeColor: '#0284c7', strokeWidth: 3 });
+        // Boundingbox ajustado
+        board = JXG.JSXGraph.initBoard('jxgbox', { boundingbox: [-1, 10, 10, -2.5], showCopyright: false, pan: { enabled: false }, axis: true, showNavigation: true });
+        funcionGraph = board.create('functiongraph', [funcionActiva.f, 0.1, 9.5], { strokeColor: 'darkblue', strokeWidth: 3 });
         
         reiniciarYFijarPunto();
+        
+        // Pequeño hack para forzar redibujado si la ventana cambia de tamaño
+        window.addEventListener('resize', function() {
+            if(board) {
+                board.update();
+            }
+        });
     }
 
     function reiniciarYFijarPunto() {
-        p = parseFloat(document.getElementById("inputPunto").value);
+        let valPunto = document.getElementById("inputPunto").value;
+        p = parseFloat(valPunto);
+        
         document.getElementById("inputLimite").value = "";
         document.getElementById("controlesEpsilon").style.display = "none";
         document.getElementById("controlesDelta").style.display = "none";
+        document.getElementById("btnValidarDelta").style.display = "none";
         document.getElementById("btnSiguiente").style.display = "none";
         
         if (ptCentro) board.removeObject(ptCentro);
@@ -143,29 +330,38 @@
         if (regionDeltaHoriz) board.removeObject(regionDeltaHoriz);
         if (deltaSlider) board.removeObject(deltaSlider);
         
-        ptCentro = board.create('point', [p, 0], { name: 'x_0', size: 3, color: 'red', fixed: true });
+        if (!isNaN(p)) {
+            ptCentro = board.create('point', [p, 0], { name: 'x_0', size: 3, color: 'red', fixed: true });
+        }
         board.update();
     }
 
     function validarLimite() {
+        if (isNaN(p)) {
+            swal("Falta el punto en X", "Por favor, ingresa primero un valor en la casilla 'Punto de análisis en X'.", "warning");
+            return;
+        }
+
         let inputLimite = parseFloat(document.getElementById("inputLimite").value);
         limite = funcionActiva.f(p);
 
         if (!isNaN(inputLimite) && Math.abs(inputLimite - limite) < 0.05) {
-            swal("¡Límite Correcto!", "El límite es exacto. Ahora ingresa un valor de tolerancia Épsilon (ej. 1.0).", "success");
+            swal("¡Límite Correcto!", "El límite es exacto. Ahora ingresa un valor de tolerancia Épsilon (ej. 0.5).", "success");
             ptLimite = board.create('point', [p, limite], { name: 'L', size: 3, color: 'green', fixed: true });
             
             document.getElementById("controlesEpsilon").style.display = "flex";
-            document.getElementById("controlesDelta").style.display = "flex"; // Mostramos el contenedor
-            document.getElementById("btnSiguiente").style.display = "none"; // Pero mantenemos oculto el botón siguiente
+            document.getElementById("controlesDelta").style.display = "flex"; 
+            document.getElementById("btnValidarDelta").style.display = "inline-block"; 
+            
+            document.getElementById("btnSiguiente").style.display = "none"; 
         } else {
-            swal("Revisa tus cálculos", "El valor ingresado no corresponde al límite.", "error");
+            swal("Revisa tus cálculos", "El valor ingresado no corresponde al límite exacto.", "error");
         }
     }
 
     function dibujarEpsilon() {
         let valEpsilon = document.getElementById("inputEpsilon").value;
-        if (valEpsilon === "" || isNaN(valEpsilon)) return; // Si está vacío, no dibuja nada
+        if (valEpsilon === "" || isNaN(valEpsilon)) return; 
         
         epsilon = parseFloat(valEpsilon);
         
@@ -179,16 +375,14 @@
 
         regionEpsilon = board.create('polygon', [[-1, decY], [-1, incY], [10, incY], [10, decY]], {
             borders: { strokeColor: 'blue', dash: 2 },
-            fillColor: "lightgrey", fillOpacity: 0.7, vertices: { visible: false }
+            fillColor: '#E3B8C8', fillOpacity: 0.7, vertices: { visible: false }
         });
 
         dibujarDelta();
     }
 
     function dibujarDelta() {
-        // 3. Diseño mejorado del deslizador e inicializado en 0.
-        // Formato [min, inicio, max]. Empieza exactamente en 0.
-        deltaSlider = board.create('slider', [[1, -0.5], [6, -0.5], [0, 0, 2.0]], { 
+        deltaSlider = board.create('slider', [[1, -1.2], [6, -1.2], [0, 0, 2.0]], { 
             name: '&delta;',
             baseline: { strokeColor: '#cbd5e1', strokeWidth: 5 },
             highline: { strokeColor: '#0284c7', strokeWidth: 5 },
@@ -203,7 +397,7 @@
             function() { return [p - deltaSlider.Value(), funcionActiva.f(p - deltaSlider.Value())]; }  
         ], {
             borders: { strokeColor: 'purple', dash: 1, strokeWidth: 2 },
-            fillColor: "purple", fillOpacity: 0.5, vertices: { visible: false }
+            fillColor: "purple", fillOpacity: 0.7, vertices: { visible: false }
         });
 
         regionDeltaHoriz = board.create('polygon', [
@@ -222,7 +416,6 @@
     function validarDelta() {
         let d = deltaSlider.Value();
         
-        // Validación extra por si oprimen el botón sin mover el deslizador
         if (d === 0) {
             swal("Desliza el control", "El radio Delta es 0. Debes mover el deslizador azul hacia la derecha para crear una vecindad válida.", "info");
             return;
@@ -237,7 +430,6 @@
 
         if (maxY <= incY && minY >= decY) {
             swal("¡Demostración Exitosa!", "¡Excelente! La vecindad mantiene toda la función dentro de la tolerancia Épsilon.", "success");
-            // 2. Activamos el botón para pasar a la siguiente función
             document.getElementById("btnSiguiente").style.display = "inline-block";
         } else {
             swal("¡Cuidado!", "El radio Delta es muy grande y se sale de Épsilon. Haz tu Delta más pequeño.", "warning");
@@ -258,5 +450,3 @@
 
 </body>
 </html>
-
-

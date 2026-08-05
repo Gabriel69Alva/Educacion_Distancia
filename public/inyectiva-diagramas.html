@@ -21,8 +21,8 @@
 
     <style>
         :root {
-            --primary: #0f172a;
-            --primary-hover: #1e293b;
+            --primary: #112f73;        /* Azul institucional */
+            --primary-hover: #1e40af;  /* Azul cobalto para hover */
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
@@ -31,13 +31,14 @@
             --azure-bg: #e0f7fa;
             --azure-border: #b2ebf2;
             --bg-light: #f8fafc;
-            --text-dark: #334155;
-            --border-color: #e2e8f0;
+            --text-dark: #41444c;      /* Sustituto del negro/gris oscuro por azul marino */
+            --border-color: #bfdbfe;   /* Azul muy claro para bordes */
+            --gray-solid: #93c5fd;     /* Azul suave para zonas de soltado */
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f1f5f9;
+            background-color: #f0f9ff; /* Fondo general con tinte azul */
             color: var(--text-dark);
             margin: 0;
             padding: 20px;
@@ -51,7 +52,7 @@
             background: #fff;
             padding: 35px;
             border-radius: 14px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 10px 30px rgba(17, 47, 115, 0.1); /* Sombra azulada */
         }
 
         h1 { color: var(--primary); font-weight: 700; text-align: center; margin-bottom: 5px; font-size: 26px; }
@@ -65,18 +66,18 @@
             display: block; width: 100%; max-width: 340px; margin: 20px auto; padding: 13px;
             background-color: var(--primary); color: white; border: none; border-radius: 25px;
             font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.25s ease;
-            text-align: center; text-decoration: none; box-shadow: 0 4px 10px rgba(15,23,42,0.15);
+            text-align: center; text-decoration: none; box-shadow: 0 4px 10px rgba(17,47,115,0.2);
         }
         .btn-general:hover:not(:disabled) { 
             transform: translateY(-2px); 
             background-color: var(--primary-hover);
-            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.25);
+            box-shadow: 0 6px 14px rgba(17,47,115,0.3);
         }
-        .btn-general:disabled { background-color: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+        .btn-general:disabled { background-color: #93c5fd; cursor: not-allowed; box-shadow: none; color: #eff6ff; }
         .btn-success { background-color: var(--success); }
         .btn-success:hover:not(:disabled) { background-color: #059669; }
-        .btn-secondary { background-color: #64748b; }
-        .btn-secondary:hover:not(:disabled) { background-color: #475569; }
+        .btn-secondary { background-color: #3b82f6; }
+        .btn-secondary:hover:not(:disabled) { background-color: #2563eb; }
         .btn-danger { background-color: var(--danger); }
         .btn-danger:hover:not(:disabled) { background-color: #dc2626; }
 
@@ -93,37 +94,47 @@
         canvas { display: block; margin: 0 auto; }
 
         /* Módulos de Estado */
-        .status-bar { display: flex; justify-content: space-between; align-items: center; background: var(--azure-bg); padding: 12px 20px; border-radius: 8px; font-weight: 600; color: #006064; margin-bottom: 15px; border: 1px solid var(--azure-border); font-size: 14px; }
+        .status-bar { display: flex; justify-content: space-between; align-items: center; background: var(--azure-bg); padding: 12px 20px; border-radius: 8px; font-weight: 600; color: var(--primary); margin-bottom: 15px; border: 1px solid var(--azure-border); font-size: 14px; }
         .lives-box i { color: var(--success); font-size: 22px; margin-left: 5px; display: inline-block; position: relative; }
         @keyframes loseLifeAnim {
             0% { transform: scale(1); opacity: 1; color: var(--success); }
             20% { transform: scale(1.3); color: var(--success); }
             40% { transform: scale(0.9); color: var(--success); }
             60% { transform: scale(1.1); color: var(--success); }
-            100% { transform: scale(0.6) translateY(300px) rotate(45deg); opacity: 0; color: #94a3b8; }
+            100% { transform: scale(0.6) translateY(300px) rotate(45deg); opacity: 0; color: #93c5fd; }
         }
         .lives-box i.lost { animation: loseLifeAnim 3s ease-in-out forwards; }
-        .badge-info { background: #0f172a; color: #fff; padding: 8px 18px; border-radius: 6px; font-size: 15px; font-weight: 600; display: inline-block; margin-bottom: 15px; }
+        .badge-info { background: var(--primary); color: #fff; padding: 8px 18px; border-radius: 6px; font-size: 15px; font-weight: 600; display: inline-block; margin-bottom: 15px; }
 
         /* Capa Quiz (Etapa 2) */
-        .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 6px; margin: 15px 0; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--azure-accent); width: 33.3%; transition: 0.4s; }
+        .progress-container { width: 100%; background: #dbeafe; border-radius: 10px; height: 6px; margin: 15px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--primary); width: 33.3%; transition: 0.4s; }
         .h5p-option { display: flex; align-items: center; padding: 14px; border: 1px solid var(--border-color); margin-bottom: 10px; border-radius: 8px; cursor: pointer; background: var(--bg-light); transition: 0.2s; }
-        .h5p-option:hover { border-color: var(--azure-accent); background: #f0fdfa; }
-        .h5p-option input { margin-right: 12px; transform: scale(1.1); }
-        .h5p-feedback { padding: 15px; border-radius: 8px; margin-top: 15px; background: #f1f5f9; border-left: 6px solid var(--azure-accent); font-size: 14.5px; }
+        .h5p-option:hover { border-color: var(--primary); background: #eff6ff; }
+        .h5p-option input { margin-right: 12px; transform: scale(1.1); accent-color: var(--primary); }
+        .h5p-feedback { padding: 15px; border-radius: 8px; margin-top: 15px; background: #eff6ff; border-left: 6px solid var(--primary); font-size: 14.5px; color: var(--text-dark); }
         .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; color: #991b1b; }
 
         /* Capa Analítica (Etapa 3) */
         .n3-section { background: var(--bg-light); padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--border-color); }
-        select.math-input { margin: 0 12px; padding: 6px 10px; border: 2px solid var(--border-color); border-radius: 6px; font-size: 14px; font-weight: bold; color: var(--azure-dark); outline: none; cursor: pointer; background: #fff; display: inline-block; vertical-align: middle; }
-        select.math-input:focus { border-color: var(--azure-accent); }
-        .step-row { display: flex; align-items: center; margin-bottom: 15px; font-size: 15.5px; flex-wrap: wrap; line-height: 2; }
-
+        
+        .bank-container { display: flex; flex-wrap: wrap; gap: 10px; padding: 15px; background: #eff6ff; border: 1px solid var(--gray-solid); border-radius: 8px; margin-bottom: 20px; min-height: 60px; }
+        
+        /* Ajuste de Zonas de Soltado y Piezas arrastrables */
+        .drop-zone { min-width: 250px; height: 42px; border: 1px solid var(--gray-solid); border-radius: 6px; background: #fff; display: inline-flex; align-items: center; justify-content: center; transition: 0.3s; padding: 0; vertical-align: middle; }
+        .drop-zone.drag-over { background: #dbeafe; transform: scale(1.02); border-color: var(--primary); }
+        
+        /* Bloques: sin saltos de línea (nowrap) y altura natural */
+        .draggable-item { background: var(--primary); color: white; padding: 8px 15px; border-radius: 6px; cursor: grab; user-select: none; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; transition: transform 0.2s; white-space: nowrap; margin: 0; height: auto; }
+        .draggable-item:active { cursor: grabbing; transform: scale(0.95); background: var(--primary-hover); }
+        .draggable-item * { pointer-events: none; }
+        
+        .proof-step { display: flex; align-items: center; gap: 15px; margin: 15px 0; font-size: 15.5px; flex-wrap: wrap; }
+        
         /* Reporte Final */
-        .h5p-summary-box { border: 2px solid var(--azure-accent); background: #f0f9ff; border-radius: 12px; padding: 25px; margin-top: 20px; text-align: left; }
-        .summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #cbd5e1; font-size: 15px; font-weight: 500; }
-        .summary-row span.bold-val { font-weight: 700; color: var(--azure-dark); }
+        .h5p-summary-box { border: 2px solid var(--primary); background: #f0f9ff; border-radius: 12px; padding: 25px; margin-top: 20px; text-align: left; color: var(--text-dark); }
+        .summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #bfdbfe; font-size: 15px; font-weight: 500; }
+        .summary-row span.bold-val { font-weight: 700; color: var(--primary); }
     </style>
 </head>
 
@@ -133,8 +144,8 @@
 
         <div id="level-1-container">
             <h1>Etapa 1: Mapeo de relaciones y funciones</h1>
-            <p style="text-align: center; color: #64748b; margin-bottom: 15px;">
-                Arrastra las puntas grises de las flechas desde el Dominio $A$ hasta los elementos del Codominio $B$ para cumplir la propiedad solicitada.
+            <p style="text-align: center; color: grey; margin-bottom: 15px;">
+                Arrastra las puntas celestes de las flechas desde el Dominio $A$ hasta los elementos del Codominio $B$ para cumplir la propiedad solicitada.
             </p>
             
             <div style="text-align: center;">
@@ -168,10 +179,10 @@
 
         <div id="level-2-container" class="hidden">
             <h1>Etapa 2: Diagnóstico conceptual</h1>
-            <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Responde los reactivos teóricos basados en las propiedades de las estructuras de mapeo.</p>
+            <p style="text-align: center; color: var(--primary-hover); margin-bottom: 20px;">Responde los siguientes reactivos teóricos.</p>
 
             <div class="progress-container"><div class="progress-bar" id="quiz-progress"></div></div>
-            <p id="quiz-counter" style="text-align: right; font-weight: 600; color: var(--azure-dark); margin-top:0;">Pregunta 1 de 2</p>
+            <p id="quiz-counter" style="text-align: right; font-weight: 600; color: var(--primary); margin-top:0;">Pregunta 1 de 2</p>
 
             <div id="qstep-1" class="quiz-block">
                 <h3>1. Si un diagrama de flechas conecta un Dominio de 4 elementos con un Codominio de 4 elementos y se determina que es INYECTIVA, ¿qué propiedad colateral se cumple de forma obligatoria?</h3>
@@ -194,36 +205,87 @@
         </div>
 
         <div id="level-3-container" class="hidden">
-            <h1>Etapa 3: Estructuración formal y análisis</h1>
-            <p style="text-align: center; color: #64748b; margin-bottom: 25px;">
-                Completa los componentes lógicos del bloque deductivo para estructurar formalmente las propiedades de los conjuntos de correspondencia.
+            <h1>Etapa 3: Demostraciones Formales de Inyectividad</h1>
+            <p style="text-align: center; color: var(--primary-hover); margin-bottom: 25px;">
+                Arrastra los bloques matemáticos desde el banco de respuestas hacia los espacios correspondientes para completar las demostraciones.
             </p>
 
+            <!-- EJERCICIO 1 -->
             <div class="n3-section">
-                <h3 style="color: var(--azure-dark);">Análisis de Cardinalidades en Funciones Biyectivas</h3>
-                <div class="step-row">
-                    Para que una función discreta $f: A \rightarrow B$ pueda tener la condición de biyectiva, se requiere de forma obligatoria que la cardinalidad de los conjuntos cumpla la relación: 
-                    <select id="dem-1" class="math-input">
-                        <option value="">-- Selecciona --</option>
-                        <option value="v1">|A| &gt; |B|</option>
-                        <option value="v2">|A| = |B|</option>
-                        <option value="v3">|A| &lt; |B|</option>
-                    </select>.
+                <h3 style="color: var(--primary);">Demostración 1: Función Racional</h3>
+                <p style="margin-bottom: 15px;">Demuestra que la función $f(x) = \frac{5x-4}{x+2}$ es inyectiva.</p>
+                
+                <div class="bank-container" id="bank-1" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="drag-1-1" data-val="eq1">$\frac{5a-4}{a+2} = \frac{5b-4}{b+2}$</div>
+                    <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="drag-1-2" data-val="eq2">$14a = 14b$</div>
+                    <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="drag-1-3" data-val="eq3">$a = b$</div>
+                    <!-- Señuelos -->
+                    <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="drag-1-s1" data-val="false1">$\frac{5a+4}{a-2} = \frac{5b+4}{b-2}$</div>
+                    <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="drag-1-s2" data-val="false2">$a = -b$</div>
                 </div>
-                <div class="step-row">
-                    Si se diera la situación donde $|A| &lt; |B|$, el principio del palomar nos garantiza que la función bajo ninguna circunstancia podría ser 
-                    <select id="dem-2" class="math-input">
-                        <option value="">-- Selecciona --</option>
-                        <option value="v1">Sobreyectiva</option>
-                        <option value="v2">Inyectiva</option>
-                    </select>
-                    ya que quedarían elementos vacíos en el eje de llegada.
+
+                <div class="proof-step">
+                    <strong>Paso 1:</strong> Partimos de la suposición de que $f(a) = f(b)$.
+                </div>
+                <div class="proof-step">
+                    <strong>Paso 2:</strong> Sustituimos en la función: 
+                    <div class="drop-zone" id="dz-1-1" data-expected="eq1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="proof-step">
+                    <strong>Paso 3:</strong> Multiplicamos en cruz: $(5a-4)(b+2) = (5b-4)(a+2)$.
+                </div>
+                <div class="proof-step">
+                    <strong>Paso 4:</strong> Desarrollamos: $5ab + 10a - 4b - 8 = 5ab + 10b - 4a - 8$.
+                </div>
+                <div class="proof-step">
+                    <strong>Paso 5:</strong> Simplificando términos semejantes obtenemos:
+                    <div class="drop-zone" id="dz-1-2" data-expected="eq2" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="proof-step">
+                    <strong>Paso 6:</strong> Por lo tanto, concluimos que:
+                    <div class="drop-zone" id="dz-1-3" data-expected="eq3" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
                 </div>
             </div>
 
-            <button class="btn-general" id="btn-eval-n3" onclick="validarEtapa3()">Validar Estructura</button>
+            <!-- EJERCICIO 2 -->
+            <div class="n3-section">
+                <h3 style="color: var(--primary);">Demostración 2: Composición de Funciones</h3>
+                <p style="margin-bottom: 15px;">Demuestra que si $f$ y $g$ son funciones inyectivas, entonces la composición $(f \circ g)(x) = f(g(x))$ también es inyectiva.</p>
+                
+                <div class="bank-container" id="bank-2" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="drag-2-1" data-val="step1">Supongamos&nbsp;que&nbsp;$f(g(a)) = f(g(b))$</div>
+                    <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="drag-2-2" data-val="step2">Como&nbsp;$f$&nbsp;es&nbsp;inyectiva,&nbsp;entonces&nbsp;$g(a) = g(b)$</div>
+                    <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="drag-2-3" data-val="step3">Como&nbsp;$g$&nbsp;es&nbsp;inyectiva,&nbsp;entonces&nbsp;$a = b$</div>
+                    <!-- Señuelos -->
+                    <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="drag-2-s1" data-val="false1">Supongamos&nbsp;que&nbsp;$f(a) = g(b)$</div>
+                    <div class="draggable-item" draggable="true" ondragstart="drag(event)" id="drag-2-s2" data-val="false2">Como&nbsp;$f$&nbsp;es&nbsp;suprayectiva,&nbsp;$g(a) = g(b)$</div>
+                </div>
+
+                <div class="proof-step">
+                    <strong>Paso 1:</strong> 
+                    <div class="drop-zone" id="dz-2-1" style="min-width: 380px;" data-expected="step1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="proof-step">
+                    <strong>Paso 2:</strong> 
+                    <div class="drop-zone" id="dz-2-2" style="min-width: 380px;" data-expected="step2" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="proof-step">
+                    <strong>Paso 3:</strong> 
+                    <div class="drop-zone" id="dz-2-3" style="min-width: 380px;" data-expected="step3" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="proof-step">
+                    <strong>Conclusión:</strong> Puesto que $f(g(a)) = f(g(b))$ implica que $a = b$, la composición es inyectiva.
+                </div>
+            </div>
+
+            <button class="btn-general" id="btn-eval-n3" onclick="validarEtapa3()">Validar Demostraciones</button>
             <button class="btn-general hidden btn-success" id="btn-finish-all" onclick="mostrarCierreH5P()">Generar Reporte de Competencias <i class="fa-solid fa-graduation-cap"></i></button>
         </div>
+        <footer>
+        <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+            &copy; 2026, JGHA & DMA<br>
+        </p>
+        </footer>
 
     </div>
 
@@ -239,7 +301,7 @@
         let arrayRespuestas = [];
         let textDestinos = [];
         let retoActual = {};
-        let indexQuiz = 1; // Sincronizado globalmente
+        let indexQuiz = 1; 
         const totalQuiz = 2;
 
         const desafiosLvl1 = [
@@ -248,6 +310,14 @@
         ];
 
         document.addEventListener('DOMContentLoaded', function () {
+            
+            // FORZAR LIMPIEZA DE RADIOS AL RECARGAR (Evita el caché del navegador)
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+                radio.defaultChecked = false;
+                radio.disabled = false;
+            });
+
             canvasFabric = new fabric.Canvas('myCanvas', { selection: false });
             fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
@@ -262,22 +332,38 @@
                     p.set('angle', (angleRadians * (180 / Math.PI)) + 90);
                 }
 
-                textDestinos.forEach(txt => txt.set('fill', '#334155'));
+                textDestinos.forEach(txt => txt.set('fill', '#1e3a8a')); // Color base azul marino
                 arrayRespuestas = arrayRespuestas.filter(item => item.origen !== p.name);
 
                 textDestinos.forEach(txt => {
                     let distancia = Math.sqrt(Math.pow((p.left - txt.left), 2) + Math.pow(p.top - txt.top, 2));
                     if (distancia <= 35) { 
                         arrayRespuestas.push({ origen: p.name, destino: txt.name });
-                        txt.set('fill', 'var(--azure-dark)'); 
+                        txt.set('fill', '#38bdf8'); // Color de toque (celeste)
                     }
                 });
 
                 canvasFabric.renderAll();
             });
 
+            mezclarBancos();
             generarRetoMapeo();
         });
+        
+        function mezclarBancos() {
+            ['bank-1', 'bank-2'].forEach(id => {
+                const bank = document.getElementById(id);
+                const items = Array.from(bank.children);
+                
+                for (let i = items.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [items[i], items[j]] = [items[j], items[i]]; 
+                }
+                
+                bank.innerHTML = '';
+                items.forEach(item => bank.appendChild(item));
+            });
+        }
 
         function generarRetoMapeo() {
             if (aciertosLvl1 >= 2) return;
@@ -312,7 +398,7 @@
 
             canvasFabric.add(new fabric.Ellipse({
                 left: elipseDestinoX, top: elipseCenterY, rx: rx, ry: ry,
-                fill: '#f0f9ff', stroke: 'var(--azure-accent)', strokeWidth: 2, selectable: false, evented: false
+                fill: '#eff6ff', stroke: 'darkblue', strokeWidth: 2, selectable: false, evented: false
             }));
 
             const posicionesY = [
@@ -326,7 +412,7 @@
             posicionesY.forEach((posY, idx) => {
                 let txtObj = new fabric.Text(valoresDestino[idx], {
                     name: valoresDestino[idx], fontSize: 24, fontWeight: 'bold',
-                    top: posY, left: elipseDestinoX, fill: '#334155', selectable: false
+                    top: posY, left: elipseDestinoX, fill: '#1e3a8a', selectable: false
                 });
                 textDestinos.push(txtObj);
                 canvasFabric.add(txtObj);
@@ -337,16 +423,16 @@
 
             posicionesY.forEach((posY, idx) => {
                 let txtOri = new fabric.Text(valoresOrigen[idx], {
-                    fontSize: 24, fontWeight: 'bold', top: posY, left: elipseOrigenX - 20, fill: '#334155', selectable: false
+                    fontSize: 24, fontWeight: 'bold', top: posY, left: elipseOrigenX - 20, fill: '#1e3a8a', selectable: false
                 });
 
                 let line = new fabric.Line([startXLine, posY, startXLine + 30, posY], {
-                    fill: 'gray', stroke: 'gray', strokeWidth: 3, selectable: false, evented: false
+                    fill: '#93c5fd', stroke: 'grey', strokeWidth: 3, selectable: false, evented: false
                 });
 
                 let arrowHead = new fabric.Triangle({
                     name: valoresOrigen[idx], top: posY, left: startXLine + 30,
-                    width: 13, height: 15, fill: '#64748b', angle: 90, hasControls: false, hasBorders: false
+                    width: 14, height: 16, fill: 'grey', angle: 90, hasControls: false, hasBorders: false
                 });
 
                 arrowHead.line = line;
@@ -358,7 +444,7 @@
 
         function validarRelacionamiento() {
             if (arrayRespuestas.length < 4) {
-                return swal("Asignación Incompleta", "Debes conectar las 4 flechas moviendo las puntas grises hasta tocar los números del conjunto B.", "warning");
+                return swal("Asignación Incompleta", "Debes conectar las 4 flechas moviendo las puntas celestes hasta tocar los números del conjunto B.", "warning");
             }
 
             const conteoDestinos = {};
@@ -418,53 +504,54 @@
         }
 
         function reiniciarEtapa1() {
-            // 1. Resetear contadores y estados de la Etapa 1
             vidas = 3; aciertosLvl1 = 0; fallosGeometria = 0;
             document.getElementById('score-text').innerText = "0";
             document.getElementById('btn-reset-lvl1').classList.add('hidden');
             document.getElementById('btn-go-to-n2').classList.add('hidden');
             for(let i=1; i<=3; i++) document.getElementById(`life${i}`).classList.remove('lost');
             
-            // 2. CORRECCIÓN SEGURO EXPLICITO: Limpieza absoluta del Quiz H5P de la Etapa 2
+            // Limpieza manual total de botones de radio (Etapa 2) por reinicio in-game
             aciertosQuiz = 0;
-            indexQuiz = 1; // Forzar índice inicial antes de renderizar la UI
+            indexQuiz = 1; 
             
-            // Forzar remoción y desmarcado recorriendo los bloques específicos
-            document.querySelectorAll('.quiz-block').forEach(bloque => {
-                const inputs = bloque.querySelectorAll('input[type="radio"]');
-                inputs.forEach(radio => {
-                    radio.checked = false;
-                    radio.disabled = false;
-                });
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+                radio.defaultChecked = false;
+                radio.disabled = false;
             });
 
             document.querySelectorAll('.h5p-feedback').forEach(fb => {
                 fb.classList.add('hidden');
+                fb.classList.remove('error'); 
                 fb.innerHTML = "";
             });
             
-            // Corrección de la visibilidad de los pasos del Quiz
             document.getElementById('qstep-1').classList.remove('hidden');
             document.getElementById('qstep-2').classList.add('hidden');
             
-            // Sincronizar UI de la barra de progreso
             document.getElementById('quiz-progress').style.width = "33.3%";
             document.getElementById('quiz-counter').innerText = `Pregunta 1 de 2`;
             document.getElementById('btn-check-quiz').classList.remove('hidden');
             document.getElementById('btn-next-quiz').classList.add('hidden');
             document.getElementById('btn-next-quiz').innerHTML = 'Siguiente Pregunta';
 
-            // 3. Limpieza de selectores de la Etapa 3
+            // Limpieza de Drag and Drop (Etapa 3)
             puntosAnaliticosN3 = 0;
-            document.querySelectorAll('#level-3-container select').forEach(select => {
-                select.value = "";
-                select.disabled = false;
-                select.style.borderColor = "var(--border-color)";
+            document.querySelectorAll('.draggable-item').forEach(item => {
+                item.setAttribute('draggable', 'true');
+                if (item.id.includes('drag-1')) document.getElementById('bank-1').appendChild(item);
+                if (item.id.includes('drag-2')) document.getElementById('bank-2').appendChild(item);
             });
+            
+            mezclarBancos(); 
+            
+            document.querySelectorAll('.drop-zone').forEach(dz => {
+                dz.style.borderColor = "var(--gray-solid)";
+            });
+
             document.getElementById('btn-eval-n3').classList.remove('hidden');
             document.getElementById('btn-finish-all').classList.add('hidden');
 
-            // 4. Volver a las pantallas iniciales
             document.getElementById('level-2-container').classList.add('hidden');
             document.getElementById('level-3-container').classList.add('hidden');
             document.getElementById('level-1-container').classList.remove('hidden');
@@ -480,14 +567,14 @@
         // LÓGICA ETAPA 2: CUESTIONARIO CONCEPTUAL
         // ==========================================
         const explicacionesQuiz = {
-            1: "Cuando el dominio y el codominio tienen exactamente la misma cantidad de elementos finitos, cualquier asignación inyectiva (uno a uno) asegura automáticamente que no quede ningún elemento libre en el destino, volviéndose también sobreyectiva por transiciones cardinales.",
-            2: "Para preservar la definición fundamental de función, cada valor de entrada en el Dominio debe poseer una y solo una imagen de salida. Si un elemento dispara dos flechas a destinos diferentes, se convierte en una relación general, invalidando su estatus de función."
+            1: "Cuando el dominio y el codominio tienen exactamente la misma cantidad de elementos finitos, cualquier asignación inyectiva (uno a uno) asegura automáticamente que no quede ningún elemento libre en el destino, volviéndose también sobreyectiva.",
+            2: "Para preservar la definición de función, cada valor de entrada en el Dominio debe poseer una y solo una imagen."
         };
 
         function activarEtapa2() {
             document.getElementById('level-1-container').classList.add('hidden');
             document.getElementById('level-2-container').classList.remove('hidden');
-            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+            if (window.MathJax && window.MathJax.typeset) MathJax.typeset();
         }
 
         function verificarPreguntaQuiz() {
@@ -510,14 +597,14 @@
             document.getElementById('btn-check-quiz').classList.add('hidden');
             document.getElementById('btn-next-quiz').classList.remove('hidden');
             if (indexQuiz === totalQuiz) document.getElementById('btn-next-quiz').innerHTML = 'Pasar a la Etapa 3 <i class="fa-solid fa-arrow-right"></i>';
-            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub, layerFeedback]);
+            if (window.MathJax && window.MathJax.typeset) MathJax.typeset();
         }
 
         function pasarSiguientePreguntaQuiz() {
             if (indexQuiz === totalQuiz) {
                 document.getElementById('level-2-container').classList.add('hidden');
                 document.getElementById('level-3-container').classList.remove('hidden');
-                if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                if (window.MathJax && window.MathJax.typeset) MathJax.typeset();
                 return;
             }
             document.getElementById(`qstep-${indexQuiz}`).classList.add('hidden');
@@ -532,37 +619,95 @@
         }
 
         // ==========================================
-        // LÓGICA ETAPA 3: DEMOSTRACIÓN ANALÍTICA
+        // LÓGICA ETAPA 3: DRAG AND DROP
         // ==========================================
-        function validarEtapa3() {
-            const select1 = document.getElementById('dem-1');
-            const select2 = document.getElementById('dem-2');
+        function allowDrop(ev) {
+            ev.preventDefault();
+            if(ev.target.classList.contains('drop-zone')) {
+                ev.target.classList.add('drag-over');
+            }
+        }
 
-            if (!select1.value || !select2.value) {
-                return swal("Desarrollo Incompleto", "Asegúrate de responder todos los pasos lógicos del menú desplegable.", "warning");
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            let target = ev.target;
+            
+            document.querySelectorAll('.drop-zone').forEach(dz => dz.classList.remove('drag-over'));
+
+            if (target.classList.contains('drop-zone') || target.classList.contains('bank-container')) {
+                var data = ev.dataTransfer.getData("text");
+                var draggedElement = document.getElementById(data);
+                
+                if (target.classList.contains('drop-zone') && target.children.length > 0) return;
+                
+                target.appendChild(draggedElement);
+            }
+        }
+
+        document.addEventListener("dragleave", function(event) {
+            if (event.target.classList.contains("drop-zone")) {
+                event.target.classList.remove("drag-over");
+            }
+        }, false);
+
+        function validarEtapa3() {
+            // 1. Validar que no haya contenedores vacíos
+            let estanLlenas = true;
+            document.querySelectorAll('.drop-zone').forEach(dz => {
+                if (dz.children.length === 0) {
+                    estanLlenas = false;
+                }
+            });
+
+            if (!estanLlenas) {
+                return swal("Demostración Incompleta", "Por favor, arrastra un bloque a cada uno de los espacios vacíos antes de comprobar tus respuestas.", "warning");
+            }
+
+            // 2. Si todo está lleno, procedemos a evaluar y calificar
+            let correctosE1 = 0;
+            let correctosE2 = 0;
+            
+            for(let i=1; i<=3; i++) {
+                let dz = document.getElementById(`dz-1-${i}`);
+                let expected = dz.getAttribute('data-expected');
+                
+                if(dz.children[0].getAttribute('data-val') === expected) {
+                    correctosE1++;
+                    dz.style.borderColor = "var(--success)";
+                } else {
+                    dz.style.borderColor = "var(--danger)";
+                }
+            }
+
+            for(let i=1; i<=3; i++) {
+                let dz = document.getElementById(`dz-2-${i}`);
+                let expected = dz.getAttribute('data-expected');
+                
+                if(dz.children[0].getAttribute('data-val') === expected) {
+                    correctosE2++;
+                    dz.style.borderColor = "var(--success)";
+                } else {
+                    dz.style.borderColor = "var(--danger)";
+                }
             }
 
             puntosAnaliticosN3 = 0;
-            const revisarSeleccion = (el, correcto) => {
-                if (el.value === correcto) {
-                    el.style.borderColor = "var(--success)";
-                    puntosAnaliticosN3++;
-                } else {
-                    el.style.borderColor = "var(--danger)";
-                }
-            };
+            if(correctosE1 === 3) puntosAnaliticosN3++;
+            if(correctosE2 === 3) puntosAnaliticosN3++;
 
-            revisarSeleccion(select1, "v2");
-            revisarSeleccion(select2, "v1");
-
-            document.querySelectorAll('#level-3-container select').forEach(s => s.disabled = true);
+            // 3. Bloquear opciones y permitir avance sí o sí
+            document.querySelectorAll('.draggable-item').forEach(el => el.setAttribute('draggable', 'false'));
             document.getElementById('btn-eval-n3').classList.add('hidden');
             document.getElementById('btn-finish-all').classList.remove('hidden');
 
             if (puntosAnaliticosN3 === 2) {
-                swal("Estructura Correcta", "Has acoplado con éxito los principios cardinales analíticos discretos.", "success");
+                swal("¡Demostraciones Correctas!", "Has estructurado lógicamente ambas demostraciones analíticas. Ya puedes generar tu reporte.", "success");
             } else {
-                swal("Errores conceptuales", "La combinaciónedge deductiva presenta incoherencias matemáticas reales. Revisa los selectores marcados.", "error");
+                swal("Evaluación Finalizada", "Has completado los espacios, pero hay errores en tus demostraciones. Revisa las marcas en rojo y genera tu reporte para terminar.", "info");
             }
         }
 
@@ -588,10 +733,10 @@
                     <span class="bold-val">${aciertosQuiz} / 2</span>
                 </div>
                 <div class="summary-row">
-                    <span>Aciertos analíticos estructurales (Etapa 3):</span>
+                    <span>Demostraciones analíticas correctas (Etapa 3):</span>
                     <span class="bold-val">${puntosAnaliticosN3} / 2</span>
                 </div>
-                <p style="text-align: center; font-weight: bold; margin-top: 20px; color: var(--azure-dark); font-size:16px;">
+                <p style="text-align: center; font-weight: bold; margin-top: 20px; color: var(--primary); font-size:16px;">
                     ¡Módulo Informatizado de Relaciones Concluido!
                 </p>
             `;
