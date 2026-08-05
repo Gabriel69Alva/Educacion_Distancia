@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demostración Formal del Límite: Épsilon-Delta</title>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.2.0/jsxgraphcore.js"></script>
+
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'],['\\(','\\)']]},
+            "HTML-CSS": { linebreaks: { automatic: true } }
+        });
+    </script>
+
+    <style>
+        :root {
+            --primary: #004080;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+            --epsilon-color: #2569bb;
+            --delta-color: #a7f3d0;
+            --drop-bg: #f1f5f9;
+            --caja-color: #f586d0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 26px;
+        }
+
+        h2 {
+            border-left: 8px solid var(--primary);
+            padding-left: 15px;
+            font-size: 18px;
+            color: var(--primary);
+            margin-top: 25px;
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .panel {
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            animation: fadeIn 0.5s;
+        }
+
+        .btn-general {
+            display: inline-block;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+
+        .btn-general:disabled {
+            background-color: #94a3b8 !important;
+            cursor: not-allowed;
+            opacity: 0.7;
+            transform: none;
+        }
+
+        .btn-general:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #64748b;
+            color: white;
+        }
+
+        /* Drag and Drop Styles */
+        .bank-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            background: #fff;
+            padding: 15px;
+            border: 2px dashed #94a3b8;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            min-height: 50px;
+        }
+
+        .draggable {
+            background: var(--primary);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: grab;
+            font-weight: bold;
+            font-size: 15px;
+            user-select: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .draggable:active {
+            cursor: grabbing;
+        }
+
+        .dropzone {
+            display: inline-block;
+            width: 60px;
+            height: 32px;
+            background: var(--drop-bg);
+            border: 2px dashed #94a3b8;
+            border-radius: 6px;
+            vertical-align: middle;
+            text-align: center;
+            transition: 0.2s;
+            margin: 0 5px;
+            overflow: hidden;
+        }
+
+        .dropzone.dragover {
+            background: #cbd5e1;
+            border-color: var(--primary);
+        }
+
+        .dropzone.filled {
+            border-style: solid;
+            border-color: #64748b;
+            background: #e2e8f0;
+        }
+
+        .dropzone.correct {
+            border-style: solid;
+            border-color: var(--success);
+            background: #ecfdf5;
+        }
+
+        .dropzone.incorrect {
+            border-style: solid;
+            border-color: var(--danger);
+            background: #fef2f2;
+        }
+
+        .dropzone .draggable {
+            margin-top: 1px;
+            padding: 4px 10px;
+            font-size: 14px;
+            box-shadow: none;
+            cursor: default;
+        }
+
+        .math-step {
+            margin: 15px auto;
+            font-size: 17px;
+            text-align: center;
+            max-width: 600px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .math-input {
+            width: 110px;
+            padding: 6px;
+            text-align: center;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary);
+            outline: none;
+        }
+
+        .math-input:focus {
+            border-color: var(--primary);
+        }
+
+        #jxgbox {
+            width: 100%;
+            height: 450px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        .graph-header {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary);
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #jxgbox {
+                height: 400px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            #jxgbox {
+                height: 300px;
+            }
+
+            .math-step {
+                font-size: 15px;
+                padding: 10px;
+            }
+
+            .draggable {
+                font-size: 14px;
+                padding: 5px 10px;
+            }
+
+            .dropzone {
+                width: 50px;
+                height: 28px;
+            }
+
+            .main-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main-container">
+        <h1>Demostración Formal de Límite: Definición $\varepsilon-\delta$</h1>
+        <p style="text-align: center; color: #64748b;"> Construcción de una demostración formal de un límite.</p>
+
+        <!-- ETAPA 1: ESBOZO Y CONSTRUCCIÓN -->
+        <div id="etapa-1" class="panel">
+            <h3 style="text-align: center; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">ETAPA 1:
+                Completa el esbozo de la demostración del límite.</h3>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <p style="font-size: 18px;">Queremos demostrar formalmente que: &nbsp; <strong>$\lim_{x \to 3} (2x + 1)
+                        = 7$</strong></p>
+                <p
+                    style="font-size: 15px; max-width: 800px; margin: 0 auto; background: #fff; padding: 15px; border-left: 4px solid var(--primary); border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <strong>Definición:</strong> Dado $\varepsilon > 0$, debemos hallar un $\delta > 0$ tal que si $0 <
+                        |x - 3| < \delta$, entonces $|(2x + 1) - 7| < \varepsilon$. </p>
+            </div>
+
+            <h2>1. Construcción del delta (Esbozo) </h2>
+            <p style="font-size: 13px; text-align: center;">Arrastra las expresiones del banco de respuestas y completa
+                las casillas para aislar la distancia $|x - 3|$:</p>
+
+            <div class="math-step">
+                $|2x - 6| < \varepsilon$ <br><br>
+                    <div class="dropzone" id="dz-1" data-expected="2"></div> $\cdot |x - 3| < \varepsilon$ <br><br>
+                        $|x - 3| < $ <div class="dropzone" id="dz-2" data-expected="e/2" style="width: 70px;">
+            </div>
+        </div>
+
+        <div class="math-step" style="background: #e0f2fe; border-color: #bae6fd;">
+            <strong>Propuesta de vecindad:</strong><br><br>
+            $\delta = $ <div class="dropzone" id="dz-3" data-expected="e/2" style="width: 70px;"></div>
+        </div>
+
+        <h2>Banco de Respuestas</h2>
+        <div class="bank-container" id="bank">
+            <div class="draggable" draggable="true" id="ans-1" data-val="2">2</div>
+            <div class="draggable" draggable="true" id="ans-2" data-val="e/2">&epsilon;/2</div>
+            <div class="draggable" draggable="true" id="ans-3" data-val="e/2">&epsilon;/2</div>
+            <div class="draggable" draggable="true" id="ans-4" data-val="e">&epsilon;</div>
+            <div class="draggable" draggable="true" id="ans-5" data-val="2e">2&epsilon;</div>
+            <div class="draggable" draggable="true" id="ans-6" data-val="3">3</div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="btnValidarEsbozo" class="btn-general btn-success" style="max-width: 300px;"
+                onclick="validarDemostracion()">Validar Esbozo</button>
+            <button id="btnNuevoIntento" class="btn-general btn-secondary" style="max-width:300px;"
+                onclick="nuevoIntento()">Nuevo intento</button>
+
+            <!-- Botón oculto para avanzar a Etapa 2 una vez superada la Etapa 1 -->
+            <button id="btnAvanzarEtapa2" class="btn-general btn-warning" style="display:none; max-width: 300px;"
+                onclick="irAEtapa2()">
+                Continuar a Etapa 2 <i class="fa-solid fa-arrow-right" style="margin-left: 5px;"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ETAPA 2: APLICACIÓN NUMÉRICA Y GRÁFICO (DOS COLUMNAS) -->
+    <div id="etapa-2" class="layout-grid" style="display: none;">
+
+        <!-- PANEL IZQUIERDO -->
+        <div class="panel">
+            <h3 style="text-align: center; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">ETAPA 2:
+                Aplicación Numérica</h3>
+
+            <div
+                style="background: #ecfdf5; padding: 12px; border-radius: 6px; text-align: center; margin-bottom: 20px; border: 1px solid #a7f3d0;">
+                <strong>Regla construida para delta:</strong> $\delta = \frac{\varepsilon}{2}$
+            </div>
+
+            <h2>2. Trazar Entorno de Épsilon</h2>
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight: 600; display:block; margin-bottom:8px;">Propón un valor para
+                    $\varepsilon$:</label>
+                $\varepsilon =$ <input type="number" id="inputEpsilon" class="math-input" step="0.1" min="0.1"
+                    placeholder="Ej. ε=0.5">
+                <button id="btnTrazarEpsilon" class="btn-general" onclick="trazarEpsilon()">Trazar Franja
+                    $\varepsilon$</button>
+            </div>
+
+            <h2>3. Calcular y Trazar Delta</h2>
+            <p style="font-size: 14px;">Usa la regla deducida para calcular el radio de $\delta$ que corresponde a
+                tu $\varepsilon$ actual:</p>
+            <div style="text-align: center;">
+                $\delta =$ <input type="number" id="inputDelta" class="math-input" step="0.01" placeholder="Ej. δ=0.7">
+                <button id="btnTrazarDelta" class="btn-general" style="background: var(--primary);"
+                    onclick="validarYTrazarDelta()">Validar y Trazar $\delta$</button>
+            </div>
+
+            <!-- Controles de navegación Etapa 2 -->
+            <button class="btn-general btn-secondary" style="margin-top: 10px;" onclick="volverEtapa1()">
+                <i class="fa-solid fa-arrow-left" style="margin-right: 5px;"></i> Volver a Etapa 1
+            </button>
+        </div>
+
+        <!-- PANEL DERECHO (GRÁFICA) -->
+        <div class="panel" style="background: transparent; border: none; padding: 0;">
+            <div class="graph-header">Función: $f(x) = 2x + 1$ &nbsp; ; &nbsp; $x=3$</div>
+            <div id="jxgbox"></div>
+            <button id="btnContinuarEtapa3" class="btn-general btn-success" style="margin-top: 20px;"
+                onclick="irAEtapa3()" disabled>
+                Continuar a Etapa 3 <i class="fa-solid fa-arrow-right" style="margin-left: 5px;"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- ETAPA 3: REDACCIÓN FORMAL DE LA DEMOSTRACIÓN -->
+    <div id="etapa-3" class="panel" style="display:none;">
+        <h3
+            style="color: var(--success); margin-top:0; text-align: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+            ETAPA 3: Redacción Formal de la Demostración</h3>
+        <p style="font-size: 16px; text-align: center;">En nuestro esbozo, hemos deducido que para cualquier $\varepsilon > 0$,
+            podemos elegir $\delta = \frac{\varepsilon}{2}$ mediante el procedimiento: <br><br> $|2x - 6| < \varepsilon \Rightarrow 2|x - 3| < \varepsilon \Rightarrow |x - 3| < \frac{\varepsilon}{2} \Rightarrow \delta = \frac{\varepsilon}{2}.$  </p>    
+        <p style="font-size: 16px; text-align: center;"><strong>Demostración formal:</strong> Sea $\varepsilon > 0$ un número cualquiera. Elegimos $\delta =
+            \frac{\varepsilon}{2}$.</p>
+        <p style="font-size: 16px; text-align: center;">Supongamos que $0 < |x - 3| < \delta$. Entonces, aplicando
+                nuestra propuesta y desarrollando constructivamente:</p>
+
+                <div class="math-step"
+                    style="background: #f8fafc; font-size: 18px; border: none; max-width: 400px; margin: 15px auto;">
+                    $|x - 3| < \delta$<br><br>
+                        $|x - 3| < \frac{\varepsilon}{2}$<br><br>
+                            $2|x - 3| < \varepsilon$<br><br>
+                                $|2x - 6| < \varepsilon$<br><br>
+                                    $|(2x + 1) - 7| < \varepsilon$<br><br>
+                                        $|f(x) - L| < \varepsilon$ </div>
+
+                                            <p
+                                                style="font-size: 16px; font-weight: bold; text-align: center; color: var(--primary);">
+                                                Por lo tanto, la implicación se cumple y se concluye que $\lim_{x \to 3}
+                                                (2x+1) = 7$.
+                                            </p>
+
+                                            <div style="text-align: center; margin-top: 30px;">
+                                                <button class="btn-general btn-warning" style="max-width: 300px;"
+                                                    onclick="reiniciarEscenario()">
+                                                    <i class="fa-solid fa-rotate-right" style="margin-right: 5px;"></i>
+                                                    Reiniciar Demostración
+                                                </button>
+                                            </div>
+                </div>
+
+    </div>
+
+    <footer>
+        <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+            &copy; 2026, JGHA & DMA<br>
+        </p>
+    </footer>
+
+    <script>
+        // --- RANDOMIZAR BANCO DE RESPUESTAS ---
+        function shuffleBank() {
+            const bank = document.getElementById('bank');
+            for (let i = bank.children.length; i >= 0; i--) {
+                bank.appendChild(bank.children[Math.random() * i | 0]);
+            }
+        }
+
+        window.addEventListener('load', shuffleBank);
+
+        // --- DRAG AND DROP LOGIC ---
+        const draggables = document.querySelectorAll('.draggable');
+        const dropzones = document.querySelectorAll('.dropzone');
+        const bank = document.getElementById('bank');
+
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggable.classList.add('dragging');
+            });
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('dragging');
+            });
+        });
+
+        dropzones.forEach(zone => {
+            zone.addEventListener('dragover', e => {
+                e.preventDefault();
+                if (zone.children.length === 0) zone.classList.add('dragover');
+            });
+
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('dragover');
+            });
+
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                zone.classList.remove('dragover');
+                const draggable = document.querySelector('.dragging');
+
+                if (draggable && zone.children.length === 0) {
+                    zone.appendChild(draggable);
+                    zone.classList.add('filled');
+                    zone.classList.remove('correct', 'incorrect');
+                }
+            });
+        });
+
+        bank.addEventListener('dragover', e => { e.preventDefault(); });
+        bank.addEventListener('drop', e => {
+            e.preventDefault();
+            const draggable = document.querySelector('.dragging');
+            if (draggable) {
+                bank.appendChild(draggable);
+                dropzones.forEach(z => {
+                    if (!z.hasChildNodes()) {
+                        z.classList.remove('filled', 'correct', 'incorrect');
+                    }
+                });
+            }
+        });
+
+        // --- VALIDACIÓN ETAPA 1 ---
+        function validarDemostracion() {
+            let aciertos = 0;
+            let llenos = 0;
+
+            dropzones.forEach(zone => {
+                const child = zone.firstElementChild;
+                if (child) {
+                    llenos++;
+                    if (child.getAttribute('data-val') === zone.getAttribute('data-expected')) {
+                        aciertos++;
+                        zone.classList.add('correct');
+                        zone.classList.remove('incorrect');
+                    } else {
+                        zone.classList.add('incorrect');
+                        zone.classList.remove('correct');
+                    }
+                } else {
+                    zone.classList.remove('correct', 'incorrect');
+                }
+            });
+
+            if (llenos < 3) {
+                swal("Faltan pasos", "Por favor completa todas las casillas del esbozo antes de validar.", "info");
+                return;
+            }
+
+            if (aciertos === 3) {
+                document.getElementById('btnValidarEsbozo').style.display = 'none';
+                document.getElementById('btnNuevoIntento').style.display = 'none';
+
+                // Mostrar el botón para avanzar a Etapa 2
+                document.getElementById('btnAvanzarEtapa2').style.display = 'inline-block';
+
+                draggables.forEach(d => {
+                    d.setAttribute('draggable', 'false');
+                    d.style.cursor = 'default';
+                });
+
+                swal("¡Esbozo Correcto!", "Has deducido correctamente la vecindad de delta. Avanza a la Etapa 2 para aplicarlo gráficamente.", "success");
+            } else {
+                swal("Revisa tus pasos", "Algunos elementos no están en el lugar algebraico correcto.", "error");
+            }
+        }
+
+        function nuevoIntento() {
+            dropzones.forEach(zone => {
+                const card = zone.firstElementChild;
+                if (card) bank.appendChild(card);
+                zone.classList.remove('filled', 'correct', 'incorrect', 'dragover');
+            });
+            document.getElementById("inputEpsilon").value = "";
+            document.getElementById("inputDelta").value = "";
+            document.getElementById("inputEpsilon").style.borderColor = "var(--border-color)";
+            document.getElementById("inputDelta").style.borderColor = "var(--border-color)";
+            currentEpsilon = 0;
+            shuffleBank();
+        }
+
+        // --- NAVEGACIÓN ENTRE ETAPAS ---
+        function irAEtapa2() {
+            document.getElementById('etapa-1').style.display = 'none';
+            document.getElementById('etapa-3').style.display = 'none';
+            document.getElementById('etapa-2').style.display = 'grid';
+
+            setTimeout(() => {
+                if (!board) {
+                    initGraph();
+                } else {
+                    board.resizeContainer();
+                    board.fullUpdate();
+                }
+            }, 100);
+        }
+
+        function irAEtapa3() {
+            document.getElementById('etapa-1').style.display = 'none';
+            document.getElementById('etapa-2').style.display = 'none';
+            document.getElementById('etapa-3').style.display = 'block';
+
+            // Refrescar MathJax por si las dudas en la nueva pantalla
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub, "etapa-3"]);
+        }
+
+        function volverEtapa1() {
+            document.getElementById('etapa-2').style.display = 'none';
+            document.getElementById('etapa-3').style.display = 'none';
+            document.getElementById('etapa-1').style.display = 'block';
+        }
+
+        function reiniciarEscenario() {
+
+            // Restaurar el estado de los botones e inputs
+            document.getElementById('btnTrazarEpsilon').disabled = false;
+            document.getElementById('inputEpsilon').disabled = false;
+            document.getElementById('btnTrazarDelta').disabled = false;
+            document.getElementById('inputDelta').disabled = false;
+            document.getElementById('btnContinuarEtapa3').disabled = true;
+            // Regresamos el estado completo para un intento desde 0
+            volverEtapa1();
+
+            document.getElementById('btnValidarEsbozo').style.display = 'inline-block';
+            document.getElementById('btnNuevoIntento').style.display = 'inline-block';
+            document.getElementById('btnAvanzarEtapa2').style.display = 'none';
+
+            draggables.forEach(d => {
+                d.setAttribute('draggable', 'true');
+                d.style.cursor = 'grab';
+            });
+
+            nuevoIntento();
+
+            if (board) {
+                if (epsilonRegion) board.removeObject(epsilonRegion);
+                if (limitLineHorizontal) board.removeObject(limitLineHorizontal);
+                if (epsilonText) board.removeObject(epsilonText);
+                if (deltaRegion) {
+                    board.removeObject(deltaRegion);
+                    board.removeObject(targetBox);
+                    board.removeObject(limitLineVertical);
+                    board.removeObject(deltaText);
+                }
+            }
+        }
+
+        // --- LÓGICA GRÁFICA ---
+        let board = null;
+        let epsilonRegion, limitLineHorizontal, epsilonText;
+        let deltaRegion, targetBox, limitLineVertical, deltaText;
+
+        const M = 2;
+        const B = 1;
+        const c = 3;
+        const L = 7;
+        let currentEpsilon = 0;
+
+        function initGraph() {
+            board = JXG.JSXGraph.initBoard('jxgbox', {
+                boundingbox: [-1, 12, 7, -1],
+                axis: true,
+                showNavigation: true,
+                showCopyright: false,
+                pan: { enabled: false },
+                zoom: { enabled: false }
+            });
+
+            board.create('functiongraph', [function (x) { return M * x + B; }, -10, 10], {
+                strokeWidth: 3, strokeColor: 'var(--primary)', fixed: true
+            });
+
+            board.create('point', [c, L], {
+                name: `(3, 7)`, size: 4, fillColor: 'var(--danger)', strokeColor: 'var(--danger)', fixed: true
+            });
+        }
+
+        function trazarEpsilon() {
+            let val = parseFloat(document.getElementById('inputEpsilon').value);
+            if (isNaN(val) || val <= 0) {
+                swal("Atención", "Ingresa un épsilon válido mayor a 0.", "warning");
+                return;
+            }
+            currentEpsilon = val;
+
+            // CONGELAR EL BOTÓN DE ÉPSILON
+            document.getElementById('btnTrazarEpsilon').disabled = true;
+            document.getElementById('inputEpsilon').disabled = true; // Opcional: también congela el input
+
+            if (epsilonRegion) board.removeObject(epsilonRegion);
+            if (limitLineHorizontal) board.removeObject(limitLineHorizontal);
+            if (epsilonText) board.removeObject(epsilonText);
+            if (deltaRegion) {
+                board.removeObject(deltaRegion);
+                board.removeObject(targetBox);
+                board.removeObject(limitLineVertical);
+                board.removeObject(deltaText);
+            }
+
+            let supY = L + currentEpsilon;
+            let infY = L - currentEpsilon;
+
+            limitLineHorizontal = board.create("line", [[-10, L], [10, L]], {
+                straightFirst: false, straightLast: false, strokeWidth: 1, fixed: true, strokeColor: "#94a3b8", dash: 1
+            });
+
+            epsilonRegion = board.create('polygon', [[-10, infY], [-10, supY], [10, supY], [10, infY]], {
+                borders: { strokeColor: 'var(--epsilon-color)', dash: 2, strokeWidth: 1 },
+                fillOpacity: 0.25, fillColor: "var(--epsilon-color)", vertices: { visible: false, fixed: true },
+                fixed: true
+            });
+
+            epsilonText = board.create('text', [0.5, supY + 0.3, '&epsilon;'], {
+                fontSize: 20, strokeColor: 'var(--epsilon-color)'
+            });
+
+            board.update();
+        }
+
+        function validarYTrazarDelta() {
+            if (currentEpsilon === 0) {
+                swal("Aviso", "Primero debes trazar el entorno de épsilon.", "warning");
+                return;
+            }
+
+            let deltaPropuesto = parseFloat(document.getElementById('inputDelta').value);
+            let deltaExacto = currentEpsilon / 2;
+
+            if (isNaN(deltaPropuesto) || deltaPropuesto <= 0) {
+                swal("Aviso", "Ingresa un delta válido mayor a 0.", "warning");
+                return;
+            }
+
+            if (Math.abs(deltaPropuesto - deltaExacto) < 0.001) {
+
+                // CONGELAR EL BOTÓN DE DELTA Y ACTIVAR EL DE ETAPA 3
+                document.getElementById('btnTrazarDelta').disabled = true;
+                document.getElementById('inputDelta').disabled = true; // Opcional
+                document.getElementById('btnContinuarEtapa3').disabled = false;
+
+                let izqX = c - deltaPropuesto;
+                let derX = c + deltaPropuesto;
+                let yMin = M * izqX + B;
+                let yMax = M * derX + B;
+
+                limitLineVertical = board.create("line", [[c, -10], [c, 20]], {
+                    straightFirst: false, straightLast: false, strokeWidth: 1, fixed: true, strokeColor: "#94a3b8", dash: 1
+                });
+
+                deltaRegion = board.create('polygon', [[izqX, -10], [izqX, 20], [derX, 20], [derX, -10]], {
+                    borders: { strokeColor: 'var(--delta-color)', dash: 2, strokeWidth: 1 },
+                    fillOpacity: 0.35, fillColor: "var(--delta-color)", vertices: { visible: false, fixed: true },
+                    fixed: true
+                });
+
+                targetBox = board.create('polygon', [[izqX, yMin], [izqX, yMax], [derX, yMax], [derX, yMin]], {
+                    borders: { strokeColor: 'var(--caja-color)', strokeWidth: 2 },
+                    fillOpacity: 0.55, fillColor: "var(--caja-color)", vertices: { visible: false, fixed: true },
+                    fixed: true
+                });
+
+                deltaText = board.create('text', [derX + 0.1, 2, '&delta;'], {
+                    fontSize: 20, strokeColor: 'var(--delta-color)', fixed: true
+                });
+
+                board.update();
+                document.getElementById('inputDelta').style.borderColor = "var(--success)";
+
+                swal("¡Correcto!", "Has aplicado la regla deducida. Observa que la caja de intersección representa que las imágenes de los valores de la vecindad delta pertenecen a la vecindad de épsilon.", "success");
+                confetti({ particleCount: 2000, spread: 180, origin: { y: 0.3 } });
+
+            } else {
+                document.getElementById('inputDelta').style.borderColor = "var(--danger)";
+                swal("Cálculo Incorrecto", `Recuerda la regla que demostraste. Para \u03B5 = ${currentEpsilon}, ¿cuánto debe valer \u03B4?`, "error");
+            }
+        }
+    </script>
+</body>
+
+</html>
