@@ -81,4 +81,12 @@ body {
     padding-left: 10px; /* Desplazamiento sutil al pasar el mouse */
     text-decoration: none;
 }
+.footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #1a1a1a;
+    border-top: 5px solid #0056b3; /* Acento azul industrial */
+    color: #888;
+    font-size: 0.9rem;
+}
   
