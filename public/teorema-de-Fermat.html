@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo Interactivo: Teorema de Fermat</title>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraph.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.6.2/jsxgraphcore.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'],['\\(','\\)']]}});
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #004080;
+            --primary-hover: #002d5a;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+            --purple-intense: #a855f7;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            min-height: 80px;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-weight: 700;
+            text-align: center;
+            margin: 0;
+        }
+
+        h2 {
+            border-left: 8px solid var(--success);
+            padding-left: 15px;
+            font-size: 15px;
+            color: var(--primary);
+            margin-top: 35px;
+        }
+
+        h3 {
+            font-size: 18px;
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .btn-general {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-general:hover:not(:disabled) {
+            transform: scale(1.05);
+            background-color: var(--primary-hover);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-general:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-restart {
+            background-color: var(--warning);
+        }
+
+        .btn-restart:hover:not(:disabled) {
+            background-color: #d97706;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background-color: #059669;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #e0f2fe;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px solid #bae6fd;
+            margin-bottom: 25px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .lives-box i {
+            color: var(--success);
+            font-size: 22px;
+            margin-left: 5px;
+            display: inline-block;
+            position: relative;
+        }
+
+        @keyframes loseLifeAnim {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                color: var(--success);
+            }
+
+            20% {
+                transform: scale(1.8);
+                color: var(--success);
+            }
+
+            40% {
+                transform: scale(0.9);
+                color: var(--success);
+            }
+
+            60% {
+                transform: scale(1.4);
+                color: var(--success);
+            }
+
+            100% {
+                transform: scale(0.6) translateY(300px) rotate(45deg);
+                opacity: 0;
+                color: #94a3b8;
+            }
+        }
+
+        .lives-box i.lost {
+            animation: loseLifeAnim 3s ease-in-out forwards;
+        }
+
+        /* Workspace Layout */
+        .workspace-layout {
+            display: flex;
+            gap: 24px;
+            margin-top: 15px;
+        }
+
+        .theory-side {
+            width: 350px;
+            flex-shrink: 0;
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .canvas-side {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Ajuste para el Desafío 5 (Vertical) */
+        .workspace-layout.layout-ch5 {
+            flex-direction: column;
+        }
+
+        .workspace-layout.layout-ch5 .canvas-side {
+            order: 1;
+            width: 100%;
+        }
+
+        .workspace-layout.layout-ch5 .theory-side {
+            order: 2;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .jxgbox-wrapper {
+            width: 100%;
+            height: 400px;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            overflow: hidden;
+            background: #fff;
+            position: relative;
+        }
+
+        /* Grid del Desafío 5 */
+        .grid-2x2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .grid-2x2 .jxgbox-wrapper {
+            height: 280px;
+            border-width: 1px;
+        }
+
+        @media (max-width: 850px) {
+            .workspace-layout {
+                flex-direction: column;
+            }
+
+            .theory-side,
+            .canvas-side {
+                width: 100%;
+            }
+
+            .grid-2x2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .h5p-option {
+            display: flex;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            background: #fff;
+            transition: 0.2s;
+            font-size: 14.5px;
+            align-items: flex-start;
+            line-height: 1.4;
+        }
+
+        .fat-option {
+            padding: 20px 25px !important;
+            font-size: 15px;
+            line-height: 1.8;
+            min-height: 90px;
+            align-items: center;
+        }
+
+        .fat-option input {
+            flex-shrink: 0;
+            margin-top: 0 !important;
+        }
+
+        .h5p-option:hover {
+            border-color: var(--primary);
+            background: #e0f2fe;
+        }
+
+        .h5p-option input {
+            margin-right: 12px;
+            margin-top: 3px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            transform: scale(1.1);
+        }
+
+        .h5p-feedback {
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            background: #f1f5f9;
+            border-left: 6px solid var(--primary);
+        }
+
+        .h5p-feedback.error {
+            border-left-color: var(--danger);
+            background: #fef2f2;
+        }
+
+        /* Estilos del Deslizador */
+        .slider-wrapper {
+            margin-top: 15px;
+            background: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background-color: #cbd5e1;
+            background-image: linear-gradient(var(--primary), var(--primary));
+            background-size: var(--pct, 0%) 100%;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            outline: none;
+            margin: 15px 0;
+            border: 1px solid #94a3b8;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 8px;
+            background: transparent;
+            border-radius: 4px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 22px;
+            width: 22px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background: #64748b;
+        }
+
+        input[type=range]:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        input[type=range]:disabled::-webkit-slider-thumb {
+            cursor: not-allowed;
+            background: #64748b;
+        }
+
+        /* Overlay Horizontal de Métricas */
+        .metrics-overlay {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.85);
+            padding: 6px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--primary);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            z-index: 10;
+            font-family: monospace;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .metrics-title {
+            font-weight: bold;
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
+            font-size: 13.5px;
+        }
+
+        .metric-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 8px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--success);
+            width: 33.33%;
+            transition: 0.4s;
+        }
+
+        .n3-section {
+            background: var(--bg-light);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .drop-zone {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 135px;
+            min-height: 28px;
+            padding: 2px 4px;
+            border-bottom: 2px solid var(--primary);
+            vertical-align: middle;
+            text-align: center;
+            background: white;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .drop-zone .draggable-word {
+            font-size: 12px;
+            padding: 4px 7px;
+            box-shadow: none;
+            max-width: 100%;
+            white-space: normal;
+            line-height: 1.15;
+        }
+
+        .draggable-word {
+            cursor: grab;
+            font-weight: 600;
+            font-size: 13px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+
+        .draggable-word:active {
+            cursor: grabbing;
+        }
+
+        .sortable-item {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 6px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+            transition: background 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .sortable-item:active {
+            cursor: grabbing;
+        }
+
+        .sortable-item.dragging {
+            opacity: 0.4;
+            background: #e2e8f0;
+        }
+
+        .score-val {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header class="header-container">
+            <h1 id="main-title">Etapa 1: Teorema de Fermat</h1>
+        </header>
+
+        <div id="level-1-container">
+            <p
+                style="text-align: center; color: #64748b; margin-top: -15px; margin-bottom: 25px; line-height: 1.6; font-size: 15px;">
+                Explora el comportamiento de las rectas tangentes en puntos críticos e interiores.<br>
+                <span style="font-size: 14.5px; color: var(--primary); font-weight: 500;"><i>Nota: Desliza por
+                        <b>TODO</b> el intervalo para evaluar la relación entre máximos y mínimos locales y
+                        derivadas.</i></span>
+            </p>
+
+            <div class="status-bar">
+                <div id="s1-instructions"><i class="fa-solid fa-flag"></i> <b>Desafío 1/5:</b> Preparando...</div>
+                <div class="lives-box">
+                    Vidas:
+                    <i class="fa-solid fa-clover" id="life1"></i>
+                    <i class="fa-solid fa-clover" id="life2"></i>
+                    <i class="fa-solid fa-clover" id="life3"></i>
+                </div>
+            </div>
+
+            <div class="workspace-layout" id="main-layout">
+                <div class="theory-side" id="theory-panel">
+                    <h3 style="margin-top:0; color: var(--primary);"><i class="fa-solid fa-circle-exclamation"></i>
+                        Desafío</h3>
+
+                    <!-- DESAFÍO 1 -->
+                    <div id="desafio-1" class="reto-container hidden">
+                        <div style="font-size: 14.5px; line-height: 1.5; text-align: justify; margin-bottom: 10px;">
+                            Arrastra el deslizador y observa el comportamiento de la gráfica de $f(x) = 4 - x^2$ en el
+                            intervalo $[-2, 2]$. <br><br> Elige las propiedades que identificas.
+                        </div>
+                        <div class="options-container">
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-1" value="a"
+                                    onchange="handleCheckboxChange(event, 1)"> $f$ &nbsp; alcanza un máximo o un mínimo local
+                                en el interior del intervalo considerado.</label>
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-1" value="b"
+                                    onchange="handleCheckboxChange(event, 1)"> $f$ &nbsp; es derivable en dicho
+                                punto.</label>
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-1" value="c"
+                                    onchange="handleCheckboxChange(event, 1)"> La derivada en dicho punto es
+                                cero.</label>
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-1" value="d"
+                                    onchange="handleCheckboxChange(event, 1)"> Ninguna de las anteriores</label>
+                        </div>
+                    </div>
+
+                    <!-- DESAFÍO 2 -->
+                    <div id="desafio-2" class="reto-container hidden">
+                        <div style="font-size: 14.5px; line-height: 1.5; text-align: justify; margin-bottom: 10px;">
+                            Arrastra el deslizador y observa el comportamiento de la gráfica de $f(x) = |x|$ en el
+                            intervalo $[-2, 2]$. <br><br> Elige las propiedades que identificas en la gráfica.
+                        </div>
+                        <div class="options-container">
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-2" value="a"
+                                    onchange="handleCheckboxChange(event, 2)"> $f$ &nbsp; alcanza un máximo o mínimo local en el interior del intervalo.</label>
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-2" value="b"
+                                    onchange="handleCheckboxChange(event, 2)"> $f$ &nbsp; es derivable en dicho
+                                punto.</label>
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-2" value="c"
+                                    onchange="handleCheckboxChange(event, 2)"> La derivada en dicho punto es
+                                cero.</label>
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-2" value="d"
+                                    onchange="handleCheckboxChange(event, 2)"> Ninguna de las anteriores</label>
+                        </div>
+                    </div>
+
+                    <!-- DESAFÍO 3 -->
+                    <div id="desafio-3" class="reto-container hidden">
+                        <div style="font-size: 14.5px; line-height: 1.5; text-align: justify; margin-bottom: 10px;">
+                            ¿Qué propiedades identificas en la gráfica de la función cúbica $f(x) = 0.25x^3$ en el
+                            intervalo $[-2, 2]$? Analiza el comportamiento en el interior del intervalo.
+                        </div>
+                        <div class="options-container">
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-3" value="a"
+                                    onchange="handleCheckboxChange(event, 3)"> $f$ &nbsp; alcanza un máximo o mínimo local en el interior  del intervalo.</label>
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-3" value="b"
+                                    onchange="handleCheckboxChange(event, 3)"> $f$ &nbsp; es derivable en dicho
+                                punto.</label>
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-3" value="c"
+                                    onchange="handleCheckboxChange(event, 3)"> La derivada en dicho punto es
+                                cero.</label>
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-3" value="d"
+                                    onchange="handleCheckboxChange(event, 3)"> Ninguna de las anteriores</label>
+                        </div>
+                    </div>
+
+                    <!-- DESAFÍO 4 -->
+                    <div id="desafio-4" class="reto-container hidden">
+                        <div style="font-size: 14.5px; line-height: 1.5; text-align: justify; margin-bottom: 10px;">
+                            ¿Qué propiedades identificas en la gráfica de la función lineal $f(x) = 0.5x + 1$ en el
+                            intervalo $[0, 3]$? Analiza el comportamiento en el interior del intervalo.
+                        </div>
+                        <div class="options-container">
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-4" value="a"
+                                    onchange="handleCheckboxChange(event, 4)"> $f$ &nbsp; alcanza un máximo o mínimo local en el interior del intervalo.</label>
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-4" value="b"
+                                    onchange="handleCheckboxChange(event, 4)"> $f$ &nbsp; es derivable en dicho
+                                punto.</label>
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-4" value="c"
+                                    onchange="handleCheckboxChange(event, 4)"> La derivada en dicho punto es
+                                cero.</label>
+                            <label class="h5p-option"><input type="checkbox" name="ch-opt-4" value="d"
+                                    onchange="handleCheckboxChange(event, 4)"> Ninguna de las anteriores</label>
+                        </div>
+                    </div>
+
+                    <!-- DESAFÍO 5 -->
+                    <div id="desafio-5" class="reto-container hidden">
+                        <div style="font-size: 14.5px; line-height: 1.5; text-align: justify; margin-bottom: 10px;">
+                            Estudia el comportamiento de los desafíos anteriores (del 1 al 4). Formula una conjetura
+                            seleccionando las afirmaciones que consideres que constituyen el Teorema de Fermat:
+                        </div>
+                        <div class="options-container">
+                            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt-5" value="a"> Si
+                                una función tiene un máximo o un mínimo local en un punto interior de un intervalo y es
+                                derivable en ese punto, entonces su derivada en ese punto es igual a cero.</label>
+                            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt-5" value="b"> Si
+                                una función es derivable y su derivada se anula en algún punto interior de un intervalo,
+                                entonces la función tiene un máximo o un mínimo local en ese intervalo.</label>
+                            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt-5" value="c"> Si
+                                una función es derivable en todo punto de un intervalo y su derivada nunca es cero en
+                                ese intervalo, entonces la función no tiene máximos ni mínimos locales en el interior
+                                del intervalo.</label>
+                            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt-5" value="d"> Si
+                                una función no tiene máximos ni mínimos locales en un intervalo, entonces su derivada
+                                nunca es cero en ese intervalo.</label>
+                        </div>
+                    </div>
+
+                    <button class="btn-general" id="btn-validar-n1" onclick="validarGeometria()"><i
+                            class="fa-solid fa-check"></i> Validar Solución</button>
+                    <!-- Los demás botones (reintentar, continuar, reiniciar) se quedan igual -->
+                    <button class="btn-general btn-restart hidden" id="btn-retry-reto" onclick="reintentarReto()"><i
+                            class="fa-solid fa-rotate-right"></i> Reintentar Reto</button>
+                    <button class="btn-general btn-success hidden" id="btn-next-reto" onclick="avanzarReto()"><i
+                            class="fa-solid fa-arrow-right"></i> Continuar al siguiente desafío</button>
+                    <button class="btn-general btn-restart hidden" id="btn-game-over"
+                        onclick="reiniciarEscenarioGlobal()"><i class="fa-solid fa-skull"></i> Reiniciar
+                        Escenario</button>
+                    <button class="btn-general btn-success hidden" id="btn-pasar-n2" onclick="iniciarEtapa2()">Continuar
+                        a Etapa 2 🚀</button>
+                </div>
+
+                <div class="canvas-side" id="canvas-panel">
+                    <div id="graph-container" style="position:relative; width: 100%;">
+                        <div id="jxgbox" class="jxgbox-wrapper"></div>
+                        <div id="metrics-overlay" class="metrics-overlay hidden">
+                            <div class="metrics-title">Valores actuales:</div>
+                            <div class="metric-item" style="color: var(--text-dark);">
+                                <span>$c$:</span> <span id="val-x">0.00</span>
+                            </div>
+                            <div class="metric-item" style="color: var(--primary);">
+                                <span>$f(c)$:</span> <span id="val-fx">0.00</span>
+                            </div>
+                            <div class="metric-item" style="color: var(--purple-intense);">
+                                <span>$f'(c)$:</span> <span id="val-dfx">0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="slider-container" class="slider-wrapper hidden">
+                        <label
+                            style="font-weight: 600; color: var(--primary); display: flex; justify-content: space-between; font-size: 14px;">
+                            <span><i class="fa-solid fa-arrows-left-right"></i> Control de posición del punto
+                                ($c$)</span>
+                            <span>$c = $ <span id="w-value">0.00</span></span>
+                        </label>
+                        <input type="range" id="w-slider" min="-2" max="2" step="0.01" value="-2" data-min-w="0"
+                            data-max-w="0">
+                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;"><i
+                                class="fa-solid fa-circle-info"></i> Mueve el deslizador por todo el intervalo para
+                            habilitar la validación.</div>
+                    </div>
+
+                    <div id="grid-ch5" class="grid-2x2 hidden">
+                        <div id="box1" class="jxgbox-wrapper"></div>
+                        <div id="box2" class="jxgbox-wrapper"></div>
+                        <div id="box3" class="jxgbox-wrapper"></div>
+                        <div id="box4" class="jxgbox-wrapper"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="level-2-container" class="hidden">
+            <div class="progress-container">
+                <div class="progress-bar" id="h5p-progress"></div>
+            </div>
+            <p id="h5p-counter" style="text-align: right; font-weight: 600; color: var(--primary);">1/3</p>
+
+            <div id="step-1" class="quiz-step">
+                <h3>1. Si una función alcanza un máximo o mínimo local en un punto interior $c$ y sabemos que es
+                    derivable allí,
+                    ¿qué nos asegura geométricamente el Teorema de Fermat?</h3>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> Que la recta tangente a la
+                    curva en el punto $(c, f(c))$ es completamente horizontal (pendiente cero).</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Que la función cambia
+                    obligatoriamente de signo al cruzar el punto crítico.</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Que la recta tangente es
+                    paralela a la recta secante que une los puntos (máximos o mínimos) absolutos del intervalo
+                    completo.</label>
+                <div id="feedback-1" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-2" class="quiz-step hidden">
+                <h3>2. ¿Cuál es la relación jerárquica entre los máximos y mínimos locales y los denominados
+                    "puntos críticos"?</h3>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Los máximos y mínimos
+                    locales solo pueden aparecer en puntos donde la derivada vale cero.</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> El Teorema de Fermat demuestra
+                    que los máximos y mínimos locales en el interior un intervalo son un subconjunto de los puntos
+                    críticos (donde la derivada es cero).</label>
+                <div id="feedback-2" class="h5p-feedback hidden"></div>
+            </div>
+
+            <div id="step-3" class="quiz-step hidden">
+                <h3>3. ¿Cuál es la herencia lógica del papel del Teorema de
+                    Fermat?</h3>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> Es una consecuencia directa
+                    que se deduce después de demostrar formalmente el Teorema del Valor Medio.</label>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> Actúa como el pilar
+                    fundamental que proporciona las condiciones suficientes para demostrar el teorema de Rolle,
+                    permitiendo la posterior deducción del TVM.</label>
+                <div id="feedback-3" class="h5p-feedback hidden"></div>
+            </div>
+
+            <button class="btn-general" id="btn-comprobar-quiz" onclick="comprobarPregunta()"><i
+                    class="fa-solid fa-clipboard-check"></i> Comprobar</button>
+            <button class="btn-general btn-success hidden" id="btn-siguiente-quiz"
+                onclick="siguientePregunta()">Siguiente</button>
+        </div>
+
+        <div id="level-3-container" class="hidden">
+            <div class="n3-section">
+                <h3>A. Completar la Demostración (Caso Máximo Local Interior)</h3>
+                <p style="margin-bottom: 25px; color: #64748b;">Arrastra los conceptos correctos para estructurar la
+                    demostración formal por límites laterales:</p>
+                <p style="line-height: 2.2;">
+                    1. Supongamos que $f$ alcanza un <span class="drop-zone" data-expected="maximo"></span> local en un
+                    punto interior $c$, lo que implica que $f(x) - f(c) \le 0$ para entornos cercanos.<br>
+                    2. Al aproximarse por la <span class="drop-zone" data-expected="derecha"></span> ($x > c$), el
+                    denominador es positivo, por lo que el cociente obliga a que el límite lateral derecho
+                    cumpla $f'_+(c) \le 0$.<br>
+                    3. Al aproximarse por la <span class="drop-zone" data-expected="izquierda"></span> ($x < c$), el
+                        denominador es negativo, invirtiendo el signo del cociente y determinando que
+                        $f'_-(c) \ge 0$. </p>
+            </div>
+
+            <div class="n3-section">
+                <h3>B. Conclusión</h3>
+                <p style="margin-bottom: 25px; color: #64748b;">Completa el cierre analítico del teorema:</p>
+                <p style="line-height: 2.2;">
+                    1. Dado que la hipótesis declara que $f$ es derivable en $c$, las derivadas laterales por izquierda
+                    y derecha deben ser <span class="drop-zone" data-expected="iguales"></span>.<br>
+                    2. La única manera de satisfacer en simultáneo que $f'(c) \le 0$ y $f'(c) \ge 0$ es que
+                    $f'(c) = $ <span class="drop-zone" data-expected="cero_val"></span>.<br>
+                    Lo que concluye la demostración del Teorema de Fermat para máximos locales interiores.
+                </p>
+            </div>
+
+            <div id="banco-palabras"
+                style="margin-top:20px; margin-bottom:30px; display:flex; gap:10px; flex-wrap: wrap; padding: 20px; background: #e2e8f0; border-radius: 8px;">
+                <h3 style="width: 100%; margin-bottom: 5px;">Banco de Conceptos</h3>
+                <span class="draggable-word" draggable="true" data-value="maximo">Máximo</span>
+                <span class="draggable-word" draggable="true" data-value="derecha">Derecha</span>
+                <span class="draggable-word" draggable="true" data-value="izquierda">Izquierda</span>
+                <span class="draggable-word" draggable="true" data-value="iguales">Iguales</span>
+                <span class="draggable-word" draggable="true" data-value="cero_val">$0$</span>
+                <span class="draggable-word" draggable="true" data-value="falso">Inflexión</span>
+                <span class="draggable-word" draggable="true" data-value="falso">Vertical</span>
+                <span class="draggable-word" draggable="true" data-value="falso">Infinito</span>
+            </div>
+
+            <div class="n3-section">
+                <h3>C. Ordenación Lógica Global</h3>
+                <p style="margin-bottom: 20px; color: #64748b;">Ordena la secuencia argumentativa del teorema:</p>
+                <div id="sortable-list" style="display: flex; flex-direction: column;">
+                    <div class="sortable-item" draggable="true" data-id="2"><i class="fa-solid fa-sort"
+                            style="color: var(--primary);"></i> Establecer el signo negativo del numerador $f(x)-f(c)$
+                        basándose en la definición de máximo local.</div>
+                    <div class="sortable-item" draggable="true" data-id="4"><i class="fa-solid fa-sort"
+                            style="color: var(--primary);"></i> Invocar la hipótesis de derivabilidad para forzar la
+                        igualdad de ambos límites laterales y concluir que $f'(c)=0$.</div>
+                    <div class="sortable-item" draggable="true" data-id="1"><i class="fa-solid fa-sort"
+                            style="color: var(--primary);"></i> Declarar un punto interior $c$ que actúe como máximo
+                        local y asumir la existencia de su derivada $f'(c)$.</div>
+                    <div class="sortable-item" draggable="true" data-id="3"><i class="fa-solid fa-sort"
+                            style="color: var(--primary);"></i> Evaluar los límites laterales del cociente
+                        por la izquierda y por la derecha de forma separada.</div>
+                </div>
+            </div>
+
+            <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()"><i
+                    class="fa-solid fa-flag-checkered"></i> Evaluar Final</button>
+            <button class="btn-general btn-success hidden" id="btn-ir-resumen" onclick="mostrarResumen()">Ir al Resumen
+                de Actividad <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+        <div id="resumen-final-container" class="hidden" style="text-align: center;">
+            <h1 style="color: var(--primary);">¡Módulo Completado!</h1>
+            <p style="color: #64748b;">Felicidades. Has completado exitosamente la secuencia analítica e interactiva del
+                Teorema de Fermat.</p>
+            <div style="display:flex; justify-content: space-around; margin: 40px 0; flex-wrap: wrap; gap: 20px;">
+                <div
+                    style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 1 (Gráficas)</p>
+                    <div class="score-val" id="res-n1">0/5</div>
+                </div>
+                <div
+                    style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 2 (Teoría)</p>
+                    <div class="score-val" id="res-n2">0/3</div>
+                </div>
+                <div
+                    style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 3 (Rigor)</p>
+                    <div class="score-val" id="res-n3">0/7</div>
+                </div>
+            </div>
+            <button class="btn-general btn-restart" onclick="reiniciarEscenarioGlobal()"><i
+                    class="fa-solid fa-rotate-left"></i> REINICIAR ESCENARIO</button>
+        </div>
+        <footer>
+            <p style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+                &copy; 2026, JGHA & DMA<br>
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        function formatVal(val, decimals = 2) {
+            let res = val.toFixed(decimals);
+            if (res === "-0.0" || res === "-0.00" || res === "-0.000") return (0).toFixed(decimals);
+            return res;
+        }
+
+        let state = { vidas: 3, retoActual: 1 };
+        let aciertosN1 = 0, aciertosN2 = 0, aciertosN3 = 0, preguntaActual = 1;
+        let board, b1, b2, b3, b4;
+        let hasInteracted = false;
+        let pEval, tangentLine;
+
+        const retosFermat = [
+            {
+                num: 1,
+                text: "Arrastra el deslizador y observa el comportamiento de la gráfica de $f(x) = 4 - x^2$ en el intervalo $[-2, 2]$. <br><br> Elige las propiedades que identificas.",
+                correct: ['a', 'b', 'c'],
+                f: (x) => -x * x + 4,
+                df: (x) => -2 * x,
+                a: -2, b: 2,
+                bbox: [-3, 6, 3, -1],
+                drawCustom: (brd) => {
+                    brd.create('functiongraph', [x => -x * x + 4, -2, 2], { strokeColor: '#004080', strokeWidth: 3 });
+                    brd.create('point', [-2, 0], { fixed: true, name: '', color: '#004080', size: 3 });
+                    brd.create('point', [2, 0], { fixed: true, name: '', color: '#004080', size: 3 });
+                }
+            },
+            {
+                num: 2,
+                text: "Arrastra el deslizador y observa el comportamiento de la gráfica de $f(x) = |x|$ en el intervalo $[-2, 2]$. <br><br> Elige las propiedades que identificas en la gráfica.",
+                correct: ['a'],
+                f: (x) => Math.abs(x),
+                df: (x) => {
+                    if (Math.abs(x) < 0.03) return NaN;
+                    return x < 0 ? -1 : 1;
+                },
+                a: -2, b: 2,
+                bbox: [-3, 3, 3, -1],
+                drawCustom: (brd) => {
+                    brd.create('functiongraph', [x => Math.abs(x), -2, 2], { strokeColor: '#004080', strokeWidth: 3 });
+                    brd.create('point', [-2, 2], { fixed: true, name: '', color: '#004080', size: 3 });
+                    brd.create('point', [2, 2], { fixed: true, name: '', color: '#004080', size: 3 });
+                }
+            },
+            {
+                num: 3,
+                text: "¿Qué propiedades identificas en la gráfica de la función cúbica $f(x) = 0.25x^3$ en el intervalo $[-2, 2]$? Analiza el comportamiento en el interior del intervalo.",
+                correct: ['d'],
+                f: (x) => 0.25 * x * x * x,
+                df: (x) => 0.75 * x * x,
+                a: -2, b: 2,
+                bbox: [-3, 3, 3, -3],
+                drawCustom: (brd) => {
+                    brd.create('functiongraph', [x => 0.25 * x * x * x, -2, 2], { strokeColor: '#004080', strokeWidth: 3 });
+                    brd.create('point', [-2, -2], { fixed: true, name: '', color: '#004080', size: 3 });
+                    brd.create('point', [2, 2], { fixed: true, name: '', color: '#004080', size: 3 });
+                }
+            },
+            {
+                num: 4,
+                text: "¿Qué propiedades identificas en la gráfica de la función lineal $f(x) = 0.5x + 1$ en el intervalo $[0, 3]$? Analiza el comportamiento en el interior del intervalo.",
+                correct: ['d'],
+                f: (x) => 0.5 * x + 1,
+                df: (x) => 0.5,
+                a: 0, b: 3,
+                bbox: [-1, 4, 4, -1],
+                drawCustom: (brd) => {
+                    brd.create('functiongraph', [x => 0.5 * x + 1, 0, 3], { strokeColor: '#004080', strokeWidth: 3 });
+                    brd.create('point', [0, 1], { fixed: true, name: '', color: '#004080', size: 3 });
+                    brd.create('point', [3, 2.5], { fixed: true, name: '', color: '#004080', size: 3 });
+                }
+            },
+            {
+                num: 5,
+                text: "Estudia el comportamiento de los desafíos anteriores (del 1 al 4). Formula una conjetura seleccionando las afirmaciones que consideres que constituyen el Teorema de Fermat:",
+                correct: ['a', 'c']
+            }
+        ];
+
+        function getOptionsHTML_1_4() {
+            return `
+                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="a" onchange="handleCheckboxChange(event)"> $f$ &nbsp; alcanza un máximo o mínimo local en el interior del intervalo considerado.</label>
+                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="b" onchange="handleCheckboxChange(event)"> $f$ &nbsp; es derivable en dicho punto.</label>
+                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="c" onchange="handleCheckboxChange(event)"> La derivada en dicho punto es cero.</label>
+                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="d" onchange="handleCheckboxChange(event)"> Ninguna de las anteriores</label>
+            `;
+        }
+
+        const optionsHTML_5 = `
+            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> Si una función tiene un máximo o un mínimo local en un punto interior de un intervalo y es derivable en ese punto, entonces su derivada en ese punto es igual a cero.</label>
+            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> Si una función es derivable y su derivada se anula en algún punto interior de un intervalo, entonces la función tiene un máximo o un mínimo local en ese intervalo.</label>
+            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> Si una función es derivable en todo punto de un intervalo y su derivada nunca es cero en ese intervalo, entonces la función no tiene máximos ni mínimos locales en el interior del intervalo.</label>
+            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> Si una función no tiene máximos ni mínimos locales en un intervalo, entonces su derivada nunca es cero en ese intervalo.</label>
+        `;
+
+        function updateSliderVisuals() {
+            let s = document.getElementById('w-slider');
+            let pct = ((s.value - s.min) / (s.max - s.min)) * 100;
+            s.style.setProperty('--pct', `${pct}%`);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // NUEVO: Forzar limpieza de casillas para evitar el caché del navegador al presionar F5
+            document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => {
+                input.checked = false;
+                input.disabled = false;
+            });
+
+            // Asignar el listener antes de cargar los retos para asegurar la reactividad inmediata
+            document.getElementById('w-slider').addEventListener('input', function(e) {
+                let val = parseFloat(e.target.value);
+                document.getElementById('w-value').innerText = formatVal(val, 2);
+                updateSliderVisuals();
+                
+                let currentMin = parseFloat(this.dataset.minW);
+                let currentMax = parseFloat(this.dataset.maxW);
+                if (val < currentMin) this.dataset.minW = val;
+                if (val > currentMax) this.dataset.maxW = val;
+
+                actualizarMetricas();
+                if (board) board.update();
+                
+                if (!hasInteracted) {
+                    hasInteracted = true;
+                    document.getElementById('btn-validar-n1').disabled = false;
+                    document.getElementById('btn-validar-n1').innerText = "Validar Solución " + state.retoActual + "/5";
+                }
+            });
+
+            cargarReto(state.retoActual);
+        });
+
+        function handleCheckboxChange(e, num) {
+            if (e.target.value === 'd' && e.target.checked) {
+                document.querySelectorAll(`#desafio-${num} input[value="a"], #desafio-${num} input[value="b"], #desafio-${num} input[value="c"]`).forEach(cb => cb.checked = false);
+            } else if (e.target.checked) {
+                let cb_d = document.querySelector(`#desafio-${num} input[value="d"]`);
+                if (cb_d) cb_d.checked = false;
+            }
+        }
+
+        function actualizarMetricas() {
+            if (state.retoActual === 5) return;
+            let x = parseFloat(document.getElementById('w-slider').value);
+            let r = retosFermat[state.retoActual - 1];
+            let fx = r.f(x);
+            let dfx = r.df(x);
+
+            document.getElementById('val-x').innerText = formatVal(x, 2);
+            document.getElementById('val-fx').innerText = formatVal(fx, 2);
+            document.getElementById('val-dfx').innerText = isNaN(dfx) ? "No existe" : formatVal(dfx, 2);
+        }
+
+        function drawMiniBoards() {
+            document.getElementById('grid-ch5').classList.remove('hidden');
+
+            if (b1) JXG.JSXGraph.freeBoard(b1);
+            if (b2) JXG.JSXGraph.freeBoard(b2);
+            if (b3) JXG.JSXGraph.freeBoard(b3);
+            if (b4) JXG.JSXGraph.freeBoard(b4);
+
+            let config = (r) => ({ boundingbox: r.bbox, axis: true, showNavigation: false, showCopyright: false, pan: { enabled: false }, zoom: { enabled: false }, keepaspectratio: true });
+
+            b1 = JXG.JSXGraph.initBoard('box1', config(retosFermat[0]));
+            retosFermat[0].drawCustom(b1);
+
+            b2 = JXG.JSXGraph.initBoard('box2', config(retosFermat[1]));
+            retosFermat[1].drawCustom(b2);
+
+            b3 = JXG.JSXGraph.initBoard('box3', config(retosFermat[2]));
+            retosFermat[2].drawCustom(b3);
+
+            b4 = JXG.JSXGraph.initBoard('box4', config(retosFermat[3]));
+            retosFermat[3].drawCustom(b4);
+        }
+
+        function cargarReto(num) {
+            document.getElementById('w-slider').disabled = false;
+            
+            // Ocultamos todos los retos y mostramos solo el actual
+            document.querySelectorAll('.reto-container').forEach(c => c.classList.add('hidden'));
+            document.getElementById('desafio-' + num).classList.remove('hidden');
+            
+            // Reactivamos clics en los contenedores de las opciones
+            document.querySelectorAll(`#desafio-${num} .h5p-option`).forEach(el => el.style.pointerEvents = 'auto');
+            
+            // NUEVO: Habilitamos y limpiamos explícitamente los checkboxes para el reintento
+            document.querySelectorAll(`#desafio-${num} input[type="checkbox"]`).forEach(el => {
+                el.disabled = false;
+                el.checked = false; 
+            });
+            
+            document.getElementById('btn-retry-reto').classList.add('hidden');
+            document.getElementById('btn-next-reto').classList.add('hidden');
+            document.getElementById('btn-pasar-n2').classList.add('hidden');
+            document.getElementById('btn-validar-n1').classList.remove('hidden');
+            
+            hasInteracted = false;
+            let btnValidar = document.getElementById('btn-validar-n1');
+            btnValidar.disabled = true;
+            btnValidar.innerText = "Interactúa con el deslizador";
+            
+            let r = retosFermat[num - 1];
+            document.getElementById('s1-instructions').innerHTML = `<i class="fa-solid fa-flag"></i> <b>Desafío ${num}/5:</b> Análisis gráfico`;
+
+            if (num <= 4) {
+                document.getElementById('main-layout').classList.remove('layout-ch5');
+                document.getElementById('grid-ch5').classList.add('hidden');
+                document.getElementById('graph-container').classList.remove('hidden');
+                document.getElementById('slider-container').classList.remove('hidden');
+                document.getElementById('metrics-overlay').classList.remove('hidden');
+                
+                if (board) JXG.JSXGraph.freeBoard(board);
+                board = JXG.JSXGraph.initBoard('jxgbox', {
+                    boundingbox: r.bbox,
+                    axis: true, showCopyright: false, pan: {enabled:false}, zoom: {enabled:false}, keepaspectratio: true
+                });
+                
+                let slider = document.getElementById('w-slider');
+                slider.min = r.a;
+                slider.max = r.b;
+                slider.value = r.a;
+                slider.dataset.minW = r.a;
+                slider.dataset.maxW = r.a;
+                updateSliderVisuals();
+                document.getElementById('w-value').innerText = formatVal(r.a, 2);
+                
+                r.drawCustom(board);
+                
+                let x_val = () => parseFloat(document.getElementById('w-slider').value);
+                pEval = board.create('point', [() => x_val(), () => r.f(x_val())], {name: 'c', color: 'purple', size: 4, fixed: true});
+                tangentLine = board.create('line', [pEval, () => r.df(x_val())], {type: 'slope', strokeColor: 'purple', strokeWidth: 1.5, dash: 2});
+                
+                actualizarMetricas();
+            } else {
+                document.getElementById('main-layout').classList.add('layout-ch5');
+                document.getElementById('graph-container').classList.add('hidden');
+                document.getElementById('slider-container').classList.add('hidden');
+                
+                btnValidar.disabled = false;
+                btnValidar.innerText = "Validar Conjetura (5/5)";
+                drawMiniBoards();
+            }
+        }
+
+
+        function avanzarReto() {
+            if (state.retoActual < 5) {
+                state.retoActual++;
+                cargarReto(state.retoActual);
+            }
+        }
+
+        function reintentarReto() {
+            cargarReto(state.retoActual);
+        }
+
+        function validarGeometria() {
+            let r = retosFermat[state.retoActual - 1];
+            
+            // Leemos SÓLO los checkboxes del reto que está activo
+            let selected = Array.from(document.querySelectorAll(`#desafio-${state.retoActual} input[type="checkbox"]:checked`)).map(cb => cb.value);
+            
+            if (selected.length === 0) {
+                return swal("Atención", "Debes seleccionar al menos una opción para validar tu respuesta.", "warning");
+            }
+
+            let isOptionsCorrect = selected.length === r.correct.length && selected.every(val => r.correct.includes(val));
+            let isValidGraphics = false;
+            
+            if (state.retoActual <= 4) {
+                let minW = parseFloat(document.getElementById('w-slider').dataset.minW);
+                let maxW = parseFloat(document.getElementById('w-slider').dataset.maxW);
+                if ((maxW - minW) >= (r.b - r.a) * 0.85) isValidGraphics = true;
+            } else if (state.retoActual === 5) {
+                isValidGraphics = true;
+            }
+
+            if (isOptionsCorrect && isValidGraphics) {
+                // Bloqueamos opciones del reto actual
+                document.querySelectorAll(`#desafio-${state.retoActual} .h5p-option`).forEach(el => el.style.pointerEvents = 'none');
+                document.getElementById('btn-validar-n1').classList.add('hidden');
+                document.getElementById('w-slider').disabled = true; 
+                
+                aciertosN1++;
+                swal("¡Correcto!", "Propiedades correctamente asociadas al comportamiento de la derivada.", "success").then(() => {
+                    if (state.retoActual < 5) {
+                        const nextBtn = document.getElementById('btn-next-reto');
+                        nextBtn.innerHTML = `<i class="fa-solid fa-arrow-right"></i> Continuar al Desafío ${state.retoActual + 1}/5`;
+                        nextBtn.classList.remove('hidden');
+                    } else {
+                        document.getElementById('btn-pasar-n2').classList.remove('hidden');
+                    }
+                });
+            } else {
+                document.getElementById('w-slider').disabled = true;
+                document.querySelectorAll(`#desafio-${state.retoActual} input[type="checkbox"]`).forEach(el => el.disabled = true);
+                document.querySelectorAll(`#desafio-${state.retoActual} .h5p-option`).forEach(el => el.style.pointerEvents = 'none');
+                
+                document.getElementById('btn-validar-n1').classList.add('hidden');
+                document.getElementById('btn-retry-reto').classList.remove('hidden');
+
+                if (!isOptionsCorrect && !isValidGraphics) {
+                    restarVida("Error combinado. Elige adecuadamente las opciones y recorre todo el intervalo con el deslizador.");
+                } else if (!isOptionsCorrect) {
+                    restarVida("Tu exploración dinámica es correcta, pero las opciones elegidas no coinciden con las hipótesis de Fermat.");
+                } else if (!isValidGraphics) {
+                    restarVida("Tus opciones son válidas, pero debes desplazar el deslizador de principio a fin para inspeccionar toda la naturaleza del intervalo.");
+                }
+            }
+        }
+
+        function restarVida(mensajeAyuda) {
+            if (state.vidas > 0) {
+                document.getElementById(`life${state.vidas}`).classList.add('lost');
+                state.vidas--;
+            }
+            if (state.vidas === 0) {
+                document.getElementById('btn-retry-reto').classList.add('hidden');
+                document.getElementById('btn-game-over').classList.remove('hidden');
+                swal({ title: "Intentos Agotados", text: "Has agotado tus tréboles de análisis en esta sección gráfica. Por favor, reinicia el escenario.", icon: "error" });
+            } else {
+                swal("Conjetura Errónea", mensajeAyuda, "warning");
+            }
+        }
+
+        function reiniciarEscenarioGlobal() { 
+            // Limpiamos las selecciones explícitamente antes de recargar
+            document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => {
+                input.checked = false;
+            });
+            // Recargamos el escenario
+            location.reload(); 
+        }
+
+        function iniciarEtapa2() {
+            document.getElementById('main-title').innerText = "Etapa 2: Cuestionario Teórico";
+            document.getElementById('level-1-container').classList.add('hidden');
+            document.getElementById('level-2-container').classList.remove('hidden');
+            reiniciarCuestionarioEtapa2();
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function reiniciarCuestionarioEtapa2() {
+            preguntaActual = 1;
+            aciertosN2 = 0;
+            document.querySelectorAll('.quiz-step').forEach((step, index) => {
+                step.classList.toggle('hidden', index !== 0);
+            });
+            document.querySelectorAll('#level-2-container input[type="radio"]').forEach(input => {
+                input.checked = false;
+                input.disabled = false;
+            });
+            document.querySelectorAll('#level-2-container .h5p-feedback').forEach(feedback => {
+                feedback.innerHTML = "";
+                feedback.classList.add('hidden');
+                feedback.classList.remove('error');
+            });
+            document.getElementById('h5p-progress').style.width = "33.33%";
+            document.getElementById('h5p-counter').innerText = "1/3";
+            document.getElementById('btn-comprobar-quiz').classList.remove('hidden');
+            document.getElementById('btn-siguiente-quiz').classList.add('hidden');
+            document.getElementById('btn-siguiente-quiz').innerText = "Siguiente";
+        }
+
+        function comprobarPregunta() {
+            const s = document.querySelector(`input[name="q${preguntaActual}"]:checked`);
+            if (!s) { swal("Aviso", "Selecciona una opción antes de comprobar.", "warning"); return; }
+
+            const f = document.getElementById(`feedback-${preguntaActual}`);
+            f.classList.remove('hidden');
+            document.querySelectorAll(`input[name="q${preguntaActual}"]`).forEach(el => el.disabled = true);
+
+            if (s.value === "correcta") {
+                f.innerHTML = "<strong>¡Correcto!</strong> Interpretación conceptual impecable.";
+                f.classList.remove('error');
+                aciertosN2++;
+            } else {
+                f.innerHTML = "<strong>Incorrecto.</strong> Analiza con detalle la importancia de las hipótesis.";
+                f.classList.add('error');
+            }
+
+            document.getElementById('btn-comprobar-quiz').classList.add('hidden');
+            document.getElementById('btn-siguiente-quiz').classList.remove('hidden');
+            if (preguntaActual === 3) document.getElementById('btn-siguiente-quiz').innerText = "Pasar a Etapa 3";
+            if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+
+        function siguientePregunta() {
+            if (preguntaActual === 3) {
+                document.getElementById('main-title').innerText = "Etapa 3: Estructura Analítica Formal";
+                document.getElementById('level-2-container').classList.add('hidden');
+                document.getElementById('level-3-container').classList.remove('hidden');
+                mezclarBancoAxiomas();
+                if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                return;
+            }
+            document.getElementById(`step-${preguntaActual}`).classList.add('hidden');
+            preguntaActual++;
+            document.getElementById(`step-${preguntaActual}`).classList.remove('hidden');
+            document.getElementById('h5p-progress').style.width = (preguntaActual / 3) * 100 + "%";
+            document.getElementById('h5p-counter').innerText = preguntaActual + "/3";
+            document.getElementById('btn-siguiente-quiz').classList.add('hidden');
+            document.getElementById('btn-comprobar-quiz').classList.remove('hidden');
+        }
+
+        function mezclarBancoAxiomas() {
+            const banco = document.getElementById('banco-palabras');
+            const axiomas = Array.from(banco.querySelectorAll('.draggable-word'));
+            for (let i = axiomas.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [axiomas[i], axiomas[j]] = [axiomas[j], axiomas[i]];
+            }
+            axiomas.forEach(axioma => banco.appendChild(axioma));
+        }
+
+        let draggedWord = null;
+        document.addEventListener("dragstart", e => { if (e.target.classList.contains('draggable-word')) draggedWord = e.target; });
+
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', e => e.preventDefault());
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                if (zone.hasChildNodes()) document.getElementById('banco-palabras').appendChild(zone.firstChild);
+                if (draggedWord) { zone.appendChild(draggedWord); draggedWord = null; }
+            });
+        });
+
+        const sortableList = document.getElementById('sortable-list');
+        let draggingListItem = null;
+
+        document.querySelectorAll('.sortable-item').forEach(item => {
+            item.addEventListener('dragstart', () => { draggingListItem = item; setTimeout(() => item.classList.add('dragging'), 0); });
+            item.addEventListener('dragend', () => { item.classList.remove('dragging'); draggingListItem = null; });
+        });
+
+        sortableList.addEventListener('dragover', e => {
+            e.preventDefault();
+            if (!draggingListItem) return;
+            const afterElement = [...sortableList.querySelectorAll('.sortable-item:not(.dragging)')].reduce((closest, child) => {
+                const box = child.getBoundingClientRect(); const offset = e.clientY - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) return { offset: offset, element: child }; else return closest;
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+            if (afterElement == null) sortableList.appendChild(draggingListItem); else sortableList.insertBefore(draggingListItem, afterElement);
+        });
+
+        function evaluarEtapa3() {
+            let correctas = 0;
+            document.querySelectorAll('.draggable-word, .sortable-item').forEach(el => { el.setAttribute('draggable', 'false'); el.style.cursor = 'not-allowed'; });
+
+            document.querySelectorAll('.drop-zone').forEach(z => {
+                if (z.hasChildNodes() && z.firstChild.dataset.value === z.dataset.expected) { correctas++; z.style.borderBottomColor = "var(--success)"; }
+                else { z.style.borderBottomColor = "var(--danger)"; }
+            });
+
+            let orderCorrect = true;
+            document.querySelectorAll('.sortable-item').forEach((item, index) => {
+                if (parseInt(item.dataset.id) !== index + 1) { orderCorrect = false; item.style.borderColor = "var(--danger)"; item.style.backgroundColor = "#fef2f2"; }
+                else { item.style.borderColor = "var(--success)"; item.style.backgroundColor = "#dcfce7"; }
+            });
+            if (orderCorrect) correctas++;
+
+            aciertosN3 = correctas;
+            document.getElementById('btn-evaluar-n3').classList.add('hidden');
+            document.getElementById('btn-ir-resumen').classList.remove('hidden');
+            swal("Evaluación Finalizada", "Revisa tus aciertos en verde y áreas de oportunidad en rojo.", "info");
+        }
+
+        function mostrarResumen() {
+            document.getElementById('main-title').innerText = "Resumen de Actividad";
+            document.getElementById('level-3-container').classList.add('hidden');
+            document.getElementById('resumen-final-container').classList.remove('hidden');
+
+            document.getElementById('res-n1').innerText = aciertosN1 + "/5";
+            document.getElementById('res-n2').innerText = aciertosN2 + "/3";
+            document.getElementById('res-n3').innerText = aciertosN3 + "/7";
+            confetti({ particleCount: 2000, spread: 180, origin: { y: 0.3 } });
+        }
+    </script>
+</body>
+
+</html>

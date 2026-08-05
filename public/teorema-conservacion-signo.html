@@ -19,7 +19,9 @@
     </script>
 
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         :root {
             --primary: #004080;
@@ -33,81 +35,439 @@
             --pink-intense: #ec4899;
         }
 
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: #f1f5f9; color: var(--text-dark); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
 
-        .container { max-width: 1100px; width: 100%; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); overflow: hidden; }
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
 
-        .header-container { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid var(--border-color); min-height: 80px; }
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            min-height: 80px;
+        }
 
-        h1 { color: var(--primary); font-weight: 700; text-align: center; margin: 0; }
-        h2 { border-left: 8px solid var(--success); padding-left: 15px; font-size: 15px; color: var(--primary); margin-top: 35px; }
-        h3 { font-size: 18px; margin-top: 0; color: var(--primary); }
+        h1 {
+            color: var(--primary);
+            font-weight: 700;
+            text-align: center;
+            margin: 0;
+        }
 
-        .hidden { display: none !important; }
+        h2 {
+            border-left: 8px solid var(--success);
+            padding-left: 15px;
+            font-size: 15px;
+            color: var(--primary);
+            margin-top: 35px;
+        }
 
-        .btn-general { display: block; width: 100%; max-width: 300px; margin: 20px auto; padding: 14px; background-color: var(--primary); color: white; border: none; border-radius: 30px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-        .btn-general:hover:not(:disabled) { transform: scale(1.05); background-color: var(--primary-hover); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
-        .btn-general:disabled { background-color: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
-        .btn-restart { background-color: var(--warning); }
-        .btn-restart:hover:not(:disabled) { background-color: #d97706; }
-        .btn-success { background-color: var(--success); }
-        .btn-success:hover:not(:disabled) { background-color: #059669; }
+        h3 {
+            font-size: 18px;
+            margin-top: 0;
+            color: var(--primary);
+        }
 
-        .status-bar { display: flex; justify-content: space-between; align-items: center; background: #e0f2fe; padding: 15px 20px; border-radius: 10px; border: 1px solid #bae6fd; margin-bottom: 25px; font-weight: 600; color: var(--primary); }
-        .lives-box i { color: var(--success); font-size: 22px; margin-left: 5px; display: inline-block; position: relative; }
+        .hidden {
+            display: none !important;
+        }
+
+        .btn-general {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-general:hover:not(:disabled) {
+            transform: scale(1.05);
+            background-color: var(--primary-hover);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-general:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-restart {
+            background-color: var(--warning);
+        }
+
+        .btn-restart:hover:not(:disabled) {
+            background-color: #d97706;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background-color: #059669;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #e0f2fe;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px solid #bae6fd;
+            margin-bottom: 25px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .lives-box i {
+            color: var(--success);
+            font-size: 22px;
+            margin-left: 5px;
+            display: inline-block;
+            position: relative;
+        }
 
         @keyframes loseLifeAnim {
-            0% { transform: scale(1); opacity: 1; color: var(--success); }
-            20% { transform: scale(1.8); color: var(--success); }
-            40% { transform: scale(0.9); color: var(--success); }
-            60% { transform: scale(1.4); color: var(--success); }
-            100% { transform: scale(0.6) translateY(300px) rotate(45deg); opacity: 0; color: #94a3b8; }
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                color: var(--success);
+            }
+
+            20% {
+                transform: scale(1.8);
+                color: var(--success);
+            }
+
+            40% {
+                transform: scale(0.9);
+                color: var(--success);
+            }
+
+            60% {
+                transform: scale(1.4);
+                color: var(--success);
+            }
+
+            100% {
+                transform: scale(0.6) translateY(300px) rotate(45deg);
+                opacity: 0;
+                color: #94a3b8;
+            }
         }
-        .lives-box i.lost { animation: loseLifeAnim 3s ease-in-out forwards; }
 
-        .workspace-layout { display: flex; gap: 24px; margin-top: 15px; }
-        .theory-side { width: 350px; flex-shrink: 0; background: var(--bg-light); padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); display: flex; flex-direction: column; }
-        .canvas-side { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+        .lives-box i.lost {
+            animation: loseLifeAnim 3s ease-in-out forwards;
+        }
 
-        .jxgbox-wrapper { width: 100%; height: 400px; border-radius: 10px; border: 2px solid var(--border-color); overflow: hidden; background: #fff; position: relative; }
+        .workspace-layout {
+            display: flex;
+            gap: 24px;
+            margin-top: 15px;
+        }
 
-        @media (max-width: 850px) { .workspace-layout { flex-direction: column; } .theory-side, .canvas-side { width: 100%; } }
+        .theory-side {
+            width: 350px;
+            flex-shrink: 0;
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
 
-        .options-container { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-        .h5p-option { display: flex; padding: 14px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; background: #fff; transition: 0.2s; font-size: 14.5px; align-items: flex-start; line-height: 1.4; }
-        .fat-option { padding: 15px 20px !important; font-size: 14.5px; line-height: 1.6; align-items: center; }
-        .fat-option input { flex-shrink: 0; margin-top: 2px !important; }
-        .h5p-option:hover { border-color: var(--primary); background: #e0f2fe; }
-        .h5p-option input { margin-right: 12px; margin-top: 3px; accent-color: var(--primary); cursor: pointer; transform: scale(1.1); }
+        .canvas-side {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
 
-        .h5p-feedback { padding: 20px; border-radius: 8px; margin-top: 20px; background: #f1f5f9; border-left: 6px solid var(--primary); }
-        .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; }
+        .jxgbox-wrapper {
+            width: 100%;
+            height: 400px;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            overflow: hidden;
+            background: #fff;
+            position: relative;
+        }
 
-        .slider-wrapper { margin-top: 15px; background: #e2e8f0; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: center; }
-        input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; background: #cbd5e1; border-radius: 4px; outline: none; margin: 15px 0; border: 1px solid #94a3b8; background: linear-gradient(var(--primary), var(--primary)); background-size: var(--pct, 0%) 100%; background-repeat: no-repeat; }
-        input[type=range]::-webkit-slider-runnable-track { height: 8px; background: transparent; border-radius: 4px; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; height: 22px; width: 22px; border-radius: 50%; background: var(--primary); cursor: pointer; margin-top: -8px; box-shadow: 0 2px 5px rgba(0,0,0,0.4); transition: transform 0.1s, background 0.2s; }
-        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); background: #64748b; }
-        input[type=range]:disabled { opacity: 0.5; cursor: not-allowed; }
-        input[type=range]:disabled::-webkit-slider-thumb { cursor: not-allowed; background: #64748b; }
+        @media (max-width: 850px) {
+            .workspace-layout {
+                flex-direction: column;
+            }
 
-        .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 8px; margin: 30px 0; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--success); width: 33.33%; transition: 0.4s; }
+            .theory-side,
+            .canvas-side {
+                width: 100%;
+            }
+        }
 
-        .n3-section { background: var(--bg-light); padding: 30px; border-radius: 12px; margin-bottom: 30px; border: 1px solid var(--border-color); }
-        .banco-palabras { margin-top: 25px; display: flex; gap: 10px; flex-wrap: wrap; padding: 20px; background: #e2e8f0; border-radius: 8px; border: 1px dashed #94a3b8; }
-        .drop-zone { display: inline-flex; align-items: center; justify-content: center; width: 135px; min-height: 28px; padding: 2px 4px; border-bottom: 2px solid var(--primary); vertical-align: middle; text-align: center; background: white; border-radius: 4px 4px 0 0; }
-        .drop-zone .draggable-word { font-size: 12px; padding: 4px 7px; box-shadow: none; max-width: 100%; white-space: normal; line-height: 1.15; }
-        .draggable-word { cursor: grab; font-weight: 600; font-size: 13px; background-color: var(--primary); color: white; border: none; padding: 6px 10px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); display: inline-block; }
-        .draggable-word:active { cursor: grabbing; }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
 
-        .sortable-item { background: #fff; border: 1px solid var(--border-color); padding: 15px; border-radius: 6px; cursor: grab; display: flex; align-items: center; gap: 15px; font-weight: 500; transition: background 0.2s; margin-bottom: 10px; }
-        .sortable-item:active { cursor: grabbing; }
-        .sortable-item.dragging { opacity: 0.4; background: #e2e8f0; }
+        .h5p-option {
+            display: flex;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            background: #fff;
+            transition: 0.2s;
+            font-size: 14.5px;
+            align-items: flex-start;
+            line-height: 1.4;
+        }
 
-        select.inline-select { padding: 4px 8px; font-size: 14px; border: 1px solid var(--primary); border-radius: 4px; color: var(--primary); font-weight: 600; cursor: pointer; max-width: 100%; white-space: normal; background: #fff; }
-        
-        .score-val { font-size: 28px; font-weight: 700; color: var(--primary); text-align: center; }
+        .fat-option {
+            padding: 15px 20px !important;
+            font-size: 14.5px;
+            line-height: 1.6;
+            align-items: center;
+        }
+
+        .fat-option input {
+            flex-shrink: 0;
+            margin-top: 2px !important;
+        }
+
+        .h5p-option:hover {
+            border-color: var(--primary);
+            background: #e0f2fe;
+        }
+
+        .h5p-option input {
+            margin-right: 12px;
+            margin-top: 3px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            transform: scale(1.1);
+        }
+
+        .h5p-feedback {
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            background: #f1f5f9;
+            border-left: 6px solid var(--primary);
+        }
+
+        .h5p-feedback.error {
+            border-left-color: var(--danger);
+            background: #fef2f2;
+        }
+
+        .slider-wrapper {
+            margin-top: 15px;
+            background: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #cbd5e1;
+            border-radius: 4px;
+            outline: none;
+            margin: 15px 0;
+            border: 1px solid #94a3b8;
+            background: linear-gradient(var(--primary), var(--primary));
+            background-size: var(--pct, 0%) 100%;
+            background-repeat: no-repeat;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 8px;
+            background: transparent;
+            border-radius: 4px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 22px;
+            width: 22px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background: #64748b;
+        }
+
+        input[type=range]:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        input[type=range]:disabled::-webkit-slider-thumb {
+            cursor: not-allowed;
+            background: #64748b;
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 8px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--success);
+            width: 33.33%;
+            transition: 0.4s;
+        }
+
+        .n3-section {
+            background: var(--bg-light);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .banco-palabras {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            border: 1px dashed #94a3b8;
+        }
+
+        .drop-zone {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 135px;
+            min-height: 28px;
+            padding: 2px 4px;
+            border-bottom: 2px solid var(--primary);
+            vertical-align: middle;
+            text-align: center;
+            background: white;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .drop-zone .draggable-word {
+            font-size: 12px;
+            padding: 4px 7px;
+            box-shadow: none;
+            max-width: 100%;
+            white-space: normal;
+            line-height: 1.15;
+        }
+
+        .draggable-word {
+            cursor: grab;
+            font-weight: 600;
+            font-size: 13px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+
+        .draggable-word:active {
+            cursor: grabbing;
+        }
+
+        .sortable-item {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 6px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+            transition: background 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .sortable-item:active {
+            cursor: grabbing;
+        }
+
+        .sortable-item.dragging {
+            opacity: 0.4;
+            background: #e2e8f0;
+        }
+
+        select.inline-select {
+            padding: 4px 8px;
+            font-size: 14px;
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            max-width: 100%;
+            white-space: normal;
+            background: #fff;
+        }
+
+        .score-val {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -119,8 +479,13 @@
         </header>
 
         <div id="level-1-container">
-            <p style="text-align: center; color: #64748b; margin-top: -15px; margin-bottom: 25px; line-height: 1.6; font-size: 15px;">
-                Manipula las vecindades o puntos de control para entender cuándo una función logra conservar su signo.
+            <p
+                style="text-align: center; color: #64748b; margin-top: -15px; margin-bottom: 25px; line-height: 1.6; font-size: 15px;">
+                Manipula las vecindades alrededor del punto $c$ con el deslizador $\delta$ para ver cuándo una función
+                conserva su signo en la vecindad.
+                <br>
+                <b>Nota:</b> La franja azul representa la extensión de la vecindad sobre el plano para ayudar a la
+                visualización del signo de la función.
             </p>
 
             <div class="status-bar">
@@ -144,11 +509,17 @@
 
                     <div id="math-options-container" class="options-container hidden"></div>
 
-                    <button class="btn-general" id="btn-validar-n1" onclick="validarGeometria()"><i class="fa-solid fa-check"></i> Validar Solución</button>
-                    <button class="btn-general btn-restart hidden" id="btn-retry-reto" onclick="reintentarReto()"><i class="fa-solid fa-rotate-right"></i> Reintentar Reto</button>
-                    <button class="btn-general btn-success hidden" id="btn-next-reto" onclick="avanzarReto()"><i class="fa-solid fa-arrow-right"></i> Continuar al siguiente desafío</button>
-                    <button class="btn-general btn-restart hidden" id="btn-game-over" onclick="reiniciarEscenarioGlobal()"><i class="fa-solid fa-skull"></i> Reiniciar Escenario</button>
-                    <button class="btn-general btn-success hidden" id="btn-pasar-n2" onclick="iniciarEtapa2()">Continuar a Etapa 2 🚀</button>
+                    <button class="btn-general" id="btn-validar-n1" onclick="validarGeometria()"><i
+                            class="fa-solid fa-check"></i> Validar Solución</button>
+                    <button class="btn-general btn-restart hidden" id="btn-retry-reto" onclick="reintentarReto()"><i
+                            class="fa-solid fa-rotate-right"></i> Reintentar Reto</button>
+                    <button class="btn-general btn-success hidden" id="btn-next-reto" onclick="avanzarReto()"><i
+                            class="fa-solid fa-arrow-right"></i> Continuar al siguiente desafío</button>
+                    <button class="btn-general btn-restart hidden" id="btn-game-over"
+                        onclick="reiniciarEscenarioGlobal()"><i class="fa-solid fa-skull"></i> Reiniciar
+                        Escenario</button>
+                    <button class="btn-general btn-success hidden" id="btn-pasar-n2" onclick="iniciarEtapa2()">Continuar
+                        a Etapa 2 🚀</button>
                 </div>
 
                 <div class="canvas-side" id="canvas-panel">
@@ -157,12 +528,16 @@
                     </div>
 
                     <div id="slider-container" class="slider-wrapper hidden">
-                        <label style="font-weight: 600; color: var(--primary); display: flex; justify-content: space-between; font-size: 14px;">
-                            <span id="slider-label-text"><i class="fa-solid fa-arrows-left-right"></i> Radio de la vecindad ($\delta$)</span>
+                        <label
+                            style="font-weight: 600; color: var(--primary); display: flex; justify-content: space-between; font-size: 14px;">
+                            <span id="slider-label-text"><i class="fa-solid fa-arrows-left-right"></i> Radio de la
+                                vecindad ($\delta$)</span>
                             <span id="slider-val-display">0.00</span>
                         </label>
                         <input type="range" id="main-slider" min="0.05" max="2" step="0.05" value="1">
-                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;"><i class="fa-solid fa-circle-info"></i> Ajusta el control y observa la sombra en la gráfica.</div>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;"><i
+                                class="fa-solid fa-circle-info"></i> Ajusta el control y observa la sombra en la
+                            gráfica.</div>
                     </div>
 
                 </div>
@@ -170,50 +545,68 @@
         </div>
 
         <div id="level-2-container" class="hidden">
-            <div class="progress-container"><div class="progress-bar" id="h5p-progress"></div></div>
+            <div class="progress-container">
+                <div class="progress-bar" id="h5p-progress"></div>
+            </div>
             <p id="h5p-counter" style="text-align: right; font-weight: 600; color: var(--primary);">1/3</p>
 
             <div id="step-1" class="quiz-step">
-                <h3>1. Si $f$ es continua en $c$ y $f(c) > 0$, ¿qué afirma la Ley de Conservación del Signo?</h3>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Que la función siempre será positiva en todo su dominio.</label>
-                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> Que existe una pequeña vecindad $(c-\delta, c+\delta)$ donde la función se mantiene estrictamente positiva.</label>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Que eventualmente la función debe cruzar el eje X y cambiar de signo.</label>
+                <h3>1. Elige la conjetura que formulaste para el caso de que la función sea positiva en un punto.</h3>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Si existe una vecindad de un punto en donde la función es positiva en toda la vecindad, entonces la función debe ser continua y positiva en ese punto.</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> Si una función es continua y positiva en un punto, entonces existe una vecindad de ese punto en donde la función es positiva.</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Si una función es continua y positiva en un punto y negativa en otro punto, entonces eventualmente la función
+                    debe cruzar el eje X y cambiar de signo.</label>
                 <div id="feedback-1" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-2" class="quiz-step hidden">
-                <h3>2. ¿Por qué es matemáticamente obligatoria la continuidad para que se cumpla esta ley?</h3>
-                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> Porque un salto (discontinuidad) permitiría a la función pasar repentinamente a valores negativos sin una transición.</label>
-                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Porque sin continuidad no podemos calcular derivadas.</label>
-                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Porque la continuidad asegura que la función sea infinita.</label>
+                <h3>2. ¿Por qué es importante la continuidad en un punto $c$ para que se cumpla esta ley?</h3>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> Porque una discontinuidad permitiría a la función pasar repentinamente de valores positivos a negativos y viceversa en una pequeña vecindad del punto.</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Porque sin continuidad no
+                    podemos calcular derivadas para saber el comportamiento de la función en ningún punto.</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Porque la continuidad en&nbsp;$c$ &nbsp; 
+                    asegura que la función esté acotada en una vecindad alrededor de &nbsp; $c$.</label>
                 <div id="feedback-2" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-3" class="quiz-step hidden">
-                <h3>3. ¿Qué sucede con la ley si evaluamos en un punto donde $f(c) = 0$?</h3>
-                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> La ley afirma que la función se mantendrá en cero en una pequeña vecindad.</label>
-                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> La función será positiva a un lado y negativa al otro.</label>
-                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> La ley simplemente no aplica, ya que se requiere estrictamente que $f(c) \neq 0$ para conservar un signo.</label>
+                <h3>3. ¿Qué sucede con la ley si evaluamos en un punto $c$ donde $f$ es continua, pero $f(c) = 0$?</h3>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> La ley afirma que la función
+                    se mantendrá en cero en una pequeña vecindad.</label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> La función será positiva a
+                    un lado y negativa al otro.</label>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> La ley simplemente no aplica,
+                    ya que se requiere que &nbsp; $f(c) \neq 0$.</label>
                 <div id="feedback-3" class="h5p-feedback hidden"></div>
             </div>
 
-            <button class="btn-general" id="btn-comprobar-quiz" onclick="comprobarPregunta()"><i class="fa-solid fa-clipboard-check"></i> Comprobar</button>
-            <button class="btn-general btn-success hidden" id="btn-siguiente-quiz" onclick="siguientePregunta()">Siguiente</button>
+            <button class="btn-general" id="btn-comprobar-quiz" onclick="comprobarPregunta()"><i
+                    class="fa-solid fa-clipboard-check"></i> Comprobar</button>
+            <button class="btn-general btn-success hidden" id="btn-siguiente-quiz"
+                onclick="siguientePregunta()">Siguiente</button>
         </div>
 
         <div id="level-3-container" class="hidden">
             <div class="n3-section">
                 <h3>A. Definición Formal de Continuidad</h3>
-                <p style="margin-bottom:25px; color:#64748b;">La ley de conservación del signo es una consecuencia directa de la definición límite $\epsilon-\delta$. Construye la definición arrastrando los conceptos correctos.</p>
+                <p style="margin-bottom:25px; color:#64748b;">La ley de conservación del signo es una consecuencia
+                    directa de la definición de continuidad en un punto $c$. Construye esta definición arrastrando los conceptos
+                    correctos.</p>
                 <p style="line-height:2.2;">
-                    Por definición, decimos que $f$ es <span class="drop-zone" data-expected="continua" data-bank="banco-palabras-A"></span> en el punto $c$ si y solo si, para todo <span class="drop-zone" data-expected="epsilon" data-bank="banco-palabras-A"></span> $> 0$, existe un número <span class="drop-zone" data-expected="delta" data-bank="banco-palabras-A"></span> $> 0$ tal que siempre que la distancia en X cumpla $|x - c| < \delta$, entonces la distancia en las imágenes cumplirá $|f(x) - f(c)| < $ <span class="drop-zone" data-expected="epsilon_2" data-bank="banco-palabras-A"></span>.
+                    Por definición, decimos que $f$ es <span class="drop-zone" data-expected="continua"
+                        data-bank="banco-palabras-A"></span> en el punto $c$ si y solo si, para todo <span
+                        class="drop-zone" data-expected="epsilon" data-bank="banco-palabras-A"></span> $> 0$, existe un
+                    número <span class="drop-zone" data-expected="delta" data-bank="banco-palabras-A"></span> $> 0$ tal
+                    que siempre que la distancia en X cumpla $|x - c| < \delta$, entonces la distancia en las imágenes
+                        cumplirá $|f(x) - f(c)| < \epsilon$.
                 </p>
                 <div id="banco-palabras-A" class="banco-palabras">
-                    <h4 style="width: 100%; margin-top: 0; margin-bottom: 5px; color: var(--primary);"><i class="fa-solid fa-layer-group"></i> Banco de Conceptos (Parte A)</h4>
+                    <h4 style="width: 100%; margin-top: 0; margin-bottom: 5px; color: var(--primary);"><i
+                            class="fa-solid fa-layer-group"></i> Banco de Conceptos (Parte A)</h4>
                     <span class="draggable-word" draggable="true" data-value="continua">Continua</span>
                     <span class="draggable-word" draggable="true" data-value="epsilon">$\epsilon$</span>
                     <span class="draggable-word" draggable="true" data-value="delta">$\delta$</span>
-                    <span class="draggable-word" draggable="true" data-value="epsilon_2">$\epsilon$</span>
+                    <span class="draggable-word" draggable="true" data-value="falso">Positiva</span>
                     <span class="draggable-word" draggable="true" data-value="falso">Derivable</span>
                     <span class="draggable-word" draggable="true" data-value="falso">Infinito</span>
                 </div>
@@ -221,34 +614,32 @@
 
             <div class="n3-section">
                 <h3>B. Demostración Guiada (Conservación del Signo)</h3>
-                <p style="margin-bottom:25px; color:#64748b;">Completa la demostración para el caso donde $f(c) > 0$. Al ser $\epsilon$ arbitrario, podemos elegir un valor específico para forzar la conservación.</p>
+                <p style="margin-bottom:25px; color:#64748b;">Completa la demostración para el caso donde $f(c) > 0$. Al
+                    ser $\epsilon$ arbitrario, podemos elegir un valor específico para forzar la conservación del signo.</p>
 
                 <p style="line-height:2.2;">
                     <strong>Demostración.</strong> Supongamos que $f$ es continua en $c$ y que $f(c) > 0$.<br>
-                    Como $f(c) > 0$, el número $\frac{f(c)}{2}$ es estrictamente <span class="drop-zone" data-expected="positivo" data-bank="banco-palabras-B"></span>.<br>
-                    Dado que la definición de continuidad se cumple para cualquier tolerancia, elegimos astutamente <span class="drop-zone" data-expected="epsilon_elegido" data-bank="banco-palabras-B"></span> $= \frac{f(c)}{2}$.<br>
-                    Esto garantiza la existencia de un $\delta > 0$ tal que en la vecindad $|x-c| < \delta$ se cumple:<br>
-                    $|f(x) - f(c)| < \frac{f(c)}{2}$.<br>
-                    Al desarrollar este valor absoluto, obtenemos:<br>
-                    $-\frac{f(c)}{2} < f(x) - f(c) < \frac{f(c)}{2}$.<br>
-                    Sumando $f(c)$ a todos los miembros, el lado izquierdo queda:<br>
-                    $f(c) - \frac{f(c)}{2} < f(x)$, lo que implica que $f(x) > $ <span class="drop-zone" data-expected="mitad_fc" data-bank="banco-palabras-B"></span>.<br>
-                    Y como $\frac{f(c)}{2} > 0$, concluimos que $f(x) > $ <span class="drop-zone" data-expected="cero" data-bank="banco-palabras-B"></span>, demostrando la conservación del signo.
-                </p>
-
-                <p style="line-height:2.2; background: #fef2f2; padding: 15px; border-radius: 8px; border-left: 4px solid #ef4444;">
-                    <strong>Análisis de Errores:</strong><br>
-                    ¿Qué hubiera pasado si elegíamos de forma errónea $\epsilon = 2f(c)$?<br>
-                    <select id="select-contra-1" class="inline-select tex2jax_ignore" autocomplete="off">
-                        <option value="">-- Elige la razón --</option>
-                        <option value="falso1">No se podría encontrar un δ correspondiente.</option>
-                        <option value="correcto">La desigualdad inferior quedaría f(x) > -f(c), lo cual permitiría que la función tome valores negativos en la vecindad.</option>
-                        <option value="falso2">Violaría la definición de límite lateral.</option>
-                    </select>
+                    Como $f(c) > 0$, el número $\frac{f(c)}{2}$ es <span class="drop-zone"
+                        data-expected="positivo" data-bank="banco-palabras-B"></span>.<br>
+                    Dado que la definición de continuidad se cumple para cualquier épsilon, elegimos 
+                    <span class="drop-zone" data-expected="epsilon_elegido" data-bank="banco-palabras-B"></span> $=
+                    \frac{f(c)}{2}$.<br>
+                    Esto garantiza la existencia de un $\delta > 0$ tal que en la vecindad $|x-c| < \delta$ se
+                        cumple:<br>
+                        $|f(x) - f(c)| < \frac{f(c)}{2}$.<br>
+                            Al desarrollar este valor absoluto, obtenemos:<br>
+                            $-\frac{f(c)}{2} < f(x) - f(c) < \frac{f(c)}{2}$.<br>
+                                Sumando $f(c)$ a todos los miembros, el lado izquierdo queda:<br>
+                                $f(c) - \frac{f(c)}{2} < f(x)$, lo que implica que $f(x)> $ <span class="drop-zone"
+                                        data-expected="mitad_fc" data-bank="banco-palabras-B"></span>.<br>
+                                    Y como $\frac{f(c)}{2} > 0$, concluimos que $f(x) > $ <span class="drop-zone"
+                                        data-expected="cero" data-bank="banco-palabras-B"></span>, demostrando la
+                                    conservación del signo.
                 </p>
 
                 <div id="banco-palabras-B" class="banco-palabras">
-                    <h4 style="width: 100%; margin-top: 0; margin-bottom: 5px; color: var(--primary);"><i class="fa-solid fa-layer-group"></i> Banco de Conceptos (Parte B)</h4>
+                    <h4 style="width: 100%; margin-top: 0; margin-bottom: 5px; color: var(--primary);"><i
+                            class="fa-solid fa-layer-group"></i> Banco de Conceptos (Parte B)</h4>
                     <span class="draggable-word" draggable="true" data-value="positivo">Positivo</span>
                     <span class="draggable-word" draggable="true" data-value="epsilon_elegido">$\epsilon$</span>
                     <span class="draggable-word" draggable="true" data-value="mitad_fc">$\frac{f(c)}{2}$</span>
@@ -256,43 +647,80 @@
                     <span class="draggable-word" draggable="true" data-value="falso">$\delta$</span>
                     <span class="draggable-word" draggable="true" data-value="falso">Negativo</span>
                 </div>
+
+                <p
+                    style="line-height:2.2; background: #e2e8f0; padding: 15px; border-radius: 8px; border-left: 4px solid darkblue;">
+                    <strong>Pregunta:</strong><br>
+                    ¿Qué pasaría si se elige a $\epsilon = 2f(c)$?<br>
+                    <select id="select-contra-1" class="inline-select tex2jax_ignore" autocomplete="off">
+                        <option value="">-- Elige la razón --</option>
+                        <option value="falso1">No se podría encontrar un δ correspondiente a épsilon.</option>
+                        <option value="correcto">La desigualdad inferior quedaría f(x) > -f(c), lo cual permitiría que
+                            la función tome valores negativos en la vecindad.</option>
+                        <option value="falso2">No se podría demostrar la continuidad de la función.</option>
+                    </select>
+                </p>
+
+               
             </div>
 
             <div class="n3-section">
                 <h3>C. Ordenación Lógica</h3>
-                <p style="margin-bottom: 20px; color: #64748b;">Ordena los pasos clave que seguimos para demostrar la Ley de Conservación del Signo ($f(c) > 0$):</p>
+                <p style="margin-bottom: 20px; color: #64748b;">Ordena los pasos clave que seguimos para demostrar la
+                    Ley de Conservación del Signo ($f(c) > 0$):</p>
                 <div id="sortable-list" style="display: flex; flex-direction: column;">
-                    <div class="sortable-item" draggable="true" data-id="2"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Usar la definición de continuidad y elegir un $\epsilon$ conveniente ($\epsilon = f(c)/2$)</div>
-                    <div class="sortable-item" draggable="true" data-id="4"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Desarrollar analíticamente el valor absoluto de la definición</div>
-                    <div class="sortable-item" draggable="true" data-id="1"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Partir de las hipótesis: $f$ continua en $c$ y $f(c) > 0$</div>
-                    <div class="sortable-item" draggable="true" data-id="3"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Obtener la existencia de un $\delta > 0$ asociado a ese $\epsilon$</div>
-                    <div class="sortable-item" draggable="true" data-id="5"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Concluir algebraicamente que $f(x) > f(c)/2 > 0$ en toda la vecindad</div>
+                    <div class="sortable-item" draggable="true" data-id="2"><i class="fa-solid fa-sort"
+                            style="color: var(--primary);"></i> Usar la definición de continuidad y elegir un $\epsilon$
+                        conveniente ($\epsilon = f(c)/2$)</div>
+                    <div class="sortable-item" draggable="true" data-id="4"><i class="fa-solid fa-sort"
+                            style="color: var(--primary);"></i> Desarrollar analíticamente el valor absoluto de la
+                        definición</div>
+                    <div class="sortable-item" draggable="true" data-id="1"><i class="fa-solid fa-sort"
+                            style="color: var(--primary);"></i> Partir de las hipótesis: $f$ continua en $c$ y $f(c) >
+                        0$</div>
+                    <div class="sortable-item" draggable="true" data-id="3"><i class="fa-solid fa-sort"
+                            style="color: var(--primary);"></i> Obtener la existencia de un $\delta > 0$ asociado a ese
+                        $\epsilon$</div>
+                    <div class="sortable-item" draggable="true" data-id="5"><i class="fa-solid fa-sort"
+                            style="color: var(--primary);"></i> Concluir algebraicamente que $f(x) > f(c)/2 > 0$ en toda
+                        la vecindad</div>
                 </div>
             </div>
 
-            <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()"><i class="fa-solid fa-flag-checkered"></i> Evaluar Final</button>
-            <button class="btn-general btn-success hidden" id="btn-ir-resumen" onclick="mostrarResumen()">Ir al Resumen de Actividad <i class="fa-solid fa-arrow-right"></i></button>
+            <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()"><i
+                    class="fa-solid fa-flag-checkered"></i> Evaluar Final</button>
+            <button class="btn-general btn-success hidden" id="btn-ir-resumen" onclick="mostrarResumen()">Ir al Resumen
+                de Actividad <i class="fa-solid fa-arrow-right"></i></button>
         </div>
 
         <div id="resumen-final-container" class="hidden" style="text-align: center;">
             <h1 style="color: var(--primary);">¡Módulo Completado!</h1>
             <p style="color: #64748b;">Has Completado el Módulo Teórico de la Ley de Conservación del Signo.</p>
             <div style="display:flex; justify-content: space-around; margin: 40px 0; flex-wrap: wrap; gap: 20px;">
-                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                <div
+                    style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
                     <p style="margin:0 0 10px 0; color: #64748b;">Etapa 1 (Gráficas)</p>
                     <div class="score-val" id="res-n1">0/4</div>
                 </div>
-                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                <div
+                    style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
                     <p style="margin:0 0 10px 0; color: #64748b;">Etapa 2 (Teoría)</p>
                     <div class="score-val" id="res-n2">0/3</div>
                 </div>
-                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                <div
+                    style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
                     <p style="margin:0 0 10px 0; color: #64748b;">Etapa 3 (Rigor)</p>
                     <div class="score-val" id="res-n3">0/14</div>
                 </div>
             </div>
-            <button class="btn-general btn-restart" onclick="reiniciarEscenarioGlobal()"><i class="fa-solid fa-rotate-left"></i> REINICIAR ESCENARIO</button>
+            <button class="btn-general btn-restart" onclick="reiniciarEscenarioGlobal()"><i
+                    class="fa-solid fa-rotate-left"></i> REINICIAR ESCENARIO</button>
         </div>
+        <footer>
+            <p style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+                &copy; 2026, JGHA & DMA<br>
+            </p>
+        </footer>
 
     </div>
 
@@ -306,14 +734,14 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('select').forEach(s => s.value = "");
-            
+
             mainSlider.addEventListener('input', (e) => {
                 hasInteractedSlider = true;
                 let val = parseFloat(e.target.value);
                 sliderDisplay.innerText = val.toFixed(2);
                 let pct = ((val - parseFloat(e.target.min)) / (parseFloat(e.target.max) - parseFloat(e.target.min))) * 100;
                 e.target.style.setProperty('--pct', `${pct}%`);
-                if(board) board.update();
+                if (board) board.update();
             });
 
             cargarReto(state.retoActual);
@@ -322,67 +750,68 @@
         const retosLCS = [
             {
                 num: 1,
-                text: "Dada la función continua $f(x) = x^2 - 1$. Evaluemos en $c = 1.6$, donde $f(c) = 1.56 > 0$.<br><b>Desafío:</b> Ajusta el radio $\\delta$ (deslizador) para que en la vecindad sombreada $(c-\\delta, c+\\delta)$ la función sea <b>estrictamente positiva</b>. ¿Es esto posible?",
+                text: "Dada la función $f(x) = x^2 - 1$ y $c = 1.6$, se tiene que, $f(c) = 1.56 > 0$.<br><br> <b>Consigna:</b><br> Ajusta el radio $\\delta$ (deslizador) para que en la vecindad $(c-\\delta, c+\\delta)$ la función sea <b>positiva</b>. ¿Es esto posible?",
                 correct: ['b'],
                 bbox: [0, 4, 3, -2],
                 sliderSetup: { min: 0.05, max: 1.5, step: 0.05, val: 1.5, label: "<i class='fa-solid fa-arrows-left-right'></i> Radio de la vecindad ($\\delta$)" },
                 options: `
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> a) El signo se conserva positivo para cualquier $\\delta > 0$ arbitrario.</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> b) Existe un $\\delta$ lo suficientemente pequeño para que $f(x)>0$ en toda la vecindad.</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> c) Es matemáticamente imposible acotar la función a valores positivos.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> Para cualquier delta, el signo de la función se conserva positivo.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> Existe delta lo suficientemente pequeño para que la función sea positiva en toda la vecindad.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> Es imposible acotar la función entre valores positivos.</label>
                 `,
                 drawCustom: (brd) => {
-                    let f = (x) => x*x - 1;
+                    let f = (x) => x * x - 1;
                     let c = 1.6;
-                    brd.create('line', [[-10,0], [10,0]], {strokeColor: '#334155', strokeWidth: 1, dash: 2}); 
-                    brd.create('functiongraph', [f, -5, 5], {strokeColor: '#004080', strokeWidth: 2});
-                    brd.create('point', [c, f(c)], {name: 'f(c)', size: 4, color: '#ec4899', fixed: true});
+                    brd.create('line', [[-10, 0], [10, 0]], { strokeColor: '#334155', strokeWidth: 1, dash: 2 });
+                    brd.create('functiongraph', [f, -5, 5], { strokeColor: '#004080', strokeWidth: 2 });
+                    brd.create('point', [c, 0], { name: 'c=1.6', size: 3, color: '#ec4899', fixed: true });
+                    brd.create('point', [c, f(c)], { name: 'f(c)', size: 3, color: 'darkblue', fixed: true });
 
                     // Área sombreada interactiva
                     let d = () => parseFloat(mainSlider.value);
                     brd.create('polygon', [
-                        [()=>c-d(), -10], [()=>c+d(), -10], [()=>c+d(), 10], [()=>c-d(), 10]
-                    ], {fillColor: '#93c5fd', fillOpacity: 0.3, borders: {strokeWidth: 0}, hasInner: true});
+                        [() => c - d(), -10], [() => c + d(), -10], [() => c + d(), 10], [() => c - d(), 10]
+                    ], { fillColor: '#93c5fd', fillOpacity: 0.3, borders: { strokeWidth: 0 }, hasInner: true });
 
-                    brd.create('segment', [[()=>c-d(), -10], [()=>c-d(), 10]], {strokeColor: '#3b82f6', dash: 2});
-                    brd.create('segment', [[()=>c+d(), -10], [()=>c+d(), 10]], {strokeColor: '#3b82f6', dash: 2});
+                    brd.create('segment', [[() => c - d(), -10], [() => c - d(), 10]], { strokeColor: '#3b82f6', dash: 2 });
+                    brd.create('segment', [[() => c + d(), -10], [() => c + d(), 10]], { strokeColor: '#3b82f6', dash: 2 });
                 },
                 validate: () => {
                     // El usuario debe hacer que c - delta > 1 (donde f(x)=0)
                     // 1.6 - delta > 1 => delta < 0.6
                     let delta = parseFloat(mainSlider.value);
-                    return hasInteractedSlider && delta <= 0.55; 
+                    return hasInteractedSlider && delta <= 0.55;
                 },
                 hint: "Ajusta el deslizador hacia la izquierda para hacer la franja azul (vecindad) más angosta, de modo que NO toque la parte donde la gráfica cruza hacia abajo del eje X."
             },
             {
                 num: 2,
-                text: "Ahora observa esta función <b>discontinua</b>. Evaluemos en $c = 2$, donde $f(2) = 1.5 > 0$.<br><b>Desafío:</b> Intenta achicar el radio $\\delta$ para mantener la función estrictamente positiva en la vecindad.",
+                text: "Ahora observa la gráfica de la función discontinua. Para $c = 2$, se tiene que, $f(2) = 1.5 > 0$.<br><br><b>Consigna:</b> Intenta reducir el radio $\\delta$ para mantener la función positiva en la vecindad.",
                 correct: ['b'],
                 bbox: [0, 4, 4, -2],
                 sliderSetup: { min: 0.1, max: 1.5, step: 0.1, val: 1.5, label: "<i class='fa-solid fa-arrows-left-right'></i> Radio de la vecindad ($\\delta$)" },
                 options: `
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> a) Es posible conservar el signo positivo si elegimos $\\delta < 0.5$.</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> b) Es imposible conservar el signo debido a la discontinuidad inmediata (salto).</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> c) La ley de conservación del signo aplica independientemente del salto.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> Esto se logra eligiendo &nbsp; $\\delta < 0.5$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> Es imposible conservar el signo positivo de la función debido a su discontinuidad.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> La ley de conservación del signo debiera aplicar siempre.</label>
                 `,
                 drawCustom: (brd) => {
                     let c = 2;
-                    brd.create('line', [[-10,0], [10,0]], {strokeColor: '#334155', strokeWidth: 1, dash: 2}); 
-                    
+                    brd.create('line', [[-10, 0], [10, 0]], { strokeColor: '#334155', strokeWidth: 1, dash: 2 });
+
                     // Función a trozos
-                    brd.create('functiongraph', [x => 1.5, 2, 5], {strokeColor: '#004080', strokeWidth: 3});
-                    brd.create('functiongraph', [x => -1, -1, 1.95], {strokeColor: '#004080', strokeWidth: 3});
-                    
-                    brd.create('point', [c, 1.5], {name: 'f(c)', size: 4, color: '#ec4899', fixed: true});
-                    brd.create('point', [c, -1], {name: '', size: 3, fillColor: 'white', strokeColor: '#004080', fixed: true});
+                    brd.create('functiongraph', [x => 1.5, 2, 5], { strokeColor: '#004080', strokeWidth: 3 });
+                    brd.create('functiongraph', [x => -1, -1, 1.95], { strokeColor: '#004080', strokeWidth: 3 });
+                    brd.create('point', [2, 0], { name: 'c=2', size: 3, color: '#ec4899', fixed: true });
+                    brd.create('point', [c, 1.5], { name: 'f(c)', size: 3, color: 'darkblue', fixed: true });
+                    brd.create('point', [c, -1], { name: '', size: 3, fillColor: 'white', strokeColor: '#004080', fixed: true });
 
                     let d = () => parseFloat(mainSlider.value);
                     brd.create('polygon', [
-                        [()=>c-d(), -10], [()=>c+d(), -10], [()=>c+d(), 10], [()=>c-d(), 10]
-                    ], {fillColor: '#93c5fd', fillOpacity: 0.3, borders: {strokeWidth: 0}});
-                    brd.create('segment', [[()=>c-d(), -10], [()=>c-d(), 10]], {strokeColor: '#3b82f6', dash: 2});
-                    brd.create('segment', [[()=>c+d(), -10], [()=>c+d(), 10]], {strokeColor: '#3b82f6', dash: 2});
+                        [() => c - d(), -10], [() => c + d(), -10], [() => c + d(), 10], [() => c - d(), 10]
+                    ], { fillColor: '#93c5fd', fillOpacity: 0.3, borders: { strokeWidth: 0 } });
+                    brd.create('segment', [[() => c - d(), -10], [() => c - d(), 10]], { strokeColor: '#3b82f6', dash: 2 });
+                    brd.create('segment', [[() => c + d(), -10], [() => c + d(), 10]], { strokeColor: '#3b82f6', dash: 2 });
                 },
                 validate: () => {
                     return hasInteractedSlider; // Solo con arrastrarlo se da cuenta de que es imposible
@@ -391,27 +820,27 @@
             },
             {
                 num: 3,
-                text: "Dada la función $f(x) = x^3$. Evaluemos en $c = 0$, donde <b>$f(c) = 0$</b>.<br><b>Desafío:</b> Intenta encontrar un $\\delta$ donde la función sea estrictamente positiva o estrictamente negativa (conserve un solo signo).",
+                text: "Dada la función $f(x) = x^3$. Evaluemos en $c = 0$, donde <b>$f(c) = 0$</b>.<br><br><b>Consigna:</b> Intenta encontrar un $\\delta$ donde la función sea positiva o negativa (conserve un solo signo).",
                 correct: ['a'],
                 bbox: [-2, 3, 2, -3],
                 sliderSetup: { min: 0.1, max: 1.5, step: 0.1, val: 1.5, label: "<i class='fa-solid fa-arrows-left-right'></i> Radio de la vecindad ($\\delta$)" },
                 options: `
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> a) Es imposible porque la función cruza el eje justo ahí; la ley exige que $f(c) \\neq 0$.</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> b) Es posible si $\\delta$ es sumamente microscópico.</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> c) Es imposible porque la función no es continua en el origen.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> Es imposible, pues &nbsp; $f(c)=0$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> Es posible si delta es sumamente pequeño.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> Es imposible porque la función no es continua en el origen.</label>
                 `,
                 drawCustom: (brd) => {
                     let c = 0;
-                    brd.create('line', [[-10,0], [10,0]], {strokeColor: '#334155', strokeWidth: 1, dash: 2}); 
-                    brd.create('functiongraph', [x => x*x*x, -3, 3], {strokeColor: '#004080', strokeWidth: 3});
-                    brd.create('point', [c, 0], {name: 'f(c)=0', size: 4, color: '#ec4899', fixed: true});
+                    brd.create('line', [[-10, 0], [10, 0]], { strokeColor: '#334155', strokeWidth: 1, dash: 2 });
+                    brd.create('functiongraph', [x => x * x * x, -3, 3], { strokeColor: '#004080', strokeWidth: 3 });
+                    brd.create('point', [c, 0], { name: 'f(c)=0', size: 4, color: 'red', fixed: true });
 
                     let d = () => parseFloat(mainSlider.value);
                     brd.create('polygon', [
-                        [()=>c-d(), -10], [()=>c+d(), -10], [()=>c+d(), 10], [()=>c-d(), 10]
-                    ], {fillColor: '#93c5fd', fillOpacity: 0.3, borders: {strokeWidth: 0}});
-                    brd.create('segment', [[()=>c-d(), -10], [()=>c-d(), 10]], {strokeColor: '#3b82f6', dash: 2});
-                    brd.create('segment', [[()=>c+d(), -10], [()=>c+d(), 10]], {strokeColor: '#3b82f6', dash: 2});
+                        [() => c - d(), -10], [() => c + d(), -10], [() => c + d(), 10], [() => c - d(), 10]
+                    ], { fillColor: '#93c5fd', fillOpacity: 0.3, borders: { strokeWidth: 0 } });
+                    brd.create('segment', [[() => c - d(), -10], [() => c - d(), 10]], { strokeColor: '#3b82f6', dash: 2 });
+                    brd.create('segment', [[() => c + d(), -10], [() => c + d(), 10]], { strokeColor: '#3b82f6', dash: 2 });
                 },
                 validate: () => {
                     return hasInteractedSlider;
@@ -420,23 +849,24 @@
             },
             {
                 num: 4,
-                text: "Basado en los tres escenarios anteriores, ¿cuáles son las condiciones SUFICIENTES para que la Ley de Conservación del Signo sea aplicable?<br><b>Desafío:</b> Mueve el punto de evaluación $c$ (deslizador) a una coordenada válida donde $f(c)>0$ y se conserve el signo.",
+                text: "Basado en los tres escenarios anteriores, ¿Cuáles son las condiciones SUFICIENTES para que la Ley de Conservación del Signo sea aplicable?<br><br><b>Conjetura:</b> Elige las condiciones suficientes esperadas. Posteriormente, ejemplifica tu conjetura en la gráfica moviendo el punto $c$ (deslizador) a una coordenada donde $f(c)>0$.",
                 correct: ['a', 'c'],
                 bbox: [-4, 3, 4, -1],
                 sliderSetup: { min: -3.5, max: 3.5, step: 0.1, val: 0, label: "<i class='fa-solid fa-crosshairs'></i> Punto de evaluación ($c$)" },
                 options: `
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> a) Que la función sea continua en el punto $c$.</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> b) Que la función tenga una raíz exactamente en $c$.</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> c) Que $f(c) \\neq 0$ (es decir, sea estrictamente mayor o menor a cero).</label>
-                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> d) Que el intervalo sea completamente cerrado.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> $f$ &nbsp; es continua en &nbsp; $c$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> $f$ &nbsp; tiene una raíz en &nbsp; $c$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> $f(c) \\neq 0$.</label>
+                    <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> Que el intervalo sea cerrado.</label>
                 `,
-                drawCustom: (brd) => {
+                /*drawCustom: (brd) => {
                     let f = (x) => Math.sin(x) + 0.5;
                     brd.create('line', [[-10,0], [10,0]], {strokeColor: '#334155', strokeWidth: 1, dash: 2}); 
                     brd.create('functiongraph', [f, -5, 5], {strokeColor: '#004080', strokeWidth: 3});
                     
                     let c_val = () => parseFloat(mainSlider.value);
-                    brd.create('point', [c_val, () => f(c_val())], {name: 'f(c)', size: 5, color: '#ef4444'});
+                    brd.create('point', [c_val, 0], {name: 'c', size: 3, color: '#004080', fixed: true});
+                    brd.create('point', [c_val, () => f(c_val())], {name: 'f(c)', size: 3, color: '#ef4444'});
                     
                     // Mostramos una pequeña vecindad fija para dar el contexto visual
                     let d = 0.3;
@@ -450,7 +880,39 @@
                     // Evaluar que fc sea claramente mayor a cero y que movió el slider
                     return hasInteractedSlider && fc > 0.2;
                 },
-                hint: "Asegúrate de marcar las dos opciones teóricas correctas y desliza el punto rojo (control $c$) hasta la cima de la onda, donde es claramente positivo."
+                */
+
+                drawCustom: (brd) => {
+                    // 1. Declaramos la función a trozos para la gráfica
+                    let f = (x) => {
+                        return x >= 0 ? Math.sin(x) + 1 : -x-1;
+                    };
+
+                    brd.create('line', [[-10, 0], [10, 0]], { strokeColor: '#334155', strokeWidth: 1, dash: 2 });
+                    brd.create('functiongraph', [f, -5, 5], { strokeColor: '#004080', strokeWidth: 3 });
+
+                    let c_val = () => parseFloat(mainSlider.value);
+                    brd.create('point', [c_val, 0], { name: 'c', size: 3, color: '#ef4444', fixed: true });
+                    brd.create('point', [c_val, () => f(c_val())], { name: 'f(c)', size: 3, color: 'darkblue' });
+
+                    // Mostramos una pequeña vecindad fija para dar el contexto visual
+                    let d = 0.3;
+                    brd.create('polygon', [
+                        [() => c_val() - d, -10], [() => c_val() + d, -10], [() => c_val() + d, 10], [() => c_val() - d, 10]
+                    ], { fillColor: '#93c5fd', fillOpacity: 0.3, borders: { strokeWidth: 0 } });
+                },
+                validate: () => {
+                    let c = parseFloat(mainSlider.value);
+
+                    // 2. Actualizamos el cálculo de fc para que coincida con la nueva función
+                    let fc = c >= 0 ? Math.sin(c) + 1 : -c - 1;
+
+                    
+                    return hasInteractedSlider && fc > 0.2 && Math.abs(c) >= 0.3;
+
+                },
+
+                hint: "Asegúrate de marcar las dos opciones teóricas correctas y desliza el punto rojo de acuerdo con tus opciones elegidas."
             }
         ];
 
@@ -480,7 +942,7 @@
                 mainSlider.step = r.sliderSetup.step;
                 mainSlider.value = r.sliderSetup.val;
                 mainSlider.disabled = false; // <--- CORRECCIÓN AÑADIDA AQUÍ
-                
+
                 let pct = ((mainSlider.value - mainSlider.min) / (mainSlider.max - mainSlider.min)) * 100;
                 mainSlider.style.setProperty('--pct', `${pct}%`);
                 sliderDisplay.innerText = parseFloat(r.sliderSetup.val).toFixed(2);
@@ -546,7 +1008,7 @@
                 let msg = "Acción incorrecta. ";
                 if (!isOptionsCorrect && !isValidGraphics) msg = "Tanto la manipulación del control gráfico como la selección teórica son incorrectas.";
                 else if (!isOptionsCorrect) msg = "El análisis gráfico es correcto, pero las opciones seleccionadas no lo son.";
-                else if (!isValidGraphics) msg = r.hint || "Te faltó ajustar el parámetro en la gráfica al valor objetivo.";
+                else if (!isValidGraphics) msg = r.hint || "Te faltó ajustar el parámetro en la gráfica a un valor correcto.";
 
                 restarVida(msg);
             }
@@ -615,7 +1077,7 @@
 
         function siguientePregunta() {
             if (preguntaActual === 3) {
-                document.getElementById('main-title').innerText = "Etapa 3: Rigor Formal (Ley del Signo)";
+                document.getElementById('main-title').innerText = "Etapa 3: Rigor Formal (Ley de Conservación del Signo)";
                 document.getElementById('level-2-container').classList.add('hidden');
                 document.getElementById('level-3-container').classList.remove('hidden');
                 mezclarBancoAxiomas();
@@ -693,7 +1155,7 @@
             });
 
             let s1 = document.getElementById('select-contra-1');
-            if(s1.value === 'correcto') { correctas++; s1.style.borderColor = "var(--success)"; s1.style.backgroundColor = "#dcfce7"; } else { s1.style.borderColor = "var(--danger)"; s1.style.backgroundColor = "#fef2f2"; }
+            if (s1.value === 'correcto') { correctas++; s1.style.borderColor = "var(--success)"; s1.style.backgroundColor = "#dcfce7"; } else { s1.style.borderColor = "var(--danger)"; s1.style.backgroundColor = "#fef2f2"; }
 
             let orderCorrect = true;
             document.querySelectorAll('.sortable-item').forEach((item, index) => {
@@ -716,7 +1178,7 @@
             document.getElementById('res-n1').innerText = aciertosN1 + "/4";
             document.getElementById('res-n2').innerText = aciertosN2 + "/3";
             document.getElementById('res-n3').innerText = aciertosN3 + "/10";
-            confetti({ particleCount: 2000, spread: 180, origin: { y: 0.6 } });
+            confetti({ particleCount: 2000, spread: 180, origin: { y: 0.1 } });
         }
     </script>
 </body>
