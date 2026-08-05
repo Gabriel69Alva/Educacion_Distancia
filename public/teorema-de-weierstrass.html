@@ -66,15 +66,6 @@
             min-height: 80px;
         }
 
-        .header-logo {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            max-height: 50px;
-            width: auto;
-        }
-
         h1 {
             color: var(--primary);
             font-weight: 700;
@@ -185,7 +176,7 @@
         }
 
         .theory-side {
-            width: 350px;
+            width: 380px;
             flex-shrink: 0;
             background: var(--bg-light);
             padding: 20px;
@@ -248,34 +239,36 @@
         .options-container {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             margin-top: 15px;
         }
 
         .h5p-option {
             display: flex;
-            padding: 14px;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             cursor: pointer;
             background: #fff;
-            transition: 0.2s;
+            transition: all 0.2s ease;
             font-size: 14.5px;
-            align-items: flex-start;
-            line-height: 1.4;
+            line-height: 1.6;
+        }
+
+        .h5p-option span {
+            flex: 1;
+            display: inline-block;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .fat-option {
-            padding: 20px 25px !important;
+            padding: 16px 20px !important;
             font-size: 15px;
-            line-height: 2.2;
-            min-height: 90px;
-            align-items: center;
-        }
-
-        .fat-option input {
-            flex-shrink: 0;
-            margin-top: 0 !important;
+            line-height: 1.7;
+            min-height: auto;
         }
 
         .h5p-option:hover {
@@ -284,8 +277,8 @@
         }
 
         .h5p-option input {
-            margin-right: 12px;
-            margin-top: 3px;
+            flex-shrink: 0;
+            margin: 0;
             accent-color: var(--primary);
             cursor: pointer;
             transform: scale(1.1);
@@ -367,7 +360,7 @@
             top: 12px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.85);
             padding: 6px 20px;
             border-radius: 20px;
             border: 1px solid var(--primary);
@@ -413,19 +406,18 @@
 
         .n3-section {
             background: var(--bg-light);
-            padding: 30px;
+            padding: 28px;
             border-radius: 12px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             border: 1px solid var(--border-color);
         }
 
-        /* Clase compartida para los bancos de palabras */
         .banco-palabras {
-            margin-top: 25px;
+            margin-top: 20px;
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
-            padding: 20px;
+            padding: 16px;
             background: #e2e8f0;
             border-radius: 8px;
             border: 1px dashed #94a3b8;
@@ -435,23 +427,27 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 135px;
-            min-height: 28px;
-            padding: 2px 4px;
+            min-width: 110px;
+            width: auto;
+            min-height: 32px;
+            padding: 2px 8px;
             border-bottom: 2px solid var(--primary);
             vertical-align: middle;
             text-align: center;
             background: white;
             border-radius: 4px 4px 0 0;
+            margin: 0 4px;
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
         .drop-zone .draggable-word {
-            font-size: 12px;
-            padding: 4px 7px;
+            font-size: 13px;
+            padding: 4px 8px;
             box-shadow: none;
             max-width: 100%;
             white-space: normal;
-            line-height: 1.15;
+            line-height: 1.2;
+            margin: 0;
         }
 
         .draggable-word {
@@ -461,37 +457,15 @@
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 6px 10px;
+            padding: 6px 12px;
             border-radius: 6px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             display: inline-block;
+            user-select: none;
         }
 
         .draggable-word:active {
             cursor: grabbing;
-        }
-
-        .sortable-item {
-            background: #fff;
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 6px;
-            cursor: grab;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-weight: 500;
-            transition: background 0.2s;
-            margin-bottom: 10px;
-        }
-
-        .sortable-item:active {
-            cursor: grabbing;
-        }
-
-        .sortable-item.dragging {
-            opacity: 0.4;
-            background: #e2e8f0;
         }
 
         .score-val {
@@ -500,6 +474,63 @@
             color: var(--primary);
             text-align: center;
         }
+        /* Estilos para el letrero de Análisis Profundo */
+        /* Estilos para el letrero de Análisis Profundo */
+        .tooltip-analisis {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            position: relative;
+            cursor: pointer;
+            width: fit-content;
+            color: var(--warning);
+            margin: 15px auto; /* Esto centra el texto de la lupa en el contenedor */
+        }
+
+        .tooltip-analisis .tooltip-box {
+            visibility: hidden;
+            opacity: 0;
+            width: 90vw; /* Ocupa el 90% del ancho en móviles para no cortarse */
+            max-width: 700px; /* Caja mucho más grande y cómoda en PC */
+            background-color: #fff3cd; 
+            color: #856404; 
+            text-align: justify;
+            border: 2px solid #ffeeba;
+            border-radius: 8px;
+            padding: 20px; /* Más espacio interno para que respire el texto */
+            position: absolute;
+            z-index: 100;
+            bottom: 140%; 
+            left: 50%;
+            transform: translateX(-50%) translateY(15px);
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        /* Flecha del globo */
+        .tooltip-analisis .tooltip-box::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -8px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: #ffeeba transparent transparent transparent;
+        }
+
+        /* Animación al pasar el mouse (PC) o tocar (Móvil) */
+        .tooltip-analisis:hover .tooltip-box, 
+        .tooltip-analisis:active .tooltip-box {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+
     </style>
 </head>
 
@@ -510,6 +541,7 @@
             <h1 id="main-title">Etapa 1: Teorema de Weierstrass</h1>
         </header>
 
+        <!-- ETAPA 1 -->
         <div id="level-1-container">
             <p style="text-align: center; color: #64748b; margin-top: -15px; margin-bottom: 25px; line-height: 1.6; font-size: 15px;">
                 Explora el escenario gráfico y deduce las propiedades de la función mostrada.<br>
@@ -528,26 +560,18 @@
 
             <div class="workspace-layout" id="main-layout">
                 <div class="theory-side" id="theory-panel">
-                    <h3 style="margin-top:0; color: var(--primary);"><i class="fa-solid fa-circle-exclamation"></i>
-                        Desafío</h3>
-                    <div id="mission-text"
-                        style="font-size: 14.5px; line-height: 1.5; text-align: justify; margin-bottom: 10px;">
+                    <h3 style="margin-top:0; color: var(--primary);"><i class="fa-solid fa-circle-exclamation"></i> Desafío</h3>
+                    <div id="mission-text" style="font-size: 14.5px; line-height: 1.5; text-align: justify; margin-bottom: 10px;">
                         Cargando reto matemático...
                     </div>
 
                     <div id="math-options-container" class="options-container hidden"></div>
 
-                    <button class="btn-general" id="btn-validar-n1" onclick="validarGeometria()"><i
-                            class="fa-solid fa-check"></i> Validar Solución</button>
-                    <button class="btn-general btn-restart hidden" id="btn-retry-reto" onclick="reintentarReto()"><i
-                            class="fa-solid fa-rotate-right"></i> Reintentar Reto</button>
-                    <button class="btn-general btn-success hidden" id="btn-next-reto" onclick="avanzarReto()"><i
-                            class="fa-solid fa-arrow-right"></i> Continuar al siguiente desafío</button>
-                    <button class="btn-general btn-restart hidden" id="btn-game-over"
-                        onclick="reiniciarEscenarioGlobal()"><i class="fa-solid fa-skull"></i> Reiniciar
-                        Escenario</button>
-                    <button class="btn-general btn-success hidden" id="btn-pasar-n2" onclick="iniciarEtapa2()">Continuar
-                        a Etapa 2 🚀</button>
+                    <button class="btn-general" id="btn-validar-n1" onclick="validarGeometria()"><i class="fa-solid fa-check"></i> Validar Solución</button>
+                    <button class="btn-general btn-restart hidden" id="btn-retry-reto" onclick="reintentarReto()"><i class="fa-solid fa-rotate-right"></i> Reintentar Reto</button>
+                    <button class="btn-general btn-success hidden" id="btn-next-reto" onclick="avanzarReto()"><i class="fa-solid fa-arrow-right"></i> Continuar al siguiente desafío</button>
+                    <button class="btn-general btn-restart hidden" id="btn-game-over" onclick="reiniciarEscenarioGlobal()"><i class="fa-solid fa-skull"></i> Reiniciar Escenario</button>
+                    <button class="btn-general btn-success hidden" id="btn-pasar-n2" onclick="iniciarEtapa2()">Continuar a Etapa 2 🚀</button>
                 </div>
 
                 <div class="canvas-side" id="canvas-panel">
@@ -565,17 +589,12 @@
                     </div>
 
                     <div id="slider-container" class="slider-wrapper hidden">
-                        <label
-                            style="font-weight: 600; color: var(--primary); display: flex; justify-content: space-between; font-size: 14px;">
-                            <span><i class="fa-solid fa-arrows-left-right"></i> Desliza el punto de evaluación
-                                ($x$)</span>
+                        <label style="font-weight: 600; color: var(--primary); display: flex; justify-content: space-between; font-size: 14px;">
+                            <span><i class="fa-solid fa-arrows-left-right"></i> Desliza el punto de evaluación ($x$)</span>
                             <span>$x = $ <span id="w-value">0.00</span></span>
                         </label>
-                        <input type="range" id="w-slider" min="-1" max="2" step="0.01" value="-1" data-min-w="0"
-                            data-max-w="0">
-                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;"><i
-                                class="fa-solid fa-circle-info"></i> Mueve el deslizador por todo el intervalo para
-                            habilitar la validación.</div>
+                        <input type="range" id="w-slider" min="-1" max="2" step="0.01" value="-1" data-min-w="0" data-max-w="0">
+                        <div style="font-size: 12px; color: #64748b; margin-top: 8px;"><i class="fa-solid fa-circle-info"></i> Mueve el deslizador por todo el intervalo para habilitar la validación.</div>
                     </div>
 
                     <div id="grid-ch5" class="grid-2x2 hidden">
@@ -588,6 +607,7 @@
             </div>
         </div>
 
+        <!-- ETAPA 2 -->
         <div id="level-2-container" class="hidden">
             <div class="progress-container">
                 <div class="progress-bar" id="h5p-progress"></div>
@@ -596,180 +616,190 @@
 
             <div id="step-1" class="quiz-step">
                 <h3>1. ¿Qué afirma el teorema de Weierstrass en el estudio de funciones reales?</h3>
-                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> La existencia de al menos un
-                    máximo absoluto y un mínimo absoluto.</label>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Que la función es derivable
-                    en todo el intervalo analizado y su derivada se anula al menos una vez.</label>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Que la función cruza el eje
-                    X garantizando la existencia de al menos una raíz real.</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> <span>La existencia de al menos un máximo absoluto y un mínimo absoluto.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>Que la función es derivable en todo el intervalo analizado y su derivada se anula al menos una vez.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>Que la función cruza el eje X garantizando la existencia de al menos una raíz real.</span></label>
                 <div id="feedback-1" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-2" class="quiz-step hidden">
                 <h3>2. ¿Cuáles son las hipótesis que exige este teorema para poder afirmar su conclusión?</h3>
-                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> El intervalo debe ser
-                    abierto $(a,b)$ y la función estrictamente creciente.</label>
-                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> La función debe ser continua
-                    en un intervalo cerrado y acotado.</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>El intervalo debe ser abierto $(a,b)$ y la función estrictamente creciente.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> <span>La función debe ser continua en un intervalo cerrado y acotado.</span></label>
                 <div id="feedback-2" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-3" class="quiz-step hidden">
                 <h3>3. ¿Puede una función discontinua poseer extremos absolutos dentro de un intervalo cerrado?</h3>
-                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> No, es matemáticamente
-                    imposible que posea máximos o mínimos si pierde la continuidad.</label>
-                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> Sí, el teorema no excluye esa
-                    posibilidad, simplemente indica que sin continuidad no se puede garantizar la existencia de
-                    extremos.</label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>No, es matemáticamente imposible que posea máximos o mínimos si pierde la continuidad.</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> <span>Sí, el teorema no excluye esa posibilidad, simplemente indica que sin continuidad no se puede garantizar la existencia de extremos.</span></label>
                 <div id="feedback-3" class="h5p-feedback hidden"></div>
             </div>
 
-            <button class="btn-general" id="btn-comprobar-quiz" onclick="comprobarPregunta()"><i
-                    class="fa-solid fa-clipboard-check"></i> Comprobar</button>
-            <button class="btn-general btn-success hidden" id="btn-siguiente-quiz"
-                onclick="siguientePregunta()">Siguiente</button>
+            <button class="btn-general" id="btn-comprobar-quiz" onclick="comprobarPregunta()"><i class="fa-solid fa-clipboard-check"></i> Comprobar</button>
+            <button class="btn-general btn-success hidden" id="btn-siguiente-quiz" onclick="siguientePregunta()">Siguiente</button>
         </div>
 
+        <!-- ETAPA 3 (3 Demostraciones) -->
         <div id="level-3-container" class="hidden">
+            
+            <!-- DEMOSTRACIÓN 1 -->
             <div class="n3-section">
-                <h3>A. Completar la Demostración (Propiedad de Acotación)</h3>
-
-                <p style="margin-bottom:25px; color:#64748b;">
-                    Arrastra los conceptos correctos para estructurar el argumento por contradicción.
+                <h3>A. Propiedad de acotación local: Si $f$ es continua en $x=a$, entonces existe una vecindad en donde $f$ está acotada.</h3>
+                <p style="margin-bottom:20px; color:#64748b;">
+                    Arrastra los conceptos para estructurar la demostración de acotación local:
                 </p>
 
-                <p style="line-height:2.2;">
-                    1. Supongamos, por el contrario, que la función no está acotada en $[a,b]$.
-                    <br>
+                <p style="line-height:2.3;">
+                    1. Por la definición de continuidad en $x=a$, tomando $\varepsilon = 1$, existe $\delta > 0$ tal que si $|x - a| < \delta$, entonces $|f(x) - f(a)| < $ 
+                    <span class="drop-zone" data-expected="uno" data-bank="banco-palabras-A"></span>.<br>
 
-                    2. Entonces existe una sucesión $\{x_n\}$ en $[a,b]$ tal que para cada número natural $n$, existe un punto $x_n\in[a,b]$ que cumple
-                    $|f(x_n)|>n$. Como $[a,b]$ es un intervalo cerrado y acotado, la sucesión $\{x_n\}$ está 
-                    <span class="drop-zone" data-expected="acotada" data-bank="banco-palabras-A"></span> en $[a,b]$.<br><br>
+                    2. Aplicando la desigualdad 
+                    <span class="drop-zone" data-expected="triangular" data-bank="banco-palabras-A"></span>,
+                    expresamos $|f(x)| = |f(x) - f(a) + f(a)| \le |f(x) - f(a)| + |f(a)|$.<br>
 
-                    3. Por el teorema de Bolzano-Weierstrass
-                    <span class="drop-zone" data-expected="existe" data-bank="banco-palabras-A"></span> una subsucesión $\{x_{n_k}\}$ que converge a un punto
-                    $c\in[a,b]$.<br><br>
+                    3. Por lo tanto, $|f(x)| < 1 + $ 
+                    <span class="drop-zone" data-expected="abs_fa" data-bank="banco-palabras-A"></span>
+                    para todo $x \in (a-\delta, a+\delta)$.<br>
 
-                    4. Como $f$ es
-                    <span class="drop-zone" data-expected="continua" data-bank="banco-palabras-A"></span>,
-                    se tiene
-                    $f(x_{n_k})\to f(c)$, por lo que la sucesión
-                    $\{f(x_{n_k})\}$ debe ser
-                    <span class="drop-zone" data-expected="convergente" data-bank="banco-palabras-A"></span>.<br><br>
+                    4. Definimos $M = 1 + |f(a)|$, la cual representa una cantidad 
+                    <span class="drop-zone" data-expected="finita" data-bank="banco-palabras-A"></span>.<br>
 
-                    5. Pero $|f(x_{n_k})|>n_k$, 
-                    <span class="drop-zone" data-expected="para_cada" data-bank="banco-palabras-A"></span>, número natural $k$,
-                    por lo que dicha sucesión es
-                    <span class="drop-zone" data-expected="no_acotada" data-bank="banco-palabras-A"></span>,
-                    lo cual contradice que toda sucesión convergente es acotada.<br><br>
-
-                    6. Por tanto, $f$ está acotada en $[a,b]$.
+                    5. Concluimos que $|f(x)| < M$, garantizando que $f$ está 
+                    <span class="drop-zone" data-expected="acotada" data-bank="banco-palabras-A"></span>
+                    en la vecindad $(a-\delta, a+\delta)$.
                 </p>
 
                 <div id="banco-palabras-A" class="banco-palabras">
-                    <h4 style="width: 100%; margin-top: 0; margin-bottom: 5px; color: var(--primary);"><i class="fa-solid fa-layer-group"></i> Banco de Conceptos (Parte A)</h4>
-                    <span class="draggable-word" draggable="true" data-value="acotada">Acotada</span>
-                    <span class="draggable-word" draggable="true" data-value="existe">Existe</span>
-                    <span class="draggable-word" draggable="true" data-value="continua">Continua</span>
-                    <span class="draggable-word" draggable="true" data-value="convergente">Convergente</span>
-                    <span class="draggable-word" draggable="true" data-value="para_cada">Para cada</span>
-                    <span class="draggable-word" draggable="true" data-value="no_acotada">No acotada</span>
-                    <span class="draggable-word" draggable="true" data-value="falso">Abierto</span>
+                    <h4 style="width: 100%; margin-top: 0; margin-bottom: 5px; color: var(--primary);"><i class="fa-solid fa-layer-group"></i> Banco de Conceptos (Demostración A)</h4>
+                    <!-- 5 Opciones Correctas -->
+                    <span class="draggable-word" draggable="true" data-value="uno">$1$</span>
+                    <span class="draggable-word" draggable="true" data-value="triangular">triangular</span>
+                    <span class="draggable-word" draggable="true" data-value="abs_fa">$|f(a)|$</span>
+                    <span class="draggable-word" draggable="true" data-value="finita">finita</span>
+                    <span class="draggable-word" draggable="true" data-value="acotada">acotada</span>
+                    <!-- 3 Señuelos -->
+                    <span class="draggable-word" draggable="true" data-value="cero">$0$</span>
+                    <span class="draggable-word" draggable="true" data-value="derivable">derivable</span>
+                    <span class="draggable-word" draggable="true" data-value="infinito">$\infty$</span>
                 </div>
             </div>
 
+            <!-- DEMOSTRACIÓN 2 -->
             <div class="n3-section">
-                <h3>B. Completar la Demostración. Teorema de Weierstrass</h3>
-
-                <p style="margin-bottom:25px; color:#64748b;">
-                    Arrastra los conceptos correctos para demostrar que toda función continua en un intervalo cerrado y acotado alcanza su máximo absoluto.
+                <h3>B. Propiedad de acotación global: Toda función continua en un intervalo cerrado y acotado está acotada.</h3>
+                <p style="margin-bottom:20px; color:#64748b;">
+                    Arrastra los conceptos para estructurar la demostración de acotación global en $[a,b]$:
                 </p>
 
-                <p style="line-height:2.2;">
-                    1. Por el teorema A, $f([a,b])$ está acotada. De manera que existe
-                    $M=\sup f(x)$. Además, existe una sucesión $\{x_n\}$ en $[a,b]$
-                    tal que $f(x_n)$ tiende al
-                    <span class="drop-zone" data-expected="supremo" data-bank="banco-palabras-B"></span>.<br><br>
+                <p style="line-height:2.3;">
+                    1. Definimos el conjunto $A = \{x \in [a,b] : f \text{ está acotada en } [a,x]\}$.<br>
 
-                    2. Como $[a,b]$ es un intervalo cerrado y acotado, por el teorema de
-                    <span class="drop-zone" data-expected="bolzano-weierstrass" data-bank="banco-palabras-B"></span>, la sucesión $\{x_n\}$ tiene una
-                    <span class="drop-zone" data-expected="subsucesión" data-bank="banco-palabras-B"></span>
-                    que converge a un punto $c\in[a,b]$.<br><br>
+                    2. El conjunto $A$ es no vacío ($a \in A$) debido a la propiedad de acotación 
+                    <span class="drop-zone" data-expected="local" data-bank="banco-palabras-B"></span> en $x=a$.<br>
 
-                    3. Como $f$ es
-                    <span class="drop-zone" data-expected="continua" data-bank="banco-palabras-B"></span>,
-                    se tiene
-                    $$f(c)=\lim_{k\to\infty}f(x_{n_k})=$$
-                    <span class="drop-zone" data-expected="M_valor" data-bank="banco-palabras-B"></span>.<br><br>
+                    3. Como $A$ está acotado superiormente por $b$, posee un 
+                    <span class="drop-zone" data-expected="supremo" data-bank="banco-palabras-B"></span> $\alpha = \sup A$.<br>
 
-                    4. Como $M=\sup f(x)$ y además $f(c)=M$, el máximo absoluto se alcanza en el punto
-                    <span class="drop-zone" data-expected="c_punto" data-bank="banco-palabras-B"></span>.
-                    Lo que demuestra que toda función continua en un intervalo cerrado y acotado alcanza su máximo absoluto.
+                    4. Si se tuviera $\alpha < b$, por continuidad de $f$ en $\alpha$, $f$ estaría acotada en $(\alpha-\delta, \alpha+\delta)$, generando una 
+                    <span class="drop-zone" data-expected="contradiccion" data-bank="banco-palabras-B"></span> con que $\alpha$ sea la menor cota superior.
+                    
+                    <!-- Letrero animado de Análisis -->
+                    <div class="tooltip-analisis">
+                        <i class="fa-solid fa-magnifying-glass" style="color:var(--warning); font-size: 1.2em;"></i>
+                        <strong>Análisis profundo</strong>
+                        
+                        <div class="tooltip-box">
+                            <strong>El detalle:</strong> Por la propiedad del supremo existe $x_1 \in (\alpha - \delta, \alpha)$ tal que $x_1 \in A$, luego $f$ está acotada en $[a, x_1]$. Sea $\alpha < x_2 < \alpha + \delta$, así, el intervalo $[x_1, x_2]$ está contenido en la vecindad $(\alpha - \delta, \alpha + \delta)$, y por tanto $f$ está acotada en $[x_1, x_2]$; luego, $f$ está acotada en $[a, x_2]$, con lo cual $x_2 \in A$, así $x_2 > \alpha$.
+                        </div>
+                    </div>
+                
+                    5. En consecuencia, $\alpha = b \in A$, con lo cual $f$ está acotada en todo el intervalo 
+                    <span class="drop-zone" data-expected="cerrado" data-bank="banco-palabras-B"></span> $[a,b]$.
                 </p>
 
                 <div id="banco-palabras-B" class="banco-palabras">
-                    <h4 style="width: 100%; margin-top: 0; margin-bottom: 5px; color: var(--primary);"><i class="fa-solid fa-layer-group"></i> Banco de Conceptos (Parte B)</h4>
-                    <span class="draggable-word" draggable="true" data-value="supremo">Supremo</span>
-                    <span class="draggable-word" draggable="true" data-value="bolzano-weierstrass">Bolzano-Weierstrass</span>
-                    <span class="draggable-word" draggable="true" data-value="subsucesión">Subsucesión</span>
-                    <span class="draggable-word" draggable="true" data-value="continua">Continua</span>
-                    <span class="draggable-word" draggable="true" data-value="M_valor">$M$</span>
-                    <span class="draggable-word" draggable="true" data-value="c_punto">C</span>
-                    <span class="draggable-word" draggable="true" data-value="falso">Derivable</span>
-                    <span class="draggable-word" draggable="true" data-value="falso">Cero</span>
+                    <h4 style="width: 100%; margin-top: 0; margin-bottom: 5px; color: var(--primary);"><i class="fa-solid fa-layer-group"></i> Banco de Conceptos (Demostración B)</h4>
+                    <!-- 4 Opciones Correctas -->
+                    <span class="draggable-word" draggable="true" data-value="local">local</span>
+                    <span class="draggable-word" draggable="true" data-value="supremo">supremo</span>
+                    <span class="draggable-word" draggable="true" data-value="contradiccion">contradicción</span>
+                    <span class="draggable-word" draggable="true" data-value="cerrado">cerrado</span>
+                    <!-- 3 Señuelos -->
+                    <span class="draggable-word" draggable="true" data-value="infimo">ínfimo</span>
+                    <span class="draggable-word" draggable="true" data-value="abierto">abierto</span>
+                    <span class="draggable-word" draggable="true" data-value="convergente">convergente</span>
                 </div>
             </div>
 
+            <!-- DEMOSTRACIÓN 3 -->
             <div class="n3-section">
-                <h3>C. Ordenación Lógica</h3>
-                <p style="margin-bottom: 20px; color: #64748b;">Resumen del ordenamiento lógico de los pasos
-                    fundamentales para la demostración del teorema de Weierstrass:</p>
-                <div id="sortable-list" style="display: flex; flex-direction: column;">
-                    <div class="sortable-item" draggable="true" data-id="2"><i class="fa-solid fa-sort"
-                            style="color: var(--primary);"></i> Construir una sucesión $x_n$ tal que $f(x_n) \to M$
-                    </div>
-                    <div class="sortable-item" draggable="true" data-id="4"><i class="fa-solid fa-sort"
-                            style="color: var(--primary);"></i> Aplicar la continuidad de $f$ para concluir que $f(c) =
-                        M$</div>
-                    <div class="sortable-item" draggable="true" data-id="1"><i class="fa-solid fa-sort"
-                            style="color: var(--primary);"></i> Definir el supremo $M$ del conjunto de valores de $f(x)$
-                    </div>
-                    <div class="sortable-item" draggable="true" data-id="3"><i class="fa-solid fa-sort"
-                            style="color: var(--primary);"></i> Extraer una subsucesión convergente $x_{n_k} \to c$
-                        usando Bolzano-Weierstrass</div>
+                <h3>C. Teorema de Weierstrass: Toda función continua en un cerrado y acotado alcanza su máximo y su mínimo.</h3>
+                <p style="margin-bottom:20px; color:#64748b;">
+                    Arrastra los conceptos para demostrar que la función alcanza su supremo (máximo absoluto):
+                </p>
+
+                <p style="line-height:2.3;">
+                    1. Como $f$ está acotada en $[a,b]$, el conjunto de sus valores $S=\{f(x): x\in[a,b]\}$ tiene supremo $M = \sup S$.<br>
+
+                    2. Supongamos por contradicción que $f(x) \neq M$ para todo $x \in [a,b]$, lo que implica que $M - f(x) > $ 
+                    <span class="drop-zone" data-expected="cero" data-bank="banco-palabras-C"></span>.<br>
+
+                    3. Consideramos la función auxiliar $g(x) = \frac{1}{M - f(x)}$, la cual es 
+                    <span class="drop-zone" data-expected="continua" data-bank="banco-palabras-C"></span> en $[a,b]$.<br>
+
+                    4. Por la propiedad de acotación global, $g$ está acotada por una constante $K > 0$, de forma que $\frac{1}{M - f(x)} \le K$, lo que equivale a $f(x) \le M - \frac{1}{K}$.<br>
+
+                    5. Esto contradice que $M$ sea el 
+                    <span class="drop-zone" data-expected="supremo" data-bank="banco-palabras-C"></span> de $f$, pues $M - \frac{1}{K}$ sería una cota superior más chica.<br>
+
+                    6. Por lo tanto, existe $c \in [a,b]$ tal que $f(c) = $ 
+                    <span class="drop-zone" data-expected="M_val" data-bank="banco-palabras-C"></span>, alcanzando la función su valor máximo absoluto.
+                </p>
+
+                <div id="banco-palabras-C" class="banco-palabras">
+                    <h4 style="width: 100%; margin-top: 0; margin-bottom: 5px; color: var(--primary);"><i class="fa-solid fa-layer-group"></i> Banco de Conceptos (Demostración C)</h4>
+                    <!-- 4 Opciones Correctas -->
+                    <span class="draggable-word" draggable="true" data-value="cero">$0$</span>
+                    <span class="draggable-word" draggable="true" data-value="continua">continua</span>
+                    <span class="draggable-word" draggable="true" data-value="supremo">supremo</span>
+                    <span class="draggable-word" draggable="true" data-value="M_val">$M$</span>
+                    <!-- 3 Señuelos -->
+                    <span class="draggable-word" draggable="true" data-value="limite">límite</span>
+                    <span class="draggable-word" draggable="true" data-value="derivada">derivada</span>
+                    <span class="draggable-word" draggable="true" data-value="discontinua">discontinua</span>
                 </div>
             </div>
 
-            <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()"><i
-                    class="fa-solid fa-flag-checkered"></i> Evaluar Final</button>
-            <button class="btn-general btn-success hidden" id="btn-ir-resumen" onclick="mostrarResumen()">Ir al Resumen
-                de Actividad <i class="fa-solid fa-arrow-right"></i></button>
+            <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()"><i class="fa-solid fa-flag-checkered"></i> Evaluar Final</button>
+            <button class="btn-general btn-success hidden" id="btn-ir-resumen" onclick="mostrarResumen()">Ir al Resumen de Actividad <i class="fa-solid fa-arrow-right"></i></button>
         </div>
 
+        <!-- RESUMEN FINAL -->
         <div id="resumen-final-container" class="hidden" style="text-align: center;">
             <h1 style="color: var(--primary);">¡Módulo Completado!</h1>
-            <p style="color: #64748b;">Has completado el laboratorio interactivo y teórico del Teorema de Weierstrass.
-            </p>
+            <p style="color: #64748b;">Has completado el módulo interactivo y teórico del Teorema de Weierstrass.</p>
             <div style="display:flex; justify-content: space-around; margin: 40px 0; flex-wrap: wrap; gap: 20px;">
-                <div
-                    style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 140px; border: 1px solid var(--border-color);">
                     <p style="margin:0 0 10px 0; color: #64748b;">Etapa 1 (Gráficas)</p>
                     <div class="score-val" id="res-n1">0/5</div>
                 </div>
-                <div
-                    style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 140px; border: 1px solid var(--border-color);">
                     <p style="margin:0 0 10px 0; color: #64748b;">Etapa 2 (Teoría)</p>
                     <div class="score-val" id="res-n2">0/3</div>
                 </div>
-                <div
-                    style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
+                <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 140px; border: 1px solid var(--border-color);">
                     <p style="margin:0 0 10px 0; color: #64748b;">Etapa 3 (Rigor)</p>
-                    <div class="score-val" id="res-n3">0/8</div>
+                    <div class="score-val" id="res-n3">0/14</div>
                 </div>
             </div>
-            <button class="btn-general btn-restart" onclick="reiniciarEscenarioGlobal()"><i
-                    class="fa-solid fa-rotate-left"></i> REINICIAR ESCENARIO</button>
+            <button class="btn-general btn-restart" onclick="reiniciarEscenarioGlobal()"><i class="fa-solid fa-rotate-left"></i> REINICIAR ESCENARIO</button>
         </div>
+        <footer>
+            <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+                &copy; 2026, JGHA & DMA<br>
+            </p>
+        </footer>
 
     </div>
 
@@ -859,18 +889,18 @@
 
         function getOptionsHTML_1_4(a, b) {
             return `
-                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="a" onchange="handleCheckboxChange(event)"> $f$ &nbsp; es continua en &nbsp; $[${a}, ${b}]$</label>
-                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="b" onchange="handleCheckboxChange(event)"> $f$ &nbsp; alcanza un máximo en el intervalo considerado</label>
-                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="c" onchange="handleCheckboxChange(event)"> $f$ &nbsp; alcanza un mínimo en el intervalo considerado</label>
-                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="d" onchange="handleCheckboxChange(event)"> Ninguna de las anteriores</label>
+                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="a" onchange="handleCheckboxChange(event)"> <span>$f$ es continua en $[${a}, ${b}]$</span></label>
+                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="b" onchange="handleCheckboxChange(event)"> <span>$f$ alcanza un máximo en el intervalo considerado</span></label>
+                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="c" onchange="handleCheckboxChange(event)"> <span>$f$ alcanza un mínimo en el intervalo considerado</span></label>
+                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="d" onchange="handleCheckboxChange(event)"> <span>Ninguna de las anteriores</span></label>
             `;
         }
 
         const optionsHTML_5 = `
-            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> Si &nbsp; $f$ &nbsp; es continua en &nbsp; $[a,b]$, entonces alcanza un máximo y un mínimo absoluto en &nbsp; $[a,b]$.</label>
-            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> La continuidad en &nbsp; $[a,b]$ &nbsp; es una condición necesaria pero no suficiente para la existencia de extremos absolutos.</label>
-            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> La continuidad en &nbsp; $[a,b]$ &nbsp; es una condición suficiente para la existencia de extremos absolutos.</label>
-            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> Toda función definida en &nbsp; $[a,b]$ &nbsp; alcanza extremos absolutos sin importar su continuidad.</label>
+            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> <span>Si $f$ es continua en $[a,b]$, entonces alcanza un máximo y un mínimo absoluto en $[a,b]$.</span></label>
+            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> <span>La continuidad en $[a,b]$ es una condición necesaria pero no suficiente para la existencia de extremos absolutos.</span></label>
+            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> <span>La continuidad en $[a,b]$ es una condición suficiente para la existencia de extremos absolutos.</span></label>
+            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> <span>Toda función definida en $[a,b]$ alcanza extremos absolutos sin importar su continuidad.</span></label>
         `;
 
         function updateSliderVisuals() {
@@ -1142,10 +1172,10 @@
 
         function siguientePregunta() {
             if (preguntaActual === 3) {
-                document.getElementById('main-title').innerText = "Etapa 3: Rigor Formal (Weierstrass)";
+                document.getElementById('main-title').innerText = "Etapa 3: Rigor Formal (Demostraciones)";
                 document.getElementById('level-2-container').classList.add('hidden');
                 document.getElementById('level-3-container').classList.remove('hidden');
-                mezclarBancoAxiomas();
+                mezclarBancosDemostraciones();
                 if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
                 return;
             }
@@ -1158,10 +1188,10 @@
             document.getElementById('btn-comprobar-quiz').classList.remove('hidden');
         }
 
-        // Modificamos esta función para que mezcle ambos bancos
-        function mezclarBancoAxiomas() {
-            ['banco-palabras-A', 'banco-palabras-B'].forEach(bankId => {
+        function mezclarBancosDemostraciones() {
+            ['banco-palabras-A', 'banco-palabras-B', 'banco-palabras-C'].forEach(bankId => {
                 const banco = document.getElementById(bankId);
+                if (!banco) return;
                 const axiomas = Array.from(banco.querySelectorAll('.draggable-word'));
                 for (let i = axiomas.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
@@ -1172,62 +1202,66 @@
         }
 
         let draggedWord = null;
-        document.addEventListener("dragstart", e => { if (e.target.classList.contains('draggable-word')) draggedWord = e.target; });
+        document.addEventListener("dragstart", e => { 
+            if (e.target.classList.contains('draggable-word')) draggedWord = e.target; 
+        });
 
         document.querySelectorAll('.drop-zone').forEach(zone => {
             zone.addEventListener('dragover', e => e.preventDefault());
             zone.addEventListener('drop', e => {
                 e.preventDefault();
-                // Si la zona ya tiene una palabra, devolverla a su banco de origen correspondiente
+                if (!draggedWord) return;
+
                 if (zone.hasChildNodes()) {
                     let bankOriginId = zone.dataset.bank;
                     document.getElementById(bankOriginId).appendChild(zone.firstChild);
                 }
-                if (draggedWord) { 
-                    zone.appendChild(draggedWord); 
-                    draggedWord = null; 
-                }
+                
+                zone.appendChild(draggedWord); 
+                draggedWord = null;
             });
-        });
-
-        const sortableList = document.getElementById('sortable-list');
-        let draggingListItem = null;
-
-        document.querySelectorAll('.sortable-item').forEach(item => {
-            item.addEventListener('dragstart', () => { draggingListItem = item; setTimeout(() => item.classList.add('dragging'), 0); });
-            item.addEventListener('dragend', () => { item.classList.remove('dragging'); draggingListItem = null; });
-        });
-
-        sortableList.addEventListener('dragover', e => {
-            e.preventDefault();
-            if (!draggingListItem) return;
-            const afterElement = [...sortableList.querySelectorAll('.sortable-item:not(.dragging)')].reduce((closest, child) => {
-                const box = child.getBoundingClientRect(); const offset = e.clientY - box.top - box.height / 2;
-                if (offset < 0 && offset > closest.offset) return { offset: offset, element: child }; else return closest;
-            }, { offset: Number.NEGATIVE_INFINITY }).element;
-            if (afterElement == null) sortableList.appendChild(draggingListItem); else sortableList.insertBefore(draggingListItem, afterElement);
         });
 
         function evaluarEtapa3() {
+            // Validar que todos los campos Drop estén llenos
+            let dropZones = document.querySelectorAll('.drop-zone');
+            let faltanDrop = Array.from(dropZones).some(z => !z.hasChildNodes());
+
+            if (faltanDrop) {
+                swal(
+                    "Pasos Incompletos", 
+                    "Te faltan pasos por llenar en la demostración. Por favor, arrastra todos los conceptos a sus casillas antes de evaluar.", 
+                    "warning"
+                );
+                return;
+            }
+
+            // Inicia la evaluación si todo está completo
             let correctas = 0;
-            document.querySelectorAll('.draggable-word, .sortable-item').forEach(el => { el.setAttribute('draggable', 'false'); el.style.cursor = 'not-allowed'; });
+            let total = document.querySelectorAll('.drop-zone').length; 
 
+            // Bloquear drag & drop
+            document.querySelectorAll('.draggable-word').forEach(el => { 
+                el.setAttribute('draggable', 'false'); 
+                el.style.cursor = 'not-allowed'; 
+            });
+
+            // Evaluar las zonas para soltar palabras
             document.querySelectorAll('.drop-zone').forEach(z => {
-                if (z.hasChildNodes() && z.firstChild.dataset.value === z.dataset.expected) { correctas++; z.style.borderBottomColor = "var(--success)"; }
-                else { z.style.borderBottomColor = "var(--danger)"; }
+                if (z.hasChildNodes() && z.firstChild.dataset.value === z.dataset.expected) { 
+                    correctas++; 
+                    z.style.borderBottomColor = "var(--success)"; 
+                    z.style.backgroundColor = "#dcfce7";
+                } else { 
+                    z.style.borderBottomColor = "var(--danger)"; 
+                    z.style.backgroundColor = "#fef2f2";
+                }
             });
-
-            let orderCorrect = true;
-            document.querySelectorAll('.sortable-item').forEach((item, index) => {
-                if (parseInt(item.dataset.id) !== index + 1) { orderCorrect = false; item.style.borderColor = "var(--danger)"; item.style.backgroundColor = "#fef2f2"; }
-                else { item.style.borderColor = "var(--success)"; item.style.backgroundColor = "#dcfce7"; }
-            });
-            if (orderCorrect) correctas++;
 
             aciertosN3 = correctas;
             document.getElementById('btn-evaluar-n3').classList.add('hidden');
             document.getElementById('btn-ir-resumen').classList.remove('hidden');
-            swal("Evaluación completada", "Revisa tus aciertos en verde y errores en rojo.", "info");
+            swal("Evaluación Completada", `Has obtenido ${correctas} de ${total} aciertos en la etapa formal.`, "info");
         }
 
         function mostrarResumen() {
@@ -1237,7 +1271,7 @@
 
             document.getElementById('res-n1').innerText = aciertosN1 + "/5";
             document.getElementById('res-n2').innerText = aciertosN2 + "/3";
-            document.getElementById('res-n3').innerText = aciertosN3 + "/7";
+            document.getElementById('res-n3').innerText = aciertosN3 + "/14";
             confetti({ particleCount: 2000, spread: 180, origin: { y: 0.6 } });
         }
     </script>
