@@ -143,9 +143,9 @@
     <div class="container">
 
         <div id="level-1-container">
-            <h1>Etapa 1: Mapeo de relaciones y funciones</h1>
+            <h1>Etapa 1: Funciones inyectivas y sobreinyectivas</h1>
             <p style="text-align: center; color: grey; margin-bottom: 15px;">
-                Arrastra las puntas celestes de las flechas desde el Dominio $A$ hasta los elementos del Codominio $B$ para cumplir la propiedad solicitada.
+                Arrastra las puntas de las flechas desde el Dominio $A$ hasta los elementos del Codominio $B$ para cumplir la propiedad solicitada.
             </p>
             
             <div style="text-align: center;">
@@ -705,7 +705,7 @@
             document.getElementById('btn-finish-all').classList.remove('hidden');
 
             if (puntosAnaliticosN3 === 2) {
-                swal("¡Demostraciones Correctas!", "Has estructurado lógicamente ambas demostraciones analíticas. Ya puedes generar tu reporte.", "success");
+                swal("¡Demostraciones Correctas!", "Has estructurado lógicamente ambas demostraciones. Ya puedes generar tu reporte.", "success");
             } else {
                 swal("Evaluación Finalizada", "Has completado los espacios, pero hay errores en tus demostraciones. Revisa las marcas en rojo y genera tu reporte para terminar.", "info");
             }
@@ -725,7 +725,7 @@
                     <span class="bold-val" style="color: ${fallosGeometria > 0 ? 'var(--danger)' : 'var(--success)'};">${fallosGeometria}</span>
                 </div>
                 <div class="summary-row">
-                    <span>Corazones de estabilidad remanentes:</span>
+                    <span>Tréboles remanentes:</span>
                     <span class="bold-val">${vidas} / 3</span>
                 </div>
                 <div class="summary-row">
@@ -737,7 +737,7 @@
                     <span class="bold-val">${puntosAnaliticosN3} / 2</span>
                 </div>
                 <p style="text-align: center; font-weight: bold; margin-top: 20px; color: var(--primary); font-size:16px;">
-                    ¡Módulo Informatizado de Relaciones Concluido!
+                    ¡Módulo de inyectividad y diagramas concluido!
                 </p>
             `;
 
