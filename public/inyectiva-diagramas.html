@@ -188,7 +188,7 @@
                 <h3>1. Si un diagrama de flechas conecta un Dominio de 4 elementos con un Codominio de 4 elementos y se determina que es INYECTIVA, ¿qué propiedad colateral se cumple de forma obligatoria?</h3>
                 <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>A) Existen elementos en el codominio que reciben más de dos flechas simultáneas.</span></label>
                 <label class="h5p-option"><input type="radio" name="q1" value="correcto"> <span>B) La función automáticamente se vuelve sobreyectiva (y por ende biyectiva) debido a la igualdad de cardinalidades.</span></label>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>C) Ninguno de los elementos del dominio puede arrancar una trayectoria lineal.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>C) La función se vuelve estrictamente creciente en el codominio.</span></label>
                 <div id="qfeedback-1" class="h5p-feedback hidden"></div>
             </div>
 
@@ -495,7 +495,7 @@
                     document.getElementById('btn-reset-lvl1').classList.remove('hidden');
                     swal("Intentos Agotados", "Has agotado las vidas de estabilidad. Revisa el diagrama congelado e intenta de nuevo.", "error");
                 } else {
-                    swal("Relación Errónea", `${mensajeRetro}\n\nPresiona 'Reiniciar Flechas' para reconfigurar tus trayectorias.`, "warning");
+                    swal("Relación Errónea", `${mensajeRetro}\n\nPresiona 'Reiniciar Flechas' para reconfigurar tus flechas.`, "warning");
                     document.getElementById('btn-validate').classList.remove('hidden');
                     document.getElementById('btn-reset-arrows').disabled = false;
                     canvasFabric.forEachObject(obj => { if(obj.type === 'triangle') obj.selectable = true; });
