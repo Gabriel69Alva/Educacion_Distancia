@@ -482,7 +482,7 @@
                     swal("¡Desafío Logrado!", mensajeRetro, "success");
                 } else {
                     document.getElementById('btn-go-to-n2').classList.remove('hidden');
-                    swal("¡Etapa Geométrica Superada!", "Has dominado el mapeo discreto mediante diagramas de Venn.", "success");
+                    swal("¡Etapa Geométrica Superada!", "Has dominado el mapeo mediante diagramas de Venn.", "success");
                 }
             } else {
                 fallosGeometria++;
@@ -493,7 +493,7 @@
 
                 if (vidas === 0) {
                     document.getElementById('btn-reset-lvl1').classList.remove('hidden');
-                    swal("Intentos Agotados", "Has agotado las vidas de estabilidad. Revisa el diagrama congelado e intenta de nuevo.", "error");
+                    swal("Intentos Agotados", "Has agotado las vidas. Revisa el diagrama congelado e intenta de nuevo.", "error");
                 } else {
                     swal("Relación Errónea", `${mensajeRetro}\n\nPresiona 'Reiniciar Flechas' para reconfigurar tus flechas.`, "warning");
                     document.getElementById('btn-validate').classList.remove('hidden');
@@ -729,15 +729,15 @@
                     <span class="bold-val">${vidas} / 3</span>
                 </div>
                 <div class="summary-row">
-                    <span>Aciertos teóricos del Quiz (Etapa 2):</span>
+                    <span>Aciertos teóricos (Etapa 2):</span>
                     <span class="bold-val">${aciertosQuiz} / 2</span>
                 </div>
                 <div class="summary-row">
-                    <span>Demostraciones analíticas correctas (Etapa 3):</span>
+                    <span>Demostraciones correctas (Etapa 3):</span>
                     <span class="bold-val">${puntosAnaliticosN3} / 2</span>
                 </div>
                 <p style="text-align: center; font-weight: bold; margin-top: 20px; color: var(--primary); font-size:16px;">
-                    ¡Módulo de inyectividad y diagramas concluido!
+                    ¡Módulo de inyectividad/sobreyectividad y diagramas concluido!
                 </p>
             `;
 
