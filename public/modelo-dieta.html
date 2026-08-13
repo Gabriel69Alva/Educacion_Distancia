@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         window.MathJax = {
             tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
@@ -443,12 +444,12 @@
             <div id="quiz-block-1" class="quiz-card">
                 <h3>1. Si el peso inicial de un paciente es exactamente igual a $\frac{C}{40}$ kg, ¿qué comportamiento
                     registrará la curva de peso a lo largo de los días?</h3>
-                <label class="option-item"><input type="radio" name="q1" value="incorrecto"> <span>A) Decrecerá de
+                <label class="option-item"><input type="radio" name="q1" value="incorrecto"> <span>Decrecerá de
                         manera exponencial debido a la tasa metabólica constante de $-0.0052$.</span></label>
-                <label class="option-item"><input type="radio" name="q1" value="correcto"> <span>B) Permanecerá
+                <label class="option-item"><input type="radio" name="q1" value="correcto"> <span>Permanecerá
                         estacionaria (constante), dado que el sistema nace en su propio punto de
                         equilibrio.</span></label>
-                <label class="option-item"><input type="radio" name="q1" value="incorrecto"> <span>C) Oscilará
+                <label class="option-item"><input type="radio" name="q1" value="incorrecto"> <span>Oscilará
                         periódicamente de forma controlada alrededor del eje de equilibrio.</span></label>
                 <div id="fb-q1" class="feedback-container hidden"></div>
             </div>
@@ -462,17 +463,17 @@
 
                 <label class="option-item">
                     <input type="radio" name="q2" value="correcto">
-                    <span>A) $64$ kg</span>
+                    <span>$64$ kg</span>
                 </label>
 
                 <label class="option-item">
                     <input type="radio" name="q2" value="incorrecto">
-                    <span>B) $66.1$ kg</span>
+                    <span>$66.1$ kg</span>
                 </label>
 
                 <label class="option-item">
                     <input type="radio" name="q2" value="incorrecto">
-                    <span>C) $68$ kg</span>
+                    <span>$68$ kg</span>
                 </label>
 
                 <div id="fb-q2" class="feedback-container hidden"></div>
@@ -485,22 +486,22 @@
         </div>
 
         <div id="stage-3-block" class="hidden">
-            <h1>Etapa 3: Modelado matemático y límites de control</h1>
+            <h1>Etapa 3: Modelado matemático y límites de control de peso</h1>
             <p class="subtitle-formula">
                 Examina la información que se puede deducir del modelo de dieta: <span class="formula-highlight">$W(n) = \frac{C}{40} + \left(W_0 - \frac{C}{40}\right) e^{-0.0052 \cdot n}$</span><br>
             </p>
 
             <div class="formal-box">
                 <div class="text-line">
-                    Consideremos la sucesión del peso diario definida analíticamente por el modelo matemático de balance
-                    energético. Al aplicar el límite al infinito sobre la variable tiempo ($n$) de los días, deducimos
+                    Consideremos el peso diario de una persona dado por el modelo matemático de balance
+                    energético o dieta <span class="math-inline">$W(n)$</span>. Al aplicar el límite al infinito sobre la variable tiempo ($n$) de los días, deducimos
                     que
                     <span class="math-gap">$\lim_{n \to \infty} e^{-0.0052 \cdot n} =$</span>
                     <select id="drop-1" class="dropdown-math">
                         <option value="">-- Selecciona --</option>
                         <option value="v1">1</option>
                         <option value="v2">0</option>
-                        <option value="v3">\infty</option>
+                        <option value="v3">∞</option>
                     </select>.
                 </div>
 
@@ -524,9 +525,10 @@
                     <span class="math-gap">$C=$</span>
                     <select id="drop-2" class="dropdown-math">
                         <option value="">-- Selecciona --</option>
-                        <option value="v1">2720 calorías</option>
+                         <option value="v1">2720 calorías</option>
                         <option value="v2">2560 calorías</option>
-                        <option value="v3">3200 calorías</option>
+                        <option value="v3">2880 calorías</option>
+                        <option value="v4">3200 calorías</option>
                     </select>
                 </div>
 
@@ -540,7 +542,7 @@
         </div>
         <footer>
             <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
-                &copy; 2026, JGHA & DMA<br>
+            &copy; 2026, JGHA & DMA<br>
             </p>
         </footer>
 
@@ -693,7 +695,7 @@
 
             Swal.fire({
                 title: "Análisis Completado",
-                text: "El escenario se ha congelado para tu reflexión. Observa cómo, sin importar el tiempo inicial, la curva es atraída de forma asintótica hacia la línea roja que representa tu peso límite.",
+                text: "El escenario se ha congelado para tu reflexión. Observa cómo la curva es atraída de forma asintótica hacia la línea roja que representa tu peso límite.",
                 icon: "info",
                 confirmButtonColor: "var(--azure-dark)"
             });
@@ -776,7 +778,7 @@
         // ETAPA 2: COMPROBACIONES CONCEPTUALES
         // ==========================================
         const feedbacksRespuestas = {
-            1: "Si la condición inicial coincide con el cociente constante, la diferencia de tasas se desvanece instantáneamente ($W_0 - C/40 = 0$), provocando que la derivada temporal sea nula y el peso se mantenga inalterado.",
+            1: "Si la condición inicial coincide con el cociente constante, la diferencia de tasas se desvanece ($W_0 - C/40 = 0$), provocando que la derivada se anule y el peso se mantenga constante.",
             2: "Observa cómo la sustitución de los datos en el modelo es clave para determinar el peso final.",
         }
 
@@ -882,7 +884,7 @@
             if (metrics.scoreFormal === 3) {
                 Swal.fire({ title: "Estructura Válida", text: "Tus deducciones sobre los límites de peso son correctas.", icon: "success" });
             } else {
-                Swal.fire({ title: "Inconsistencia Deductiva", text: "Ciertas relaciones operacionales son erróneas. Analízalas en rojo.", icon: "error" });
+                Swal.fire({ title: "Inconsistencia Deductiva", text: "Ciertas relaciones operacionales son erróneas (en rojo).", icon: "error" });
             }
         }
 
@@ -890,38 +892,39 @@
         // RESUMEN ANALÍTICO DE COMPETENCIAS
         // ==========================================
         function desplegarPanelFinalMetabolismo() {
+            confetti({ particleCount: 2000, spread: 120, origin: { y: 0.6 } });
             const totalElapsedTime = ((Date.now() - metrics.startTime) / 1000).toFixed(1);
 
             const panelHtml = document.createElement("div");
             panelHtml.className = "summary-wrapper";
             panelHtml.innerHTML = `
                 <div class="stat-row">
-                    <span>Simulaciones calculadas (Etapa 1):</span>
+                    <span>Simulaciones Calculadas (Etapa 1):</span>
                     <span class="val-highlight">${metrics.intentosSimulacion}</span>
                 </div>
                 <div class="stat-row">
-                    <span>Aciertos logrados en cuestionario (Etapa 2):</span>
+                    <span>Aciertos Logrados en Cuestionario (Etapa 2):</span>
                     <span class="val-highlight">${metrics.aciertosQuiz} / 2</span>
                 </div>
                 <div class="stat-row">
-                    <span>Componentes deductivos e instituidos (Etapa 3):</span>
+                    <span>Componentes Deductivos (Etapa 3):</span>
                     <span class="val-highlight">${metrics.scoreFormal} / 3</span>
                 </div>
                 <div class="stat-row">
-                    <span>Fallas e inconsistencias totales en la sesión:</span>
+                    <span>Fallas e Inconsistencias Totales en la Sesión:</span>
                     <span class="val-highlight" style="color: ${metrics.fallasConceptuales > 0 ? 'var(--danger)' : 'var(--success)'};">${metrics.fallasConceptuales}</span>
                 </div>
                 <div class="stat-row" style="border-bottom: none; margin-top: 12px;">
-                    <span>Tiempo global de experimentación biológica:</span>
+                    <span>Tiempo Global de Experimentación:</span>
                     <span class="val-highlight">${totalElapsedTime} segundos</span>
                 </div>
                 <p style="text-align: center; font-weight: bold; margin-top: 25px; color: var(--success); font-size:15.5px;">
-                    <i class="fa-solid fa-square-check"></i> ¡Competencias en Comportamiento Asintótico Acreditadas!
+                    <i class="fa-solid fa-square-check"></i> ¡Competencias Acreditadas con Éxito!
                 </p>
             `;
 
             Swal.fire({
-                title: "Reporte de desempeño en el laboratorio de peso corporal",
+                title: "Reporte de desempeño en el módulo de Modelo de Dieta",
                 html: panelHtml,
                 icon: "success",
                 confirmButtonText: "Finalizar Práctica"

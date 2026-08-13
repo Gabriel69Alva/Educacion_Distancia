@@ -11,6 +11,7 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <!-- Carga de Confetti JS -->
     <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <!-- Configuración de Tailwind para usar la fuente Open Sans/PT Sans (como en tu CSS original) -->
     <script>
@@ -196,12 +197,13 @@
             </button>
         </div>
         <footer>
-            <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
-                &copy; 2026, JGHA & DMA<br>
-            </p>
+        <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+            &copy; 2026, JGHA & DMA<br>
+        </p>
         </footer>
 
     </div>
+
 
     <script>
         // Inicialización de la librería de íconos Lucide
@@ -234,7 +236,7 @@
                 question: "Una función $f(x)$ es inyectiva si:",
                 options: ["A) $f(a) \\neq f(b)$ entonces $a \\neq b$", "B) $f(a)=f(b)$ entonces $a=b$", "C) $a=b$, entonces $f(a)=f(b)$", "D) $f$ es impar"],
                 correctAnswer: "B) $f(a)=f(b)$ entonces $a=b$",
-                explanation: "Una función es inyectiva si la imagen de cualquier elemento de su dominio es única. La forma equivalente es: Si $f(a)=f(b)$, entonces $a=b$."
+                explanation: "Una función es inyectiva si no se repiten imágenes de ningún elemento de su dominio. La forma equivalente es: Si $f(a)=f(b)$, entonces $a=b$."
             },
             {
                 question: "Una función es superyectiva si:",
@@ -435,8 +437,9 @@
                 finalStatus.classList.remove('text-red-400');
                 scoreSummary.textContent = `Puntuación Final: ${totalScore} de ${totalQuestions} correctas. ¡Felicidades!`;
                 if (jsConfetti) {
-                    jsConfetti.addConfetti({ confettiNumber: 300, confettiColors: ['#a78bfa', '#fde047', '#4ade80'] });
+                    jsConfetti.addConfetti({ confettiNumber: 2000, confettiRadius: 100, confettiColors: ['#a78bfa', '#fde047', '#4ade80'] });
                 }
+                confetti({ particleCount: 2000, spread: 120, origin: { y: 0.6 } });
             } else {
                 finalStatus.textContent = '¡Juego Deshabilitado!';
                 finalStatus.classList.add('text-red-400');
@@ -468,5 +471,6 @@
 
         window.onload = loadQuestion;
     </script>
+
 </body>
 </html>

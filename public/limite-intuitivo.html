@@ -8,6 +8,7 @@
     <!-- JSXGraph -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <!-- SweetAlert y FontAwesome -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -227,7 +228,6 @@
                 </div>
             </div>
 
-
         </div>
 
         <!-- PANEL DERECHO: Fórmula y Escenario JSXGraph -->
@@ -244,6 +244,7 @@
             &copy; 2026, JGHA & DMA<br>
         </p>
     </footer>
+    
 </div>
 
 <script>
@@ -437,9 +438,10 @@
     }
 
     function finalizarJuego() {
+        confetti({ particleCount: 2000, spread: 90, origin: { y: 0.6 } });
         swal({
             title: "¡Excelente Trabajo!",
-            text: "¡Felicidades! Has capturado con éxito el comportamiento geométrico del límite. La comprensión intuitiva visual es el pilar fundamental antes de abordar las demostraciones analíticas estrictas.",
+            text: "¡Felicidades! Has logrado mostrar con éxito el comportamiento geométrico del límite. La comprensión intuitiva visual es un pilar fundamental antes de abordar las demostraciones analíticas.",
             icon: "success",
             button: "Finalizar Actividad"
         });
