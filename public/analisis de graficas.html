@@ -355,12 +355,12 @@
             </header>
             
             <p style="text-align: center; color: #64748b; margin-bottom: 10px;">
-                La primera y segunda derivada nos revelan la "anatomía" de una función: sus picos, valles y cambios de
+                La primera y segunda derivada nos revelan la "anatomía" de una función, por ejemplo: sus puntos críticos, sus máximos, mínimos y cambios de
                 concavidad.
             </p>
             <p class="legend">
-                Arrastra el punto verde al máximo local, el punto rojo al mínimo local, y el punto púrpura al Punto de
-                Inflexión.
+                Arrastra el punto verde al máximo local, el punto rojo al mínimo local, y el punto morado al punto de
+                inflexión.
             </p>
 
             <div class="status-bar">
@@ -412,7 +412,7 @@
 
             <div id="step-2" class="quiz-step hidden">
                 <h3>2. Según el Criterio de la Segunda Derivada, si tienes un punto crítico $c$ y resulta que $f''(c) >
-                    0$, ¿qué hay en la gráfica?</h3>
+                    0$, entonces el punto $c$ es:</h3>
                 <label class="h5p-option"><input type="radio" name="q2" value="correcta"> <span>Un mínimo local.</span></label>
                 <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>Un máximo local.</span></label>
                 <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>Un punto de
@@ -421,8 +421,8 @@
             </div>
 
             <div id="step-3" class="quiz-step hidden">
-                <h3>3. ¿Qué condición matemática se utiliza principalmente para encontrar candidatos a Puntos de
-                    Inflexión?</h3>
+                <h3>3. ¿Qué condición matemática se utiliza principalmente para encontrar candidatos a puntos de
+                    inflexión?</h3>
                 <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>Igualar la primera
                         derivada a cero: $f'(x) = 0$.</span></label>
                 <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>Evaluar la función
@@ -434,11 +434,13 @@
 
             <div id="step-4" class="quiz-step hidden">
                 <h3>4. Si en un intervalo abierto $(a, b)$ se cumple que $f'(x) > 0$, podemos asegurar que en ese intervalo la función es:</h3>
-                <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>Decreciente (va de bajada).</span></label>
-                <label class="h5p-option"><input type="radio" name="q4" value="correcta"> <span>Creciente (va de
+                <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>Estrictamente decreciente (va de bajada).</span></label>
+                <label class="h5p-option"><input type="radio" name="q4" value="correcta"> <span>Estrictamente creciente (va de
                         subida).</span></label>
                 <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>Cóncava hacia
                         abajo.</span></label>
+                        <label class="h5p-option"><input type="radio" name="q4" value="incorrecta"> <span>Cóncava hacia
+                        arriba.</span></label>
                 <div id="feedback-4" class="h5p-feedback hidden"></div>
             </div>
 
@@ -476,7 +478,7 @@
             </div>
 
             <div class="n3-section">
-                <h3 style="color: var(--primary);">Paso 2: Segunda Derivada (Criterio y Concavidad)</h3>
+                <h3 style="color: var(--primary);">Paso 2: Segunda Derivada (Criterio y Concavidades)</h3>
                 <div class="step-row" style="line-height: 2;">
                     Calculamos la segunda derivada: &nbsp;$f''(x) = 6x - 6$.
                 </div>
@@ -531,6 +533,7 @@
             &copy; 2026, JGHA & DMA<br>
         </p>
         </footer>
+       
 
     </div>
 
@@ -551,7 +554,7 @@
         let score = 0; 
         let brd, curve, pMaxUser, pMinUser, pInfUser;
 
-        // Se agregó un abanico más grande de gráficas con distintos puntos de inflexión
+        // Se agregaron más gráficas con distintos puntos de inflexión
         const retos = [
             { f: (x) => (x * x * x) / 3 - x, max: -1, min: 1, inf: 0 },
             { f: (x) => -(x * x * x) / 3 + x, max: 1, min: -1, inf: 0 },
@@ -637,7 +640,7 @@
                     swal("¡Perfecto!", "Identificaste correctamente los puntos máximo, mínimo y de inflexión. Observa la gráfica congelada y presiona 'Siguiente Gráfica' para continuar.", "success");
                 } else {
                     document.getElementById('btn-pasar-n2').classList.remove('hidden');
-                    swal("¡Etapa Superada!", "¡Excelente! Has logrado 3 análisis correctos y tienes un gran ojo clínico para el análisis gráfico.", "success");
+                    swal("¡Etapa Superada!", "¡Excelente! Has logrado 3 análisis gráficos correctos.", "success");
                 }
             } else {
                 totalErroresVisuales++;
@@ -663,8 +666,8 @@
         const totalN2 = 4;
         const feedbackN2 = {
             1: "Un valor de cero en la derivada indica que la pendiente es nula; es un candidato perfecto para ser máximo o mínimo local, pero no necesariamente lo es.",
-            2: "Si $f''(x) > 0$, la curva es cóncava hacia arriba, por lo que el punto crítico es un mínimo.",
-            3: "Un punto de inflexión es el lugar donde la concavidad cambia, lo cual ocurre cuando la segunda derivada pasa de positiva a negativa o viceversa.",
+            2: "Si $f''(x) > 0$, la curva es cóncava hacia arriba, por lo que el punto crítico es un mínimo local.",
+            3: "Un punto de inflexión es el lugar donde la concavidad cambia, lo cual ocurre cuando la segunda derivada pasa de positiva a negativa o viceversa; por lo que un candidato a punto de inflexión se encuentra al igualar la segunda derivada a cero.",
             4: "Si la derivada es positiva, significa que la función es estrictamente creciente."
         };
 
@@ -754,7 +757,7 @@
         }
 
         function finalizarTodo() {
-            confetti({ particleCount: 500, spread: 180, origin: { y: 0.5 } });
+            confetti({ particleCount: 2000, spread: 180, origin: { y: 0.6 } });
 
             const nodeSummary = document.createElement('div');
             nodeSummary.className = 'summary-card';
@@ -772,11 +775,11 @@
                     <span class="accent">${aciertosQuizN2} / 4</span>
                 </div>
                 <div class="summary-item">
-                    <span>Precisión Analítica Etapa 3:</span>
+                    <span>Aplicación de Conocimientos, Etapa 3:</span>
                     <span class="accent">${aciertosTeoricosN3} / 4</span>
                 </div>
                 <p style="text-align: center; font-weight: bold; margin-top: 20px; color: var(--primary); font-size: 1.1em;">
-                    ${aciertosTeoricosN3 === 4 && lives === 3 ? '¡Desempeño Impecable, Calculista!' : '¡Módulo Completado con Éxito!'}
+                    ${aciertosTeoricosN3 === 4 && lives === 3 ? '¡Desempeño Impecable!' : '¡Módulo Completado con Éxito!'}
                 </p>
             `;
 

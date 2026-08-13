@@ -156,7 +156,7 @@
         </header>
 
         <div id="level-1-container">
-            <p style="text-align: center; color: #64748b; margin-top: -15px; margin-bottom: 25px;">Muestra el funcionamiento de los axiomas de orden y campo posicionando los elementos en la recta real.</p>
+            <p style="text-align: center; color: #64748b; margin-top: -15px; margin-bottom: 25px;">Muestra el funcionamiento de las propiedades de orden y campo posicionando los elementos en la recta real.</p>
             
             <div class="status-bar">
                 <div id="s1-instructions"><i class="fa-solid fa-flag"></i> <b>Reto 1/3:</b> Preparando...</div>
@@ -225,7 +225,7 @@
         <div id="level-3-container" class="hidden">
             <div class="n3-section">
                 <h3>A. Completar la Demostración</h3>
-                <p style="margin-bottom: 25px; color: #64748b;">Demuestra que $a \cdot 0 = 0$. Arrastra los axiomas correctos:</p>
+                <p style="margin-bottom: 25px; color: #64748b;">Arrastra las propiedades adecuadas del Banco de Axiomas para demostrar que: $a \cdot 0 = 0$:</p>
                 <p style="line-height: 2.2;">
                     1. $a \cdot 0 = a \cdot (0 + 0)$ por el <span class="drop-zone" data-expected="neutro"></span>.<br>
                     2. $a \cdot 0 = a \cdot 0 + a \cdot 0$ aplicando la propiedad de <span class="drop-zone" data-expected="distributividad"></span>.<br>
@@ -275,7 +275,7 @@
 
         <div id="resumen-final-container" class="hidden" style="text-align: center;">
             <h1 style="color: var(--primary);">¡Felicidades!</h1>
-            <p style="color: #64748b;">Has completado el laboratorio axiomático.</p>
+            <p style="color: #64748b;">Has Completado el Módulo de Axiomas de Campo y Orden.</p>
             <div style="display:flex; justify-content: space-around; margin: 40px 0; flex-wrap: wrap; gap: 20px;">
                 <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 130px; border: 1px solid var(--border-color);">
                     <p style="margin:0 0 10px 0; color: #64748b;">Etapa 1</p>
@@ -297,6 +297,7 @@
             &copy; 2026, JGHA & DMA<br>
         </p>
         </footer>
+      
 
     </div>
 
@@ -341,8 +342,8 @@
             optionsContainer.innerHTML = "";
 
             if (num === 1) {
-                document.getElementById('s1-instructions').innerHTML = `<i class="fa-solid fa-flag"></i> <b>Reto 1/3:</b> Deducción de Transitividad`;
-                document.getElementById('mission-text').innerHTML = `Si \\(\\varepsilon &lt; \\eta\\) y \\(\\eta &lt; \\omega\\), ¿qué puedes concluir?<br><br><strong>Ordena los puntos</strong> geométricamente en la recta real y <strong>selecciona la relación analítica</strong> correcta en la parte inferior.`;
+                document.getElementById('s1-instructions').innerHTML = `<i class="fa-solid fa-flag"></i> <b>Reto 1/3:</b> Deducción de una Propiedad de Orden`;
+                document.getElementById('mission-text').innerHTML = `Si \\(\\varepsilon &lt; \\eta\\) y \\(\\eta &lt; \\omega\\), ¿qué puedes concluir?<br><br><strong>Ordena los puntos</strong> geométricamente en la recta real y <strong>selecciona la relación de orden</strong> correcta en la parte inferior.`;
                 
                 optionsContainer.style.flexDirection = "row";
                 optionsContainer.innerHTML = `
@@ -365,14 +366,14 @@
             } 
             else if (num === 2) {
                 // =============== MODIFICACIONES DEL RETO 2 ===============
-                document.getElementById('s1-instructions').innerHTML = `<i class="fa-solid fa-flag"></i> <b>Reto 2/3:</b> Multiplicación por negativo`;
+                document.getElementById('s1-instructions').innerHTML = `<i class="fa-solid fa-flag"></i> <b>Reto 2/3:</b> Multiplicación por un número negativo`;
                 
                 optionsContainer.style.flexDirection = "column";
                 optionsContainer.innerHTML = `
                     <div style="font-weight: 700; color: var(--primary); margin-bottom: 2px;">Conjetura:</div>
                     <div class="math-option" style="font-size: 14px;" onclick="selectOption(this, 'ac<bc')">\\(\\eta &lt; \\varepsilon\\) y \\(\\omega &lt; 0\\) \\(\\Rightarrow\\) \\(\\eta\\omega &lt; \\varepsilon\\omega\\)</div>
                     <div class="math-option" style="font-size: 14px;" onclick="selectOption(this, 'ac>bc')">\\(\\eta &lt; \\varepsilon\\) y \\(\\omega &lt; 0\\) \\(\\Rightarrow\\) \\(\\eta\\omega &gt; \\varepsilon\\omega\\)</div>
-                    <div class="math-option" style="font-size: 14px;" onclick="selectOption(this, 'ab>c')">\\(\\eta &lt; \\varepsilon\\) y \\(\\omega &lt; 0\\) \\(\\Rightarrow\\) \\(\\eta\\varepsilon &gt; \\omega\\)</div>
+                    <div class="math-option" style="font-size: 14px;" onclick="selectOption(this, 'ab>c')">\\(\\eta &lt; \\varepsilon\\) y \\(\\omega &lt; 0\\) \\(\\Rightarrow\\) \\(\\eta\\varepsilon &gt; \\omega\\omega\\)</div>
                 `;
                 optionsContainer.classList.remove('hidden');
 
@@ -386,7 +387,7 @@
                 dynamics.a = r1; dynamics.b = r2; dynamics.c = rC;
 
             
-                document.getElementById('mission-text').innerHTML = `Si fijamos \\(\\eta=${r1}\\), \\(\\varepsilon=${r2}\\) (\\(\\eta &lt; \\varepsilon\\)) y \\(\\omega=${rC}\\) (\\(\\omega &lt; 0\\)).<br><br><strong>Mueve los puntos \\(\\eta\\omega\\) y \\(\\varepsilon\\omega\\)</strong> a sus coordenadas exactas en la recta real. ¿Qué puedes deducir de este comportamiento?`;
+                document.getElementById('mission-text').innerHTML = `Sean \\(\\eta=${r1}\\), \\(\\varepsilon=${r2}\\) (\\(\\eta &lt; \\varepsilon\\)) puntos fijos en el eje X, y \\(\\omega=${rC}\\) un número real negativo.<br><br><strong>Mueve los puntos </strong> \\(\\eta\\omega\\) (rojo) y \\(\\varepsilon\\omega\\) (azul) a sus coordenadas <strong>exactas</strong> en la recta real. ¿Qué puedes deducir de este comportamiento?`;
                 
                 helpers.push(board.create('point', [r1, 0], { name: `η=${r1}`, size: 3, color: 'gray', fixed: true}));
                 helpers.push(board.create('point', [r2, 0], { name: `ε=${r2}`, size: 3, color: 'gray', fixed: true}));
@@ -483,7 +484,7 @@
                 document.querySelectorAll('.math-option').forEach(el => el.style.pointerEvents = 'none');
                 document.getElementById('btn-validar-n1').classList.add('hidden');
                 aciertosN1++;
-                swal("¡Precisión Exacta!", "Axioma demostrado correctamente. Observa el escenario antes de continuar.", "success").then(() => {
+                swal("¡Precisión Exacta!", "Propiedad mostrada correctamente. Observa el escenario antes de continuar.", "success").then(() => {
                     if (state.retoActual < 3) {
                         const nextButton = document.getElementById('btn-next-reto');
                         nextButton.innerHTML = `<i class="fa-solid fa-arrow-right"></i> Continuar al Reto ${state.retoActual + 1}/3`;
@@ -514,7 +515,7 @@
                 document.getElementById('btn-game-over').classList.remove('hidden');
                 swal({ title: "Tréboles Agotados", text: "Vidas agotadas en la etapa geométrica. Debes reiniciar.", icon: "error" });
             } else {
-                swal("Axioma no cumplido", mensajeAyuda, "warning");
+                swal("Propiedad no cumplida", mensajeAyuda, "warning");
             }
         }
 

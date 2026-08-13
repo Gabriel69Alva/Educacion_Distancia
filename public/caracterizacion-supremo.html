@@ -514,7 +514,7 @@
                 fb.innerHTML = `<strong><i class="fa-solid fa-check"></i> ¡Bien hecho!</strong> ${fbMsg}`;
             } else {
                 fb.classList.add('error');
-                fb.innerHTML = `<strong><i class="fa-solid fa-xmark"></i> Oportunidad agotada.</strong> ${fbMsg}`;
+                fb.innerHTML = `<strong><i class="fa-solid fa-xmark"></i> Incorrecto.</strong> ${fbMsg}`;
             }
 
             // Bloquear opciones (Solo 1 intento)
@@ -551,7 +551,7 @@
             {
                 q: "¿Qué sucede si asumimos que $\\alpha - \\varepsilon$ SÍ es cota superior de $A$?",
                 opts: [{ t: "Llegamos a una contradicción con &nbsp; $\\alpha$ &nbsp; como supremo.", v: "c" }, { t: "No pasa nada.", v: "i" }],
-                ans: "c", fbC: "Contradicción, pues $\\alpha$ es la mínima cota superior.", fbI: "Llegamos a una contradicción, ya que $\\alpha$ debe ser la cota superior más pequeña."
+                ans: "c", fbC: "Llegamos a una contradicción, pues $\\alpha$ es la mínima cota superior.", fbI: "Llegamos a una contradicción, ya que $\\alpha$ debe ser la cota superior más pequeña."
             }
         ];
         let currentQuizIndex = 0;
