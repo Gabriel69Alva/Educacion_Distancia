@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratorio Didáctico: Funciones Sobreyectivas</title>
+    <title>Funciones Sobreyectivas</title>
 
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -208,25 +208,25 @@
 
             <div id="qstep-1" class="quiz-block">
                 <h3>1. Sea una función $f: A \rightarrow B$. ¿Cuál de las siguientes condiciones define formalmente que la función es sobreyectiva (o suprayectiva)?</h3>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>A) Cada elemento del dominio $A$ tiene una única imagen en el codominio $B$.</span></label>
-                <label class="h5p-option"><input type="radio" name="q1" value="correcto"> <span>B) El conjunto imagen de la función coincide plenamente con el codominio, es decir, $\text{Im}(f) = B$.</span></label>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>C) Elementos distintos de $A$ poseen imágenes estrictamente distintas en $B$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>Cada elemento del dominio $A$ tiene una única imagen en el codominio $B$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcto"> <span>El conjunto imagen de la función coincide plenamente con el codominio, es decir, $\text{Im}(f) = B$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecto"> <span>Elementos distintos de $A$ poseen imágenes estrictamente distintas en $B$.</span></label>
                 <div id="qfeedback-1" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="qstep-2" class="quiz-block hidden">
                 <h3>2. Analiza la función $f: \mathbb{R} \rightarrow \mathbb{R}$ definida por $f(x)=x^3-4x$. ¿Es esta función sobreyectiva sobre todo el conjunto de los números reales?</h3>
-                <label class="h5p-option"><input type="radio" name="q2" value="correcto"> <span>A) Sí, porque al ser un polinomio de grado impar sus límites a \(-\infty\) y $+\infty$ cubren a todo el conjunto de los números reales.</span></label>
-                <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>B) No, ya que los mínimos locales impiden que la gráfica descienda por debajo de los valores reales.</span></label>
-                <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>C) No, debido a que corta al eje horizontal en tres raíces reales definidas.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcto"> <span>Sí, porque al ser un polinomio de grado impar sus límites a \(-\infty\) y $+\infty$ cubren a todo el conjunto de los números reales.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>No, ya que los mínimos locales impiden que la gráfica descienda por debajo de los valores reales.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecto"> <span>No, debido a que corta al eje horizontal en tres raíces reales definidas.</span></label>
                 <div id="qfeedback-2" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="qstep-3" class="quiz-block hidden">
                 <h3>3. Si una función continua $f: [-2, 2] \rightarrow [-1, 5]$ posee un valor mínimo de $y=0$ y un valor máximo de $y=5$ dentro de su rango real, ¿qué cambio se debe hacer para transformarla en sobreyectiva?</h3>
-                <label class="h5p-option"><input type="radio" name="q3" value="incorrecto"> <span>A) Ampliar los extremos del dominio a $[-5, 5]$.</span></label>
-                <label class="h5p-option"><input type="radio" name="q3" value="incorrecto"> <span>B) Modificar la regla de asignación sumando una constante unitaria.</span></label>
-                <label class="h5p-option"><input type="radio" name="q3" value="correcto"> <span>C) Restringir el codominio original para que coincida exactamente con su rango real, es decir, cambiarlo a $[0, 5]$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecto"> <span>Ampliar los extremos del dominio a $[-5, 5]$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecto"> <span>Modificar la regla de asignación sumando una constante unitaria.</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcto"> <span>Restringir el codominio original para que coincida exactamente con su rango real, es decir, cambiarlo a $[0, 5]$.</span></label>
                 <div id="qfeedback-3" class="h5p-feedback hidden"></div>
             </div>
 
@@ -277,13 +277,13 @@
                 </div>
 
                 <div class="step-row">
-                    Como dicha expresión matemática siempre produce un número real bien definido para cualquier valor de &nbsp; $y$ &nbsp;, se concluye que:
+                    Como dicha expresión matemática siempre produce un número real bien definido para cualquier valor de &nbsp; $y$ , se concluye que:
                     <select id="dem-3" class="math-input">
                         <option value="">-- Selecciona --</option>
                         <option value="v1">Im(f) = R</option>
                         <option value="v2">Im(f) ⊂ R</option>
                     </select>
-                    , quedando formalmente demostrada la propiedad sobreyectiva.
+                    quedando formalmente demostrada la propiedad sobreyectiva.
                 </div>
             </div>
 
@@ -586,7 +586,7 @@
 
                 if (vidas === 0) {
                     document.getElementById('btn-reset-lvl1').classList.remove('hidden');
-                    swal("Guías Agotadas", "No lograste cubrir el rango requerido y has perdido tus vidas. Revisa la gráfica congelada para entender tu error y reinicia la etapa.", "error");
+                    swal("Tréboles Agotados", "No lograste cubrir el rango requerido y has perdido tus vidas. Revisa la gráfica congelada para entender tu error y reinicia la etapa.", "error");
                 } else {
                     document.getElementById('btn-correct-attempt').classList.remove('hidden');
                     let msgAux = "";
@@ -594,7 +594,7 @@
                         if (gapError) {
                             msgAux = "¡Cuidado! Hay una separación (vacío vertical) entre los dos segmentos. Hay alturas dentro del codominio que se quedaron sin gráfica.";
                         } else if (holeError) {
-                            msgAux = "¡Casi! Dejaste un hueco. Recuerda que el punto gris (B1) es abierto y NO toca esa altura exacta. Debes asegurar que el otro segmento continuo pase por esa misma altura para cubrir el valor y evitar que se quede sin preimagen.";
+                            msgAux = "¡Casi! Dejaste un hueco. Recuerda que el punto gris (B1) es abierto y NO toca esa altura exacta. Debes asegurar que el otro segmento continuo pase por esa misma altura para cubrirla y evitar que se quede sin preimagen.";
                         }
                     } else {
                         msgAux = `Tu función solo abarca desde ${globalMin.toFixed(1)} hasta ${globalMax.toFixed(1)}. Necesitas estirarla más.`;
@@ -621,8 +621,8 @@
         const totalQuiz = 3;
         const explicacionesQuiz = {
             1: "Una función es sobreyectiva si cada elemento del codominio posee al menos una preimagen en el dominio, lo que implica que el rango o imagen sea idéntico al codominio.",
-            2: "Los polinomios de grado impar (como las funciones cúbicas) tienden a \\(-\\infty\\) por un extremo y a \\(+\\infty\\) por el otro. Estas funciones cubren a todo el conjunto de los números reales.",
-            3: "Si una función genera valores únicamente en el rango $[0, 5]$, la forma matemática directa de convertirla en sobreyectiva es simplemente disminuir el codominio a $[0, 5]$."
+            2: "Los polinomios de grado impar (como las funciones cúbicas) tienden a -∞ por un extremo y a +∞ por el otro. Estas funciones cubren a todo el conjunto de los números reales.",
+            3: "Si una función genera valores únicamente en el rango [0, 5], la forma matemática directa de convertirla en sobreyectiva es simplemente disminuir el codominio a [0, 5]."
         };
 
         function activarEtapa2() {
@@ -682,7 +682,7 @@
             const select3 = document.getElementById('dem-3');
 
             if (!select1.value || !select2.value || !select3.value) {
-                return swal("Desarrollo Incompleto", "Asegúrate de responder todos los pasos lógicos del menú desplegable.", "warning");
+                return swal("Desarrollo Incompleto", "Asegúrate de responder todos los pasos deductivos del menú desplegable.", "warning");
             }
 
             puntosAnaliticosN3 = 0;
@@ -720,7 +720,7 @@
             cajaResumen.className = 'h5p-summary-box';
             cajaResumen.innerHTML = `
             <div class="summary-row">
-                <span>Interpretaciones geométricas fallidas (Etapa 1):</span>
+                <span>Interpretaciones Geométricas Fallidas (Etapa 1):</span>
                 <span class="bold-val" style="color: ${fallosGeometria > 0 ? 'var(--danger)' : 'var(--success)'};">${fallosGeometria}</span>
             </div>
             <div class="summary-row">
@@ -728,11 +728,11 @@
                 <span class="bold-val">${vidas} / 3</span>
             </div>
             <div class="summary-row">
-                <span>Aciertos conceptuales del Quiz (Etapa 2):</span>
+                <span>Aciertos Conceptuales del Cuestionario (Etapa 2):</span>
                 <span class="bold-val">${aciertosQuiz} / 3</span>
             </div>
             <div class="summary-row">
-                <span>Aciertos analíticos en demostración (Etapa 3):</span>
+                <span>Aciertos Analíticos en Demostración (Etapa 3):</span>
                 <span class="bold-val">${puntosAnaliticosN3} / 3</span>
             </div>
             <p style="text-align: center; font-weight: bold; margin-top: 20px; color: var(--azure-dark); font-size:16px;">
