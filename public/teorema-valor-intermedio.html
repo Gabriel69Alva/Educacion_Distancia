@@ -520,7 +520,7 @@
                 <h3>A. Ley de Conservación del Signo</h3>
                 <p style="margin-bottom:25px; color:#64748b;">Para demostrar el TVI necesitamos aplicar la ley de
                     conservación del signo estudiada en el módulo anterior.
-                    <br>Arrastra los conceptos correctos para formular la ley de conservación del signo.
+                    <br>Arrastra los elementos correctos del <strong>Banco de Conceptos</strong> para formular la ley de conservación del signo.
                 </p>
                 <p style="line-height:2.2;">
                     Sea $f$ una función <span class="drop-zone" data-expected="continua"
@@ -547,7 +547,7 @@
 
             <div class="n3-section">
                 <h3>B. Demostración del TVI (Interacción guiada)</h3>
-                <p style="margin-bottom:25px; color:#64748b;">Arrastra los conceptos para completar la demostración y
+                <p style="margin-bottom:25px; color:#64748b;">Arrastra los elementos correctos del <strong>Banco de Conceptos</strong> para completar la demostración del TVI y
                     elige la contradicción lógica a la que se llega en cada caso.</p>
 
                 <p style="line-height:2.2;"> <strong>Demostración.</strong> Sea $\alpha = \sup A$, en donde $A = \{x \in
@@ -670,8 +670,8 @@
                     class="fa-solid fa-rotate-left"></i> REINICIAR ESCENARIO</button>
         </div>
         <footer>
-            <p style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
-                &copy; 2026, JGHA & DMA<br>
+            <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+            &copy; 2026, JGHA & DMA<br>
             </p>
         </footer>
 
@@ -723,7 +723,7 @@
                     // Guardamos la curva en una variable accesible para la validación
                     myCurve = brd.create('curve', JXG.Math.Numerics.CatmullRomSpline([gLeft, gMid, gRight]), { strokeColor: '#4f46e5', strokeWidth: 3 });
 
-                    brd.create('line', [[-10, 0], [10, 0]], { strokeColor: '#334155', strokeWidth: 1, dash: 2 });
+                    brd.create('line', [[-10, 0], [10, 0]], { strokeColor: '#334155', strokeWidth: 1, dash: 2, visible: false });
                 },
                 validate: () => {
                     // Si la curva aún no existe por algún motivo, no validamos como correcto
@@ -790,7 +790,7 @@
                     <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> La función no está definida en los extremos del intervalo.</label>
                 `,
                 drawCustom: (brd) => {
-                    brd.create('line', [[-10, 0], [10, 0]], { strokeColor: '#334155', strokeWidth: 1, dash: 2 });
+                    brd.create('line', [[-10, 0], [10, 0]], { strokeColor: '#334155', strokeWidth: 1, dash: 2, visible: false, fixed: true });
 
                     let sLeftPos = brd.create('segment', [[1, 0.5], [1, 10]], { visible: false });
                     let sRightNeg = brd.create('segment', [[4, -0.5], [4, -10]], { visible: false });
@@ -1155,7 +1155,7 @@
             document.getElementById('res-n1').innerText = aciertosN1 + "/5";
             document.getElementById('res-n2').innerText = aciertosN2 + "/3";
             document.getElementById('res-n3').innerText = aciertosN3 + "/13";
-            confetti({ particleCount: 2000, spread: 180, origin: { y: 0.1 } });
+            confetti({ particleCount: 2000, spread: 180, origin: { y: 0.6 } });
         }
     </script>
 </body>

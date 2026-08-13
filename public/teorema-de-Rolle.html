@@ -343,7 +343,7 @@
                     <!-- DESAFÍO 2 -->
                     <div id="desafio-2" class="reto-container hidden">
                         <div style="font-size: 14.5px; line-height: 1.5; text-align: justify; margin-bottom: 10px;">
-                            Sea $f(x) = 0.3x^2 + 1$, en $[0, 2.5]$.
+                            Sea $f(x) = \frac{x^3}{4}$, en $[-2, 2]$.
                         </div>
                         <div class="options-container">
                             <label class="h5p-option"><input type="checkbox" name="ch-opt-2" value="a" onchange="handleCheckboxChange(event, 2)"> <span>$f$ &nbsp; es continua en &nbsp; $[a, b]$ &nbsp;y derivable en el intervalo &nbsp; $(a, b)$.</span></label>
@@ -437,24 +437,24 @@
 
             <div id="step-1" class="quiz-step">
                 <h3>1. ¿Cuál es la interpretación geométrica del Teorema de Rolle?</h3>
-                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> Garantiza la existencia de al menos un punto en el interior del intervalo donde la recta tangente es completamente horizontal (pendiente cero).</label>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Demuestra que la tasa de cambio promedio es estrictamente mayor que las tasas instantáneas en el intervalo.</label>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Asegura que la función debe cruzar el eje de las abscisas al menos una vez.</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> <span>Garantiza la existencia de al menos un punto en el interior del intervalo donde la recta tangente es completamente horizontal (pendiente cero).</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>Demuestra que la tasa de cambio promedio es estrictamente mayor que las tasas instantáneas en el intervalo.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>Asegura que la función debe cruzar el eje de las abscisas al menos una vez.</span></label>
                 <div id="feedback-1" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-2" class="quiz-step hidden">
                 <h3>2. Si una función cumple con $f(a) = f(b)$ y es continua en $[a, b]$, pero falla en ser derivable en algún punto en el interior del intervalo, ¿qué sucede con la tesis de Rolle?</h3>
-                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> Permanece invariante porque un único punto no altera la existencia de rectas tangentes horizontales.</label>
-                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> Se invalida la afirmación de Rolle, haciendo posible que no exista ningún punto interior con tangente horizontal.</label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>Permanece invariante porque un único punto no altera la existencia de rectas tangentes horizontales.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> <span>Se invalida la afirmación de Rolle, haciendo posible que no exista ningún punto interior con tangente horizontal.</span></label>
                 <div id="feedback-2" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-3" class="quiz-step hidden">
-                <h3>3. ¿Cuál es la relación entre el Teorema de Rolle y el Teorema del Valor Medio (TVM)?</h3>
-                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> El Teorema de Rolle es una generalización construida de forma posterior al TVM.</label>
-                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> Rolle es un teorema que se utiliza formalmente para demostrar el TVM.</label>
-                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> El TVM es un teorema que se utiliza para demostrar el TVM.</label>
+                <h3>3. Considera la función $f(x) = x^2-4x+3$ definida en el intervalo $[1, 3]$. ¿Cuál de las siguientes afirmaciones describe correctamente la aplicación del Teorema de Rolle a esta función?</h3>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>Como $f(1)=f(3)$, entonces $f'(1)=f'(3)=0$, por lo que Rolle garantiza que los extremos del intervalo son puntos críticos.</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> <span>Como $f(1)=f(3)$ y $f$ es continua en $[1,3]$ y derivable en $(1,3)$, existe $c\in(1,3)$ tal que $f'(c)=0$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>Como $f$ es derivable en $(1,3)$, existe $c\in(1,3)$ tal que $f'(c)=\frac{f(3)-f(1)}{3-1}$.</span></label>
                 <div id="feedback-3" class="h5p-feedback hidden"></div>
             </div>
 
@@ -465,7 +465,7 @@
         <div id="level-3-container" class="hidden">
             <div class="n3-section">
                 <h3>A. Estructura de la Demostración</h3>
-                <p style="margin-bottom: 25px; color: #64748b;">Arrastra los conceptos correctos para construir la demostración del teorema de Rolle combinando Weierstrass y Fermat:</p>
+                <p style="margin-bottom: 25px; color: #64748b;">Arrastra los elementos correctos del Banco de Conceptos para construir la demostración del teorema de Rolle combinando Weierstrass y Fermat:</p>
                 <p style="line-height: 2.2;">
                     Por el Teorema de Weierstrass, al ser $f$ continua en el intervalo cerrado $[a, b]$, alcanza un máximo y un mínimo <span class="drop-zone" data-expected="absolutos"></span>.<br>
                     Caso 1: Si ambos valores extremos (máximo y mínimo) coinciden en los extremos del intervalo, es decir, $f(a) = f(b)$, se tendría que la función es <span class="drop-zone" data-expected="constante"></span> en todo el intervalo, haciendo su derivada igual a cero.<br>
@@ -474,10 +474,10 @@
             </div>
 
             <div class="n3-section">
-                <h3>B. Cierre del Argumento Geométrico</h3>
+                <h3>B. Cierre de la Argumentación Analítica</h3>
                 <p style="margin-bottom: 25px; color: #64748b;">Completa las conclusiones:</p>
                 <p style="line-height: 2.2;">
-                    Así, en ambos casos queda demostrada la existencia de al menos un punto donde la función tiene<span class="drop-zone" data-expected="derivada"></span> igual a cero.<br>
+                    Así, en ambos casos queda demostrada la existencia de al menos un punto donde la función tiene <span class="drop-zone" data-expected="derivada"></span> igual a cero.<br>
                     En dicho punto, la dirección de la recta tangente se estabiliza de manera <span class="drop-zone" data-expected="horizontal"></span>.
                 </p>
             </div>
@@ -497,7 +497,7 @@
 
             <div class="n3-section">
                 <h3>C. Secuenciación Deductiva</h3>
-                <p style="margin-bottom: 20px; color: #64748b;">Ordena de arriba a abajo la cadena lógica del teorema:</p>
+                <p style="margin-bottom: 20px; color: #64748b;">Ordena de arriba a abajo la cadena lógica del teorema (valor: 1 punto):</p>
                 <div id="sortable-list" style="display: flex; flex-direction: column;">
                     <div class="sortable-item" draggable="true" data-id="2"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Dividir el análisis según la ubicación del máximo y el mínimo: caso extremos del intervalo (función constante) y caso punto en el interior del intervalo.</div>
                     <div class="sortable-item" draggable="true" data-id="4"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Aplicar el Teorema de Fermat en un punto en el interior del intervalo para deducir la anulación de la derivada.</div>
@@ -515,7 +515,7 @@
             <p style="color: #64748b;">Has validado las condiciones de continuidad, derivabilidad y valores simétricos en los extremos del intervalo para demostrar la existencia de tangentes horizontales.</p>
             <div style="display:flex; justify-content: space-around; margin: 40px 0; flex-wrap: wrap; gap: 20px;">
                 <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 140px; border: 1px solid var(--border-color);">
-                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 1 (Fronteras o extremos del intervalo)</p>
+                    <p style="margin:0 0 10px 0; color: #64748b;">Etapa 1 (Interpretación Geométrica)</p>
                     <div class="score-val" id="res-n1">0/5</div>
                 </div>
                 <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 140px; border: 1px solid var(--border-color);">
@@ -531,7 +531,7 @@
         </div>
         <footer>
             <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
-                &copy; 2026, JGHA & DMA<br>
+            &copy; 2026, JGHA & DMA<br>
             </p>
         </footer>
     </div>
@@ -566,16 +566,16 @@
             },
             {
                 num: 2,
-                text: "Sea $f(x) = 0.3x^2 + 1$, en $[0, 2.5]$.",
-                correct: ['a'],
-                f: (x) => 0.3 * x * x + 1,
-                df: (x) => 0.6 * x,
-                a: 0, b: 2.5,
-                bbox: [-1, 4, 3.5, -0.5],
+                text: "Sea $f(x) = x^3/4$, en $[-2, 2]$.",
+                correct: ['a', 'c'],
+                f: (x) => (x * x * x) / 4,
+                df: (x) => 0.75 * x * x,
+                a: -2, b: 2,
+                bbox: [-3, 4, 3, -4],
                 drawCustom: (brd) => {
-                    brd.create('functiongraph', [x => 0.3 * x * x + 1, 0, 2.5], { strokeColor: '#004080', strokeWidth: 3 });
-                    brd.create('point', [0, 1], { fixed: true, name: 'A', color: '#004080', size: 3 });
-                    brd.create('point', [2.5, 2.875], { fixed: true, name: 'B', color: '#004080', size: 3 });
+                    brd.create('functiongraph', [x => (x * x * x) / 4, -2, 2], { strokeColor: '#004080', strokeWidth: 3 });
+                    brd.create('point', [-2, -2], { fixed: true, name: 'A', color: '#004080', size: 3 });
+                    brd.create('point', [2, 2], { fixed: true, name: 'B', color: '#004080', size: 3 });
                 }
             },
             {
@@ -601,7 +601,7 @@
                 correct: ['b'],
                 f: (x) => (x === 0) ? 4 : x * x,
                 df: (x) => {
-                    if (x === 0) return NaN; // Control para la discontinuidad en x=0
+                    if (x === 0) return NaN;
                     return 2 * x;
                 },
                 a: 0, b: 2,
@@ -811,7 +811,7 @@
                 if (!isOptionsCorrect && !isValidGraphics) {
                     restarVida("Error. Corrige tus opciones y asegúrate de recorrer la totalidad del intervalo con el deslizador.");
                 } else if (!isOptionsCorrect) {
-                    restarVida("Reviza las afirmaciones teóricas elegidas.");
+                    restarVida("Revisa las afirmaciones teóricas elegidas.");
                 } else if (!isValidGraphics) {
                     restarVida("Las afirmaciones teóricas son válidas, pero debes asegurarte de recorrer el intervalo completo con el deslizador.");
                 }

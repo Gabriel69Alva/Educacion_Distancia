@@ -717,9 +717,9 @@
                     class="fa-solid fa-rotate-left"></i> REINICIAR ESCENARIO</button>
         </div>
         <footer>
-            <p style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
-                &copy; 2026, JGHA & DMA<br>
-            </p>
+        <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+            &copy; 2026, JGHA & DMA<br>
+        </p>
         </footer>
 
     </div>
@@ -820,7 +820,7 @@
             },
             {
                 num: 3,
-                text: "Dada la función $f(x) = x^3$. Evaluemos en $c = 0$, donde <b>$f(c) = 0$</b>.<br><br><b>Consigna:</b> Intenta encontrar un $\\delta$ donde la función sea positiva o negativa (conserve un solo signo).",
+                text: "Dada la función $f(x) = x^3$. Evaluemos en $c = 0$, donde <b>$f(c) = 0$</b>.<br><br><b>Consigna:</b> Intenta encontrar un $\\delta$ donde la función sea positiva o negativa y se conserve un solo signo.",
                 correct: ['a'],
                 bbox: [-2, 3, 2, -3],
                 sliderSetup: { min: 0.1, max: 1.5, step: 0.1, val: 1.5, label: "<i class='fa-solid fa-arrows-left-right'></i> Radio de la vecindad ($\\delta$)" },
@@ -849,7 +849,7 @@
             },
             {
                 num: 4,
-                text: "Basado en los tres escenarios anteriores, ¿Cuáles son las condiciones SUFICIENTES para que la Ley de Conservación del Signo sea aplicable?<br><br><b>Conjetura:</b> Elige las condiciones suficientes esperadas. Posteriormente, ejemplifica tu conjetura en la gráfica moviendo el punto $c$ (deslizador) a una coordenada donde $f(c)>0$.",
+                text: "Basado en los tres escenarios anteriores, ¿Cuáles son las condiciones SUFICIENTES para que la Ley de Conservación del Signo sea aplicable?<br><br><b>Conjetura:</b> Elige las condiciones suficientes esperadas. Posteriormente, ejemplifica tu conjetura en la gráfica moviendo el punto $c$ (deslizador) a una coordenada donde $f(c)>0$ y cumpla tu conjetura completa.",
                 correct: ['a', 'c'],
                 bbox: [-4, 3, 4, -1],
                 sliderSetup: { min: -3.5, max: 3.5, step: 0.1, val: 0, label: "<i class='fa-solid fa-crosshairs'></i> Punto de evaluación ($c$)" },
@@ -1178,7 +1178,7 @@
             document.getElementById('res-n1').innerText = aciertosN1 + "/4";
             document.getElementById('res-n2').innerText = aciertosN2 + "/3";
             document.getElementById('res-n3').innerText = aciertosN3 + "/10";
-            confetti({ particleCount: 2000, spread: 180, origin: { y: 0.1 } });
+            confetti({ particleCount: 2000, spread: 180, origin: { y: 0.6 } });
         }
     </script>
 </body>

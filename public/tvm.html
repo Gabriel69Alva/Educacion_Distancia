@@ -131,11 +131,33 @@
 
         .options-container { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
         .h5p-option { 
-            display: flex; padding: 14px; border: 1px solid var(--border-color); 
-            border-radius: 8px; cursor: pointer; background: #fff; transition: 0.2s; font-size: 14.5px; align-items: flex-start; line-height: 1.4;
+        display: flex; 
+        padding: 14px; 
+        border: 1px solid var(--border-color); 
+        border-radius: 8px; 
+        cursor: pointer; 
+        background: #fff; 
+        transition: 0.2s; 
+        font-size: 14.5px; 
+        align-items: flex-start; 
+        line-height: 1.4; /* Restauramos el line-height original */
         }
-        
-        /* Contenedor engrosado y espaciado para Desafío 5 para que respiren las ecuaciones */
+        .h5p-option:hover { border-color: var(--primary); background: #e0f2fe; }
+         
+        .h5p-option input { 
+        margin-right: 12px; 
+        margin-top: 3px; 
+        accent-color: var(--primary); 
+        cursor: pointer; 
+        transform: scale(1.1);
+        flex-shrink: 0; /* Mantiene la protección contra aplastamiento */
+        }
+        /* Nueva regla para que el texto y la matemática fluyan en bloque */
+        .h5p-option span {
+        flex: 1; 
+        }
+
+         /* Contenedor engrosado y espaciado para Desafío 5 para que respiren las ecuaciones */
         .fat-option { 
             padding: 20px 25px !important; 
             font-size: 15px; 
@@ -144,9 +166,6 @@
             align-items: center; 
         }
         .fat-option input { flex-shrink: 0; margin-top: 0 !important; }
-
-        .h5p-option:hover { border-color: var(--primary); background: #e0f2fe; }
-        .h5p-option input { margin-right: 12px; margin-top: 3px; accent-color: var(--primary); cursor: pointer; transform: scale(1.1);}
         
         .h5p-feedback { padding: 20px; border-radius: 8px; margin-top: 20px; background: #f1f5f9; border-left: 6px solid var(--primary); }
         .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; }
@@ -334,23 +353,25 @@
 
             <div id="step-1" class="quiz-step">
                 <h3>1. Imagina que viajas en una autopista y tu tasa de velocidad media ($m_p$) calculada entre dos casetas de peaje supera el límite legal de 95 km/h. El TVM afirma que:</h3>
-                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> Si tu velocidad promedio fue por ejemplo de 97 km/h, entonces en al menos un instante exacto el velocímetro de tu carro marcó esa misma velocidad de infracción.</label>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> Mantuviste una velocidad constante exactamente igual a la promedio en todo el trayecto.</label>
-                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> No puede concluirse nada sobre instantes específicos, el TVM solo aporta información estadística global del viaje.</label>
+                <label class="h5p-option"><input type="radio" name="q1" value="correcta"> <span>Si tu velocidad promedio fue por ejemplo de 97 km/h, entonces en al menos un instante exacto el velocímetro de tu carro marcó esa misma velocidad de infracción.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>Mantuviste una velocidad constante exactamente igual a la promedio en todo el trayecto.</span></label>
+                <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>No puede concluirse nada sobre instantes específicos, el TVM solo aporta información estadística global del viaje.</span></label>
                 <div id="feedback-1" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-2" class="quiz-step hidden">
-                <h3>2. El teorema de Rolle se considera como un caso particular del TVM. ¿Qué implicación geométrica directa emerge cuando las imágenes de los extremos coinciden ($f(a) = f(b)$)?</h3>
-                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> La función carece de variaciones y se vuelve una recta paralela al eje x (constante).</label>
-                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> Al tener extremos a la misma altura, la razón de cambio es idéntica a cero en algún punto, forzando la aparición de una cima o valle con la recta tangente horizontal.</label>
+                <h3>2. Sea $f(x) = x^3 - x$ en $[0, 2]$. Según el TVM, existe al menos un número $c$ en el intervalo abierto $(0, 2)$ tal que la derivada en ese punto, $f'(c)$, es igual a la tasa de cambio promedio en dicho intervalo. ¿Cuál es el valor de $c$?</h3>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>La tasa de cambio promedio es igual a la derivada en $c = 3$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="correcta"> <span>La tasa de cambio promedio es igual a la derivada en $c = \frac{2}{\sqrt{3}}$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>La tasa de cambio promedio es igual a la derivada en $c = 1$.</span></label>
+                <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>La tasa de cambio promedio es igual a la derivada en $c = -\frac{2}{\sqrt{3}}$.</span></label>
                 <div id="feedback-2" class="h5p-feedback hidden"></div>
             </div>
 
             <div id="step-3" class="quiz-step hidden">
-                <h3>3. En el desarrollo histórico del cálculo, los teoremas de existencia se encadenan lógicamente. ¿Cuál es el orden de herencia lógica?</h3>
-                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> El TVM da origen directo al teorema de Weierstrass, permitiendo que el teorema de Fermat demuestre las condiciones de Rolle con posterioridad.</label>
-                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> La herencia lógica es: Weierstrass asegura extremos (máximos y mínimos), Fermat vincula la derivada nula a estos puntos, Rolle formaliza la existencia de la derivada nula en esos puntos y con ello se demuestra el TVM.</label>
+                <h3>3. Desde un punto de vista formal, ¿cuál es la secuencia lógica correcta en la que se encadenan los teoremas de existencia del cálculo estudiados en el curso?</h3>
+                <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>El TVM da origen directo al teorema de Weierstrass, permitiendo que el teorema de Fermat demuestre las condiciones de Rolle con posterioridad.</span></label>
+                <label class="h5p-option"><input type="radio" name="q3" value="correcta"> <span>La secuencia lógica es: Weierstrass asegura extremos (máximos y mínimos), Fermat vincula la derivada nula a estos puntos, Rolle formaliza la existencia de la derivada nula en esos puntos y con ello se demuestra el TVM.</span></label>
                 <div id="feedback-3" class="h5p-feedback hidden"></div>
             </div>
 
@@ -384,7 +405,7 @@
             <div class="n3-section">
                 <h3>A. Demostración Guiada (TVM)</h3>
                 <p style="margin-bottom: 25px; color: #64748b;">Si $f$ es continua en $[a,b]$, derivable en $(a,b)$, entonces $\exists c \in (a,b)$ tal que $f'(c)=\frac{f(b)-f(a)}{b-a}$.</p>
-                <h2>Arrastra los conceptos para completar la demostración:</h2>
+                <h2>Arrastra los elementos del <strong>Banco de conceptos</strong> para completar la demostración:</h2>
                 <p style="line-height: 2.2;"> Sea $h(x) = f(x) - \frac{f(b)-f(a)}{b-a}(x-a)$. </p>
                 <p style="line-height: 2.2;">
                     Evaluando en los extremos, verificamos que $h(a) = h(b) = $ <span class="drop-zone" data-expected="f_a" data-bank="banco-palabras-B"></span>.<br>
@@ -406,7 +427,8 @@
 
             <div class="n3-section">
                 <h3>B. Ordenación Lógica</h3>
-                <p style="margin-bottom: 20px; color: #64748b;">De acuerdo con la demostración guiada, ordena lógicamente los pasos para la demostración del teorema del valor medio:</p>
+                <p style="margin-bottom: 20px; color: #64748b;">De acuerdo con la demostración guiada, ordena lógicamente los pasos clave para la demostración del teorema del valor medio:</p>
+                <p><strong>Valor 1 punto</strong></p>
                 <div id="sortable-list" style="display: flex; flex-direction: column;">
                     <div class="sortable-item" draggable="true" data-id="2"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Verificamos que $h(x)$ cumple las hipótesis de Rolle ($h(a)=h(b)$)</div>
                     <div class="sortable-item" draggable="true" data-id="4"><i class="fa-solid fa-sort" style="color: var(--primary);"></i> Despejamos $f'(c)$ para obtener la fórmula de la razón de cambio promedio</div>
@@ -440,7 +462,7 @@
         </div>
         <footer>
             <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
-                &copy; 2026, JGHA & DMA<br>
+            &copy; 2026, JGHA & DMA<br>
             </p>
         </footer>
 
@@ -551,19 +573,19 @@
         // Se eliminan letras a, b, c, d y se usa $\exists$ 
         function getOptionsHTML_1_4(a, b) {
             return `
-                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="a" onchange="handleCheckboxChange(event)"> $f$ &nbsp; es continua en &nbsp; $[${a}, ${b}]$</label>
-                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="b" onchange="handleCheckboxChange(event)"> $f$ &nbsp; es derivable en &nbsp; $(${a}, ${b})$</label>
-                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="c" onchange="handleCheckboxChange(event)"> $\\exists w \\in (${a}, ${b})$ &nbsp; tal que &nbsp; $f'(w) = m_p$</label>
-                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="d" onchange="handleCheckboxChange(event)"> Ninguna de las anteriores</label>
+                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="a" onchange="handleCheckboxChange(event)"> <span>$f$ &nbsp; es continua en &nbsp; $[${a}, ${b}]$</span></label>
+                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="b" onchange="handleCheckboxChange(event)"> <span>$f$ &nbsp; es derivable en &nbsp; $(${a}, ${b})$</span></label>
+                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="c" onchange="handleCheckboxChange(event)"> <span>$\\exists w \\in (${a}, ${b})$ &nbsp; tal que &nbsp; $f'(w) = m_p$</span></label>
+                <label class="h5p-option"><input type="checkbox" name="ch-opt" value="d" onchange="handleCheckboxChange(event)"> <span>Ninguna de las anteriores</span></label>
             `;
         }
 
         // Opciones gordas para el Desafío 5
         const optionsHTML_5 = `
-            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> Si para todo &nbsp; $w \\in (a,b)$ &nbsp;se tiene que &nbsp; $f'(w) \\neq m_p$, entonces &nbsp; $f$ &nbsp; no es continua en &nbsp; $[a, b]$ &nbsp; o no es derivable en &nbsp; $(a, b)$.</label>
-            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> Si &nbsp; $f$ &nbsp; no es continua en &nbsp; $[a, b]$ &nbsp; o no es derivable en &nbsp; $(a, b)$, entonces para todo &nbsp; $w \\in (a,b)$ &nbsp; se tiene que &nbsp; $f'(w) \\neq m_p$.</label>
-            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> Si &nbsp; $f$ &nbsp; es continua en &nbsp; $[a, b]$ &nbsp; y derivable en &nbsp; $(a, b)$, entonces &nbsp; $\\exists w \\in (a,b)$ &nbsp; tal que &nbsp; $f'(w) = m_p$.</label>
-            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> Si &nbsp; $\\exists w \\in (a,b)$ &nbsp; tal que $f'(w) = m_p$, entonces &nbsp; $f$ &nbsp; es continua en &nbsp; $[a, b]$ &nbsp; y derivable en &nbsp; $(a, b)$.</label>
+            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> <span>Si para todo &nbsp; $w \\in (a,b)$ &nbsp;se tiene que &nbsp; $f'(w) \\neq m_p$, entonces &nbsp; $f$ &nbsp; no es continua en &nbsp; $[a, b]$ &nbsp; o no es derivable en &nbsp; $(a, b)$.</span></label>
+            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> <span>Si &nbsp; $f$ &nbsp; no es continua en &nbsp; $[a, b]$ &nbsp; o no es derivable en &nbsp; $(a, b)$, entonces para todo &nbsp; $w \\in (a,b)$ &nbsp; se tiene que &nbsp; $f'(w) \\neq m_p$.</span></label>
+            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> <span>Si &nbsp; $f$ &nbsp; es continua en &nbsp; $[a, b]$ &nbsp; y derivable en &nbsp; $(a, b)$, entonces &nbsp; $\\exists w \\in (a,b)$ &nbsp; tal que &nbsp; $f'(w) = m_p$.</span></label>
+            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> <span>Si &nbsp; $\\exists w \\in (a,b)$ &nbsp; tal que $f'(w) = m_p$, entonces &nbsp; $f$ &nbsp; es continua en &nbsp; $[a, b]$ &nbsp; y derivable en &nbsp; $(a, b)$.</span></label>
         `;
 
         function updateSliderVisuals() {
@@ -961,7 +983,7 @@
             
             document.getElementById('res-n1').innerText = aciertosN1 + "/5";
             document.getElementById('res-n2').innerText = aciertosN2 + "/3";
-            document.getElementById('res-n3').innerText = aciertosN3 + "/7"; 
+            document.getElementById('res-n3').innerText = aciertosN3 + "/4"; 
             confetti({ particleCount: 2000, spread: 160, origin: { y: 0.3 } });
         }
     </script>

@@ -615,7 +615,7 @@
             <p id="h5p-counter" style="text-align: right; font-weight: 600; color: var(--primary);">1/3</p>
 
             <div id="step-1" class="quiz-step">
-                <h3>1. ¿Qué afirma el teorema de Weierstrass en el estudio de funciones reales?</h3>
+                <h3>1. ¿Qué afirma el teorema de Weierstrass en el estudio de funciones continuas?</h3>
                 <label class="h5p-option"><input type="radio" name="q1" value="correcta"> <span>La existencia de al menos un máximo absoluto y un mínimo absoluto.</span></label>
                 <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>Que la función es derivable en todo el intervalo analizado y su derivada se anula al menos una vez.</span></label>
                 <label class="h5p-option"><input type="radio" name="q1" value="incorrecta"> <span>Que la función cruza el eje X garantizando la existencia de al menos una raíz real.</span></label>
@@ -647,7 +647,7 @@
             <div class="n3-section">
                 <h3>A. Propiedad de acotación local: Si $f$ es continua en $x=a$, entonces existe una vecindad en donde $f$ está acotada.</h3>
                 <p style="margin-bottom:20px; color:#64748b;">
-                    Arrastra los conceptos para estructurar la demostración de acotación local:
+                    Arrastra los elementos del <strong>Banco de Conceptos</strong> para estructurar la demostración de acotación local:
                 </p>
 
                 <p style="line-height:2.3;">
@@ -689,7 +689,7 @@
             <div class="n3-section">
                 <h3>B. Propiedad de acotación global: Toda función continua en un intervalo cerrado y acotado está acotada.</h3>
                 <p style="margin-bottom:20px; color:#64748b;">
-                    Arrastra los conceptos para estructurar la demostración de acotación global en $[a,b]$:
+                    Arrastra los elementos del <strong>Banco de Conceptos</strong> para estructurar la demostración de acotación global en $[a,b]$:
                 </p>
 
                 <p style="line-height:2.3;">
@@ -706,7 +706,7 @@
                     
                     <!-- Letrero animado de Análisis -->
                     <div class="tooltip-analisis">
-                        <i class="fa-solid fa-magnifying-glass" style="color:var(--warning); font-size: 1.2em;"></i>
+                        <i class="fa-solid fa-magnifying-glass" style="color:var(--warning); font-size: 1.5em;"></i>
                         <strong>Análisis profundo</strong>
                         
                         <div class="tooltip-box">
@@ -736,7 +736,7 @@
             <div class="n3-section">
                 <h3>C. Teorema de Weierstrass: Toda función continua en un cerrado y acotado alcanza su máximo y su mínimo.</h3>
                 <p style="margin-bottom:20px; color:#64748b;">
-                    Arrastra los conceptos para demostrar que la función alcanza su supremo (máximo absoluto):
+                    Arrastra los elementos correctos del <strong>Banco de Conceptos</strong> para demostrar que la función alcanza su supremo (máximo absoluto):
                 </p>
 
                 <p style="line-height:2.3;">
@@ -771,7 +771,7 @@
                 </div>
             </div>
 
-            <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()"><i class="fa-solid fa-flag-checkered"></i> Evaluar Final</button>
+            <button class="btn-general" id="btn-evaluar-n3" onclick="evaluarEtapa3()"><i class="fa-solid fa-flag-checkered"></i> Evaluación Final</button>
             <button class="btn-general btn-success hidden" id="btn-ir-resumen" onclick="mostrarResumen()">Ir al Resumen de Actividad <i class="fa-solid fa-arrow-right"></i></button>
         </div>
 
@@ -797,7 +797,7 @@
         </div>
         <footer>
             <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
-                &copy; 2026, JGHA & DMA<br>
+            &copy; 2026, JGHA & DMA<br>
             </p>
         </footer>
 
@@ -851,20 +851,20 @@
             {
                 num: 3,
                 text: "¿Qué propiedades identificas en la gráfica de la función $f(x)$ mostrada en el intervalo $[0, 2]$?",
-                correct: ['d'],
+                correct: ['b', 'c'],
                 f: (x) => {
-                    if (Math.abs(x) < 0.01) return 1;
-                    if (Math.abs(x - 2) < 0.01) return 1;
+                    if (Math.abs(x-0.5) < 0.01) return 1.8;
+                    if (Math.abs(x - 1.7) < 0.01) return 0.4;
                     return x;
                 },
-                a: 0, b: 2,
+                a: 0.5, b: 1.7,
                 bbox: [-0.5, 2.5, 2.5, -0.5],
                 drawCustom: (brd) => {
-                    brd.create('functiongraph', [x => x, 0.03, 1.97], { strokeColor: '#004080', strokeWidth: 3 });
-                    brd.create('point', [0, 0], { fixed: true, name: '', fillColor: 'white', strokeColor: '#004080', size: 4 });
-                    brd.create('point', [2, 2], { fixed: true, name: '', fillColor: 'white', strokeColor: '#004080', size: 4 });
-                    brd.create('point', [0, 1], { fixed: true, name: '', color: '#004080', size: 3 });
-                    brd.create('point', [2, 1], { fixed: true, name: '', color: '#004080', size: 3 });
+                    brd.create('functiongraph', [x => x, 0.5, 1.7], { strokeColor: '#004080', strokeWidth: 3 });
+                    brd.create('point', [0.5, 0.5], { fixed: true, name: '', fillColor: 'white', strokeColor: '#004080', size: 4 });
+                    brd.create('point', [1.7, 1.7], { fixed: true, name: '', fillColor: 'white', strokeColor: '#004080', size: 4 });
+                    brd.create('point', [0.5, 1.8], { fixed: true, name: '', color: '#004080', size: 3 });
+                    brd.create('point', [1.7, 0.4], { fixed: true, name: '', color: '#004080', size: 3 });
                 }
             },
             {
@@ -882,7 +882,7 @@
             },
             {
                 num: 5,
-                text: "Analiza las 4 gráficas (Desafíos 1 a 4). Relacionando lo estudiado, formula una conjetura eligiendo las opciones correctas que generalicen el Teorema:",
+                text: "Analiza las 4 gráficas (Desafíos 1 a 4). Relacionando lo estudiado, formula una conjetura eligiendo las opciones correctas que corresponden al Teorema de Weierstrass:",
                 correct: ['a', 'c']
             }
         ];
@@ -898,9 +898,9 @@
 
         const optionsHTML_5 = `
             <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="a"> <span>Si $f$ es continua en $[a,b]$, entonces alcanza un máximo y un mínimo absoluto en $[a,b]$.</span></label>
-            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> <span>La continuidad en $[a,b]$ es una condición necesaria pero no suficiente para la existencia de extremos absolutos.</span></label>
-            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> <span>La continuidad en $[a,b]$ es una condición suficiente para la existencia de extremos absolutos.</span></label>
-            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> <span>Toda función definida en $[a,b]$ alcanza extremos absolutos sin importar su continuidad.</span></label>
+            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="b"> <span>Si $f$ no es continua en $[a,b]$, entonces no alcanza un máximo o no alcanza un mínimo absoluto en $[a,b]$.</span></label>
+            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="c"> <span>Si $f$ no alcanza un máximo o un mínimo absoluto en $[a,b]$, entonces la función no es continua en $[a,b]$.</span></label>
+            <label class="h5p-option fat-option"><input type="checkbox" name="ch-opt" value="d"> <span>Si $f$ alcanza un máximo y un mínimo absoluto en $[a,b]$, entonces es continua en $[a,b]$.</span></label>
         `;
 
         function updateSliderVisuals() {
@@ -1099,7 +1099,7 @@
                 if (!isOptionsCorrect && !isValidGraphics) {
                     restarVida("Ambas partes son incorrectas. Revisa tus opciones y asegúrate de explorar TODO el intervalo con el deslizador para validar.");
                 } else if (!isOptionsCorrect) {
-                    restarVida("Tu validación gráfica es correcta, pero las opciones seleccionadas no lo son. Revisa las propiedades de la función.");
+                    restarVida("Tus opciones elegidas son incompletas o no son correctas. Revisa las propiedades de la función.");
                 } else if (!isValidGraphics) {
                     restarVida("Tus opciones elegidas son correctas, pero debes explorar TODO el intervalo desplazando el deslizador de un extremo a otro para corroborar los máximos y mínimos.");
                 }
@@ -1257,7 +1257,10 @@
                     z.style.backgroundColor = "#fef2f2";
                 }
             });
-
+            /*if (correctas === total) {
+                correctas--; // Restar una respuesta correcta si todos los campos Drop están llenos
+            }
+            */
             aciertosN3 = correctas;
             document.getElementById('btn-evaluar-n3').classList.add('hidden');
             document.getElementById('btn-ir-resumen').classList.remove('hidden');
@@ -1271,7 +1274,7 @@
 
             document.getElementById('res-n1').innerText = aciertosN1 + "/5";
             document.getElementById('res-n2').innerText = aciertosN2 + "/3";
-            document.getElementById('res-n3').innerText = aciertosN3 + "/14";
+            document.getElementById('res-n3').innerText = aciertosN3 + "/13";
             confetti({ particleCount: 2000, spread: 180, origin: { y: 0.6 } });
         }
     </script>
