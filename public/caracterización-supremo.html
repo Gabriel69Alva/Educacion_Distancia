@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caracterización del Supremo</title>
+
+    <!-- Librerías Externas de Interfaz y Animaciones -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Configuración e Inclusión de MathJax para Renderizado de Fórmulas -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+        };
+    </script>
+
+    <style>
+        :root {
+            --primary: #004080;
+            --primary-hover: #002d5a;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --azure-accent: #38bdf8;
+            --azure-dark: #0284c7;
+            --azure-bg: #e0f7fa;
+            --azure-border: #b2ebf2;
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            background: #fff;
+            padding: 45px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        /* Layout de dos columnas para Etapa 1 */
+        .two-column-layout {
+            display: flex;
+            gap: 40px;
+            margin-top: 20px;
+            align-items: flex-start;
+        }
+
+        .column-left { flex: 1; min-width: 350px; }
+        .column-right { flex: 1.5; min-width: 500px; display: flex; flex-direction: column; align-items: center; }
+
+        @media (max-width: 850px) {
+            .two-column-layout { flex-direction: column; }
+            .column-right, .column-left { width: 100%; min-width: 100%; }
+        }
+
+        .title-wrapper { display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+        h1 { color: var(--primary); font-weight: 700; text-align: center; margin-bottom: 0; font-size: 28px; }
+        h3 { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: var(--text-dark); }
+        p { line-height: 1.7; font-size: 16px; margin-bottom: 25px;}
+        
+        .hidden { display: none !important; }
+
+        .letrero-interaccion {
+            background-color: #fff7ed; color: #9a3412; padding: 15px; border-left: 5px solid #f97316;
+            font-size: 15px; line-height: 1.6; margin-bottom: 25px; margin-top: 10px; border-radius: 6px;
+            animation: fadeIn 0.5s ease-in-out, pulso 2s infinite;
+        }   
+        @keyframes pulso {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.015); }
+            100% { transform: scale(1); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .setup-box {
+            background: var(--bg-light); border: 1px solid var(--border-color); padding: 25px; border-radius: 12px;
+            margin-bottom: 25px; display: flex; gap: 25px; flex-wrap: wrap; justify-content: center; align-items: center;
+        }
+        .control-group { display: flex; flex-direction: column; gap: 8px; flex: 1; max-width: 400px; }
+        .control-group label { font-size: 15px; font-weight: 700; color: var(--primary); text-align: center;}
+        
+        .control-group input { 
+            padding: 12px; border: 2px solid var(--border-color); border-radius: 8px; outline: none; 
+            font-size: 16px; font-weight: bold; text-align: center; transition: border-color 0.3s ease;
+        }
+        .control-group input:focus { border-color: var(--azure-dark); }
+
+        .state-badge {
+            text-align: center; font-weight: 700; color: var(--azure-dark); background: #f0f9ff;
+            padding: 8px 16px; border-radius: 20px; display: inline-block; margin: 0 auto 20px auto;
+            border: 1px solid #bae6fd; font-size: 14px;
+        }
+        .state-badge-container { text-align: center; width: 100%; }
+
+        .btn-general {
+            display: block; width: 100%; max-width: 320px; margin: 10px auto; padding: 14px;
+            background-color: var(--primary); color: white; border: none; border-radius: 30px;
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.25s ease;
+            text-align: center; text-decoration: none; box-shadow: 0 4px 10px rgba(15,23,42,0.1);
+        }
+        .btn-general:hover:not(:disabled) { 
+            transform: translateY(-2px); background-color: var(--primary-hover); box-shadow: 0 6px 14px rgba(15, 23, 42, 0.2);
+        }
+        .btn-general:disabled { background-color: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+        .btn-success { background-color: var(--success); }
+        .btn-success:hover:not(:disabled) { background-color: #059669; }
+        
+        .button-group-row {
+            display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 15px; margin-bottom: 25px; width: 100%;
+        }
+
+        .canvas-wrapper {
+            width: 100%; max-width: 800px; margin: 0 auto 15px auto; border-radius: 12px;
+            border: 1px solid var(--border-color); background: #ffffff; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+        canvas { display: block; margin: 0 auto; cursor: pointer; max-width: 100%; height: auto; }
+
+        .quiz-section { margin-top: 10px; width: 100%; }
+        .progress-container { width: 100%; background: #e2e8f0; border-radius: 10px; height: 8px; margin: 15px 0 25px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--success); width: 33.33%; transition: width 0.4s ease; }
+        
+        .h5p-option { display: flex; align-items: center; padding: 14px; border: 1px solid var(--border-color); margin-bottom: 10px; border-radius: 8px; cursor: pointer; background: var(--bg-light); transition: all 0.2s; font-size: 15px; }
+        .h5p-option:hover:not(.disabled) { border-color: var(--success); background: #f0fdf4; transform: translateX(4px); }
+        .h5p-option.disabled { cursor: not-allowed; opacity: 0.7; }
+        .h5p-option input { margin-right: 12px; transform: scale(1.2); accent-color: var(--success); }
+        .h5p-feedback { padding: 16px; border-radius: 8px; margin-top: 15px; background: #f1f5f9; border-left: 5px solid var(--success); font-size: 14px; animation: fadeIn 0.3s ease-in; }
+        .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; color: #991b1b; }
+
+        /* Estructuras Drag & Drop para Etapa 3 */
+        .n3-section { background: var(--bg-light); padding: 30px; border-radius: 12px; margin-bottom: 30px; border: 1px solid var(--border-color); }
+        .step-row { margin-bottom: 20px; font-size: 16px; line-height: 2.2; }
+        
+        .word-bank {
+            display: flex; flex-wrap: wrap; gap: 12px; padding: 20px; background: #e0f2fe;
+            border: 2px solid #bae6fd; border-radius: 10px; margin-bottom: 25px; min-height: 50px;
+            align-items: center; justify-content: center;
+        }
+        .draggable-item {
+            background: white; border: 2px solid var(--azure-dark); padding: 6px 14px;
+            border-radius: 8px; cursor: grab; font-weight: 600; color: var(--primary);
+            display: inline-block; box-shadow: 0 2px 4px rgba(0,0,0,0.1); user-select: none;
+        }
+        .draggable-item:active { cursor: grabbing; box-shadow: none; transform: scale(0.98); }
+        
+        .drop-zone {
+            display: inline-flex; align-items: center; justify-content: center; min-width: 140px; min-height: 38px;
+            border: 2px solid #94a3b8; border-radius: 8px; vertical-align: middle; background: #f1f5f9; margin: 0 6px;
+            transition: all 0.2s ease;
+        }
+        .drop-zone.hovered { background: #dbeafe; border-color: var(--azure-dark); }
+        
+        .h5p-summary-box { border: 2px solid var(--success); background: #f0fdf4; border-radius: 12px; padding: 30px; margin-top: 25px; text-align: left; }
+        .summary-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #cbd5e1; font-size: 16px; font-weight: 500; }
+        .summary-row span.bold-val { font-weight: 700; color: var(--success); }
+
+        .bottom-reset-container { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: center; }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- ETAPA 1 -->
+        <div id="level-1-container">
+            <div class="title-wrapper"><h1>Etapa 1: Una Caracterización del Supremo</h1></div>
+            <p style="text-align: center; color: #64748b; margin-top: 10px;">Propiedad del supremo aplicada al conjunto $A=\left\{ \frac{n}{n+1} : n \in \mathbb{N} \right\}$.</p>
+            
+            <div class="two-column-layout">
+                <div class="column-left">
+                    <p><strong>Marco de referencia</strong><br>
+                    Para el conjunto $A$, cuyo supremo es $1$, se cumple que para toda $\varepsilon > 0$ existe $a_N \in A$ tal que  $1-\varepsilon < a_N \le 1 $.</p>
+
+                    <div id="panel-configuracion">
+                        <div class="letrero-interaccion" id="letrero-1">Para comprobarlo geométricamente, introduce un “valor de épsilon” y haz clic en “Generar Sucesión”.</div>
+                        <div class="setup-box">
+                            <div class="control-group">
+                                <label for="inputEpsilon">Valor de épsilon ($0.1 \le \varepsilon \le 0.5$):</label>
+                                <input type="number" id="inputEpsilon" min="0.1" max="0.5" step="0.01" placeholder="Ej. 0.2" autocomplete="off" oninput="actualizarEntornoEpsilon()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="lvl1-quiz-container" class="quiz-section hidden">
+                        <h3 style="color: var(--primary); text-align: center; margin-top:0;">Cuestionario de Análisis</h3>
+                        <div class="progress-container"><div class="progress-bar" id="lvl1-quiz-progress"></div></div>
+                        <p id="lvl1-quiz-counter" style="text-align: right; font-weight: 600; color: var(--success); margin-top:0; font-size:14px;">Pregunta 1 de 3</p>
+                        
+                        <div id="lvl1-qstep-1" class="quiz-block"></div>
+                        <div id="lvl1-qstep-2" class="quiz-block hidden"></div>
+                        <div id="lvl1-qstep-3" class="quiz-block hidden"></div>
+                        
+                        <div style="margin-top: 20px; display: flex; justify-content: center;">
+                            <button class="btn-general" id="btn-check-lvl1-quiz" onclick="verificarPreguntaLvl1()">Comprobar</button>
+                            <button class="btn-general hidden btn-success" id="btn-next-lvl1-quiz" onclick="pasarSiguientePreguntaLvl1()">Siguiente</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column-right">
+                    <div class="state-badge-container"><div class="state-badge" id="game-state-indicator">Franja de tolerancia: <span id="epsilon-value">1-épsilon</span></div></div>
+                    <div class="canvas-wrapper"><canvas id="supremoCanvas" width="800" height="400"></canvas></div>
+                    <div class="button-group-row" id="container-btn-generar">
+                        <button class="btn-general" id="btn-run-succession" onclick="ejecutarSucesionGeometria()" disabled>Generar Sucesión</button>
+                    </div>
+                    <div id="letrero-2" class="letrero-interaccion hidden" style="width: 90%; text-align: center; margin: 10px auto;">
+                        <i class="fa-solid fa-arrow-pointer"></i> Para comenzar con el análisis, haz clic sobre <strong>cualquier punto</strong> de la sucesión dentro de la franja.
+                    </div>
+                </div>
+            </div>
+            <button class="btn-general btn-success hidden" id="btn-go-to-n2" onclick="activarEtapa2()" style="margin-top: 30px;">Avanzar a la Etapa 2 <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+        <!-- ETAPA 2 -->
+        <div id="level-2-container" class="hidden">
+            <div class="title-wrapper"><h1>Etapa 2: Diagnóstico Conceptual</h1></div>
+            <p style="text-align: center; color: #64748b; margin-bottom: 30px; margin-top: 10px;">Responde los siguientes reactivos teóricos (Un intento por pregunta).</p>
+
+            <div class="progress-container"><div class="progress-bar" id="quiz-progress" style="width: 33.33%;"></div></div>
+            <p id="quiz-counter" style="text-align: right; font-weight: 600; color: var(--success); margin-top:0;">Pregunta 1 de 3</p>
+
+            <div id="qstep-1" class="quiz-block"></div>
+            <div id="qstep-2" class="quiz-block hidden"></div>
+            <div id="qstep-3" class="quiz-block hidden"></div>
+
+            <div style="margin-top: 30px;">
+                <button class="btn-general" id="btn-check-quiz" onclick="verifyPreguntaQuiz()">Comprobar Respuesta</button>
+                <button class="btn-general hidden btn-success" id="btn-next-quiz" onclick="pasarSiguientePreguntaQuiz()">Siguiente Pregunta</button>
+            </div>
+        </div>
+
+        <!-- ETAPA 3 -->
+        <div id="level-3-container" class="hidden">
+            <div class="title-wrapper"><h1>Etapa 3: Teorema de Caracterización</h1></div>
+            <p style="text-align: center; color: #64748b; margin-bottom: 25px; margin-top: 10px;">
+                Demuestra de manera general la equivalencia: $\alpha = \sup(A) \iff$ Propiedad del Supremo. <br>
+                <strong>Arrastra y suelta</strong> las expresiones matemáticas del banco de respuestas hacia los espacios correspondientes.
+            </p>
+
+            <!-- Banco de palabras para arrastrar -->
+            <div class="word-bank" id="banco-respuestas" ondrop="soltarEnBanco(event)" ondragover="permitirSoltar(event)">
+                <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag-1">no es cota superior</div>
+                <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag-2">$\alpha - \varepsilon < x$</div>
+                <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag-3">$x \le \alpha$</div>
+                <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag-4">mínima cota superior</div>
+                <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag-5">$\beta < \alpha$</div>
+                <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag-6">$\beta < x$</div>
+                <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag-7">$\alpha \le \beta$</div>
+                
+                <!-- Distractores -->
+                <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag-8">cota inferior</div>
+                <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag-9">$x < \alpha - \varepsilon$</div>
+            </div>
+
+            <div class="n3-section">
+                <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fa-solid fa-code-branch"></i> Parte 1: $\Rightarrow$ (Necesidad)</h3>
+                <div class="step-row">
+                    Sea $\alpha = \sup(A)$ y sea $\varepsilon > 0$. Como $\varepsilon > 0$, entonces $\alpha - \varepsilon < \alpha$. <br>
+                    Dado que $\alpha$ es el supremo, el valor $\alpha - \varepsilon$ <span class="drop-zone" id="dz-1" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-1"></span> del conjunto $A$. <br>
+                    Por la definición de cota, esto significa que $\exists x \in A$ tal que <span class="drop-zone" id="dz-2" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-2"></span>.<br>
+                    Además, como $\alpha$ es cota superior de $A$, se tiene que para ese mismo elemento <span class="drop-zone" id="dz-3" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-3"></span>. <br>
+                    $\therefore \alpha - \varepsilon < x \le \alpha$.
+                </div>
+
+                <hr style="border:0; border-top:1px solid #cbd5e1; margin: 25px 0;">
+
+                <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fa-solid fa-code-branch"></i> Parte 2: $\Leftarrow$ (Suficiencia)</h3>
+                <div class="step-row">
+                    Supongamos que $\alpha$ es cota superior y cumple que $\forall \varepsilon > 0, \exists x \in A$ tal que $\alpha - \varepsilon < x \le \alpha$. Demostraremos que $\alpha$ es la <span class="drop-zone" id="dz-4" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-4"></span>. <br>
+                    Sea $\beta$ cualquier otra cota superior de $A$. Si por contradicción supusiéramos que <span class="drop-zone" id="dz-5" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-5"></span>, entonces $\varepsilon = \alpha - \beta > 0$. <br>
+                    Por hipótesis, para este $\varepsilon$, $\exists x \in A$ tal que $\alpha - (\alpha - \beta) < x$, lo cual se simplifica como <span class="drop-zone" id="dz-6" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-6"></span>. <br>
+                    Pero esto contradice el hecho de que $\beta$ es cota superior. Por lo tanto, la suposición era falsa y <span class="drop-zone" id="dz-7" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-7"></span>. $\therefore \alpha = \sup(A)$.
+                </div>
+
+                <div style="margin-top: 35px; display: flex; justify-content: flex-end; gap: 15px;">
+                    <button class="btn-general" id="btn-check-proof" onclick="evaluarDemostracionLvl3()" style="max-width: 250px;">Evaluar Demostración</button>
+                    <button class="btn-general btn-success hidden" id="btn-show-summary" onclick="generarReporteFinal()" style="max-width: 250px;">Ver Resumen Final <i class="fa-solid fa-flag-checkered"></i></button>
+                </div>
+                <div id="n3-feedback" class="h5p-feedback hidden"></div>
+            </div>
+            <div id="final-summary-box" class="h5p-summary-box hidden"></div>
+        </div>
+
+        <div class="bottom-reset-container">
+            <button class="btn-general" onclick="location.reload()" style="max-width: 250px; font-size: 14px;"><i class="fa-solid fa-rotate-right"></i> Reiniciar Actividad Completa</button>
+        </div>
+        <footer>
+        <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+            &copy; 2026, JGHA & DMA<br>
+        </p>
+        </footer>
+
+    </div>
+
+    <script>
+        const ESTADO = { puntajeN1: 0, puntajeN2: 0, puntajeN3: 0, tiempoInicio: Date.now() };
+
+        function formatearTiempo(ms) {
+            let seg = Math.floor(ms / 1000), min = Math.floor(seg / 60);
+            return `${min}m ${seg % 60}s`;
+        }
+
+        // ==========================================
+        //  LÓGICA DEL LIENZO - NIVEL 1
+        // ==========================================
+        const canvas = document.getElementById('supremoCanvas');
+        const ctx = canvas.getContext('2d');
+        const epsilonInput = document.getElementById('inputEpsilon');
+        const gameStateIndicator = document.getElementById('epsilon-value');
+        const btnRun = document.getElementById('btn-run-succession');
+        
+        let epsilon = 0.2, offsetX = 50, widthEje = 700, centerY = canvas.height / 2, valorMinimoEje = 0.4; 
+        let elementosSucesion = [], animacionEnCurso = false, faseCazaActiva = false;
+        let epsilonLvl1, limiteInferiorLvl1, valorPuntoLvl1, nPuntoLvl1;
+
+        function inicializarLienzo() { renderizarEjeBase(); }
+        function mapX(valor) { return offsetX + (((valor - valorMinimoEje) / (1 - valorMinimoEje)) * widthEje); }
+
+        function actualizarEntornoEpsilon() {
+            if(animacionEnCurso) return; 
+            const eVal = parseFloat(epsilonInput.value);
+            if (!isNaN(eVal) && eVal >= 0.1 && eVal <= 0.5) {
+                epsilon = eVal;
+                gameStateIndicator.textContent = `1 - ${epsilon} = ${(1 - epsilon).toFixed(2)}`;
+                elementosSucesion = []; faseCazaActiva = false;
+                document.getElementById('letrero-2').classList.add('hidden');
+                btnRun.disabled = false; renderizarEjeBase();
+            } else { btnRun.disabled = true; }
+        }
+
+        function renderizarEjeBase() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let valorCorte = 1 - epsilon;
+            let coordCorteX = mapX(valorCorte);
+            let anchoFranja = mapX(1) - coordCorteX;
+
+            ctx.fillStyle = '#ecfdf5'; ctx.fillRect(coordCorteX, centerY - 60, anchoFranja, 120);
+            
+            ctx.beginPath(); ctx.moveTo(offsetX, centerY); ctx.lineTo(offsetX + widthEje, centerY);
+            ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 4; ctx.stroke();
+
+            ctx.beginPath(); ctx.moveTo(coordCorteX, centerY - 60); ctx.lineTo(coordCorteX, centerY + 60);
+            ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2.5; ctx.setLineDash([5, 5]); ctx.stroke(); ctx.setLineDash([]);
+
+            ctx.fillStyle = '#b91c1c'; ctx.font = 'bold 22px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText(`1 - ε (${valorCorte.toFixed(2)})`, coordCorteX, centerY - 70);
+            ctx.fillStyle = '#64748b'; ctx.font = '18px sans-serif'; ctx.fillText('barrera de vecindad', coordCorteX, centerY - 95); ctx.textAlign = 'left';
+
+            dibujarMarcaEje(valorMinimoEje, "0.4", "#334155"); dibujarMarcaEje(1, "Sup = 1", "green", 6);
+        }
+
+        function dibujarMarcaEje(valor, etiqueta, color, grosor = 4) {
+            let x = mapX(valor);
+            ctx.beginPath(); ctx.moveTo(x, centerY - 15); ctx.lineTo(x, centerY + 15);
+            ctx.strokeStyle = color; ctx.lineWidth = grosor; ctx.stroke();
+            ctx.fillStyle = color; ctx.font = 'bold 22px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText(etiqueta, x, centerY + 45); ctx.textAlign = 'left'; 
+        }
+
+        async function ejecutarSucesionGeometria() {
+            if (animacionEnCurso) return;
+            animacionEnCurso = true; btnRun.disabled = true; epsilonInput.disabled = true;
+            elementosSucesion = []; renderizarEjeBase();
+
+            for (let n = 1; n <= 25; n++) {
+                elementosSucesion.push({ n: n, valor: n / (n + 1), color: '#3b82f6', radio: 6 });
+                redibujarSucesionEnEje();
+                await new Promise(r => setTimeout(r, 200 - (n * 6))); 
+            }
+            ctx.fillStyle = "#334155"; ctx.font = 'bold 24px sans-serif'; ctx.fillText("...", mapX(elementosSucesion[elementosSucesion.length - 1].valor) + 15, centerY);
+            animacionEnCurso = false; faseCazaActiva = true;
+            document.getElementById('letrero-1').classList.add('hidden');
+            document.getElementById('letrero-2').classList.remove('hidden');
+            document.getElementById('container-btn-generar').classList.add('hidden');
+        }
+
+        function redibujarSucesionEnEje() {
+            renderizarEjeBase();
+            elementosSucesion.forEach(pto => {
+                let x = mapX(pto.valor);
+                ctx.beginPath(); ctx.arc(x, centerY, pto.radio, 0, Math.PI * 2);
+                ctx.fillStyle = pto.color; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke();
+            });
+        }
+
+        canvas.addEventListener('click', (e) => {
+            if (!faseCazaActiva) return;
+            const rect = canvas.getBoundingClientRect();
+            const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+            const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+            let puntoEncontrado = null;
+            for (let i = elementosSucesion.length - 1; i >= 0; i--) {
+                let p = elementosSucesion[i];
+                if (Math.sqrt(Math.pow(clickX - mapX(p.valor), 2) + Math.pow(clickY - centerY, 2)) <= 18) { puntoEncontrado = p; break; }
+            }
+
+            if (puntoEncontrado) {
+                if (puntoEncontrado.valor > 1 - epsilon) {
+                    faseCazaActiva = false; 
+                    swal({
+                        title: "¡Punto capturado!",
+                        text: `Seleccionaste n=${puntoEncontrado.n}.`,
+                        icon: "success", button: "Analizar"
+                    }).then(() => {
+                        elementosSucesion.forEach(p => { p.color = '#94a3b8'; p.radio = 4; });
+                        puntoEncontrado.color = '#ef4444'; puntoEncontrado.radio = 8;
+                        redibujarSucesionEnEje();
+                        epsilonLvl1 = epsilon; limiteInferiorLvl1 = (1 - epsilon).toFixed(2);
+                        valorPuntoLvl1 = puntoEncontrado.valor.toFixed(4); nPuntoLvl1 = puntoEncontrado.n;
+                        iniciarQuizLvl1();
+                    });
+                } else {
+                    swal("Fuera de la franja", "Selecciona un punto en el área verde claro.", "warning");
+                }
+            }
+        });
+
+        // ==========================================
+        //  CUESTIONARIOS (1 INTENTO, AVANCE FORZADO)
+        // ==========================================
+        let currentLvl1Index = 0;
+        
+        function iniciarQuizLvl1() {
+            document.getElementById('panel-configuracion').classList.add('hidden');
+            document.getElementById('letrero-2').classList.add('hidden');
+            document.getElementById('lvl1-quiz-container').classList.remove('hidden');
+            renderPreguntaLvl1();
+        }
+
+        function renderPreguntaLvl1() {
+            document.querySelectorAll('[id^="lvl1-qstep-"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`lvl1-qstep-${currentLvl1Index + 1}`).classList.remove('hidden');
+            document.getElementById('lvl1-quiz-counter').textContent = `Pregunta ${currentLvl1Index + 1} de 3`;
+            document.getElementById('lvl1-quiz-progress').style.width = `${((currentLvl1Index + 1) / 3) * 100}%`;
+            
+            document.getElementById('btn-check-lvl1-quiz').classList.remove('hidden');
+            document.getElementById('btn-next-lvl1-quiz').classList.add('hidden');
+
+            const container = document.getElementById(`lvl1-qstep-${currentLvl1Index + 1}`);
+            
+            if (currentLvl1Index === 0) {
+                container.innerHTML = `
+                    <p style="font-size: 16px;">Observando la gráfica y tu punto elegido ($n=${nPuntoLvl1}$) se cumple la desigualdad $1 - \\varepsilon < a_{${nPuntoLvl1}} \\le 1$. ¿Cual es el valor de $a_{${nPuntoLvl1}}$?</p>
+                    <label class="h5p-option"><input type="radio" name="lvl1_opt_1" value="si"> ${valorPuntoLvl1}  </label>
+                    <label class="h5p-option"><input type="radio" name="lvl1_opt_1" value="no"> ${limiteInferiorLvl1} </label>
+                    <label class="h5p-option"><input type="radio" name="lvl1_opt_1" value="no"> ${valorPuntoLvl1}+$\\varepsilon$ </label>
+                    <div id="fb-lvl1-1" class="h5p-feedback hidden"></div>`;
+            } else if (currentLvl1Index === 1) {
+                container.innerHTML = `
+                    <p style="font-size: 16px;">Sustituyendo los valores en $1 - \\varepsilon < a_N \\le 1$, esta queda escrita como: $${limiteInferiorLvl1} < ${valorPuntoLvl1} \\le 1$</p>
+                    <label class="h5p-option"><input type="radio" name="lvl1_opt_2" value="opt2"> Falso</label>
+                    <label class="h5p-option"><input type="radio" name="lvl1_opt_2" value="opt1"> Cierto</label>
+                    <div id="fb-lvl1-2" class="h5p-feedback hidden"></div>`;
+            } else if (currentLvl1Index === 2) {
+                container.innerHTML = `
+                    <p style="font-size: 16px;">Con base en tu captura, ¿es $1 - \\varepsilon = ${limiteInferiorLvl1}$ una cota superior de $A$?</p>
+                    <label class="h5p-option"><input type="radio" name="lvl1_opt_3" value="no"> Falso.</label>
+                    <label class="h5p-option"><input type="radio" name="lvl1_opt_3" value="si"> Cierto.</label>
+                    <div id="fb-lvl1-3" class="h5p-feedback hidden"></div>`;
+            }
+            MathJax.typesetPromise([container]);
+        }
+
+        function verificarPreguntaLvl1() {
+            const name = `lvl1_opt_${currentLvl1Index + 1}`;
+            const selected = document.querySelector(`input[name="${name}"]:checked`);
+            const fb = document.getElementById(`fb-lvl1-${currentLvl1Index + 1}`);
+            const btnCheck = document.getElementById('btn-check-lvl1-quiz');
+            const btnNext = document.getElementById('btn-next-lvl1-quiz');
+            
+            if (!selected) {
+                fb.classList.remove('hidden'); fb.classList.add('error');
+                fb.innerHTML = '<strong>Aviso:</strong> Por favor selecciona una respuesta antes de comprobar.';
+                return;
+            }
+
+            let isCorrect = false, fbMsg = "";
+            if (currentLvl1Index === 0) {
+                if (selected.value === 'si') { isCorrect = true; fbMsg = `${valorPuntoLvl1} es el valor del punto capturado.`; } 
+                else { fbMsg = 'Realiza el cálculo y verifica tu respuesta.'; }
+            } else if (currentLvl1Index === 1) {
+                if (selected.value === 'opt1') { isCorrect = true; fbMsg = 'Esa es la sustitución correcta.'; } 
+                else { fbMsg = `Revisa el cálculo y verifica tu respuesta.`; }
+            } else if (currentLvl1Index === 2) {
+                if (selected.value === 'no') { isCorrect = true; fbMsg = 'Esa es la esencia del supremo.'; } 
+                else { fbMsg = 'La respuesta correcta es No, porque mostrarte que existe un valor que supera a esa cota "falsa".'; }
+            }
+
+            fb.classList.remove('hidden', 'error');
+            if (isCorrect) {
+                ESTADO.puntajeN1++;
+                fb.innerHTML = `<strong><i class="fa-solid fa-check"></i> ¡Bien hecho!</strong> ${fbMsg}`;
+            } else {
+                fb.classList.add('error');
+                fb.innerHTML = `<strong><i class="fa-solid fa-xmark"></i> Incorrecto.</strong> ${fbMsg}`;
+            }
+
+            // Bloquear opciones (Solo 1 intento)
+            document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                r.disabled = true; r.parentElement.classList.add('disabled');
+            });
+            btnCheck.classList.add('hidden');
+            
+            if (currentLvl1Index < 2) { btnNext.classList.remove('hidden'); } 
+            else { document.getElementById('btn-go-to-n2').classList.remove('hidden'); }
+            MathJax.typesetPromise([fb]);
+        }
+
+        function pasarSiguientePreguntaLvl1() { currentLvl1Index++; renderPreguntaLvl1(); }
+
+        function activarEtapa2() {
+            document.getElementById('level-1-container').classList.add('hidden');
+            document.getElementById('level-2-container').classList.remove('hidden');
+            window.scrollTo(0,0); renderPreguntaQuiz();
+        }
+
+        // --- Nivel 2 ---
+        const questions = [
+            {
+                q: "Si $\\beta < \\sup(A)$, ¿se puede asegurar que $\\beta$ no es cota superior de $A$?",
+                opts: [{ t: "Sí", v: "c" }, { t: "No", v: "i" }],
+                ans: "c", fbC: "El supremo es la MENOR de las cotas, cualquier número menor no es cota.", fbI: "Recuerda que el supremo es la menor cota posible. La respuesta es Sí."
+            },
+            {
+                q: "Si $\\alpha = \\sup(A)$, entonces para todo $\\varepsilon > 0$, existe $x \\in A$ tal que:",
+                opts: [{ t: "$\\alpha - \\varepsilon < x \\le \\alpha$", v: "c" }, { t: "$x < \\alpha - \\varepsilon$", v: "i" }],
+                ans: "c", fbC: "Al no ser cota superior $\\alpha - \\varepsilon$, existe un elemento $x$ mayor a ella.", fbI: "La correcta es $\\alpha - \\varepsilon < x \\le \\alpha$, garantizada por la propiedad del supremo."
+            },
+            {
+                q: "¿Qué sucede si asumimos que $\\alpha - \\varepsilon$ SÍ es cota superior de $A$?",
+                opts: [{ t: "Llegamos a una contradicción con &nbsp; $\\alpha$ &nbsp; como supremo.", v: "c" }, { t: "No pasa nada.", v: "i" }],
+                ans: "c", fbC: "Llegamos a una contradicción, pues $\\alpha$ es la mínima cota superior.", fbI: "Llegamos a una contradicción, ya que $\\alpha$ debe ser la cota superior más pequeña."
+            }
+        ];
+        let currentQuizIndex = 0;
+
+        function renderPreguntaQuiz() {
+            document.querySelectorAll('[id^="qstep-"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`qstep-${currentQuizIndex + 1}`).classList.remove('hidden');
+            document.getElementById('quiz-counter').textContent = `Pregunta ${currentQuizIndex + 1} de 3`;
+            document.getElementById('quiz-progress').style.width = `${((currentQuizIndex + 1) / 3) * 100}%`;
+            
+            document.getElementById('btn-check-quiz').classList.remove('hidden');
+            document.getElementById('btn-next-quiz').classList.add('hidden');
+
+            const container = document.getElementById(`qstep-${currentQuizIndex + 1}`);
+            let html = `<p style="font-size: 17px; font-weight:500; margin-bottom: 20px;">${questions[currentQuizIndex].q}</p>`;
+            questions[currentQuizIndex].opts.forEach(opt => { html += `<label class="h5p-option"><input type="radio" name="quiz_${currentQuizIndex}" value="${opt.v}"> ${opt.t}</label>`; });
+            html += `<div id="fb-quiz-${currentQuizIndex}" class="h5p-feedback hidden"></div>`;
+            container.innerHTML = html; MathJax.typesetPromise([container]);
+        }
+
+        function verifyPreguntaQuiz() {
+            const q = questions[currentQuizIndex];
+            const name = `quiz_${currentQuizIndex}`;
+            const selected = document.querySelector(`input[name="${name}"]:checked`);
+            const fb = document.getElementById(`fb-quiz-${currentQuizIndex}`);
+            const btnCheck = document.getElementById('btn-check-quiz');
+            const btnNext = document.getElementById('btn-next-quiz');
+            
+            if (!selected) {
+                fb.classList.remove('hidden'); fb.classList.add('error');
+                fb.innerHTML = '<strong>Aviso:</strong> Por favor selecciona una respuesta.'; return;
+            }
+
+            fb.classList.remove('hidden', 'error');
+            if (selected.value === q.ans) {
+                ESTADO.puntajeN2++;
+                fb.innerHTML = `<strong><i class="fa-solid fa-check"></i> ¡Correcto!</strong> ${q.fbC}`;
+            } else {
+                fb.classList.add('error');
+                fb.innerHTML = `<strong><i class="fa-solid fa-xmark"></i> Incorrecto.</strong> ${q.fbI}`;
+            }
+
+            document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                r.disabled = true; r.parentElement.classList.add('disabled');
+            });
+            btnCheck.classList.add('hidden');
+            
+            if (currentQuizIndex < 2) {
+                btnNext.classList.remove('hidden'); btnNext.textContent = "Siguiente Pregunta";
+            } else {
+                btnNext.classList.remove('hidden'); btnNext.textContent = "Avanzar a la Etapa 3";
+                btnNext.onclick = activarEtapa3;
+            }
+            MathJax.typesetPromise([fb]);
+        }
+
+        function pasarSiguientePreguntaQuiz() { currentQuizIndex++; renderPreguntaQuiz(); }
+
+        // ==========================================
+        //  ETAPA 3 - DRAG AND DROP LÓGICO
+        // ==========================================
+        function activarEtapa3() {
+            document.getElementById('level-2-container').classList.add('hidden');
+            document.getElementById('level-3-container').classList.remove('hidden');
+            window.scrollTo(0,0);
+            mezclarBancoDeRespuestas();
+        }
+
+        function mezclarBancoDeRespuestas() {
+            const banco = document.getElementById('banco-respuestas');
+            for (let i = banco.children.length; i >= 0; i--) {
+                banco.appendChild(banco.children[Math.random() * i | 0]);
+            }
+        }
+
+        // Lógica Drag & Drop
+        function permitirSoltar(ev) {
+            ev.preventDefault(); 
+            if(ev.target.classList.contains('drop-zone')){
+                ev.target.classList.add('hovered');
+            }
+        }
+        function iniciarArrastre(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+        function soltar(ev) {
+            ev.preventDefault();
+            ev.target.classList.remove('hovered');
+            
+            let zone = ev.target.closest('.drop-zone');
+            if(!zone) return;
+
+            var data = ev.dataTransfer.getData("text");
+            var item = document.getElementById(data);
+
+            // Si la zona ya tiene un item, devolver el viejo al banco
+            if (zone.children.length > 0) {
+                document.getElementById('banco-respuestas').appendChild(zone.children[0]);
+            }
+            zone.appendChild(item);
+        }
+        
+        function soltarEnBanco(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            document.getElementById('banco-respuestas').appendChild(document.getElementById(data));
+        }
+
+        // Limpiar estilos al arrastrar fuera
+        document.querySelectorAll('.drop-zone').forEach(z => {
+            z.addEventListener('dragleave', (e) => e.target.classList.remove('hovered'));
+        });
+
+        function evaluarDemostracionLvl3() {
+            const zonas = document.querySelectorAll('.drop-zone');
+            
+            // Verificación de campos incompletos
+            let camposIncompletos = false;
+            zonas.forEach(zona => {
+                if (zona.children.length === 0) {
+                    camposIncompletos = true;
+                }
+            });
+
+            if (camposIncompletos) {
+                swal({
+                    title: "Campos incompletos",
+                    text: "Por favor, arrastra una respuesta a todos los espacios vacíos antes de evaluar la demostración.",
+                    icon: "warning",
+                    button: "Entendido"
+                });
+                return; 
+            }
+
+            // Si todos los campos están llenos, se evalúa (1 solo intento)
+            let correctos = 0;
+            
+            zonas.forEach(zona => {
+                let correctAnswerId = zona.getAttribute('data-ans');
+                zona.style.borderWidth = "2px";
+                
+                if (zona.children.length > 0) {
+                    let childId = zona.children[0].id;
+                    if (childId === correctAnswerId) {
+                        correctos++;
+                        zona.style.borderColor = "var(--success)";
+                        zona.style.backgroundColor = "#ecfdf5";
+                    } else {
+                        zona.style.borderColor = "var(--danger)";
+                        zona.style.backgroundColor = "#fef2f2";
+                    }
+                }
+            });
+
+            ESTADO.puntajeN3 = correctos;
+
+            const fb = document.getElementById("n3-feedback");
+            fb.classList.remove('hidden', 'error');
+
+            if (correctos === 7) {
+                fb.innerHTML = `<strong><i class="fa-solid fa-check"></i> ¡Demostración Perfecta!</strong> Has logrado estructurar formalmente la equivalencia lógica del supremo.`;
+                confetti({ particleCount: 300, spread: 100, zIndex: 9999, origin: { y: 0.5 } });
+            } else {
+                fb.classList.add('error');
+                fb.innerHTML = `<strong><i class="fa-solid fa-check-double"></i> Revisión completada.</strong> Tienes ${correctos} de 7 elementos correctos. Las respuestas correctas están marcadas en verde y las incorrectas en rojo.`;
+            }
+
+            // Bloquear arrastre y cambiar botones
+            document.querySelectorAll('.draggable-item').forEach(el => el.draggable = false);
+            document.getElementById('btn-check-proof').classList.add('hidden');
+            document.getElementById('btn-show-summary').classList.remove('hidden');
+        }
+
+        function generarReporteFinal() {
+            document.getElementById('btn-show-summary').disabled = true;
+            const tiempoFin = Date.now();
+            const summaryBox = document.getElementById('final-summary-box');
+            summaryBox.classList.remove('hidden');
+            
+            // Total sobre 13 puntos: 3 (Etapa 1) + 3 (Etapa 2) + 7 (Etapa 3)
+            let totalCorrect = ESTADO.puntajeN1 + ESTADO.puntajeN2 + ESTADO.puntajeN3; 
+            let percentage = Math.round((totalCorrect / 13) * 100);
+
+            summaryBox.innerHTML = `
+                <h2 style="color: var(--success); margin-top:0; text-align:center;"><i class="fa-solid fa-ranking-star"></i> Reporte de Actividad</h2>
+                <div class="summary-row"><span>Tiempo Invertido:</span> <span class="bold-val">${formatearTiempo(tiempoFin - ESTADO.tiempoInicio)}</span></div>
+                <div class="summary-row"><span>Puntaje Etapa 1 (Gráfica):</span> <span class="bold-val">${ESTADO.puntajeN1} / 3</span></div>
+                <div class="summary-row"><span>Puntaje Etapa 2 (Conceptos):</span> <span class="bold-val">${ESTADO.puntajeN2} / 3</span></div>
+                <div class="summary-row"><span>Etapa 3 (Teorema Estructurado):</span> <span class="bold-val">${ESTADO.puntajeN3} / 7</span></div>
+                <div class="summary-row" style="border-bottom:none; margin-top:15px; font-size:18px;">
+                    <span style="font-weight:bold; color:var(--text-dark)">Calificación Global:</span> 
+                    <span class="bold-val" style="font-size:22px;">${percentage}%</span>
+                </div>
+            `;
+            setTimeout(() => summaryBox.scrollIntoView({behavior: "smooth", block: "end"}), 300);
+        }
+
+        inicializarLienzo();
+    </script>
+</body>
+</html>

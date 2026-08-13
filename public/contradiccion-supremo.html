@@ -10,6 +10,7 @@
     <script src="https://jsxgraph.org/distrib/jsxgraphcore.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.18/dist/sweetalert2.all.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
@@ -563,7 +564,7 @@
             <button class="btn-general" id="btn-eval-n3" onclick="validarEtapa3()">Validar Solución Formal</button>
             <button class="btn-general hidden btn-success" id="btn-finish-all" onclick="mostrarCierreH5P()">Generar Reporte de Competencias <i class="fa-solid fa-graduation-cap"></i></button>
         </div>
-         <footer>
+        <footer>
         <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
             &copy; 2026, JGHA & DMA<br>
         </p>
@@ -1116,6 +1117,7 @@
             const tiempoFinal = ((Date.now() - stats.tiempoInicio) / 1000).toFixed(1);
 
             const cajaResumen = document.createElement('div');
+            confetti({ particleCount: 2000, spread: 180, origin: { y: 0.6 } });
             cajaResumen.className = 'h5p-summary-box';
             cajaResumen.innerHTML = `
                 <div class="summary-row">
@@ -1139,11 +1141,11 @@
                     <span class="bold-val">${aciertosQuiz} / 2</span>
                 </div>
                 <div class="summary-row">
-                    <span>Pasos deductivos analizados con éxito (Etapa 3):</span>
+                    <span>Pasos deductivos analizadas con éxito (Etapa 3):</span>
                     <span class="bold-val">${puntosAnaliticosN3} / 3</span>
                 </div>
                 <div class="summary-row" style="border-bottom: none; margin-top: 10px;">
-                    <span>Tiempo total de la práctica Contradicción del Supremo:</span>
+                    <span>Tiempo total de resolución del módulo:</span>
                     <span class="bold-val" style="color: var(--azure-dark);">${tiempoFinal} segundos</span>
                 </div>
                 <p style="text-align: center; font-weight: bold; margin-top: 25px; color: var(--success); font-size:16px;">

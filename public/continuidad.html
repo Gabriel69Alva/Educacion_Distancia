@@ -351,7 +351,7 @@
             </header>
 
             <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Analiza la gráfica, arrastra la etiqueta
-                que describe su discontinuidad y verifica tu respuesta.</p>
+                que describe su discontinuidad y verifica tu respuesta.<br><strong>Tienes solo cuatro oportunidades</strong></p>
 
             <div class="progress-container">
                 <div class="progress-bar" id="n1-progress"></div>
@@ -385,7 +385,7 @@
             </header>
 
             <p style="text-align: center; color: #64748b; margin-bottom: 20px;">Observa detenidamente la siguiente
-                gráfica seccionada enfocándote en el punto de análisis <strong>$x = 2$</strong>.</p>
+                gráfica enfocándote en el punto de análisis <strong>$x = 2$</strong>.</p>
 
             <div id="box-stage2" class="jxgbox-large"></div>
 
@@ -419,7 +419,7 @@
             </div>
 
             <div id="step-3" class="quiz-step hidden">
-                <h3>3. Exactamente en el punto $x = 2$, ¿cuál es el valor real de la función $f(2)$?</h3>
+                <h3>3. Exactamente en el punto $x = 2$, ¿cuál es el valor real de la función?</h3>
                 <label class="h5p-option"><input type="radio" name="q3" value="incorrecta" autocomplete="off">
                     <span>$f(2) = 1$</span></label>
                 <label class="h5p-option"><input type="radio" name="q3" value="correcta" autocomplete="off"> <span>$f(2)
@@ -533,7 +533,7 @@
                 </header>
 
                 <p style="text-align: center; color: #64748b; margin-bottom: 30px;">Aquí tienes el desempeño en el
-                    análisis del comportamiento del límite de una función.</p>
+                    análisis del comportamiento del límite y la continuidad/discontinuidad de una función.</p>
                 <div style="display:flex; justify-content: space-around; margin: 40px 0; flex-wrap: wrap; gap: 20px;">
                     <div
                         style="background: var(--bg-light); padding: 20px; border-radius: 8px; width: 140px; border: 1px solid var(--border-color);">
@@ -559,14 +559,15 @@
                 </div>
                 <button class="btn-general btn-restart" onclick="reiniciarActividad()">REINICIAR ESCENARIO</button>
             </div>
-            <footer>
-               <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
-               &copy; 2026, JGHA & DMA<br>
-               </p>
-            </footer>
 
         </div>
+        <footer>
+        <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+            &copy; 2026, JGHA & DMA<br>
+        </p>
+        </footer>
 
+    </div>
 
 </body>
 
@@ -887,7 +888,7 @@
         document.getElementById('res-n2').innerText = aciertosN2 + "/4";
         document.getElementById('res-n3').innerText = aciertosN3 + "/8";
 
-        confetti({ particleCount: 1200, spread: 140, origin: { y: 0.6 } });
+        confetti({ particleCount: 2000, spread: 140, origin: { y: 0.6 } });
     }
 
     function reiniciarActividad() { location.reload(); }
