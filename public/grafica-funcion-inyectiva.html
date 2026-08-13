@@ -89,9 +89,9 @@
 
         @keyframes cloverPopFall {
             0% { transform: scale(1); color: var(--success); }
-            20% { transform: scale(1.5); color: var(--danger); }
+            20% { transform: scale(1.5); color: var(--success); }
             40% { transform: scale(1.2) translateY(0); opacity: 1; }
-            100% { transform: scale(1.0) translateY(200px) rotate(90deg); opacity: 0; color: var(--danger); }
+            100% { transform: scale(1.0) translateY(200px) rotate(90deg); opacity: 0; color: var(--success); }
         }
 
         .btn-row { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
@@ -177,7 +177,7 @@
             </div>
 
             <div id="step-3" class="quiz-step hidden">
-                <h3>3. La definición formal establece que si $f(a) = f(b)$ implica necesariamente que $a = b$, then la función es:</h3>
+                <h3>3. La definición formal establece que si $f(a) = f(b)$ implica que $a = b$, entonces la función es:</h3>
                 <label class="h5p-option"><input type="radio" name="q3" value="correcta"> <span>A) Inyectiva</span></label>
                 <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>B) Par</span></label>
                 <label class="h5p-option"><input type="radio" name="q3" value="incorrecta"> <span>C) Impar</span></label>
@@ -189,7 +189,7 @@
         </div>
 
         <div id="level-3-container" class="hidden">
-            <h1>Etapa 3: Demostración analítica</h1>
+            <h1>Etapa 3: Demostración Analítica</h1>
             <p style="text-align: center; color: #64748b; margin-bottom: 30px;">
                 Utiliza la definición formal para demostrar si las siguientes funciones son inyectivas.<br>
                 <strong>Nota:</strong> Partimos de suponer que $f(a) = f(b)$. Si tras despejar llegamos a que <strong>$a = b$</strong>, es inyectiva.
@@ -523,7 +523,7 @@
         }
 
         function finalizarTodo() {
-            confetti({ particleCount: 400, spread: 150, origin: { y: 0.6 } });
+            confetti({ particleCount: 2000, spread: 150, origin: { y: 0.6 } });
             
             const nodeSummary = document.createElement('div');
             nodeSummary.className = 'summary-card';

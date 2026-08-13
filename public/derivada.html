@@ -165,7 +165,7 @@
             </div>
 
             <div class="btn-row" id="controls-etapa1">
-                <button class="btn-general" id="btn-validate" onclick="validarTangente()">Validar Tangencia</button>
+                <button class="btn-general" id="btn-validate" onclick="validarTangente()">Validar Tangente</button>
                 <button class="btn-general btn-secondary hidden" id="btn-siguiente-grafica" onclick="cargarNuevoReto()">Siguiente Reto <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></button>
             </div>
             
@@ -188,7 +188,7 @@
             </div>
 
             <div id="step-2" class="quiz-step hidden">
-                <h3>2. En la definición matemática $\lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$, ¿qué representa físicamente el término $h$?</h3>
+                <h3>2. En la definición de la derivada $\lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$, ¿qué representa físicamente el término $h$?</h3>
                 <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>La altura máxima que alcanza la curva en el eje vertical Y.</span></label>
                 <label class="h5p-option"><input type="radio" name="q2" value="incorrecta"> <span>La pendiente final evaluada en la recta tangente.</span></label>
                 <label class="h5p-option"><input type="radio" name="q2" value="correcta"> <span>La separación horizontal entre los dos puntos iniciales de la recta secante.</span></label>
@@ -276,9 +276,9 @@
             <button class="btn-general hidden btn-success" id="btn-finalizar-actividad" onclick="finalizarTodo()">Finalizar Actividad Módulo <i class="fa-solid fa-rocket"></i></button>
         </div>
         <footer>
-                <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
-                &copy; 2026, JGHA & DMA<br>
-                </p>
+        <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+            &copy; 2026, JGHA & DMA<br>
+        </p>
         </footer>
 
     </div>
@@ -435,7 +435,7 @@
                 } else {
                     if (score < 3) {
                         document.getElementById('btn-siguiente-grafica').classList.remove('hidden');
-                        swal("Desviación de Tangencia", `Tu pendiente de m = ${userSlope.toFixed(1)} no coincide con el valor objetivo (≈ ${formatearNumero(idealDiscreto, 2)}), derivado de f'(${retoActual.x0}) = ${formatearNumero(idealSlope, 3)}.\n\nObserva la línea verde punteada para contrastar la pendiente real. Pierdes un trébol. Presiona 'Siguiente Reto' cuando estés listo.`, "error");
+                        swal("Desviación de la Tangente", `Tu pendiente de m = ${userSlope.toFixed(1)} no coincide con el valor objetivo (≈ ${formatearNumero(idealDiscreto, 2)}), derivado de f'(${retoActual.x0}) = ${formatearNumero(idealSlope, 3)}.\n\nObserva la línea verde punteada para contrastar la pendiente real. Pierdes un trébol. Presiona 'Siguiente Reto' cuando estés listo.`, "error");
                     } else {
                         document.getElementById('btn-pasar-n2').classList.remove('hidden');
                         swal("Etapa Concluida", `Módulo de observación finalizado. Mira la discrepancia con la tangente real (línea verde) antes de avanzar a la teoría.`, "warning");
@@ -541,13 +541,13 @@
         }
 
         function finalizarTodo() {
-            confetti({ particleCount: 400, spread: 140, origin: { y: 0.6 } });
+            confetti({ particleCount: 2000, spread: 140, origin: { y: 0.6 } });
             
             const nodeSummary = document.createElement('div');
             nodeSummary.className = 'summary-card';
             nodeSummary.innerHTML = `
                 <div class="summary-item">
-                    <span>Tréboles de Vida Conservados:</span>
+                    <span>Tréboles Conservados:</span>
                     <span class="accent">${lives} / 3</span>
                 </div>
                 <div class="summary-item">
@@ -555,7 +555,7 @@
                     <span class="accent" style="color: ${totalErroresVisuales > 0 ? 'var(--danger)' : 'var(--success)'};">${totalErroresVisuales}</span>
                 </div>
                 <div class="summary-item">
-                    <span>Comprensión del Límite en Etapa 2:</span>
+                    <span>Comprensión del Límite en la definición de la derivada en Etapa 2:</span>
                     <span class="accent">${aciertosQuizN2} / 4</span>
                 </div>
                 <div class="summary-item">
