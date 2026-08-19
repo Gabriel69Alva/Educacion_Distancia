@@ -33,12 +33,12 @@
 
   <style>
     :root {
-      --bg-color: #121824;
-      --card-bg: #1e293b;
+      --bg-color: #070b11;
+      --card-bg: #151f33;
       --card-hover: #2a374e;
-      --primary: #00aaff;
-      --primary-dark: #0056b3;
-      --text-main: #f1f5f9;
+      --primary: white;
+      --primary-dark: #0056b3 ;
+      --text-main: rgb(23, 128, 234);
       --text-muted: #94a3b8;
       --border-color: #334155;
       
@@ -55,7 +55,7 @@
 
     /* BANNER / HEADER */
     .banner {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      background: linear-gradient(135deg, #000000 0%, #1e293b 100%);
       border-bottom: 2px solid var(--primary-dark);
       padding: 60px 20px 40px;
       text-align: center;
@@ -70,14 +70,14 @@
 
     .banner h2 {
       font-size: 1.25rem;
-      color: var(--text-main);
+      color: var(--primary);
       font-weight: 500;
       margin-top: 15px;
     }
 
     .banner h3 {
       font-size: 1.1rem;
-      color: var(--text-muted);
+      color: var(--primary);
       font-weight: 400;
       max-width: 800px;
       margin: 10px auto;
@@ -111,7 +111,7 @@
     }
 
     .unidad-titulo {
-      color: var(--primary);
+      color: var(--text-main);
       margin-top: 40px;
       margin-bottom: 20px;
       font-size: 1.4rem;
@@ -143,7 +143,7 @@
 
     .card-escenario:hover {
       transform: translateY(-3px);
-      border-color: var(--primary);
+      border-color: var(--text-main);
       background-color: var(--card-hover);
     }
 
@@ -157,6 +157,7 @@
 
     .card-escenario a:hover {
       text-decoration: underline;
+      color: var(--text-main);
     }
 
     .escenario-desc {
@@ -172,7 +173,7 @@
       border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 30px;
-      color: var(--text-main);
+      color: var(--text-muted);
     }
 
     /* SECCIÓN INVESTIGADORES */
@@ -190,24 +191,24 @@
     }
 
     .card-investigador h3 {
-      color: var(--primary);
+      color: var(--text-main);
       margin-top: 0;
       font-size: 1.3rem;
     }
 
     /* PIE DE PÁGINA */
     .footer-renovado {
-      background-color: #0b0f19;
+      background-color: #070b11;
       border-top: 1px solid var(--border-color);
       padding: 40px 20px;
       margin-top: 80px;
       text-align: center;
-      color: var(--text-muted);
+      color: var(--primary);
       font-size: 0.9rem;
     }
 
     .footer-renovado a {
-      color: var(--primary);
+      color: var(--text-main);
       text-decoration: none;
     }
 
@@ -376,12 +377,13 @@
       </ul>
     </section>
 
-        <!-- SECCIÓN 1: MARCO TEÓRICO Y METODOLOGÍA -->
+        <!-- SECCIÓN 2: Fundamentos teoréticos y metodológicos -->
     <section>
-      <h2 class="section-title">Marco Teórico y Metodología</h2>
+      <h2 class="section-title">Fundamentación de los Escenarios Interactivos</h2>
       <div class="teoria-box">
         <p>
-          Los escenarios interactivos presentados en este proyecto están fundamentados en el aprendizaje activo y la visualización dinámica de conceptos matemáticos abstractos.
+          Los escenarios interactivos presentados en este proyecto están fundamentados en el aprendizaje activo y la visualización dinámica de conceptos matemáticos abstractos. [...]
+          
         </p>
         <p>
           <strong>Fundamentos pedagógicos:</strong> Se integran aproximaciones geométricas, algebraicas e intuitivas para facilitar la transición hacia la formalización matemática ($\epsilon$-$\delta$, caracterizaciones de supremos y teoremas de continuidad/derivabilidad). Cada escenario busca promover la conjetura antes de la demostración formal.
