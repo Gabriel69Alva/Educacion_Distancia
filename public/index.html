@@ -1,13 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Proyecto Educación a Distancia</title>
-  <!-- update the version number as needed -->
+  <title>Proyecto Educación a Distancia - Cálculo I</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDKs -->
   <script defer src="/__/firebase/11.2.0/firebase-app-compat.js"></script>
-  <!-- include only the Firebase features as you need -->
   <script defer src="/__/firebase/11.2.0/firebase-auth-compat.js"></script>
   <script defer src="/__/firebase/11.2.0/firebase-database-compat.js"></script>
   <script defer src="/__/firebase/11.2.0/firebase-firestore-compat.js"></script>
@@ -17,34 +22,292 @@
   <script defer src="/__/firebase/11.2.0/firebase-analytics-compat.js"></script>
   <script defer src="/__/firebase/11.2.0/firebase-remote-config-compat.js"></script>
   <script defer src="/__/firebase/11.2.0/firebase-performance-compat.js"></script>
-  <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
   <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'],['\\(','\\)']]}});
+    </script>
 
   <link rel="stylesheet" href="./css/stilos.css">
 
-  <!-- Estilos adicionales para organizar las unidades y descripciones -->
   <style>
-    .unidad-titulo {
-        color: #00aaff;
-        margin-top: 40px;
-        margin-bottom: 15px;
-        font-size: 1.5rem;
-        border-bottom: 2px solid #444;
-        padding-bottom: 5px;
-        text-transform: uppercase;
+    :root {
+      --bg-color: #070b11;
+      --card-bg: #151f33;
+      --card-hover: #2a374e;
+      --primary: white;
+      --primary-dark: #0056b3 ;
+      --text-main: rgb(23, 128, 234);
+      --text-muted: #94a3b8;
+      --border-color: #334155;
     }
-    
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+
+    /* BANNER / HEADER */
+    .banner {
+      background: linear-gradient(135deg, #000000 0%, #1e293b 100%);
+      border-bottom: 2px solid var(--primary-dark);
+      padding: 60px 20px 40px;
+      text-align: center;
+    }
+
+    .banner h1 {
+      color: var(--primary);
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .banner h2 {
+      font-size: 1.25rem;
+      color: var(--primary);
+      font-weight: 500;
+      margin-top: 15px;
+    }
+
+    .banner h3 {
+      font-size: 1.1rem;
+      color: var(--primary);
+      font-weight: 400;
+      max-width: 800px;
+      margin: 10px auto;
+    }
+
+    .meta-info {
+      display: inline-flex;
+      gap: 15px;
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      color: var(--primary);
+    }
+
+    /* CONTENIDO PRINCIPAL */
+    .content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      color: var(--text-main);
+      border-left: 4px solid var(--primary);
+      padding-left: 15px;
+      margin: 50px 0 25px;
+      font-weight: 600;
+    }
+
+    .unidad-titulo {
+      color: var(--text-main);
+      margin-top: 40px;
+      margin-bottom: 20px;
+      font-size: 1.4rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* GRID DE ESCENARIOS */
+    .grid-escenarios {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .card-escenario {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-escenario:hover {
+      transform: translateY(-3px);
+      border-color: var(--text-main);
+      background-color: var(--card-hover);
+    }
+
+    .card-escenario a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+
+    .card-escenario a:hover {
+      text-decoration: underline;
+      color: var(--text-main);
+    }
+
     .escenario-desc {
-        color: #b0b0b0;
-        font-size: 0.95rem;
-        margin-top: 8px;
-        margin-bottom: 10px;
-        padding-left: 10px;
-        border-left: 3px solid #0056b3;
-        font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* SECCIÓN MARCO TEÓRICO (DESPLEGABLE CON ANIMACIÓN HOVER) */
+    .teoria-details {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .teoria-details:hover {
+      transform: translateY(-3px);
+      border-color: var(--text-main);
+      background-color: var(--card-hover);
+    }
+
+    .teoria-details summary {
+      padding: 20px 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: transparent;
+    }
+
+    .teoria-details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .teoria-details summary::after {
+      content: '▼';
+      font-size: 0.9rem;
+      transition: transform 0.3s ease;
+      color: var(--text-muted);
+    }
+
+    .teoria-details[open] summary::after {
+      transform: rotate(180deg);
+    }
+
+    .teoria-box {
+      padding: 0 30px 30px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-color);
+      margin-top: 10px;
+      padding-top: 20px;
+    }
+
+    .teoria-box h4 {
+      color: var(--primary);
+      margin-top: 25px;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    .teoria-box ul {
+      padding-left: 20px;
+      margin-bottom: 20px;
+    }
+
+    .teoria-box li {
+      margin-bottom: 8px;
+    }
+
+    /* SECCIÓN INVESTIGADORES CON ANIMACIÓN HOVER */
+    .grid-investigadores {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+    }
+
+    .card-investigador {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 25px;
+      transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .card-investigador:hover {
+      transform: translateY(-3px);
+      border-color: var(--text-main);
+      background-color: var(--card-hover);
+    }
+
+    .perfil-investigador {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .foto-perfil {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background-color: var(--border-color);
+      object-fit: cover;
+      border: 2px solid var(--border-color);
+    }
+
+    .card-investigador h3 {
+      color: var(--text-main);
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    /* PIE DE PÁGINA */
+    .footer-renovado {
+      background-color: #070b11;
+      border-top: 1px solid var(--border-color);
+      padding: 40px 20px;
+      margin-top: 80px;
+      text-align: center;
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+
+    .footer-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 10px;
+    }
+
+    .footer-logo {
+      height: 45px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .footer-renovado a {
+      color: var(--text-main);
+      text-decoration: none;
+    }
+
+    .footer-renovado a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -52,180 +315,274 @@
 <body>
   <header class="banner">
     <h1>Cálculo Diferencial e Integral I</h1>
-    <h3>Escenarios interactivos para apoyar el aprendeizaje a distancia de la materia de Cálculo Diferencial e Integral I</h3>
-    <h2>Universidad Nacional Autónoma de México, UNAM</h2>
+    <h2>Tecnología digital para el apoyo del aprendizaje a distancia de la materia de Cálculo Diferencial e Integral I</h2>
+    <h2>Universidad Nacional Autónoma de México (UNAM)</h2>
     <h3>Facultad de Ciencias</h3>
-    <p>Gabriel Herrera y David Meza</p>
-    <p>07/08/2025</p>
+    <div class="meta-info">
+      <span><strong>Autores:</strong> Gabriel Herrera y David Meza</span>
+      <span>•</span>
+      <span>07/08/2025</span>
+    </div>
   </header>
 
   <main class="content">
-    <h2>Escenarios Didácticos e Interactivos</h2>
-    <!-- UNIDAD 2. -->
-    <h3 class="unidad-titulo">Unidad 2. El sistema de los números reales</h3>
-    <ul class="links">
-      <li>
-        <a href="./axiomas-campo-orden.html" target="_blank" rel="noopener noreferrer">2.1. Axiomas de campo</a>
-        <p class="escenario-desc">Se muestra el funcionamiento de los axiomas de orden y campo posicionando puntos o valores en la recta real.</p>
-      </li>
-      <li>
-        <a href="./caracterizacion-supremo.html" target="_blank" rel="noopener noreferrer">2.2. Caracterización del supremo</a>
-        <p class="escenario-desc">Se muestra cómo aplicar la caracterización del supremo a un conjunto específico. Posteriormente, se demuestra la equivalencia del supremo y la caracterización.</p>
-      </li>
-    </ul>
 
-    <!-- UNIDAD 3 -->
-    <h3 class="unidad-titulo">Unidad 3. Funciones reales de variable real</h3>
-    <ul class="links">
+    <!-- SECCIÓN 2: ESCENARIOS INTERACTIVOS POR UNIDAD -->
+    <section>
+      <h2 class="section-title">Escenarios Interactivos</h2>
+      
+      <!-- UNIDAD 2 -->
+      <h3 class="unidad-titulo">Unidad 2</h3>
+      <ul class="grid-escenarios">
+        <li class="card-escenario">
+          <a href="./axiomas-campo-orden.html" target="_blank" rel="noopener noreferrer">2.1. Axiomas de campo</a>
+          <p class="escenario-desc">Se muestra el funcionamiento de los axiomas de orden y campo posicionando puntos o valores en la recta real.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./caracterizacion-supremo.html" target="_blank" rel="noopener noreferrer">2.2. Caracterización del supremo</a>
+          <p class="escenario-desc">Se muestra cómo aplicar la caracterización del supremo a un conjunto específico. Posteriormente, se demuestra la equivalencia del supremo y la caracterización.</p>
+        </li>
+      </ul>
 
-      <li>
-        <a href="./graficas-funciones-pares-impares.html" target="_blank" rel="noopener noreferrer">3.1. Gráficas funciones pares e impares</a>
-        <p class="escenario-desc">Se aborda la relación entre las funciones pares e impares con sus respectivas simetrías. Se presenta dos ejemplos en donde se demuestra la paridad y la imparidad de dos funciones polinomiales, respectivamente.</p>
-      </li>
-      <li>
-        <a href="./funcion-par-e-impar.html" target="_blank" rel="noopener noreferrer">3.2. Función par e impar</a>
-        <p class="escenario-desc">Se estudian las funciones pares e impares con sus respectivas definiciones. Se demuestra que el producto de una función par por una impar es impar, y que la suma de pares es par.</p>
-      </li>
-      <li>
-        <a href="./grafica-funcion-inyectiva.html" target="_blank" rel="noopener noreferrer">3.3. Grafica de una función inyectiva</a>
-        <p class="escenario-desc">Se estudia el concepto de función inyectiva mediante un acercamiento geométrico y algebraico. Posteriormente, se formaliza el concepto y se demuestra la inyectividad de una recta y la no inyectividad de una parábola.</p>
-      </li>
-      <li>
-        <a href="./inyectiva-supra-diagramas.html" target="_blank" rel="noopener noreferrer">3.4. Diagrama de una función inyectiva</a>
-        <p class="escenario-desc">Se estudia el concepto de función inyectiva mediante diagramas de Venn y su definición algebraica. Posteriormente, se formaliza el concepto y se demuestra la inyectividad de una función racional y la inyectividad de la composición de funciones inyectivas.</p>
-      </li>
-      <li>
-        <a href="./sobreyectividad.html" target="_blank" rel="noopener noreferrer">3.5. Gráfica de una función suprayectiva</a>
-        <p class="escenario-desc">Se estudia el concepto de función sobreyectiva mediante un acercamiento geométrico y algebraico. Posteriormente, se formaliza el concepto y se presenta un ejemplo de cómo demostrar que una función es sobreyectiva.</p>
-      </li>
-      <li>
-        <a href="./funcion-sobre-diagramas.html" target="_blank" rel="noopener noreferrer">3.6. Diagrama de una función suprayectiva</a>
-        <p class="escenario-desc">Se estudia el concepto de función sobreyectiva mediante diagramas de Venn y de manera algebraica. Posteriormente, se presenta un ejemplo de dos funciones sobreyectivas cuya suma no es sobreyectiva.</p>
-      </li>
-      <li>
-        <a href="./resumen-definiciones-funciones.html" target="_blank" rel="noopener noreferrer">3.7. Cuestionario sobre funciones, V1</a>
-        <p class="escenario-desc">Se repasan los conceptos de función par, impar, inyectiva, sobreyectiva y biyectiva mediante sus definiciones.</p>
-      </li>
-    </ul>
+      <!-- UNIDAD 3 -->
+      <h3 class="unidad-titulo">Unidad 3</h3>
+      <ul class="grid-escenarios">
+        <li class="card-escenario">
+          <a href="./graficas-funciones-pares-impares.html" target="_blank" rel="noopener noreferrer">3.1. Gráficas funciones pares e impares</a>
+          <p class="escenario-desc">Se aborda la relación entre las funciones pares e impares con sus respectivas simetrías. Se presentan dos ejemplos demostrativos.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./funcion-par-e-impar.html" target="_blank" rel="noopener noreferrer">3.2. Función par e impar</a>
+          <p class="escenario-desc">Se estudian las funciones pares e impares con sus respectivas definiciones algebraicas y operaciones entre ellas.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./grafica-funcion-inyectiva.html" target="_blank" rel="noopener noreferrer">3.3. Gráfica de una función inyectiva</a>
+          <p class="escenario-desc">Se estudia el concepto de función inyectiva mediante un acercamiento geométrico y algebraico en rectas y parábolas.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./inyectiva-supra-diagramas.html" target="_blank" rel="noopener noreferrer">3.4. Diagrama de una función inyectiva</a>
+          <p class="escenario-desc">Se estudia el concepto mediante diagramas de Venn y definición algebraica, además de la composición de funciones.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./sobreyectividad.html" target="_blank" rel="noopener noreferrer">3.5. Gráfica de una función suprayectiva</a>
+          <p class="escenario-desc">Se estudia la sobreyectividad desde un enfoque geométrico-algebraico con ejemplos prácticos.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./funcion-sobre-diagramas.html" target="_blank" rel="noopener noreferrer">3.6. Diagrama de una función suprayectiva</a>
+          <p class="escenario-desc">Análisis de la sobreyectividad con diagramas de Venn y contraejemplos sobre la suma de funciones sobreyectivas.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./resumen-definiciones-funciones.html" target="_blank" rel="noopener noreferrer">3.7. Cuestionario sobre funciones, V1</a>
+          <p class="escenario-desc">Repaso de conceptos clave: funciones pares, impares, inyectivas, sobreyectivas y biyectivas.</p>
+        </li>
+      </ul>
 
-    <!-- UNIDAD 4 -->
-    <h3 class="unidad-titulo">Unidad 4. Sucesiones y límites</h3>
-    <ul class="links">
-      <li>
-        <a href="./sucesiones-monotonas.html" target="_blank" rel="noopener noreferrer">4.1. Monotonía completa diagramas</a>
-        <p class="escenario-desc">Se aborda la definición de sucesión creciente, decreciente y estrictamente creciente y decreciente mediante diagramas de Venn. Posteriormente, se presenta un ejemplo de cómo demostrar que una sucesión es estrictamente creciente.</p>
-      </li>
-      <li>
-        <a href="./limite-de-una-sucesion.html" target="_blank" rel="noopener noreferrer">4.2. Límite de una sucesión proceso formal</a>
-        <p class="escenario-desc">Se aborda la definición (épsilon-N) del límite de una sucesión de números reales generada de manera aleatoria. El acercamiento se realiza de manera geométrica y aritmética.</p>
-      </li>
-    </ul>
+      <!-- UNIDAD 4 -->
+      <h3 class="unidad-titulo">Unidad 4</h3>
+      <ul class="grid-escenarios">
+        <li class="card-escenario">
+          <a href="./sucesiones-monotonas.html" target="_blank" rel="noopener noreferrer">4.1. Monotonía completa diagramas</a>
+          <p class="escenario-desc">Definiciones de sucesiones crecientes, decrecientes y estrictamente monótonas mediante diagramas.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./limite-de-una-sucesion.html" target="_blank" rel="noopener noreferrer">4.2. Límite de una sucesión proceso formal</a>
+          <p class="escenario-desc">Proceso formal ($\epsilon$-$N$) del límite de una sucesión de números reales generada aleatoriamente.</p>
+        </li>
+      </ul>
 
-    <!-- UNIDAD 5 -->
-    <h3 class="unidad-titulo">Unidad 5. Límites de funciones</h3>
-    <ul class="links">
-      <li>
-        <a href="./limite-intuitivo.html" target="_blank" rel="noopener noreferrer">5.1. Límite proceso intuitivo</a>
-        <p class="escenario-desc">Se aborda la definición (épsilon-delta) del límite de una función en un punto dado. El acercamiento se realiza de manera geométrica en funciones generadas aleatoriamente. La idea es dada épsilon construir una vecindad delta que cumpla la definición “informal” del límite de una función en un punto dado.</p>
-      </li>
-      <li>
-        <a href="./definicion-limite-recta.html" target="_blank" rel="noopener noreferrer">5.2. Límite proceso formal</a>
-        <p class="escenario-desc">Se aborda la definición (épsilon-delta) del límite de una función en un punto dado. El acercamiento se realiza de manera geométrica y aritmética : El caso de una recta.</p>
-      </li>
-      <li>
-        <a href="./definicion-limite-parabola.html" target="_blank" rel="noopener noreferrer">5.3. Límite proceso formal con acotación de delta</a>
-        <p class="escenario-desc">Se aborda la definición (épsilon-delta) del límite de una función en un punto dado. El acercamiento se realiza de manera geométrica y aritmética : El caso de una parábola.</p>
-      </li>
-    </ul>
+      <!-- UNIDAD 5 -->
+      <h3 class="unidad-titulo">Unidad 5</h3>
+      <ul class="grid-escenarios">
+        <li class="card-escenario">
+          <a href="./limite-intuitivo.html" target="_blank" rel="noopener noreferrer">5.1. Límite proceso intuitivo</a>
+          <p class="escenario-desc">Definición ($\epsilon$-$\delta$) desde una perspectiva geométrica intuitiva construyendo vecindades.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./definicion-limite-recta.html" target="_blank" rel="noopener noreferrer">5.2. Límite proceso formal</a>
+          <p class="escenario-desc">Acercamiento geométrico y aritmético a la definición formal para el caso de una recta.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./definicion-limite-parabola.html" target="_blank" rel="noopener noreferrer">5.3. Límite con acotación de delta</a>
+          <p class="escenario-desc">Análisis geométrico y aritmético para el caso de una parábola acotando $\delta$.</p>
+        </li>
+      </ul>
 
-    <!-- UNIDAD 6. Continuidad -->
-    <h3 class="unidad-titulo">Unidad 6. Continuidad</h3>
-    <ul class="links">
-      <li>
-        <a href="./continuidad.html" target="_blank" rel="noopener noreferrer">6.1. Continuidad</a>
-        <p class="escenario-desc">Se analiza la gráfica de funciones definidas por pedazos. Se describen tres tipos de discontinuidades: de salto, evitable y discontinuidad infinita.</p>
-      </li>
-            <li>
-        <a href="./conjunto-negativo.html" target="_blank" rel="noopener noreferrer">6.2. Conjunto negativo</a>
-        <p class="escenario-desc">Estudia de forma geométrica cuándo una función es negativa.</p>
-      </li>
-      <li>
-        <a href="./teorema-conservacion-signo.html" target="_blank" rel="noopener noreferrer">6.3. Teorema de conservación del signo</a>
-        <p class="escenario-desc">Este escenario permite visualizar conceptos involucrados en la ley de la conservación del signo. Posteriormente se formula y se demuestra este teorema.</p>
-      </li>
-      <li>
-        <a href="./teorema-valor-intermedio.html" target="_blank" rel="noopener noreferrer">6.4. Teorema del valor intermedio</a>
-        <p class="escenario-desc">Este escenario permite visualizar conceptos involucrados en el teorema del Valor Intermedio. Posteriormente se formula el teorema mediante una conjetura y finalmente se demuestra este teorema.</p>
-      </li>
-      <li>
-        <a href="./contradiccion-supremo.html" target="_blank" rel="noopener noreferrer">6.5. Contradicción con el supremo</a>
-        <p class="escenario-desc">Este escenario permite visualizar conceptos involucrados en un paso clave en una demostración por contradicción del Teorema del Valor Intermedio. Se analiza el Caso 1.</p>
-      </li>
-      <li>
-        <a href="./teorema-de-Weierstrass.html" target="_blank" rel="noopener noreferrer">6.6. Teorema de Weierstrass</a>
-        <p class="escenario-desc">Este escenario permite visualizar conceptos involucrados en el teorema de Weierstrass. Posteriormente se formula el teorema mediante una conjetura y finalmente se demuestra.</p>
-      </li>
-    </ul>
+      <!-- UNIDAD 6 -->
+      <h3 class="unidad-titulo">Unidad 6</h3>
+      <ul class="grid-escenarios">
+        <li class="card-escenario">
+          <a href="./continuidad.html" target="_blank" rel="noopener noreferrer">6.1. Continuidad</a>
+          <p class="escenario-desc">Análisis gráfico de discontinuidades de salto, evitables e infinitas en funciones a trozos.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./conjunto-negativo.html" target="_blank" rel="noopener noreferrer">6.2. Conjunto negativo</a>
+          <p class="escenario-desc">Estudio geométrico de las regiones donde una función toma valores negativos.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./teorema-conservacion-signo.html" target="_blank" rel="noopener noreferrer">6.3. Teorema de conservación del signo</a>
+          <p class="escenario-desc">Visualización y demostración formal del teorema de conservación del signo.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./teorema-valor-intermedio.html" target="_blank" rel="noopener noreferrer">6.4. Teorema del valor intermedio</a>
+          <p class="escenario-desc">Visualización del Teorema del Valor Intermedio, conjetura inicial y su demostración.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./contradiccion-supremo.html" target="_blank" rel="noopener noreferrer">6.5. Contradicción con el supremo</a>
+          <p class="escenario-desc">Paso clave en la demostración por contradicción del Teorema del Valor Intermedio.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./teorema-de-Weierstrass.html" target="_blank" rel="noopener noreferrer">6.6. Teorema de Weierstrass</a>
+          <p class="escenario-desc">Visualización de valores máximos y mínimos acotados, formulación y demostración del teorema.</p>
+        </li>
+      </ul>
 
-    <!-- UNIDAD 7 -->
-    <h3 class="unidad-titulo">Unidad 7. La derivada de una función</h3>
-    <ul class="links">
-      <li>
-        <a href="./derivada.html" target="_blank" rel="noopener noreferrer">7.1. Derivada</a>
-        <p class="escenario-desc">Se estudia un acercamiento a la derivada de una función en un punto a través de la recta tangente a la gráfica</p>
-      </li>
+      <!-- UNIDAD 7 -->
+      <h3 class="unidad-titulo">Unidad 7</h3>
+      <ul class="grid-escenarios">
+        <li class="card-escenario">
+          <a href="./derivada.html" target="_blank" rel="noopener noreferrer">7.1. Derivada</a>
+          <p class="escenario-desc">Acercamiento a la derivada mediante la recta tangente a la gráfica en un punto.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./teorema-de-Fermat.html" target="_blank" rel="noopener noreferrer">7.2. Teorema de Fermat</a>
+          <p class="escenario-desc">Visualización de puntos críticos, formulación de conjetura y demostración.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./teorema-de-Rolle.html" target="_blank" rel="noopener noreferrer">7.3. Teorema de Rolle</a>
+          <p class="escenario-desc">Interpretación geométrica, formulación y demostración del Teorema de Rolle.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./tvm.html" target="_blank" rel="noopener noreferrer">7.4. Teorema del valor medio</a>
+          <p class="escenario-desc">Visualización, conjetura y demostración del Teorema del Valor Medio.</p>
+        </li>
+      </ul>
 
-      <li>
-        <a href="./teorema-de-Fermat.html" target="_blank" rel="noopener noreferrer">7.2. Teorema de Fermat</a>
-        <p class="escenario-desc">Este escenario permite visualizar conceptos involucrados en el teorema de Fermat. Posteriormente se formula el teorema mediante una conjetura y finalmente se demuestra.</p>
-      </li>
-      <li>
-        <a href="./teorema-de-Rolle.html" target="_blank" rel="noopener noreferrer">7.3. Teorema de Rolle</a>
-        <p class="escenario-desc">Este escenario permite visualizar conceptos involucrados en el teorema de Rolle. Posteriormente se formula el teorema mediante una conjetura y finalmente se demuestra.</p>
-      </li>
-      <li>
-        <a href="./tvm.html" target="_blank" rel="noopener noreferrer">7.4. Teorema del valor medio</a>
-        <p class="escenario-desc">Este escenario permite visualizar conceptos involucrados en el teorema del Valor Medio. Posteriormente se formula el teorema mediante una conjetura y finalmente se demuestra.</p>
-      </li>
-    </ul>
+      <!-- UNIDAD 8 -->
+      <h3 class="unidad-titulo">Unidad 8</h3>
+      <ul class="grid-escenarios">
+        <li class="card-escenario">
+          <a href="./analisis-de-graficas.html" target="_blank" rel="noopener noreferrer">8.1. Análisis de gráficas</a>
+          <p class="escenario-desc">Criterios de primera y segunda derivada para determinar picos, valles y concavidades.</p>
+        </li>
+        <li class="card-escenario">
+          <a href="./modelo-dieta.html" target="_blank" rel="noopener noreferrer">8.2. Modelo de dieta</a>
+          <p class="escenario-desc">Aplicación del modelo diferencial: $W(n)=\frac{c}{40}+(W_{0}-\frac{c}{40})e^{-0.0052n}$</p>
+        </li>
+      </ul>
+    </section>
 
-    <!-- UNIDAD 8 -->
-    <h3 class="unidad-titulo">Unidad 8. Aplicaciones de la derivada</h3>
-    <ul class="links">
-      <li>
-        <a href="./analisis-de-graficas.html" target="_blank" rel="noopener noreferrer">8.1. Análisis de gráficas</a>
-        <p class="escenario-desc">La primera y segunda derivada nos revelan la "anatomía" de la gráfica de una función: sus picos, valles y cambios de concavidad.</p>
-      </li>
-      <li>
-        <a href="./modelo-dieta.html" target="_blank" rel="noopener noreferrer">8.2. Modelo de dieta</a>
-        <p class="escenario-desc">Explora cómo las calorías consumidas en un tiempo determinado determinan el límite de tu peso mediante el modelo matemático: $W(n)=\frac{c}{40}+(W_{0}-\frac{c}{40})e^{-0.0052n}$</p>
-      </li>
-    </ul>
+    <!-- SECCIÓN 2: Fundamentos teoréticos y metodológicos -->
+    <section>
+      <h2 class="section-title">Fundamentación de los Escenarios Interactivos</h2>
+      <details class="teoria-details">
+        <summary>Ver fundamentación teórica</summary>
+        <div class="teoria-box">
+          <p>
+            La enseñanza de la matemática superior en los primeros semestres encierra diversas dificultades en la comprensión de conceptos y procesos, en particular en la demostración de teoremas.
+            Esta problemática ha sido reportada en la literatura especializada en la educación matemática, es de carácter internacional, por dar algunos ejemplos, respecto a la demostración Dawkins & Zazkis (2021) advirtieron que los estudiantes principiantes no siempre reconocen cuáles enunciados funcionan como hipótesis y cuáles como conclusiones ni cómo deben reutilizarse en una demostración, suelen justificar o aceptar una afirmación mediante intuiciones o evidencia empírica.
+            En ese sentido, Stylianides et al. (2024) señalaron que, los estudiantes novatos tienen la creencia de que para demostrar un teorema es suficiente hacerlo con ejemplos particulares; este obstáculo es catalogado como un hallazgo sólido en el área de la educación matemática.
+            Stavros (2014) encontró que muchos estudiantes, asumen la conclusión de una proposición para demostrar la proposición, es decir, usan lo que quieren demostrar. 
+            Al respecto, Camacho et al. (2014) advierte que una de las causas de esta problemática es que los estudiantes no cuentan con ningún tipo de entrenamiento dirigido para realizar o elaborar demostraciones matemáticas.
+            Nosotros mismos hemos estudiado algunas dificultades frecuentes de los alumnos relacionadas con los aspectos lógicos fundamentales para las demostraciones, ver (Herrera et al., 2018; Herrera et al. 2019; Herrera y Rodríguez, 2025).<br><br>  
+            Para atender esta problemática desde esta perspectiva, las actividades que proponemos en este trabajo están sustentadas en elementos de la educación matemática que promueven un proceso de enseñanza-aprendizaje activo.
+          </p>
+
+          <h4>1. La Propuesta</h4>
+          <p>
+            La transición del pensamiento intuitivo al formal ha sido ampliamente estudiada en la educación matemática. Por un lado, Tall (1991) describe esta evolución mediante un modelo del desarrollo del pensamiento matemático, mientras que
+            Gueudet (2008) enfatiza que las dificultades y rupturas que experimenta el estudiante en la transición del pensamiento empírico y procedimental al pensamiento abstracto y la formalización no deben verse como un fracaso o un vacío educativo sino como un <strong>proceso de adaptación</strong> y un <strong>paso necesario</strong> para el estudio de la matemática superior.
+            En este sentido, la geometría y la visualización actúan como un puente para esta transición; al respecto, en el ámbito del Cálculo, Arcavi y Hadas (2000) indican que, la tecnología digital brinda la oportunidad de visualizar e interactuar con distintas representaciones de conceptos que previamente se analizaban con el uso de instrumentos estáticos.<br><br>
+            Siguiendo esta línea de trabajo, en nuestra práctica cotidiana hemos incluido el uso de las tecnologías digitales, obteniendo resultados alentadores, en concordancia con Arcavi y Hadas (2000). 
+            Por lo cual presentamos este proyecto a la comunidad matemática interesada, que consiste en el diseñado de una serie de <strong>26 escenarios didácticos</strong> mediados por las tecnologías digitales, que se fundamentan en el aprendizaje activo, la visualización dinámica en tiempo real y la interactividad; sin olvidar lo que Arcavi y Hadas (2000) advierten, a saber, 
+            las herramientas tecnológicas en sí mismas <strong>no producen cambios sustanciales</strong> en el aprendizaje del estudiante, <strong>no generan conocimiento</strong> si no son utilizadas dentro de un marco didáctico que brinde apoyo para el desarrollo de actividades que le permitan al estudiante construir conceptos matemáticos.<br><br>
+            
+            
+
+          </p>
+
+          <h4>2. Principios de Diseño</h4>
+          <p>
+            Los escenarios interactivos que presentamos están en correspondencia con el temario de la Facultad de Ciencias de la UNAM, ver (Facultad de Ciencias, 2023) y se elaboraron con base en los siguientes principios de diseño:
+          </p>
+          <ul>
+            <li><strong>Diseño en tres etapas:</strong> Exploración (intuición-visual-geométrica), Concepto (cuestionario-teórico-formal) y Demostración Matemática (validación-formal).</li>
+            <li><strong>Exploración dinámica:</strong> Manipulación directa de parámetros, por ejemplo ($\epsilon$, $\delta$, puntos en la recta, puntos de control en gráficas, flechas en diagramas, etc.) con retroalimentación visual inmediata.</li>
+            <li><strong>Interacción activa:</strong> Las tres etapas son 100% interactivas con el alumno, lo que fomenta la visualización de conceptos y la demostración de teoremas mediante un proceso de aprendizaje activo.</li>
+            <li><strong>Conjetura previa:</strong> Espacios de experimentación donde el alumno plantea hipótesis y formula conjeturas antes de enfrentarse al enunciado de un teorema y su demostración formal.</li>
+            <li><strong>Representaciones múltiples:</strong> Vinculación simultánea entre el registro gráfico, el registro tabular y el registro numérico.</li>
+          </ul>
+
+          <h4>3. Impacto en el Aprendizaje a Distancia</h4>
+          <p>
+            La contribución de este proyecto es el desarrollo de material didáctico digital interactivo diseñado para construir conceptos matemáticos, fomenta el autoaprendizaje guiado y ayuda a sustituir la abstracción pasiva con la experimentación activa de los teoremas principales de Cálculo I.
+          </p>
+
+          <h4>Referencias</h4>
+          <p>
+            Arcavi, A., y Hadas, N. (2000). Computer mediated learning: An example or approach. International Journal of Computer for Mathematical Learning 5(1), 25-45.<br>
+            Camacho, V., Sánchez Pozos, J. J. y Zubieta, G. (2014). Los estudiantes de ciencias, ¿pueden reconocer los argumentos lógicos involucrados en una demostración? Enseñanza de las Ciencias, 32(1), 117–138. https://doi.org/10.5565/rev/ensciencias.983<br>
+            Dawkins, P. C. y Zazkis, D. (2021). Using moment-by-moment reading protocols to understand students’ processes of reading mathematical proofs. The National Council of Teachers of Mathematics, 52(5), 510–538. , https://doi.org/10.5951/jresematheduc-2020-0151 <br>
+            Facultad de Ciencias (2023). Programa de estudios de la asignatura de Cálculo Dif e Int I. https://www.fciencias.unam.mx/sites/default/files/temario/91.pdf<br>
+            Gueudet, G. (2008). The transition from empirical to theoretical thinking in mathematics: A case study of a student’s development of theoretical thinking. Educational Studies in Mathematics, 67(2), 179–197. https://doi.org/10.1007/s10649-007-9120-3<br>
+            Herrera, G., Rivera, A. y Aguirre, K. (2019). Calculus students’ difficulties with logical reasoning. In U. T. Jankvist, M. van den Heuvel-Panhuizen, & M. Veldhuis (Eds.), Proceedings of the Eleventh Congress of the European Society for Research in Mathematics Education (pp. 2518- 2525). Utrecht, the Netherlands: Freudenthal Group & Freudenthal Institute, Utrecht University and ERME. https://hal.archives-ouvertes.fr/hal-02422637
+            Herrera, G., Rivera, A. y Aguirre, K. (2018). Difficulties of logical nature identified in the students in the first course of Calculus. In T.E. Hodges, G. J. Roy, & A. M. Tyminski, (Eds.), Proceedings of the 40th annual meeting of the North American Chapter of the International Group for the Psychology of Mathematics Education (pp. 600-607). Greenville, SC: University of South Carolina & Clemson University. http://www.pmena.org/pmenaproceedings/PMENA%2040%202018%20Proceedings.pdf<br>
+            Herrera Alva, J. G. y Rodríguez Espinosa, A. (2025). Trayectoria hipotética de aprendi-zaje sobre la inferencia lógica negación del antecedente. Enseñanza de las Ciencias, 43(1), 119-138. https://doi.org/10.5565/rev/ensciencias.6046<br>
+            Stavros, G. (2014). Common errors and misconceptions in mathematical proving by education undergraduates. IUMPST: The Journal. 1, 1-8. https://doi.org/10.1111/iumpst.12018<br>
+            Stylianides, A., J. Stylianides, G.J. (2018). Addressing Key and Persistent Problems of Students’ Learning: The Case of Proof. In: Stylianides, A., Harel, G. (eds) Advances in Mathematics Education Research on Proof and Proving. ICME-13 Monographs. Springer, Cham. https://doi.org/10.1007/978-3-319-70996-3_7<br>
+            Stylianides, G.J., Stylianides, A.J. y Moutsios-Rentzos, A. (2024). Proof and proving in school and university mathematics education research: a systematic review. ZDM–Mathematics Education, 56, 47–59. https://doi.org/10.1007/s11858-023-01518-y<br>
+            
+          </p>
+
+        </div>
+      </details>
+    </section>
+
+    <!-- SECCIÓN 3: SEMBLANZAS DE INVESTIGADORES -->
+    <section>
+      <h2 class="section-title">Investigadores</h2>
+      <div class="grid-investigadores">
+        <div class="card-investigador">
+          <div class="perfil-investigador">
+            <img src="./fotos-logo/foto-gabriel-color.jpeg" alt="Gabriel Herrera" class="foto-perfil">
+            <h3>Gabriel Herrera</h3>
+          </div>
+          <p class="escenario-desc">
+            Es egresado de la Licenciatura en Matemáticas de la Facultad de Ciencias de la UNAM. Obtuvo el grado de Maestro en Ciencias en el Instituto de Matemáticas de la UNAM (IMATE), en el área de Topología General, y obtuvo el Doctorado en Ciencias, en el área de Matemática Educativa, en el Centro de Investigación y de Estudios Avanzados del IPN (CINVESTAV).<br>
+            Pertenece al Sistema Nacional de Investigadores (SNII) del SECIHTI. Ha sido profesor de asignatura en la Facultad de Ciencias de la UNAM y ha impartido cursos de posgrado (Maestría y Doctorado) en el Centro de Investigación en Ciencia Aplicada y Tecnología Avanzada del IPN (CICATA).
+            <br><br>
+            Actualmente forma parte del Departamento de Matemáticas de la Facultad de Ciencias de la UNAM, donde se desempeña como Profesor Titular de Asignatura Definitivo.
+            <br><br>
+            Realiza una estancia posdoctoral en el Centro de Investigación en Ciencia Aplicada y Tecnología Avanzada del IPN (CICATA).
+            <br><br>
+            Ha participado como ponente en congresos internacionales especializados en Educación Matemática, entre ellos destacan eventos organizados por: European Society for Research in Mathematics Education (ERME), Implementation and Replication Studies in Mathematics Education (IRME) & the International Group for the Psychology of Mathematics Education of the North American (PME-NA). Asimismo, cuenta con publicaciones en revistas especializadas de circulación internacional.
+          </p>
+        </div>
+        
+        <div class="card-investigador">
+          <div class="perfil-investigador">
+            <img src="./fotos-logo/foto-david-color.jpeg" alt="David Meza" class="foto-perfil">
+            <h3>David Meza</h3>
+          </div>
+          <p class="escenario-desc">
+            Coordinador de la Licenciatura en Matemáticas de la Facultad de Ciencias de la UNAM. Es egresado de la Licenciatura en Matemáticas, obtuvo el grado de Maestro en Ciencias en [...] y obtuvo del Doctorado en Ciencias Matemáticas [...]. Su investigación [...]. Ha participado en conferencias y talleres sobre [...] y divulgación científica [...]
+          </p>
+        </div>
+      </div>
+    </section>
 
   </main>
 
-  <footer class="footer">
-    <p>
-      &copy; 2025 <a href="">Proyecto de educación a distancia JGHA & DMA</a>
-    </p>
+  <footer class="footer-renovado">
+    <div class="footer-header">
+      <img src="./fotos-logo/logo-ciencias.jpg" alt="Logo de la Escuela" class="footer-logo">
+      <p style="margin: 0;"><strong>Proyecto Educación a Distancia</strong> • Facultad de Ciencias, UNAM</p>
+    </div>
+    <p>&copy; 2025 Gabriel Herrera & David Meza. Todos los derechos reservados.</p>
+    <div id="load" style="margin-top:15px; font-size: 0.8rem; opacity: 0.7;"></div>
+
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const loadEl = document.querySelector("#load");
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
         try {
           let app = firebase.app();
           let features = [
@@ -239,17 +596,14 @@
             "remoteConfig",
             "performance",
           ].filter((feature) => typeof app[feature] === "function");
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(
-            ", "
-          )}`;
+          loadEl.textContent = `Firebase SDK cargado correctamente (${features.length} servicios activos).`;
         } catch (e) {
           console.error(e);
-          loadEl.textContent =
-            "Error loading the Firebase SDK, check the console.";
+          loadEl.textContent = "";
         }
       });
     </script>
-  </footer> 
+  </footer>
 </body>
 
 </html>
