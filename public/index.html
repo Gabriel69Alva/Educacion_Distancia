@@ -41,7 +41,6 @@
       --text-main: rgb(23, 128, 234);
       --text-muted: #94a3b8;
       --border-color: #334155;
-<<<<<<< HEAD
     }
 
     body {
@@ -326,276 +325,6 @@
     }
     
 
-=======
-    }
-
-    body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      margin: 0;
-      padding: 0;
-      line-height: 1.6;
-    }
-
-    /* BANNER / HEADER */
-    .banner {
-      background: linear-gradient(135deg, #000000 0%, #1e293b 100%);
-      border-bottom: 2px solid var(--primary-dark);
-      padding: 60px 20px 40px;
-      text-align: center;
-    }
-
-    .banner h1 {
-      color: var(--primary);
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-
-    .banner h2 {
-      font-size: 1.25rem;
-      color: var(--primary);
-      font-weight: 500;
-      margin-top: 15px;
-    }
-
-    .banner h3 {
-      font-size: 1.1rem;
-      color: var(--primary);
-      font-weight: 400;
-      max-width: 800px;
-      margin: 10px auto;
-    }
-
-    .meta-info {
-      display: inline-flex;
-      gap: 15px;
-      margin-top: 20px;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      color: var(--primary);
-    }
-
-    /* CONTENIDO PRINCIPAL */
-    .content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 20px;
-    }
-
-    .section-title {
-      font-size: 1.8rem;
-      color: var(--text-main);
-      border-left: 4px solid var(--primary);
-      padding-left: 15px;
-      margin: 50px 0 25px;
-      font-weight: 600;
-    }
-
-    .unidad-titulo {
-      color: var(--text-main);
-      margin-top: 40px;
-      margin-bottom: 20px;
-      font-size: 1.4rem;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    /* GRID DE ESCENARIOS */
-    .grid-escenarios {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .card-escenario {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 20px;
-      transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .card-escenario:hover {
-      transform: translateY(-3px);
-      border-color: var(--text-main);
-      background-color: var(--card-hover);
-    }
-
-    .card-escenario a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1.1rem;
-      margin-bottom: 10px;
-    }
-
-    .card-escenario a:hover {
-      text-decoration: underline;
-      color: var(--text-main);
-    }
-
-    .escenario-desc {
-      color: var(--text-muted);
-      font-size: 0.92rem;
-      margin: 0;
-      line-height: 1.5;
-    }
-
-    /* SECCIÓN MARCO TEÓRICO (DESPLEGABLE CON ANIMACIÓN HOVER) */
-    .teoria-details {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      overflow: hidden;
-      transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
-    }
-
-    .teoria-details:hover {
-      transform: translateY(-3px);
-      border-color: var(--text-main);
-      background-color: var(--card-hover);
-    }
-
-    .teoria-details summary {
-      padding: 20px 30px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text-main);
-      cursor: pointer;
-      list-style: none;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: transparent;
-    }
-
-    .teoria-details summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .teoria-details summary::after {
-      content: '▼';
-      font-size: 0.9rem;
-      transition: transform 0.3s ease;
-      color: var(--text-muted);
-    }
-
-    .teoria-details[open] summary::after {
-      transform: rotate(180deg);
-    }
-
-    .teoria-box {
-      padding: 0 30px 30px;
-      color: var(--text-muted);
-      border-top: 1px solid var(--border-color);
-      margin-top: 10px;
-      padding-top: 20px;
-    }
-
-    .teoria-box h4 {
-      color: var(--primary);
-      margin-top: 25px;
-      margin-bottom: 10px;
-      font-size: 1.1rem;
-    }
-
-    .teoria-box ul {
-      padding-left: 20px;
-      margin-bottom: 20px;
-    }
-
-    .teoria-box li {
-      margin-bottom: 8px;
-    }
-
-    /* SECCIÓN INVESTIGADORES CON ANIMACIÓN HOVER */
-    .grid-investigadores {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 25px;
-    }
-
-    .card-investigador {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 25px;
-      transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
-    }
-
-    .card-investigador:hover {
-      transform: translateY(-3px);
-      border-color: var(--text-main);
-      background-color: var(--card-hover);
-    }
-
-    .perfil-investigador {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 15px;
-    }
-
-    .foto-perfil {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background-color: var(--border-color);
-      object-fit: cover;
-      border: 2px solid var(--border-color);
-    }
-
-    .card-investigador h3 {
-      color: var(--text-main);
-      margin: 0;
-      font-size: 1.3rem;
-    }
-
-    /* PIE DE PÁGINA */
-    .footer-renovado {
-      background-color: #070b11;
-      border-top: 1px solid var(--border-color);
-      padding: 40px 20px;
-      margin-top: 80px;
-      text-align: center;
-      color: var(--primary);
-      font-size: 0.9rem;
-    }
-
-    .footer-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 10px;
-    }
-
-    .footer-logo {
-      height: 45px;
-      width: auto;
-      object-fit: contain;
-    }
-
-    .footer-renovado a {
-      color: var(--text-main);
-      text-decoration: none;
-    }
-
-    .footer-renovado a:hover {
-      text-decoration: underline;
-    }
->>>>>>> f201aa9e12f2a0bd594226a32425319efc60556a
   </style>
 </head>
 
@@ -791,17 +520,12 @@
           <p>
             Los escenarios interactivos que presentamos están en correspondencia con el temario de la Facultad de Ciencias de la UNAM, ver (Facultad de Ciencias, 2023) y se elaboraron con base en los siguientes principios de diseño:
           </p>
-<<<<<<< HEAD
           <ol class="lista-numerada">
-=======
-          <ul>
->>>>>>> f201aa9e12f2a0bd594226a32425319efc60556a
             <li><strong>Diseño en tres etapas:</strong> Exploración (intuición-visual-geométrica), Concepto (cuestionario-teórico-formal) y Demostración Matemática (validación-formal).</li>
             <li><strong>Exploración dinámica:</strong> Manipulación directa de parámetros, por ejemplo ($\epsilon$, $\delta$, puntos en la recta, puntos de control en gráficas, flechas en diagramas, etc.) con retroalimentación visual inmediata.</li>
             <li><strong>Interacción activa:</strong> Las tres etapas son 100% interactivas con el alumno, lo que fomenta la visualización de conceptos y la demostración de teoremas mediante un proceso de aprendizaje activo.</li>
             <li><strong>Conjetura previa:</strong> Espacios de experimentación donde el alumno plantea hipótesis y formula conjeturas antes de enfrentarse al enunciado de un teorema y su demostración formal.</li>
             <li><strong>Representaciones múltiples:</strong> Vinculación simultánea entre el registro gráfico, el registro tabular y el registro numérico.</li>
-<<<<<<< HEAD
           </ol>
 
           <h4>3. Impacto en el Aprendizaje a Distancia</h4>
@@ -824,30 +548,6 @@
             <li>Stylianides, G.J., Stylianides, A.J. y Moutsios-Rentzos, A. (2024). Proof and proving in school and university mathematics education research: a systematic review. <span class="cursiva">ZDM–Mathematics Education, 56</span>, 47–59. https://doi.org/10.1007/s11858-023-01518-y</li>
 
           </ul>
-=======
-          </ul>
-
-          <h4>3. Impacto en el Aprendizaje a Distancia</h4>
-          <p>
-            La contribución de este proyecto es el desarrollo de material didáctico digital interactivo diseñado para construir conceptos matemáticos, fomenta el autoaprendizaje guiado y ayuda a sustituir la abstracción pasiva con la experimentación activa de los teoremas principales de Cálculo I.
-          </p>
-
-          <h4>Referencias</h4>
-          <p>
-            Arcavi, A., y Hadas, N. (2000). Computer mediated learning: An example or approach. International Journal of Computer for Mathematical Learning 5(1), 25-45.<br>
-            Camacho, V., Sánchez Pozos, J. J. y Zubieta, G. (2014). Los estudiantes de ciencias, ¿pueden reconocer los argumentos lógicos involucrados en una demostración? Enseñanza de las Ciencias, 32(1), 117–138. https://doi.org/10.5565/rev/ensciencias.983<br>
-            Dawkins, P. C. y Zazkis, D. (2021). Using moment-by-moment reading protocols to understand students’ processes of reading mathematical proofs. The National Council of Teachers of Mathematics, 52(5), 510–538. , https://doi.org/10.5951/jresematheduc-2020-0151 <br>
-            Facultad de Ciencias (2023). Programa de estudios de la asignatura de Cálculo Dif e Int I. https://www.fciencias.unam.mx/sites/default/files/temario/91.pdf<br>
-            Gueudet, G. (2008). The transition from empirical to theoretical thinking in mathematics: A case study of a student’s development of theoretical thinking. Educational Studies in Mathematics, 67(2), 179–197. https://doi.org/10.1007/s10649-007-9120-3<br>
-            Herrera, G., Rivera, A. y Aguirre, K. (2019). Calculus students’ difficulties with logical reasoning. In U. T. Jankvist, M. van den Heuvel-Panhuizen, & M. Veldhuis (Eds.), Proceedings of the Eleventh Congress of the European Society for Research in Mathematics Education (pp. 2518- 2525). Utrecht, the Netherlands: Freudenthal Group & Freudenthal Institute, Utrecht University and ERME. https://hal.archives-ouvertes.fr/hal-02422637
-            Herrera, G., Rivera, A. y Aguirre, K. (2018). Difficulties of logical nature identified in the students in the first course of Calculus. In T.E. Hodges, G. J. Roy, & A. M. Tyminski, (Eds.), Proceedings of the 40th annual meeting of the North American Chapter of the International Group for the Psychology of Mathematics Education (pp. 600-607). Greenville, SC: University of South Carolina & Clemson University. http://www.pmena.org/pmenaproceedings/PMENA%2040%202018%20Proceedings.pdf<br>
-            Herrera Alva, J. G. y Rodríguez Espinosa, A. (2025). Trayectoria hipotética de aprendi-zaje sobre la inferencia lógica negación del antecedente. Enseñanza de las Ciencias, 43(1), 119-138. https://doi.org/10.5565/rev/ensciencias.6046<br>
-            Stavros, G. (2014). Common errors and misconceptions in mathematical proving by education undergraduates. IUMPST: The Journal. 1, 1-8. https://doi.org/10.1111/iumpst.12018<br>
-            Stylianides, A., J. Stylianides, G.J. (2018). Addressing Key and Persistent Problems of Students’ Learning: The Case of Proof. In: Stylianides, A., Harel, G. (eds) Advances in Mathematics Education Research on Proof and Proving. ICME-13 Monographs. Springer, Cham. https://doi.org/10.1007/978-3-319-70996-3_7<br>
-            Stylianides, G.J., Stylianides, A.J. y Moutsios-Rentzos, A. (2024). Proof and proving in school and university mathematics education research: a systematic review. ZDM–Mathematics Education, 56, 47–59. https://doi.org/10.1007/s11858-023-01518-y<br>
-            
-          </p>
->>>>>>> f201aa9e12f2a0bd594226a32425319efc60556a
 
         </div>
       </details>
@@ -863,11 +563,7 @@
             <h3>Gabriel Herrera</h3>
           </div>
           <p class="escenario-desc">
-<<<<<<< HEAD
             Es egresado de la Licenciatura en Matemáticas de la Facultad de Ciencias de la UNAM. Obtuvo el grado de Maestro en Ciencias en el Instituto de Matemáticas de la UNAM (IMATE), en el área de Topología General, y obtuvo el Doctorado en Ciencias, en el área de Matemática Educativa, en el Centro de Investigación y de Estudios Avanzados del IPN (CINVESTAV).<br><br>
-=======
-            Es egresado de la Licenciatura en Matemáticas de la Facultad de Ciencias de la UNAM. Obtuvo el grado de Maestro en Ciencias en el Instituto de Matemáticas de la UNAM (IMATE), en el área de Topología General, y obtuvo el Doctorado en Ciencias, en el área de Matemática Educativa, en el Centro de Investigación y de Estudios Avanzados del IPN (CINVESTAV).<br>
->>>>>>> f201aa9e12f2a0bd594226a32425319efc60556a
             Pertenece al Sistema Nacional de Investigadores (SNII) del SECIHTI. Ha sido profesor de asignatura en la Facultad de Ciencias de la UNAM y ha impartido cursos de posgrado (Maestría y Doctorado) en el Centro de Investigación en Ciencia Aplicada y Tecnología Avanzada del IPN (CICATA).
             <br><br>
             Actualmente forma parte del Departamento de Matemáticas de la Facultad de Ciencias de la UNAM, donde se desempeña como Profesor Titular de Asignatura Definitivo.
@@ -889,7 +585,6 @@
         </div>
       </div>
     </section>
-<<<<<<< HEAD
 
     <!-- SECCIÓN 4: VIDEOS INTERACTIVOS POR UNIDAD -->
     <section>
@@ -902,8 +597,6 @@
       <h2 class="section-title">Actividades Interactivas Complementarias</h2>
 
     </section>
-=======
->>>>>>> f201aa9e12f2a0bd594226a32425319efc60556a
 
   </main>
 
