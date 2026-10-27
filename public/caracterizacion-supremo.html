@@ -147,7 +147,7 @@
         .h5p-feedback { padding: 16px; border-radius: 8px; margin-top: 15px; background: #f1f5f9; border-left: 5px solid var(--success); font-size: 14px; animation: fadeIn 0.3s ease-in; }
         .h5p-feedback.error { border-left-color: var(--danger); background: #fef2f2; color: #991b1b; }
 
-        /* Estructuras Drag & Drop para Etapa 3 */
+        /* Estructuras Drag & Drop para Etapas 3 y 4 */
         .n3-section { background: var(--bg-light); padding: 30px; border-radius: 12px; margin-bottom: 30px; border: 1px solid var(--border-color); }
         .step-row { margin-bottom: 20px; font-size: 16px; line-height: 2.2; }
         
@@ -173,6 +173,70 @@
         .h5p-summary-box { border: 2px solid var(--success); background: #f0fdf4; border-radius: 12px; padding: 30px; margin-top: 25px; text-align: left; }
         .summary-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #cbd5e1; font-size: 16px; font-weight: 500; }
         .summary-row span.bold-val { font-weight: 700; color: var(--success); }
+
+        /* Estilos específicos para la Etapa 4 (Layout de 2 Columnas) */
+        .proof-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .proof-row {
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+        }
+        .proof-left {
+            flex: 1.3;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--primary);
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 15px;
+            line-height: 1.6;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .proof-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .drop-zone-large {
+            width: 100%;
+            min-height: 60px;
+            border: 2px dashed #94a3b8;
+            border-radius: 8px;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+        .drop-zone-large.hovered {
+            background: #dbeafe;
+            border-color: var(--azure-dark);
+            border-style: solid;
+        }
+        .block-number {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        @media (max-width: 850px) {
+            .proof-row { flex-direction: column; }
+            .proof-left, .proof-right { width: 100%; }
+        }
 
         .bottom-reset-container { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: center; }
     </style>
@@ -254,7 +318,7 @@
         <div id="level-3-container" class="hidden">
             <div class="title-wrapper"><h1>Etapa 3: Teorema de Caracterización</h1></div>
             <p style="text-align: center; color: #64748b; margin-bottom: 25px; margin-top: 10px;">
-                Demuestra de manera general la equivalencia: $\alpha = \sup(A) \iff$ Propiedad del Supremo. <br>
+                <strong>Demuestra de manera general la equivalencia:</strong> <br> Sea $\alpha$ una cota superior de $A$. Entonces, $\alpha = \sup(A) \iff$ $\forall \varepsilon > 0$ existe $x \in A$ tal que $\alpha - \varepsilon < x \le \alpha$. <br>
                 <strong>Arrastra y suelta</strong> las expresiones matemáticas del banco de respuestas hacia los espacios correspondientes.
             </p>
 
@@ -279,8 +343,8 @@
                     Sea $\alpha = \sup(A)$ y sea $\varepsilon > 0$. Como $\varepsilon > 0$, entonces $\alpha - \varepsilon < \alpha$. <br>
                     Dado que $\alpha$ es el supremo, el valor $\alpha - \varepsilon$ <span class="drop-zone" id="dz-1" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-1"></span> del conjunto $A$. <br>
                     Por la definición de cota, esto significa que $\exists x \in A$ tal que <span class="drop-zone" id="dz-2" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-2"></span>.<br>
-                    Además, como $\alpha$ es cota superior de $A$, se tiene que para ese mismo elemento <span class="drop-zone" id="dz-3" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-3"></span>. <br>
-                    $\therefore \alpha - \varepsilon < x \le \alpha$.
+                    Además, como $\alpha$ es cota superior de $A$, se tiene que para ese elemento $x \in A$, se cumple <span class="drop-zone" id="dz-3" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-3"></span>. <br>
+                    Por lo tanto, $\alpha - \varepsilon < x \le \alpha$.
                 </div>
 
                 <hr style="border:0; border-top:1px solid #cbd5e1; margin: 25px 0;">
@@ -290,14 +354,117 @@
                     Supongamos que $\alpha$ es cota superior y cumple que $\forall \varepsilon > 0, \exists x \in A$ tal que $\alpha - \varepsilon < x \le \alpha$. Demostraremos que $\alpha$ es la <span class="drop-zone" id="dz-4" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-4"></span>. <br>
                     Sea $\beta$ cualquier otra cota superior de $A$. Si por contradicción supusiéramos que <span class="drop-zone" id="dz-5" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-5"></span>, entonces $\varepsilon = \alpha - \beta > 0$. <br>
                     Por hipótesis, para este $\varepsilon$, $\exists x \in A$ tal que $\alpha - (\alpha - \beta) < x$, lo cual se simplifica como <span class="drop-zone" id="dz-6" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-6"></span>. <br>
-                    Pero esto contradice el hecho de que $\beta$ es cota superior. Por lo tanto, la suposición era falsa y <span class="drop-zone" id="dz-7" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-7"></span>. $\therefore \alpha = \sup(A)$.
+                    Pero esto contradice el hecho de que $\beta$ es cota superior de $A$. Por lo que la suposición era falsa y <span class="drop-zone" id="dz-7" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag-7"></span>. Por lo tanto, $\alpha = \sup(A)$.
                 </div>
 
                 <div style="margin-top: 35px; display: flex; justify-content: flex-end; gap: 15px;">
                     <button class="btn-general" id="btn-check-proof" onclick="evaluarDemostracionLvl3()" style="max-width: 250px;">Evaluar Demostración</button>
-                    <button class="btn-general btn-success hidden" id="btn-show-summary" onclick="generarReporteFinal()" style="max-width: 250px;">Ver Resumen Final <i class="fa-solid fa-flag-checkered"></i></button>
+                    <button class="btn-general btn-success hidden" id="btn-go-to-n4" onclick="activarEtapa4()" style="max-width: 250px;">Avanzar a la Etapa 4 <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
                 <div id="n3-feedback" class="h5p-feedback hidden"></div>
+            </div>
+        </div>
+
+        <!-- ETAPA 4 -->
+        <div id="level-4-container" class="hidden">
+            <div class="title-wrapper"><h1>Etapa 4: Aplicación Teórica del Supremo</h1></div>
+            <p style="text-align: center; color: #64748b; margin-bottom: 25px; margin-top: 10px;">
+                <strong>Teorema:</strong> Toda sucesión $(a_n)$ creciente y acotada superiormente converge a su supremo ($\lim_{n\to\infty}a_n = \sup A$).<br>
+                <strong>Instrucciones:</strong> Analiza cada bloque deductivo de la columna izquierda y <strong>arrastra la justificación teórica</strong> correspondiente desde el banco de respuestas hacia la casilla vacía de la derecha.
+            </p>
+
+            <div class="n3-section">
+                <!-- Estructura de 2 columnas por bloques -->
+                <div class="proof-grid">
+                    
+                    <!-- Bloque 1 -->
+                    <div class="proof-row">
+                        <div class="proof-left">
+                            <div class="block-number">Bloque Deductivo 1</div>
+                            Sea $(a_n)$ una sucesión creciente y acotada superiormente. Consideremos el conjunto $A = \{a_n : n \in \mathbb{N}\}$. Como $A$ es no vacío y acotado superiormente, existe $s = \sup A$.
+                        </div>
+                        <div class="proof-right">
+                            <div class="drop-zone drop-zone-large" id="dz4-1" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag4-1"></div>
+                        </div>
+                    </div>
+
+                    <!-- Bloque 2 -->
+                    <div class="proof-row">
+                        <div class="proof-left">
+                            <div class="block-number">Bloque Deductivo 2</div>
+                            Dado cualquier $\varepsilon > 0$, el valor $s - \varepsilon$ no es cota superior de $A$. Por lo tanto, existe un elemento $a \in A$ tal que $s - \varepsilon < a$. Como $a \in A$, existe $N \in \mathbb{N}$ tal que $a = a_N$, por lo que $s - \varepsilon < a_N$.
+                        </div>
+                        <div class="proof-right">
+                            <div class="drop-zone drop-zone-large" id="dz4-2" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag4-2"></div>
+                        </div>
+                    </div>
+
+                    <!-- Bloque 3 -->
+                    <div class="proof-row">
+                        <div class="proof-left">
+                            <div class="block-number">Bloque Deductivo 3</div>
+                            Como $(a_n)$ es una sucesión creciente, para todo $n \ge N$ se cumple que $a_N \le a_n$.
+                        </div>
+                        <div class="proof-right">
+                            <div class="drop-zone drop-zone-large" id="dz4-3" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag4-3"></div>
+                        </div>
+                    </div>
+
+                    <!-- Bloque 4 -->
+                    <div class="proof-row">
+                        <div class="proof-left">
+                            <div class="block-number">Bloque Deductivo 4</div>
+                            Dado que $s = \sup A$, en particular $s$ es cota superior de $A$, de modo que $a_n \le s$ para todo $n \in \mathbb{N}$.
+                        </div>
+                        <div class="proof-right">
+                            <div class="drop-zone drop-zone-large" id="dz4-4" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag4-4"></div>
+                        </div>
+                    </div>
+
+                    <!-- Bloque 5 -->
+                    <div class="proof-row">
+                        <div class="proof-left">
+                            <div class="block-number">Bloque Deductivo 5</div>
+                            Combinando las desigualdades para $n \ge N$, obtenemos $s - \varepsilon < a_N \le a_n \le s$, de lo cual se deduce $-\varepsilon < a_n - s \le 0 < \varepsilon$, lo que implica $|a_n - s| < \varepsilon$.
+                        </div>
+                        <div class="proof-right">
+                            <div class="drop-zone drop-zone-large" id="dz4-5" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag4-5"></div>
+                        </div>
+                    </div>
+
+                    <!-- Bloque 6 -->
+                    <div class="proof-row">
+                        <div class="proof-left">
+                            <div class="block-number">Bloque Deductivo 6</div>
+                            Concluimos que $\forall \varepsilon > 0, \exists N \in \mathbb{N}$ tal que $\forall n \ge N, |a_n - s| < \varepsilon$, lo que significa formalmente que $\lim_{n\to\infty} a_n = s = \sup A$.
+                        </div>
+                        <div class="proof-right">
+                            <div class="drop-zone drop-zone-large" id="dz4-6" ondrop="soltar(event)" ondragover="permitirSoltar(event)" data-ans="drag4-6"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Banco de respuestas para la Etapa 4 -->
+                <h3 style="color: var(--primary); text-align: center; margin-bottom: 15px;"><i class="fa-solid fa-boxes-stacked"></i> Banco de Justificaciones</h3>
+                <div class="word-bank" id="banco-respuestas-lvl4" ondrop="soltarEnBanco(event)" ondragover="permitirSoltar(event)">
+                    <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag4-1">Axioma de Completitud de $\mathbb{R}$</div>
+                    <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag4-2">Propiedad del Supremo (Caracterización de $\varepsilon$)</div>
+                    <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag4-3">Hipótesis de Monotonía (Sucesión Creciente)</div>
+                    <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag4-4">Definición de Cota Superior</div>
+                    <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag4-5">Transitividad y Propiedades del Valor Absoluto</div>
+                    <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag4-6">Definición Formal de Límite de una Sucesión</div>
+                    
+                    <!-- Distractores -->
+                    <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag4-7">Propiedad Arquimediana</div>
+                    <div class="draggable-item" draggable="true" ondragstart="iniciarArrastre(event)" id="drag4-8">Teorema del Sándwich o Encaje de Sucesiones</div>
+                </div>
+
+                <div style="margin-top: 35px; display: flex; justify-content: flex-end; gap: 15px;">
+                    <button class="btn-general" id="btn-check-proof-lvl4" onclick="evaluarDemostracionLvl4()" style="max-width: 250px;">Evaluar Justificaciones</button>
+                    <button class="btn-general btn-success hidden" id="btn-show-summary-final" onclick="generarReporteFinal()" style="max-width: 250px;">Ver Resumen Final <i class="fa-solid fa-flag-checkered"></i></button>
+                </div>
+                <div id="n4-feedback" class="h5p-feedback hidden"></div>
             </div>
             <div id="final-summary-box" class="h5p-summary-box hidden"></div>
         </div>
@@ -306,15 +473,15 @@
             <button class="btn-general" onclick="location.reload()" style="max-width: 250px; font-size: 14px;"><i class="fa-solid fa-rotate-right"></i> Reiniciar Actividad Completa</button>
         </div>
         <footer>
-        <p  style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
-            &copy; 2026, JGHA & DMA<br>
+        <p style="text-align: center; font-size: 12px; color: #8f97a1; margin-top: 30px; margin-bottom: 20px;">
+            &copy; 2026, JGHA & Kinrha<br>
         </p>
         </footer>
 
     </div>
 
     <script>
-        const ESTADO = { puntajeN1: 0, puntajeN2: 0, puntajeN3: 0, tiempoInicio: Date.now() };
+        const ESTADO = { puntajeN1: 0, puntajeN2: 0, puntajeN3: 0, puntajeN4: 0, tiempoInicio: Date.now() };
 
         function formatearTiempo(ms) {
             let seg = Math.floor(ms / 1000), min = Math.floor(seg / 60);
@@ -421,14 +588,14 @@
                     faseCazaActiva = false; 
                     swal({
                         title: "¡Punto capturado!",
-                        text: `Seleccionaste n=${puntoEncontrado.n}.`,
+                        text: `Seleccionaste N=${puntoEncontrado.n}.`,
                         icon: "success", button: "Analizar"
                     }).then(() => {
                         elementosSucesion.forEach(p => { p.color = '#94a3b8'; p.radio = 4; });
                         puntoEncontrado.color = '#ef4444'; puntoEncontrado.radio = 8;
                         redibujarSucesionEnEje();
                         epsilonLvl1 = epsilon; limiteInferiorLvl1 = (1 - epsilon).toFixed(2);
-                        valorPuntoLvl1 = puntoEncontrado.valor.toFixed(4); nPuntoLvl1 = puntoEncontrado.n;
+                        valorPuntoLvl1 = puntoEncontrado.valor.toFixed(3); nPuntoLvl1 = puntoEncontrado.n;
                         iniciarQuizLvl1();
                     });
                 } else {
@@ -449,6 +616,15 @@
             renderPreguntaLvl1();
         }
 
+        // Función auxiliar para mezclar aleatoriamente el arreglo de opciones
+        function mezclarOpciones(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
         function renderPreguntaLvl1() {
             document.querySelectorAll('[id^="lvl1-qstep-"]').forEach(el => el.classList.add('hidden'));
             document.getElementById(`lvl1-qstep-${currentLvl1Index + 1}`).classList.remove('hidden');
@@ -459,27 +635,34 @@
             document.getElementById('btn-next-lvl1-quiz').classList.add('hidden');
 
             const container = document.getElementById(`lvl1-qstep-${currentLvl1Index + 1}`);
+            let preguntaHTML = "";
+            let opciones = [];
             
             if (currentLvl1Index === 0) {
-                container.innerHTML = `
-                    <p style="font-size: 16px;">Observando la gráfica y tu punto elegido ($n=${nPuntoLvl1}$) se cumple la desigualdad $1 - \\varepsilon < a_{${nPuntoLvl1}} \\le 1$. ¿Cual es el valor de $a_{${nPuntoLvl1}}$?</p>
-                    <label class="h5p-option"><input type="radio" name="lvl1_opt_1" value="si"> ${valorPuntoLvl1}  </label>
-                    <label class="h5p-option"><input type="radio" name="lvl1_opt_1" value="no"> ${limiteInferiorLvl1} </label>
-                    <label class="h5p-option"><input type="radio" name="lvl1_opt_1" value="no"> ${valorPuntoLvl1}+$\\varepsilon$ </label>
-                    <div id="fb-lvl1-1" class="h5p-feedback hidden"></div>`;
+                preguntaHTML = `<p style="font-size: 16px;">Observando la gráfica y tu punto elegido ($N=${nPuntoLvl1}$) se cumple la desigualdad $1 - \\varepsilon < a_{${nPuntoLvl1}} \\le 1$. ¿Cuál es el valor de $a_{${nPuntoLvl1}}$?</p>`;
+                opciones = [
+                    `<label class="h5p-option"><input type="radio" name="lvl1_opt_1" value="si"> ${valorPuntoLvl1}  </label>`,
+                    `<label class="h5p-option"><input type="radio" name="lvl1_opt_1" value="no"> ${limiteInferiorLvl1} </label>`,
+                    `<label class="h5p-option"><input type="radio" name="lvl1_opt_1" value="no"> ${(valorPuntoLvl1)/2+(limiteInferiorLvl1)/2} </label>`
+                ];
             } else if (currentLvl1Index === 1) {
-                container.innerHTML = `
-                    <p style="font-size: 16px;">Sustituyendo los valores en $1 - \\varepsilon < a_N \\le 1$, esta queda escrita como: $${limiteInferiorLvl1} < ${valorPuntoLvl1} \\le 1$</p>
-                    <label class="h5p-option"><input type="radio" name="lvl1_opt_2" value="opt2"> Falso</label>
-                    <label class="h5p-option"><input type="radio" name="lvl1_opt_2" value="opt1"> Cierto</label>
-                    <div id="fb-lvl1-2" class="h5p-feedback hidden"></div>`;
+                preguntaHTML = `<p style="font-size: 16px;">Sustituyendo los valores en $1 - \\varepsilon < a_N \\le 1$, esta queda escrita como: $${limiteInferiorLvl1} < ${valorPuntoLvl1} \\le 1$</p>`;
+                opciones = [
+                    `<label class="h5p-option"><input type="radio" name="lvl1_opt_2" value="opt2"> Falso</label>`,
+                    `<label class="h5p-option"><input type="radio" name="lvl1_opt_2" value="opt1"> Cierto</label>`,
+                    `<label class="h5p-option"><input type="radio" name="lvl1_opt_2" value="opt3"> A veces cierto, otras veces falso</label>`
+                ];
             } else if (currentLvl1Index === 2) {
-                container.innerHTML = `
-                    <p style="font-size: 16px;">Con base en tu captura, ¿es $1 - \\varepsilon = ${limiteInferiorLvl1}$ una cota superior de $A$?</p>
-                    <label class="h5p-option"><input type="radio" name="lvl1_opt_3" value="no"> Falso.</label>
-                    <label class="h5p-option"><input type="radio" name="lvl1_opt_3" value="si"> Cierto.</label>
-                    <div id="fb-lvl1-3" class="h5p-feedback hidden"></div>`;
+                preguntaHTML = `<p style="font-size: 16px;">Con base en tu captura, ¿es $1 - \\varepsilon = ${limiteInferiorLvl1}$ una cota superior de $A$?</p>`;
+                opciones = [
+                    `<label class="h5p-option"><input type="radio" name="lvl1_opt_3" value="no"> Falso.</label>`,
+                    `<label class="h5p-option"><input type="radio" name="lvl1_opt_3" value="si"> Cierto.</label>`,
+                    `<label class="h5p-option"><input type="radio" name="lvl1_opt_3" value="no"> No se puede determinar con seguridad.</label>`
+                ];
             }
+            
+            mezclarOpciones(opciones);
+            container.innerHTML = preguntaHTML + opciones.join('') + `<div id="fb-lvl1-${currentLvl1Index + 1}" class="h5p-feedback hidden"></div>`;
             MathJax.typesetPromise([container]);
         }
 
@@ -517,7 +700,6 @@
                 fb.innerHTML = `<strong><i class="fa-solid fa-xmark"></i> Incorrecto.</strong> ${fbMsg}`;
             }
 
-            // Bloquear opciones (Solo 1 intento)
             document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
                 r.disabled = true; r.parentElement.classList.add('disabled');
             });
@@ -540,18 +722,18 @@
         const questions = [
             {
                 q: "Si $\\beta < \\sup(A)$, ¿se puede asegurar que $\\beta$ no es cota superior de $A$?",
-                opts: [{ t: "Sí", v: "c" }, { t: "No", v: "i" }],
-                ans: "c", fbC: "El supremo es la MENOR de las cotas, cualquier número menor no es cota.", fbI: "Recuerda que el supremo es la menor cota posible. La respuesta es Sí."
+                opts: [{ t: "Sí", v: "c" }, { t: "No", v: "i" }, { t: "No se puede determinar con seguridad.", v: "i" }],
+                ans: "c", fbC: "El supremo es la MENOR de las cotas, cualquier número menor no es cota superior de $A$.", fbI: "Recuerda que el supremo de $A$ es la mínima cota superior de $A$. La respuesta es Sí."
             },
             {
                 q: "Si $\\alpha = \\sup(A)$, entonces para todo $\\varepsilon > 0$, existe $x \\in A$ tal que:",
-                opts: [{ t: "$\\alpha - \\varepsilon < x \\le \\alpha$", v: "c" }, { t: "$x < \\alpha - \\varepsilon$", v: "i" }],
-                ans: "c", fbC: "Al no ser cota superior $\\alpha - \\varepsilon$, existe un elemento $x$ mayor a ella.", fbI: "La correcta es $\\alpha - \\varepsilon < x \\le \\alpha$, garantizada por la propiedad del supremo."
+                opts: [{ t: "$x < \\alpha - \\varepsilon \\le \\alpha$", v: "i" }, { t: "$\\alpha - \\varepsilon < x \\le \\alpha$", v: "c" }, { t: "$x+\\varepsilon \\le \\alpha$", v: "i" }],
+                ans: "c", fbC: "Al no ser $\\alpha - \\varepsilon$ cota superior de $A$, existe un elemento $x \\in A$ mayor a ella.", fbI: "La correcta es $\\alpha - \\varepsilon < x \\le \\alpha$, garantizada por la propiedad del supremo."
             },
             {
                 q: "¿Qué sucede si asumimos que $\\alpha - \\varepsilon$ SÍ es cota superior de $A$?",
-                opts: [{ t: "Llegamos a una contradicción con &nbsp; $\\alpha$ &nbsp; como supremo.", v: "c" }, { t: "No pasa nada.", v: "i" }],
-                ans: "c", fbC: "Llegamos a una contradicción, pues $\\alpha$ es la mínima cota superior.", fbI: "Llegamos a una contradicción, ya que $\\alpha$ debe ser la cota superior más pequeña."
+                opts: [{ t: "Llegamos a una contradicción con &nbsp; $\\alpha$ &nbsp; como supremo.", v: "c" }, { t: "No pasa nada.", v: "i" }, { t: "Hemos encontrado una cota superior de &nbsp; $A$ &nbsp; más pequeña.", v: "i" }],
+                ans: "c", fbC: "Llegamos a una contradicción, pues $\\alpha$ es la mínima cota superior de $A$.", fbI: "Llegamos a una contradicción, ya que $\\alpha$ debe ser la cota superior más pequeña de $A$."
             }
         ];
         let currentQuizIndex = 0;
@@ -617,21 +799,22 @@
             document.getElementById('level-2-container').classList.add('hidden');
             document.getElementById('level-3-container').classList.remove('hidden');
             window.scrollTo(0,0);
-            mezclarBancoDeRespuestas();
+            mezclarBancoDeRespuestas('banco-respuestas');
         }
 
-        function mezclarBancoDeRespuestas() {
-            const banco = document.getElementById('banco-respuestas');
+        function mezclarBancoDeRespuestas(bancoId) {
+            const banco = document.getElementById(bancoId);
             for (let i = banco.children.length; i >= 0; i--) {
                 banco.appendChild(banco.children[Math.random() * i | 0]);
             }
         }
 
-        // Lógica Drag & Drop
+        // Lógica Drag & Drop Generales
         function permitirSoltar(ev) {
             ev.preventDefault(); 
-            if(ev.target.classList.contains('drop-zone')){
-                ev.target.classList.add('hovered');
+            let zone = ev.target.closest('.drop-zone') || ev.target.closest('.drop-zone-large');
+            if(zone){
+                zone.classList.add('hovered');
             }
         }
         function iniciarArrastre(ev) {
@@ -639,17 +822,20 @@
         }
         function soltar(ev) {
             ev.preventDefault();
-            ev.target.classList.remove('hovered');
-            
-            let zone = ev.target.closest('.drop-zone');
+            let zone = ev.target.closest('.drop-zone') || ev.target.closest('.drop-zone-large');
             if(!zone) return;
+
+            zone.classList.remove('hovered');
 
             var data = ev.dataTransfer.getData("text");
             var item = document.getElementById(data);
 
-            // Si la zona ya tiene un item, devolver el viejo al banco
+            // Determinar a qué banco pertenece
+            let targetBanco = item.id.startsWith('drag4-') ? 'banco-respuestas-lvl4' : 'banco-respuestas';
+
+            // Si la zona ya tiene un item, devolver el viejo al banco adecuado
             if (zone.children.length > 0) {
-                document.getElementById('banco-respuestas').appendChild(zone.children[0]);
+                document.getElementById(targetBanco).appendChild(zone.children[0]);
             }
             zone.appendChild(item);
         }
@@ -657,18 +843,22 @@
         function soltarEnBanco(ev) {
             ev.preventDefault();
             var data = ev.dataTransfer.getData("text");
-            document.getElementById('banco-respuestas').appendChild(document.getElementById(data));
+            var item = document.getElementById(data);
+            let targetBanco = item.id.startsWith('drag4-') ? 'banco-respuestas-lvl4' : 'banco-respuestas';
+            document.getElementById(targetBanco).appendChild(item);
         }
 
         // Limpiar estilos al arrastrar fuera
-        document.querySelectorAll('.drop-zone').forEach(z => {
-            z.addEventListener('dragleave', (e) => e.target.classList.remove('hovered'));
+        document.querySelectorAll('.drop-zone, .drop-zone-large').forEach(z => {
+            z.addEventListener('dragleave', (e) => {
+                let zone = e.target.closest('.drop-zone') || e.target.closest('.drop-zone-large');
+                if(zone) zone.classList.remove('hovered');
+            });
         });
 
         function evaluarDemostracionLvl3() {
-            const zonas = document.querySelectorAll('.drop-zone');
+            const zonas = document.querySelectorAll('#level-3-container .drop-zone');
             
-            // Verificación de campos incompletos
             let camposIncompletos = false;
             zonas.forEach(zona => {
                 if (zona.children.length === 0) {
@@ -686,7 +876,6 @@
                 return; 
             }
 
-            // Si todos los campos están llenos, se evalúa (1 solo intento)
             let correctos = 0;
             
             zonas.forEach(zona => {
@@ -713,34 +902,102 @@
 
             if (correctos === 7) {
                 fb.innerHTML = `<strong><i class="fa-solid fa-check"></i> ¡Demostración Perfecta!</strong> Has logrado estructurar formalmente la equivalencia lógica del supremo.`;
-                confetti({ particleCount: 300, spread: 100, zIndex: 9999, origin: { y: 0.5 } });
+                confetti({ particleCount: 2000, spread: 100, zIndex: 9999, origin: { y: 0.5 } });
             } else {
                 fb.classList.add('error');
                 fb.innerHTML = `<strong><i class="fa-solid fa-check-double"></i> Revisión completada.</strong> Tienes ${correctos} de 7 elementos correctos. Las respuestas correctas están marcadas en verde y las incorrectas en rojo.`;
             }
 
-            // Bloquear arrastre y cambiar botones
-            document.querySelectorAll('.draggable-item').forEach(el => el.draggable = false);
+            document.querySelectorAll('#level-3-container .draggable-item').forEach(el => el.draggable = false);
             document.getElementById('btn-check-proof').classList.add('hidden');
-            document.getElementById('btn-show-summary').classList.remove('hidden');
+            document.getElementById('btn-go-to-n4').classList.remove('hidden');
+        }
+
+        // ==========================================
+        //  ETAPA 4 - APLICACIÓN TEÓRICA DEL SUPREMO
+        // ==========================================
+        function activarEtapa4() {
+            document.getElementById('level-3-container').classList.add('hidden');
+            document.getElementById('level-4-container').classList.remove('hidden');
+            window.scrollTo(0,0);
+            mezclarBancoDeRespuestas('banco-respuestas-lvl4');
+            MathJax.typesetPromise([document.getElementById('level-4-container')]);
+        }
+
+        function evaluarDemostracionLvl4() {
+            const zonas = document.querySelectorAll('#level-4-container .drop-zone-large');
+            
+            let camposIncompletos = false;
+            zonas.forEach(zona => {
+                if (zona.children.length === 0) {
+                    camposIncompletos = true;
+                }
+            });
+
+            if (camposIncompletos) {
+                swal({
+                    title: "Campos incompletos",
+                    text: "Por favor, justifica todos los bloques deductivos antes de evaluar.",
+                    icon: "warning",
+                    button: "Entendido"
+                });
+                return; 
+            }
+
+            let correctos = 0;
+            
+            zonas.forEach(zona => {
+                let correctAnswerId = zona.getAttribute('data-ans');
+                zona.style.borderWidth = "2px";
+                
+                if (zona.children.length > 0) {
+                    let childId = zona.children[0].id;
+                    if (childId === correctAnswerId) {
+                        correctos++;
+                        zona.style.borderColor = "var(--success)";
+                        zona.style.backgroundColor = "#ecfdf5";
+                    } else {
+                        zona.style.borderColor = "var(--danger)";
+                        zona.style.backgroundColor = "#fef2f2";
+                    }
+                }
+            });
+
+            ESTADO.puntajeN4 = correctos;
+
+            const fb = document.getElementById("n4-feedback");
+            fb.classList.remove('hidden', 'error');
+
+            if (correctos === 6) {
+                fb.innerHTML = `<strong><i class="fa-solid fa-check"></i> ¡Excelente Trabajo!</strong> Has justificado correctamente cada paso formal de la demostración e identificado con precisión el papel del supremo.`;
+                confetti({ particleCount: 2000, spread: 100, zIndex: 9999, origin: { y: 0.5 } });
+            } else {
+                fb.classList.add('error');
+                fb.innerHTML = `<strong><i class="fa-solid fa-check-double"></i> Revisión completada.</strong> Tienes ${correctos} de 6 justificaciones correctas. Las respuestas correctas están marcadas en verde y las incorrectas en rojo.`;
+            }
+
+            document.querySelectorAll('#level-4-container .draggable-item').forEach(el => el.draggable = false);
+            document.getElementById('btn-check-proof-lvl4').classList.add('hidden');
+            document.getElementById('btn-show-summary-final').classList.remove('hidden');
         }
 
         function generarReporteFinal() {
-            document.getElementById('btn-show-summary').disabled = true;
+            document.getElementById('btn-show-summary-final').disabled = true;
             const tiempoFin = Date.now();
             const summaryBox = document.getElementById('final-summary-box');
             summaryBox.classList.remove('hidden');
             
-            // Total sobre 13 puntos: 3 (Etapa 1) + 3 (Etapa 2) + 7 (Etapa 3)
-            let totalCorrect = ESTADO.puntajeN1 + ESTADO.puntajeN2 + ESTADO.puntajeN3; 
-            let percentage = Math.round((totalCorrect / 13) * 100);
+            // Total sobre 19 puntos: 3 (E1) + 3 (E2) + 7 (E3) + 6 (E4)
+            let totalCorrect = ESTADO.puntajeN1 + ESTADO.puntajeN2 + ESTADO.puntajeN3 + ESTADO.puntajeN4; 
+            let percentage = Math.round((totalCorrect / 19) * 100);
 
             summaryBox.innerHTML = `
-                <h2 style="color: var(--success); margin-top:0; text-align:center;"><i class="fa-solid fa-ranking-star"></i> Reporte de Actividad</h2>
-                <div class="summary-row"><span>Tiempo Invertido:</span> <span class="bold-val">${formatearTiempo(tiempoFin - ESTADO.tiempoInicio)}</span></div>
-                <div class="summary-row"><span>Puntaje Etapa 1 (Gráfica):</span> <span class="bold-val">${ESTADO.puntajeN1} / 3</span></div>
-                <div class="summary-row"><span>Puntaje Etapa 2 (Conceptos):</span> <span class="bold-val">${ESTADO.puntajeN2} / 3</span></div>
-                <div class="summary-row"><span>Etapa 3 (Teorema Estructurado):</span> <span class="bold-val">${ESTADO.puntajeN3} / 7</span></div>
+                <h2 style="color: var(--success); margin-top:0; text-align:center;"><i class="fa-solid fa-ranking-star"></i> Reporte Global de Desempeño</h2>
+                <div class="summary-row"><span>Tiempo Total Invertido:</span> <span class="bold-val">${formatearTiempo(tiempoFin - ESTADO.tiempoInicio)}</span></div>
+                <div class="summary-row"><span>Etapa 1 (Comprobación Gráfica):</span> <span class="bold-val">${ESTADO.puntajeN1} / 3</span></div>
+                <div class="summary-row"><span>Etapa 2 (Diagnóstico Conceptual):</span> <span class="bold-val">${ESTADO.puntajeN2} / 3</span></div>
+                <div class="summary-row"><span>Etapa 3 (Teorema de Caracterización):</span> <span class="bold-val">${ESTADO.puntajeN3} / 7</span></div>
+                <div class="summary-row"><span>Etapa 4 (Aplicación Teórica del Supremo):</span> <span class="bold-val">${ESTADO.puntajeN4} / 6</span></div>
                 <div class="summary-row" style="border-bottom:none; margin-top:15px; font-size:18px;">
                     <span style="font-weight:bold; color:var(--text-dark)">Calificación Global:</span> 
                     <span class="bold-val" style="font-size:22px;">${percentage}%</span>
