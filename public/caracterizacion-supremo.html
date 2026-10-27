@@ -184,22 +184,38 @@
         .proof-row {
             display: flex;
             gap: 20px;
-            align-items: stretch;
+            align-items: center;
         }
         .proof-left {
-            flex: 1.3;
+            flex: 1.4;
             background: #ffffff;
             border: 1px solid var(--border-color);
             border-left: 5px solid var(--primary);
             border-radius: 8px;
-            padding: 16px 20px;
+            padding: 14px 18px;
             font-size: 15px;
-            line-height: 1.6;
+            line-height: 1.5;
             box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            color: var(--text-dark);
         }
+        
+        /* Ajustes para evitar que MathJax y p generen saltos de línea dentro de la columna izquierda de Etapa 4 */
+        .proof-left p, .proof-left div {
+            margin: 0 !important;
+            padding: 0 !important;
+            display: inline !important;
+            line-height: inherit !important;
+        }
+        .proof-left .block-number {
+            display: block !important;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px !important;
+        }
+
         .proof-right {
             flex: 1;
             display: flex;
@@ -208,14 +224,14 @@
         }
         .drop-zone-large {
             width: 100%;
-            min-height: 60px;
+            min-height: 52px;
             border: 2px dashed #94a3b8;
             border-radius: 8px;
             background: #f8fafc;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 8px;
+            padding: 6px;
             transition: all 0.2s ease;
             box-sizing: border-box;
         }
@@ -223,14 +239,6 @@
             background: #dbeafe;
             border-color: var(--azure-dark);
             border-style: solid;
-        }
-        .block-number {
-            font-weight: 700;
-            color: var(--primary);
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
         }
 
         @media (max-width: 850px) {
@@ -380,7 +388,7 @@
                     <!-- Bloque 1 -->
                     <div class="proof-row">
                         <div class="proof-left">
-                            <div class="block-number">Bloque Deductivo 1</div>
+                            <span class="block-number">Bloque Deductivo 1</span>
                             Sea $(a_n)$ una sucesión creciente y acotada superiormente. Consideremos el conjunto $A = \{a_n : n \in \mathbb{N}\}$. Como $A$ es no vacío y acotado superiormente, existe $s = \sup A$.
                         </div>
                         <div class="proof-right">
@@ -391,7 +399,7 @@
                     <!-- Bloque 2 -->
                     <div class="proof-row">
                         <div class="proof-left">
-                            <div class="block-number">Bloque Deductivo 2</div>
+                            <span class="block-number">Bloque Deductivo 2</span>
                             Dado cualquier $\varepsilon > 0$, el valor $s - \varepsilon$ no es cota superior de $A$. Por lo tanto, existe un elemento $a \in A$ tal que $s - \varepsilon < a$. Como $a \in A$, existe $N \in \mathbb{N}$ tal que $a = a_N$, por lo que $s - \varepsilon < a_N$.
                         </div>
                         <div class="proof-right">
@@ -402,7 +410,7 @@
                     <!-- Bloque 3 -->
                     <div class="proof-row">
                         <div class="proof-left">
-                            <div class="block-number">Bloque Deductivo 3</div>
+                            <span class="block-number">Bloque Deductivo 3</span>
                             Como $(a_n)$ es una sucesión creciente, para todo $n \ge N$ se cumple que $a_N \le a_n$.
                         </div>
                         <div class="proof-right">
@@ -413,7 +421,7 @@
                     <!-- Bloque 4 -->
                     <div class="proof-row">
                         <div class="proof-left">
-                            <div class="block-number">Bloque Deductivo 4</div>
+                            <span class="block-number">Bloque Deductivo 4</span>
                             Dado que $s = \sup A$, en particular $s$ es cota superior de $A$, de modo que $a_n \le s$ para todo $n \in \mathbb{N}$.
                         </div>
                         <div class="proof-right">
@@ -424,7 +432,7 @@
                     <!-- Bloque 5 -->
                     <div class="proof-row">
                         <div class="proof-left">
-                            <div class="block-number">Bloque Deductivo 5</div>
+                            <span class="block-number">Bloque Deductivo 5</span>
                             Combinando las desigualdades para $n \ge N$, obtenemos $s - \varepsilon < a_N \le a_n \le s$, de lo cual se deduce $-\varepsilon < a_n - s \le 0 < \varepsilon$, lo que implica $|a_n - s| < \varepsilon$.
                         </div>
                         <div class="proof-right">
@@ -435,7 +443,7 @@
                     <!-- Bloque 6 -->
                     <div class="proof-row">
                         <div class="proof-left">
-                            <div class="block-number">Bloque Deductivo 6</div>
+                            <span class="block-number">Bloque Deductivo 6</span>
                             Concluimos que $\forall \varepsilon > 0, \exists N \in \mathbb{N}$ tal que $\forall n \ge N, |a_n - s| < \varepsilon$, lo que significa formalmente que $\lim_{n\to\infty} a_n = s = \sup A$.
                         </div>
                         <div class="proof-right">
@@ -830,10 +838,8 @@
             var data = ev.dataTransfer.getData("text");
             var item = document.getElementById(data);
 
-            // Determinar a qué banco pertenece
             let targetBanco = item.id.startsWith('drag4-') ? 'banco-respuestas-lvl4' : 'banco-respuestas';
 
-            // Si la zona ya tiene un item, devolver el viejo al banco adecuado
             if (zone.children.length > 0) {
                 document.getElementById(targetBanco).appendChild(zone.children[0]);
             }
@@ -987,7 +993,6 @@
             const summaryBox = document.getElementById('final-summary-box');
             summaryBox.classList.remove('hidden');
             
-            // Total sobre 19 puntos: 3 (E1) + 3 (E2) + 7 (E3) + 6 (E4)
             let totalCorrect = ESTADO.puntajeN1 + ESTADO.puntajeN2 + ESTADO.puntajeN3 + ESTADO.puntajeN4; 
             let percentage = Math.round((totalCorrect / 19) * 100);
 
